@@ -43,19 +43,20 @@ class AuthService {
       throw e;
     }
   }
-//method fetches a user’s information from Firestore by their uid
-  // Future<Admin?> getUserDetails(String uid) async {
-  //   try {
-  //     DocumentSnapshot doc =
-  //         await _firestore.collection('users').doc(uid).get();
-  //     if (doc.exists) {
-  //       return Admin.fromMap(doc.data() as Map<String, dynamic>);
-  //     }
-  //     return null;
-  //   } catch (e) {
-  //     throw e;
-  //   }
-  // }
+
+//method retieves a user’s information from db by their uid, it is used to access the data of user after sign up or login
+  Future<Admin?> getUserDetails(String uid) async {
+    try {
+      DocumentSnapshot doc =
+          await _firestore.collection('users').doc(uid).get();
+      if (doc.exists) {
+        return Admin.fromMap(doc.data() as Map<String, dynamic>);
+      }
+      return null;
+    } catch (e) {
+      throw e;
+    }
+  }
 
   // Future<void> logout() async {
   //   await _auth.signOut();
