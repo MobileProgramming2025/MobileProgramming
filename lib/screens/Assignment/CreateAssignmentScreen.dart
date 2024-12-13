@@ -1,40 +1,65 @@
 import 'package:flutter/material.dart';
+import 'package:mobileprogramming/services/AssignmentService.dart'; 
 
 class CreateAssignmentScreen extends StatefulWidget {
+  const CreateAssignmentScreen({super.key});
+
   @override
   _CreateAssignmentScreenState createState() => _CreateAssignmentScreenState();
 }
 
 class _CreateAssignmentScreenState extends State<CreateAssignmentScreen> {
   final _formKey = GlobalKey<FormState>();
+  final AssignmentService _assignmentService = AssignmentService(); // Backend service instance
+
   String title = '';
   String description = '';
   DateTime? dueDate;
 
-  void submitForm() {
+  void submitForm() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      // Call the AssignmentService to create the assignment.
+
+      // Create the assignment data
+      Map<String, dynamic> assignmentData = {
+        'title': title,
+        'description': description,
+        'dueDate': dueDate,
+        'courseId': 'sampleCourseId', // Replace with actual course ID
+      };
+
+      // Save to Firestore using the service
+      try {
+        await _assignmentService.createAssignment(assignmentData);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Assignment created successfully!')),
+        );
+        Navigator.pop(context); // Go back after creation
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: ${e.toString()}')),
+        );
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Create Assignment')),
+      appBar: AppBar(title: const Text('Create Assignment')),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: Column(
             children: [
               TextFormField(
-                decoration: InputDecoration(labelText: 'Title'),
+                decoration: const InputDecoration(labelText: 'Title'),
                 onSaved: (value) => title = value!,
                 validator: (value) => value!.isEmpty ? 'Please enter a title' : null,
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Description'),
+                decoration: const InputDecoration(labelText: 'Description'),
                 onSaved: (value) => description = value!,
                 validator: (value) => value!.isEmpty ? 'Please enter a description' : null,
               ),
@@ -52,10 +77,10 @@ class _CreateAssignmentScreenState extends State<CreateAssignmentScreen> {
                 },
                 child: Text(dueDate == null ? 'Pick Due Date' : dueDate.toString()),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: submitForm,
-                child: Text('Create Assignment'),
+                child: const Text('Create Assignment'),
               ),
             ],
           ),
