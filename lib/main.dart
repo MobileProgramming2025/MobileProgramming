@@ -5,7 +5,6 @@ import 'package:mobileprogramming/screens/Assignment/AssignmentListScreen.dart';
 import 'package:mobileprogramming/screens/Assignment/SubmitAssignmentScreen.dart';
 
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
    await Firebase.initializeApp();
