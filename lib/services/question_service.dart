@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mobileprogramming/models/Question.dart';
 
-
 class QuestionService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 

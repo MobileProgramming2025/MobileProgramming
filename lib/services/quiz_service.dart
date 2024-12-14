@@ -15,6 +15,7 @@ class QuizService {
         'options': q.options,
         'correctAnswer': q.correctAnswer,
       }).toList(),
+      'duration': quiz.duration, // Store duration
     });
   }
 
@@ -35,26 +36,28 @@ class QuizService {
         id: doc.id,
         title: doc['title'],
         questions: questions,
+        duration: doc['duration'] ?? 0,
       ));
     });
     return quizzes;
   }
 
-  Future<List<Question>> getQuestions(String quizId) async {
-    List<Question> questions = [];
-    QuerySnapshot questionSnapshot = await _firestore.collection('quizzes')
-        .doc(quizId)
-        .collection('questions')
-        .get();
-    questionSnapshot.docs.forEach((doc) {
-      questions.add(Question(
-        id: doc['id'],
-        text: doc['text'],
-        type: doc['type'],
-        options: doc['options'] != null ? List<String>.from(doc['options']) : null,
-        correctAnswer: doc['correctAnswer'],
-      ));
-    });
-    return questions;
+  Future<Quiz> getQuiz(String quizId) async {
+    DocumentSnapshot quizDoc = await _firestore.collection('quizzes').doc(quizId).get();
+    List<Question> questions = (quizDoc['questions'] as List).map((q) {
+      return Question(
+        id: q['id'],
+        text: q['text'],
+        type: q['type'],
+        options: q['options'] != null ? List<String>.from(q['options']) : null,
+        correctAnswer: q['correctAnswer'],
+      );
+    }).toList();
+    return Quiz(
+      id: quizDoc.id,
+      title: quizDoc['title'],
+      questions: questions,
+      duration: quizDoc['duration'] ?? 0,
+    );
   }
 }

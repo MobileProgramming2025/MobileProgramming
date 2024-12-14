@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/Question.dart';
 import 'package:mobileprogramming/models/Quiz.dart';
-import 'package:mobileprogramming/services/question_service.dart';
 import 'package:mobileprogramming/services/quiz_service.dart';
 
 class QuizCreationScreen extends StatefulWidget {
@@ -11,9 +10,10 @@ class QuizCreationScreen extends StatefulWidget {
 
 class _QuizCreationScreenState extends State<QuizCreationScreen> {
   final QuizService _quizService = QuizService();
-  
+
   String _quizTitle = '';
   List<Question> _questions = [];
+  int _quizDuration = 0; 
 
   void _addQuestion() {
     setState(() {
@@ -28,26 +28,24 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
   }
 
   void _submitQuiz() async {
-  if (_quizTitle.isEmpty || _questions.isEmpty) {
-    // Show an error if the title or questions are not set
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text('Please provide a title and at least one question.'),
-    ));
-    return;
+    if (_quizTitle.isEmpty || _questions.isEmpty || _quizDuration <= 0) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Please provide a title, at least one question, and a valid duration.'),
+      ));
+      return;
+    }
+
+    String quizId = DateTime.now().toString();
+    Quiz quiz = Quiz(
+      id: quizId,
+      title: _quizTitle,
+      questions: _questions,
+      duration: _quizDuration, 
+    );
+    await _quizService.createQuiz(quiz);
+
+    Navigator.pushNamed(context, '/attemptQuiz', arguments: quizId);
   }
-
-  String quizId = DateTime.now().toString();
-  Quiz quiz = Quiz(
-    id: quizId,
-    title: _quizTitle,
-    questions: _questions,
-  );
-  await _quizService.createQuiz(quiz);
-  
-  // Navigate to ScoreReviewScreen with quizId
-  Navigator.pushNamed(context, '/attemptQuiz', arguments: quizId);
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +59,15 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
             TextField(
               onChanged: (value) => setState(() => _quizTitle = value),
               decoration: InputDecoration(labelText: 'Quiz Title'),
+            ),
+            TextField(
+              keyboardType: TextInputType.number,
+              onChanged: (value) {
+                setState(() {
+                  _quizDuration = int.tryParse(value) ?? 0;
+                });
+              },
+              decoration: InputDecoration(labelText: 'Quiz Duration (in seconds)'),
             ),
             Expanded(
               child: ListView.builder(

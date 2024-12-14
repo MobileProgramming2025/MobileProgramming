@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:mobileprogramming/models/Question.dart';
+import 'package:mobileprogramming/models/Quiz.dart';
+import 'package:mobileprogramming/models/QuizResult.dart';
+import 'package:mobileprogramming/screens/Quiz/quiz_result.dart';
 import 'package:mobileprogramming/services/quiz_service.dart';
-
 
 class QuizAttemptScreen extends StatefulWidget {
   final String quizId;
@@ -14,8 +15,9 @@ class QuizAttemptScreen extends StatefulWidget {
 
 class _QuizAttemptScreenState extends State<QuizAttemptScreen> {
   final QuizService _quizService = QuizService();
-  List<Question> _questions = [];
-  List<String> _studentAnswers = [];
+  late Quiz _quiz;
+  int _remainingTime = 0;
+  Map<int, String?> _userAnswers = {};
 
   @override
   void initState() {
@@ -23,61 +25,126 @@ class _QuizAttemptScreenState extends State<QuizAttemptScreen> {
     _loadQuiz();
   }
 
-  void _loadQuiz() async {
-    _questions = await _quizService.getQuestions(widget.quizId);
-    setState(() {});
+  Future<void> _loadQuiz() async {
+    _quiz = await _quizService.getQuiz(widget.quizId);
+    setState(() {
+      _remainingTime = _quiz.duration;
+    });
+
+    _startTimer();
+  }
+
+  void _startTimer() {
+    Future.delayed(Duration(seconds: 1), () {
+      if (_remainingTime > 0) {
+        setState(() {
+          _remainingTime--;
+        });
+        _startTimer();
+      } else {
+        _showTimeoutDialog();
+      }
+    });
+  }
+
+  void _showTimeoutDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Time Up!'),
+          content: Text('You have run out of time.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.pop(context);
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _submitQuiz() {
-    // Logic to save answers and calculate score
+ 
+    final int timeSpent = _quiz.duration - _remainingTime;
+
+    int correctAnswers = 0;
+    for (var index = 0; index < _quiz.questions.length; index++) {
+      if (_quiz.questions[index].correctAnswer == _userAnswers[index]) {
+        correctAnswers++;
+      }
+    }
+
+    final result = QuizResult(
+      timeSpent: timeSpent,
+      correctAnswers: correctAnswers,
+      totalQuestions: _quiz.questions.length,
+    );
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => QuizResultScreen(result: result),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Attempt Quiz')),
+      appBar: AppBar(title: Text(_quiz.title)),
       body: Column(
         children: [
+          Text('Time Remaining: $_remainingTime seconds'),
           Expanded(
             child: ListView.builder(
-              itemCount: _questions.length,
+              itemCount: _quiz.questions.length,
               itemBuilder: (context, index) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(_questions[index].text),
-                    if (_questions[index].options != null)
-                      Column(
-                        children: _questions[index].options!.map((opt) {
-                          return RadioListTile<String>(
-                            title: Text(opt),
-                            value: opt,
-                            groupValue: _studentAnswers[index],
+                final question = _quiz.questions[index];
+                return Card(
+                  margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(question.text, style: TextStyle(fontWeight: FontWeight.bold)),
+                        if (question.type == 'multiple choice') 
+                          Column(
+                            children: question.options!.map((option) {
+                              return RadioListTile<String?>(
+                                title: Text(option),
+                                value: option,
+                                groupValue: _userAnswers[index],
+                                onChanged: (value) {
+                                  setState(() {
+                                    _userAnswers[index] = value;
+                                  });
+                                },
+                              );
+                            }).toList(),
+                          ),
+                        if (question.type == 'short answer')
+                          TextField(
                             onChanged: (value) {
-                              setState(() {
-                                _studentAnswers[index] = value!;
-                              });
+                              _userAnswers[index] = value;
                             },
-                          );
-                        }).toList(),
-                      ),
-                    if (_questions[index].type == 'short answer')
-                      TextField(
-                        onChanged: (value) {
-                          setState(() {
-                            _studentAnswers[index] = value;
-                          });
-                        },
-                        decoration: InputDecoration(labelText: 'Answer'),
-                      ),
-                  ],
+                            decoration: InputDecoration(labelText: 'Your Answer'),
+                          ),
+                      ],
+                    ),
+                  ),
                 );
               },
             ),
           ),
           ElevatedButton(
             onPressed: _submitQuiz,
-            child: Text('Submit'),
+            child: Text('Submit Quiz'),
           ),
         ],
       ),

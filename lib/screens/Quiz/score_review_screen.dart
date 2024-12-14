@@ -24,10 +24,7 @@ class _ScoreReviewScreenState extends State<ScoreReviewScreen> {
   }
 
   void _loadReview() async {
-    _questions = await _quizService.getQuestions(widget.quizId);
-    // Retrieve student answers and correct answers
-    // This part needs backend support (Firebase or other API)
-    // For now, we'll simulate data
+ 
     setState(() {});
   }
 
