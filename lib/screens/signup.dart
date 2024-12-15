@@ -1,14 +1,14 @@
 // signup_screen.dart
 import 'package:flutter/material.dart';
-import '../services/auth_service.dart';
-import '../widgets/Signin/custom_button.dart';
-import '../widgets/Signin/customTextField.dart';
+import 'package:mobileprogramming/services/auth_service.dart';
+import 'package:mobileprogramming/widgets/Signin/customTextField.dart';
+import 'package:mobileprogramming/widgets/Signin/custom_button.dart';
 
 class SignUpScreen extends StatelessWidget {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final nameController = TextEditingController();
-  final roleController = TextEditingController(); // For role input
+  final roleController = TextEditingController(); 
 
   @override
   Widget build(BuildContext context) {
@@ -25,11 +25,6 @@ class SignUpScreen extends StatelessWidget {
                   style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),
-                // SizedBox(height: 20),
-                // CustomTextField(
-                //   labelText: "Name",
-                //   controller: nameController,
-                // ),
                 SizedBox(height: 16),
                 CustomTextField(
                   labelText: "Email",
@@ -56,7 +51,7 @@ class SignUpScreen extends StatelessWidget {
 
                     try {
                       await AuthService().signUp(email, password, role);
-                      Navigator.pushReplacementNamed(context, './signin.dart');
+                      Navigator.pushReplacementNamed(context, '/signin'); // Fixed
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text("Sign-Up Failed: $e")));
