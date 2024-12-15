@@ -1,12 +1,14 @@
+// signup_screen.dart
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import '../services/auth_service.dart';
 import '../widgets/Signin/custom_button.dart';
 import '../widgets/Signin/customTextField.dart';
 
-class LoginScreen extends StatelessWidget {
+class SignUpScreen extends StatelessWidget {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final nameController = TextEditingController();
+  final roleController = TextEditingController(); // For role input
 
   @override
   Widget build(BuildContext context) {
@@ -19,11 +21,16 @@ class LoginScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  "Welcome Back!",
+                  "Create an Account",
                   style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 20),
+                // SizedBox(height: 20),
+                // CustomTextField(
+                //   labelText: "Name",
+                //   controller: nameController,
+                // ),
+                SizedBox(height: 16),
                 CustomTextField(
                   labelText: "Email",
                   controller: emailController,
@@ -34,38 +41,27 @@ class LoginScreen extends StatelessWidget {
                   controller: passwordController,
                   isPassword: true,
                 ),
+                SizedBox(height: 16),
+                CustomTextField(
+                  labelText: "Role (admin/user)",
+                  controller: roleController,
+                ),
                 SizedBox(height: 30),
                 CustomButton(
-                  text: "Login",
+                  text: "Sign Up",
                   onPressed: () async {
                     final email = emailController.text.trim();
                     final password = passwordController.text.trim();
+                    final role = roleController.text.trim();
 
                     try {
-                      User? user = await AuthService().login(email, password);
-                      if (user != null) {
-                        // Fetch user data (role)
-                        var userModel =
-                            await AuthService().getUserDetails(user.uid);
-                        if (userModel != null && userModel.role == 'admin') {
-                          // Navigate to admin screen
-                          Navigator.pushReplacementNamed(context, '/home');
-                        } else {
-                          // Navigate to user screen
-                          Navigator.pushReplacementNamed(context, '/home');
-                        }
-                      }
+                      await AuthService().signUp(email, password, role);
+                      Navigator.pushReplacementNamed(context, './signin.dart');
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Login Failed: $e")));
+                          SnackBar(content: Text("Sign-Up Failed: $e")));
                     }
                   },
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/signup');
-                  },
-                  child: Text("Don't have an account? Sign up"),
                 ),
               ],
             ),
