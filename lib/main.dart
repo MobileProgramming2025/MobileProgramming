@@ -8,15 +8,14 @@ import 'package:mobileprogramming/screens/Assignment/CreateAssignmentScreen.dart
 import 'package:mobileprogramming/screens/Assignment/AssignmentListScreen.dart';
 import 'package:mobileprogramming/screens/Assignment/SubmitAssignmentScreen.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-   await Firebase.initializeApp();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key}); 
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,22 +24,21 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      
       routes: {
-        '/': (context) => const HomeScreen(), 
-        '/create-assignment': (context) =>  const CreateAssignmentScreen(),
-        '/assignments': (context) =>  AssignmentListScreen(),
-       
+        '/': (context) => LoginScreen(),
+        '/create-assignment': (context) => const CreateAssignmentScreen(),
+        '/assignments': (context) => AssignmentListScreen(),
+        '/signup': (context) => SignUpScreen(), // Sign-up screen
+        '/home': (context) => HomeScreen(), // Home screen after login
       },
-     
       initialRoute: '/',
     );
   }
 }
 
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+// class HomeScreen extends StatelessWidget {
+//   const HomeScreen({super.key});
 
 //   @override
 //   Widget build(BuildContext context) {
