@@ -5,67 +5,42 @@ import './screens/home.dart';
 import './screens/signup.dart';
 
 import 'package:mobileprogramming/screens/Assignment/CreateAssignmentScreen.dart';
+import 'package:mobileprogramming/screens/Assignment/AssignmentListScreen.dart';
+import 'package:mobileprogramming/screens/Assignment/SubmitAssignmentScreen.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+   await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({super.key}); 
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Firebase Auth', // The title of the app
+      title: 'University LMS',
       theme: ThemeData(
-        primarySwatch: Colors.blue, // Theme color of the app
-        visualDensity:
-            VisualDensity.adaptivePlatformDensity, // Adaptive visual density
+        primarySwatch: Colors.blue,
       ),
-      initialRoute: '/', // The first screen to show
+      
       routes: {
-        '/': (context) => LoginScreen(), // Login screen
-        '/signup': (context) => SignUpScreen(), // Sign-up screen
-        '/home': (context) => HomeScreen(), // Home screen after login
+        '/': (context) => const HomeScreen(), 
+        '/create-assignment': (context) =>  const CreateAssignmentScreen(),
+        '/assignments': (context) =>  AssignmentListScreen(),
+       
       },
+     
+      initialRoute: '/',
     );
   }
 }
 
-// class MyApp extends StatelessWidget {
-//   const MyApp({super.key});
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       title: 'Flutter Demo',
-//       theme: ThemeData(
-//         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-//         useMaterial3: true,
-//       ),
-//       home: const MyHomePage(title: 'Flutter Demo Home Page'),
-//     );
-//   }
-// }
-
-// class MyHomePage extends StatefulWidget {
-//   const MyHomePage({super.key, required this.title});
-
-//   final String title;
-
-//   @override
-//   State<MyHomePage> createState() => _MyHomePageState();
-// }
-
-// class _MyHomePageState extends State<MyHomePage> {
-//   int _counter = 0;
-
-//   void _incrementCounter() {
-//     setState(() {
-//       _counter++;
-//     });
-//   }
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
 
 //   @override
 //   Widget build(BuildContext context) {
