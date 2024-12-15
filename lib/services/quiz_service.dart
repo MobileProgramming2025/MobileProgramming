@@ -22,7 +22,7 @@ class QuizService {
   Future<List<Quiz>> getQuizzes() async {
     List<Quiz> quizzes = [];
     QuerySnapshot quizSnapshot = await _firestore.collection('quizzes').get();
-    quizSnapshot.docs.forEach((doc) {
+    for (var doc in quizSnapshot.docs) {
       List<Question> questions = (doc['questions'] as List).map((q) {
         return Question(
           id: q['id'],
@@ -38,7 +38,7 @@ class QuizService {
         questions: questions,
         duration: doc['duration'] ?? 0,
       ));
-    });
+    }
     return quizzes;
   }
 

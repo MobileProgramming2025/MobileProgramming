@@ -4,6 +4,8 @@ import 'package:mobileprogramming/models/Quiz.dart';
 import 'package:mobileprogramming/services/quiz_service.dart';
 
 class QuizCreationScreen extends StatefulWidget {
+  const QuizCreationScreen({super.key});
+
   @override
   _QuizCreationScreenState createState() => _QuizCreationScreenState();
 }
@@ -12,7 +14,7 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
   final QuizService _quizService = QuizService();
 
   String _quizTitle = '';
-  List<Question> _questions = [];
+  final List<Question> _questions = [];
   int _quizDuration = 0; 
 
   void _addQuestion() {
@@ -29,7 +31,7 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
 
   void _submitQuiz() async {
     if (_quizTitle.isEmpty || _questions.isEmpty || _quizDuration <= 0) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('Please provide a title, at least one question, and a valid duration.'),
       ));
       return;
@@ -50,7 +52,7 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Create Quiz')),
+      appBar: AppBar(title: const Text('Create Quiz')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -58,7 +60,7 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
           children: [
             TextField(
               onChanged: (value) => setState(() => _quizTitle = value),
-              decoration: InputDecoration(labelText: 'Quiz Title'),
+              decoration: const InputDecoration(labelText: 'Quiz Title'),
             ),
             TextField(
               keyboardType: TextInputType.number,
@@ -67,7 +69,7 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
                   _quizDuration = int.tryParse(value) ?? 0;
                 });
               },
-              decoration: InputDecoration(labelText: 'Quiz Duration (in seconds)'),
+              decoration: const InputDecoration(labelText: 'Quiz Duration (in seconds)'),
             ),
             Expanded(
               child: ListView.builder(
@@ -86,7 +88,7 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
                       ),
                       DropdownButtonFormField<String>(
                         value: _questions[index].type,
-                        items: [
+                        items: const [
                           DropdownMenuItem(value: 'multiple choice', child: Text('Multiple Choice')),
                           DropdownMenuItem(value: 'short answer', child: Text('Short Answer')),
                         ],
@@ -102,13 +104,13 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
                             }
                           });
                         },
-                        decoration: InputDecoration(labelText: 'Question Type'),
+                        decoration: const InputDecoration(labelText: 'Question Type'),
                       ),
                       if (_questions[index].type == 'multiple choice' && _questions[index].options != null)
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Options:'),
+                            const Text('Options:'),
                             ..._questions[index].options!.map((opt) {
                               return Row(
                                 children: [
@@ -120,11 +122,11 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
                                           _questions[index].options![optionIndex] = value;
                                         });
                                       },
-                                      decoration: InputDecoration(labelText: 'Option'),
+                                      decoration: const InputDecoration(labelText: 'Option'),
                                     ),
                                   ),
                                   IconButton(
-                                    icon: Icon(Icons.delete),
+                                    icon: const Icon(Icons.delete),
                                     onPressed: () {
                                       setState(() {
                                         _questions[index].options!.remove(opt);
@@ -133,14 +135,14 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
                                   ),
                                 ],
                               );
-                            }).toList(),
+                            }),
                             ElevatedButton(
                               onPressed: () {
                                 setState(() {
                                   _questions[index].options!.add('');
                                 });
                               },
-                              child: Text('Add Option'),
+                              child: const Text('Add Option'),
                             ),
                             TextField(
                               onChanged: (value) {
@@ -148,7 +150,7 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
                                   _questions[index].correctAnswer = value;
                                 });
                               },
-                              decoration: InputDecoration(labelText: 'Correct Answer'),
+                              decoration: const InputDecoration(labelText: 'Correct Answer'),
                             ),
                           ],
                         ),
@@ -159,7 +161,7 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
                               _questions[index].correctAnswer = value;
                             });
                           },
-                          decoration: InputDecoration(labelText: 'Correct Answer'),
+                          decoration: const InputDecoration(labelText: 'Correct Answer'),
                         ),
                     ],
                   );
@@ -168,11 +170,11 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
             ),
             ElevatedButton(
               onPressed: _addQuestion,
-              child: Text('Add Question'),
+              child: const Text('Add Question'),
             ),
             ElevatedButton(
               onPressed: _submitQuiz,
-              child: Text('Submit Quiz'),
+              child: const Text('Submit Quiz'),
             ),
           ],
         ),

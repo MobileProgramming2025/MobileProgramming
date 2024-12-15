@@ -16,7 +16,7 @@ class AuthService {
       );
       return userCredential.user;
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -40,7 +40,7 @@ class AuthService {
       }
       return user;
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -54,7 +54,7 @@ class AuthService {
       }
       return null;
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 

@@ -7,7 +7,7 @@ import 'package:mobileprogramming/services/quiz_service.dart';
 class QuizAttemptScreen extends StatefulWidget {
   final String quizId;
 
-  QuizAttemptScreen({required this.quizId});
+  const QuizAttemptScreen({super.key, required this.quizId});
 
   @override
   _QuizAttemptScreenState createState() => _QuizAttemptScreenState();
@@ -17,7 +17,7 @@ class _QuizAttemptScreenState extends State<QuizAttemptScreen> {
   final QuizService _quizService = QuizService();
   late Quiz _quiz;
   int _remainingTime = 0;
-  Map<int, String?> _userAnswers = {};
+  final Map<int, String?> _userAnswers = {};
 
   @override
   void initState() {
@@ -35,7 +35,7 @@ class _QuizAttemptScreenState extends State<QuizAttemptScreen> {
   }
 
   void _startTimer() {
-    Future.delayed(Duration(seconds: 1), () {
+    Future.delayed(const Duration(seconds: 1), () {
       if (_remainingTime > 0) {
         setState(() {
           _remainingTime--;
@@ -52,15 +52,15 @@ class _QuizAttemptScreenState extends State<QuizAttemptScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Time Up!'),
-          content: Text('You have run out of time.'),
+          title: const Text('Time Up!'),
+          content: const Text('You have run out of time.'),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 Navigator.pop(context);
               },
-              child: Text('OK'),
+              child: const Text('OK'),
             ),
           ],
         );
@@ -106,13 +106,13 @@ class _QuizAttemptScreenState extends State<QuizAttemptScreen> {
               itemBuilder: (context, index) {
                 final question = _quiz.questions[index];
                 return Card(
-                  margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                  margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(question.text, style: TextStyle(fontWeight: FontWeight.bold)),
+                        Text(question.text, style: const TextStyle(fontWeight: FontWeight.bold)),
                         if (question.type == 'multiple choice') 
                           Column(
                             children: question.options!.map((option) {
@@ -133,7 +133,7 @@ class _QuizAttemptScreenState extends State<QuizAttemptScreen> {
                             onChanged: (value) {
                               _userAnswers[index] = value;
                             },
-                            decoration: InputDecoration(labelText: 'Your Answer'),
+                            decoration: const InputDecoration(labelText: 'Your Answer'),
                           ),
                       ],
                     ),
@@ -144,7 +144,7 @@ class _QuizAttemptScreenState extends State<QuizAttemptScreen> {
           ),
           ElevatedButton(
             onPressed: _submitQuiz,
-            child: Text('Submit Quiz'),
+            child: const Text('Submit Quiz'),
           ),
         ],
       ),

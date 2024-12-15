@@ -5,7 +5,7 @@ import 'package:mobileprogramming/services/quiz_service.dart';
 class ScoreReviewScreen extends StatefulWidget {
   final String quizId;
 
-  ScoreReviewScreen({required this.quizId});
+  const ScoreReviewScreen({super.key, required this.quizId});
 
   @override
   _ScoreReviewScreenState createState() => _ScoreReviewScreenState();
@@ -13,9 +13,9 @@ class ScoreReviewScreen extends StatefulWidget {
 
 class _ScoreReviewScreenState extends State<ScoreReviewScreen> {
   final QuizService _quizService = QuizService();
-  List<Question> _questions = [];
-  List<String> _studentAnswers = [];
-  List<String> _correctAnswers = [];
+  final List<Question> _questions = [];
+  final List<String> _studentAnswers = [];
+  final List<String> _correctAnswers = [];
 
   @override
   void initState() {
@@ -31,7 +31,7 @@ class _ScoreReviewScreenState extends State<ScoreReviewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Review Quiz')),
+      appBar: AppBar(title: const Text('Review Quiz')),
       body: Column(
         children: [
           Expanded(
@@ -53,7 +53,7 @@ class _ScoreReviewScreenState extends State<ScoreReviewScreen> {
           ),
           ElevatedButton(
             onPressed: () {},
-            child: Text('Close Review'),
+            child: const Text('Close Review'),
           ),
         ],
       ),

@@ -16,7 +16,7 @@ class QuestionService {
   Future<List<Question>> getQuestions(String quizId) async {
     List<Question> questions = [];
     QuerySnapshot questionSnapshot = await _firestore.collection('quizzes').doc(quizId).collection('questions').get();
-    questionSnapshot.docs.forEach((doc) {
+    for (var doc in questionSnapshot.docs) {
       questions.add(Question(
         id: doc.id,
         text: doc['text'],
@@ -24,7 +24,7 @@ class QuestionService {
         options: doc['options'] != null ? List<String>.from(doc['options']) : null,
         correctAnswer: doc['correctAnswer'],
       ));
-    });
+    }
     return questions;
   }
 }
