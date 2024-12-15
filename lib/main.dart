@@ -2,8 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/screens/admin_home.dart';
 import 'package:mobileprogramming/screens/user_home.dart';
-import 'package:mobileprogramming/screens/signin.dart';
-import 'package:mobileprogramming/screens/signup.dart';
+import 'package:mobileprogramming/screens/Registration/signin.dart';
+import 'package:mobileprogramming/screens/Registration/signup.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
