@@ -6,6 +6,7 @@ import 'package:mobileprogramming/screens/Assignment/TeacherViewSubmissionsScree
 import 'package:firebase_core/firebase_core.dart';
 import 'package:mobileprogramming/screens/Assignment/assignment_list_screen.dart';
 import 'package:mobileprogramming/screens/AdminScreens/admin_home.dart';
+import 'package:mobileprogramming/screens/Assignment/student_assignments_screen.dart';
 import 'package:mobileprogramming/screens/UserScreens/user_home.dart';
 import 'package:mobileprogramming/screens/Registration/signin.dart';
 import 'package:mobileprogramming/screens/Registration/signup.dart';
@@ -44,7 +45,7 @@ class MyApp extends StatelessWidget {
         '/signin': (context) => LoginScreen(),
          'create_assignment': (context)=>AssignmentListScreen(courseId: "course123")
       },
-    //  home: AssignmentListScreen(courseId: 'course_12345'),
+     //home: StudentAssignmentsScreen(courseId: "course_12345"),
     );
   }
 }
