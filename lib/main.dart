@@ -7,6 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:mobileprogramming/screens/Assignment/assignment_list_screen.dart';
 import 'package:mobileprogramming/screens/AdminScreens/admin_home.dart';
 import 'package:mobileprogramming/screens/Assignment/student_assignments_screen.dart';
+import 'package:mobileprogramming/screens/Quiz/quiz_creation_screen.dart';
 import 'package:mobileprogramming/screens/UserScreens/user_home.dart';
 import 'package:mobileprogramming/screens/Registration/signin.dart';
 import 'package:mobileprogramming/screens/Registration/signup.dart';
@@ -43,7 +44,8 @@ class MyApp extends StatelessWidget {
         '/user_home': (context) => UserHomeScreen(),
         '/admin_home': (context) => AdminHomeScreen(),
         '/signin': (context) => LoginScreen(),
-         'create_assignment': (context)=>AssignmentListScreen(courseId: "course123")
+         'create_assignment': (context)=>AssignmentListScreen(courseId: "course123"),
+          '/createQuiz': (context) => QuizCreationScreen(),
       },
      //home: StudentAssignmentsScreen(courseId: "course_12345"),
     );

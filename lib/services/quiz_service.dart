@@ -36,7 +36,7 @@ class QuizService {
         id: doc.id,
         title: doc['title'],
         questions: questions,
-        duration: doc['duration'] ?? 0,
+        duration: doc['duration'] ?? 0, courseId: '',
       ));
     }
     return quizzes;
@@ -57,7 +57,7 @@ class QuizService {
       id: quizDoc.id,
       title: quizDoc['title'],
       questions: questions,
-      duration: quizDoc['duration'] ?? 0,
+      duration: quizDoc['duration'] ?? 0, courseId: 'tryid',
     );
   }
 }

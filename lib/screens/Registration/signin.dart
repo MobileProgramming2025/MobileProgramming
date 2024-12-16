@@ -87,7 +87,7 @@ class LoginScreen extends StatelessWidget {
         var userModel = await AuthService().getUserDetails(user.uid);
         if (userModel != null && userModel.role == 'admin') {
           // Navigate to admin screen
-          Navigator.pushReplacementNamed(context, '/admin_home');
+          Navigator.pushReplacementNamed(context, '/createQuiz');
         } else {
           // Navigate to user screen
           Navigator.pushReplacementNamed(context, '/user_home');

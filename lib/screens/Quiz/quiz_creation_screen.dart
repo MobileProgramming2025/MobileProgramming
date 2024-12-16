@@ -42,7 +42,7 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
       id: quizId,
       title: _quizTitle,
       questions: _questions,
-      duration: _quizDuration, 
+      duration: _quizDuration, courseId: 'tryid', 
     );
     await _quizService.createQuiz(quiz);
 
