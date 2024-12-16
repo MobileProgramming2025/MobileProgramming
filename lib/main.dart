@@ -24,9 +24,17 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'University LMS',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+     theme: ThemeData(
+    primarySwatch: Colors.teal,
+    hintColor: Colors.amber,
+    fontFamily: 'Poppins', // Add a playful and professional font
+    textTheme: TextTheme(
+      titleLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.teal),
+      bodySmall: TextStyle(fontSize: 16, color: Colors.grey[800]),
+
+    ),
+    scaffoldBackgroundColor:Color.fromARGB(255, 255, 255, 255)
+  ),
       initialRoute: '/',
       routes: {
         '/': (context) => LoginScreen(),
@@ -34,7 +42,9 @@ class MyApp extends StatelessWidget {
         '/user_home': (context) => UserHomeScreen(),
         '/admin_home': (context) => AdminHomeScreen(),
         '/signin': (context) => LoginScreen(),
+         'create_assignment': (context)=>AssignmentListScreen(courseId: "course123")
       },
+    //  home: AssignmentListScreen(courseId: 'course_12345'),
     );
   }
 }
