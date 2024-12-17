@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; 
 import 'package:mobileprogramming/screens/Assignment/CreateAssignmentScreen.dart';
 import 'package:mobileprogramming/screens/Assignment/StudentViewAssignmentsScreen.dart';
 import 'package:mobileprogramming/screens/Assignment/EditSubmissionScreen.dart';
@@ -13,30 +14,37 @@ import 'package:mobileprogramming/screens/Registration/signin.dart';
 import 'package:mobileprogramming/screens/Registration/signup.dart';
 
 void main() async {
-   WidgetsFlutterBinding.ensureInitialized(); 
-  await Firebase.initializeApp(); 
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+
+    SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp
+  ]).then((fn) {
+    runApp(const MyApp());
+  });
+
+  await Firebase.initializeApp();
+  
 }
 
 class MyApp extends StatelessWidget {
   @override
   const MyApp({super.key});
 
-   @override
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'University LMS',
-     theme: ThemeData(
-    primarySwatch: Colors.teal,
-    hintColor: Colors.amber,
-    fontFamily: 'Poppins', // Add a playful and professional font
-    textTheme: TextTheme(
-      titleLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.teal),
-      bodySmall: TextStyle(fontSize: 16, color: Colors.grey[800]),
-
-    ),
-    scaffoldBackgroundColor:Color.fromARGB(255, 255, 255, 255)
-  ),
+      theme: ThemeData(
+        primarySwatch: Colors.teal,
+        hintColor: Colors.amber,
+        fontFamily: 'Poppins',
+        textTheme: TextTheme(
+          titleLarge: TextStyle(
+              fontSize: 32, fontWeight: FontWeight.bold, color: Colors.teal),
+          bodySmall: TextStyle(fontSize: 16, color: Colors.grey[800]),
+        ),
+        scaffoldBackgroundColor: Color.fromARGB(255, 255, 255, 255),
+      ),
       initialRoute: '/',
       routes: {
         '/': (context) => LoginScreen(),
@@ -44,10 +52,10 @@ class MyApp extends StatelessWidget {
         '/user_home': (context) => UserHomeScreen(),
         '/admin_home': (context) => AdminHomeScreen(),
         '/signin': (context) => LoginScreen(),
-         'create_assignment': (context)=>AssignmentListScreen(courseId: "course123"),
-          '/createQuiz': (context) => QuizCreationScreen(),
+        'create_assignment': (context) =>
+            AssignmentListScreen(courseId: "course123"),
+        '/createQuiz': (context) => QuizCreationScreen(),
       },
-     //home: StudentAssignmentsScreen(courseId: "course_12345"),
     );
   }
 }
