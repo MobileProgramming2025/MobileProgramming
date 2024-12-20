@@ -8,6 +8,9 @@ class QuizService {
   Future<void> createQuiz(Quiz quiz) async {
     await _firestore.collection('quizzes').doc(quiz.id).set({
       'title': quiz.title,
+      'startDate': quiz.startDate.toIso8601String(), 
+      'endDate': quiz.endDate.toIso8601String(),     
+      'courseId': quiz.courseId,
       'questions': quiz.questions.map((q) => {
         'id': q.id,
         'text': q.text,
@@ -15,7 +18,6 @@ class QuizService {
         'options': q.options,
         'correctAnswer': q.correctAnswer,
       }).toList(),
-      'duration': quiz.duration, // Store duration
     });
   }
 
@@ -35,8 +37,10 @@ class QuizService {
       quizzes.add(Quiz(
         id: doc.id,
         title: doc['title'],
+        startDate: DateTime.parse(doc['startDate']), // Parse date from string
+        endDate: DateTime.parse(doc['endDate']),     // Parse date from string
         questions: questions,
-        duration: doc['duration'] ?? 0, courseId: '',
+        courseId: doc['courseId'] ?? '',
       ));
     }
     return quizzes;
@@ -56,8 +60,10 @@ class QuizService {
     return Quiz(
       id: quizDoc.id,
       title: quizDoc['title'],
+      startDate: DateTime.parse(quizDoc['startDate']),
+      endDate: DateTime.parse(quizDoc['endDate']), 
       questions: questions,
-      duration: quizDoc['duration'] ?? 0, courseId: 'tryid',
+      courseId: quizDoc['courseId'] ?? '',
     );
   }
 }

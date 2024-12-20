@@ -26,12 +26,12 @@ class _QuizAttemptScreenState extends State<QuizAttemptScreen> {
   }
 
   Future<void> _loadQuiz() async {
-    _quiz = await _quizService.getQuiz(widget.quizId);
-    setState(() {
-      _remainingTime = _quiz.duration;
-    });
+    // _quiz = await _quizService.getQuiz(widget.quizId);
+    // setState(() {
+    //   _remainingTime = _quiz.duration;
+    // });
 
-    _startTimer();
+    // _startTimer();
   }
 
   void _startTimer() {
@@ -70,7 +70,7 @@ class _QuizAttemptScreenState extends State<QuizAttemptScreen> {
 
   void _submitQuiz() {
  
-    final int timeSpent = _quiz.duration - _remainingTime;
+  //  final int timeSpent = _quiz.duration - _remainingTime;
 
     int correctAnswers = 0;
     for (var index = 0; index < _quiz.questions.length; index++) {
@@ -79,19 +79,19 @@ class _QuizAttemptScreenState extends State<QuizAttemptScreen> {
       }
     }
 
-    final result = QuizResult(
-      timeSpent: timeSpent,
-      correctAnswers: correctAnswers,
-      totalQuestions: _quiz.questions.length,
-    );
+    // final result = QuizResult(
+    // //  timeSpent: timeSpent,
+    //   correctAnswers: correctAnswers,
+    //   totalQuestions: _quiz.questions.length,
+    // );
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => QuizResultScreen(result: result),
-      ),
-    );
-  }
+   // Navigator.push(
+     // context,
+    //  MaterialPageRoute(
+     //   builder: (context) => QuizResultScreen(result: result),
+     // ),
+   // );
+ // }
 
   @override
   Widget build(BuildContext context) {
@@ -149,5 +149,12 @@ class _QuizAttemptScreenState extends State<QuizAttemptScreen> {
         ],
       ),
     );
+  }
+}
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    throw UnimplementedError();
   }
 }
