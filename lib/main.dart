@@ -47,9 +47,6 @@ class MyApp extends StatelessWidget {
         ),
         scaffoldBackgroundColor: Color.fromARGB(255, 255, 255, 255),
       ),
-<<<<<<< Updated upstream
-    home: WelcomeScreen(),
-=======
       initialRoute: '/signup',
       routes: {
         '/': (context) => LoginScreen(),
@@ -61,7 +58,6 @@ class MyApp extends StatelessWidget {
             AssignmentListScreen(courseId: "course123"),
         '/createQuiz': (context) => QuizCreationScreen(),
       },
->>>>>>> Stashed changes
     );
   }
 }
