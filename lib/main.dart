@@ -12,6 +12,7 @@ import 'package:mobileprogramming/screens/Quiz/quiz_creation_screen.dart';
 import 'package:mobileprogramming/screens/UserScreens/user_home.dart';
 import 'package:mobileprogramming/screens/Registration/signin.dart';
 import 'package:mobileprogramming/screens/Registration/signup.dart';
+import 'package:mobileprogramming/screens/welcome_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -46,17 +47,7 @@ class MyApp extends StatelessWidget {
         ),
         scaffoldBackgroundColor: Color.fromARGB(255, 255, 255, 255),
       ),
-      initialRoute: '/',
-      routes: {
-        '/': (context) => LoginScreen(),
-        '/signup': (context) => SignUpScreen(),
-        '/user_home': (context) => UserHomeScreen(),
-        '/admin_home': (context) => AdminHomeScreen(),
-        '/signin': (context) => LoginScreen(),
-        'create_assignment': (context) =>
-            AssignmentListScreen(courseId: "course123"),
-        '/createQuiz': (context) => QuizCreationScreen(),
-      },
+    home: WelcomeScreen(),
     );
   }
 }
