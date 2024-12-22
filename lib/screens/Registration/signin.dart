@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mobileprogramming/services/auth_service.dart';
-import 'package:mobileprogramming/widgets/Signin/customTextField.dart';
 import 'package:mobileprogramming/widgets/Signin/custom_button.dart';
 
 
@@ -100,7 +99,19 @@ class LoginScreen extends StatelessWidget {
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
 
-    if (!_validateFields(context, email, password)) return;
+    if (email.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Please enter your E-mail.")),
+      );
+      return;
+    }
+
+    if (password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Please enter your password.")),
+      );
+      return;
+    }
 
     try {
       User? user = await AuthService().login(email, password);
@@ -123,23 +134,11 @@ class LoginScreen extends StatelessWidget {
     }
   }
 
-  // Field Validation
-  bool _validateFields(BuildContext context, String email, String password) {
-    if (email.isEmpty) {
-      _showError(context, "Please enter your email.");
-      return false;
-    }
-    if (password.isEmpty) {
-      _showError(context, "Please enter your password.");
-      return false;
-    }
-    return true;
-  }
-
   // Error Display Helper
   void _showError(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message)),
     );
   }
+
 }
