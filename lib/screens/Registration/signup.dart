@@ -5,10 +5,12 @@ import 'package:mobileprogramming/widgets/Signin/customTextField.dart';
 import 'package:mobileprogramming/widgets/Signin/custom_button.dart';
 
 class SignUpScreen extends StatelessWidget {
+  SignUpScreen({super.key}); 
+
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final nameController = TextEditingController();
-  final roleController = TextEditingController(); 
+  final roleController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -36,22 +38,22 @@ class SignUpScreen extends StatelessWidget {
                   controller: passwordController,
                   isPassword: true,
                 ),
-                SizedBox(height: 16),
-                CustomTextField(
-                  labelText: "Role (admin/user)",
-                  controller: roleController,
-                ),
+                // SizedBox(height: 16),
+                // CustomTextField(
+                //   labelText: "Role (admin/user)",
+                //   controller: roleController,
+                // ),
                 SizedBox(height: 30),
                 CustomButton(
                   text: "Sign Up",
                   onPressed: () async {
                     final email = emailController.text.trim();
                     final password = passwordController.text.trim();
-                    final role = roleController.text.trim();
+                    const role = "admin";
 
                     try {
                       await AuthService().signUp(email, password, role);
-                      Navigator.pushReplacementNamed(context, '/signin'); // Fixed
+                      Navigator.pushReplacementNamed(context, '/admin_home'); // Fixed
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text("Sign-Up Failed: $e")));
