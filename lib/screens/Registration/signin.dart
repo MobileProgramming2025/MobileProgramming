@@ -6,6 +6,8 @@ import 'package:mobileprogramming/widgets/Signin/custom_button.dart';
 
 
 class LoginScreen extends StatelessWidget {
+  LoginScreen({super.key});
+
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
@@ -20,26 +22,56 @@ class LoginScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // Welcome Text
-                _buildWelcomeText(),
-
+                Text(
+                  "Welcome Back!",
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
                 SizedBox(height: 20),
 
                 // Email Field
-                CustomTextField(
-                  labelText: "Email",
+                TextFormField(
                   controller: emailController,
-                 
+                  decoration: InputDecoration(
+                    labelText: "Email",
+                    border: OutlineInputBorder(),
+                  ),
+                  keyboardType: TextInputType.emailAddress,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Please enter you E-mail.";
+                    }
+                    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                      return "Please enter a valid E-mail.";
+                    }
+                    return null;
+                  },
                 ),
-
                 SizedBox(height: 16),
 
                 // Password Field
-                CustomTextField(
-                  labelText: "Password",
+                TextFormField(
                   controller: passwordController,
-                  isPassword: true,
+                  decoration: InputDecoration(
+                    labelText: "Password",
+                    border: OutlineInputBorder(),
+                  ),
+                  obscureText: true,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Please, enter your password.";
+                    }
+                    if (value.length < 8) {
+                      return "Password must be at least 8 characters.";
+                    }
+                    return null;
+                  },
                 ),
-
                 SizedBox(height: 30),
 
                 // Login Button
@@ -60,15 +92,6 @@ class LoginScreen extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  // Helper Widget for Welcome Text
-  Widget _buildWelcomeText() {
-    return Text(
-      "Welcome Back!",
-      style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-      textAlign: TextAlign.center,
     );
   }
 
