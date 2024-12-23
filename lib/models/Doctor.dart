@@ -11,15 +11,15 @@ class Doctor {
     required this.specialization,
   });
 
-  // // Convert Firestore data to a Doctor object
-  // factory Doctor.fromMap(Map<String, dynamic> data, String id) {
-  //   return Doctor(
-  //     id: id,
-  //     name: data['name'],
-  //     email: data['email'],
-  //     specialization: data['specialization'],
-  //   );
-  // }
+  // Convert Firestore data to a Doctor object
+  factory Doctor.fromMap(Map<String, dynamic> data, String id) {
+    return Doctor(
+      id: id,
+      name: data['name'],
+      email: data['email'],
+      specialization: data['specialization'],
+    );
+  }
 
   // // Convert Doctor object to Firestore format
   // Map<String, dynamic> toMap() {
