@@ -5,10 +5,10 @@ class AddEditAssignmentScreen extends StatefulWidget {
   final String courseId;
   final String? assignmentId;
 
-  AddEditAssignmentScreen({required this.courseId, this.assignmentId});
+  const AddEditAssignmentScreen({super.key, required this.courseId, this.assignmentId});
 
   @override
-  _AddEditAssignmentScreenState createState() => _AddEditAssignmentScreenState();
+  State<AddEditAssignmentScreen> createState() => _AddEditAssignmentScreenState();
 }
 
 class _AddEditAssignmentScreenState extends State<AddEditAssignmentScreen> {
@@ -185,10 +185,10 @@ class _AddEditAssignmentScreenState extends State<AddEditAssignmentScreen> {
               SizedBox(height: 32),
               ElevatedButton(
                 onPressed: _saveAssignment,
-                child: Text(widget.assignmentId == null ? 'Create Assignment' : 'Update Assignment'),
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                 ),
+                child: Text(widget.assignmentId == null ? 'Create Assignment' : 'Update Assignment'),
               ),
             ],
           ),

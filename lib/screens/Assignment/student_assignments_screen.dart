@@ -8,10 +8,10 @@ import 'package:firebase_storage/firebase_storage.dart';
 class StudentAssignmentsScreen extends StatefulWidget {
   final String courseId;
 
-  StudentAssignmentsScreen({required this.courseId});
+  const StudentAssignmentsScreen({super.key, required this.courseId});
 
   @override
-  _StudentAssignmentsScreenState createState() => _StudentAssignmentsScreenState();
+  State<StudentAssignmentsScreen> createState() => _StudentAssignmentsScreenState();
 }
 
 class _StudentAssignmentsScreenState extends State<StudentAssignmentsScreen> {
@@ -80,7 +80,8 @@ class AssignmentDetailScreen extends StatefulWidget {
   final String description;
   final DateTime dueDateTime;
 
-  AssignmentDetailScreen({
+  const AssignmentDetailScreen({
+    super.key, 
     required this.assignmentId,
     required this.title,
     required this.description,
@@ -88,7 +89,7 @@ class AssignmentDetailScreen extends StatefulWidget {
   });
 
   @override
-  _AssignmentDetailScreenState createState() => _AssignmentDetailScreenState();
+  State<AssignmentDetailScreen> createState() => _AssignmentDetailScreenState();
 }
 
 class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
@@ -219,8 +220,8 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
                 SizedBox(width: 8),
                 ElevatedButton(
                   onPressed: _deleteSubmission,
-                  child: Text('Delete Submission'),
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                  child: Text('Delete Submission'),
                 ),
               ],
             ),

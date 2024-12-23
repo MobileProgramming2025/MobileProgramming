@@ -5,7 +5,7 @@ import 'add_edit_assignment_screen.dart';
 class AssignmentListScreen extends StatefulWidget {
   final String courseId;
 
-  AssignmentListScreen({required this.courseId});
+  const AssignmentListScreen({super.key, required this.courseId});
 
   @override
   _AssignmentListScreenState createState() => _AssignmentListScreenState();

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/Quiz.dart';
-import 'package:mobileprogramming/models/QuizResult.dart';
-import 'package:mobileprogramming/screens/Quiz/quiz_result.dart';
+// import 'package:mobileprogramming/models/QuizResult.dart';
+// import 'package:mobileprogramming/screens/Quiz/quiz_result.dart';
 import 'package:mobileprogramming/services/quiz_service.dart';
 
 class QuizAttemptScreen extends StatefulWidget {
@@ -10,7 +10,7 @@ class QuizAttemptScreen extends StatefulWidget {
   const QuizAttemptScreen({super.key, required this.quizId});
 
   @override
-  _QuizAttemptScreenState createState() => _QuizAttemptScreenState();
+  State<QuizAttemptScreen> createState() => _QuizAttemptScreenState();
 }
 
 class _QuizAttemptScreenState extends State<QuizAttemptScreen> {

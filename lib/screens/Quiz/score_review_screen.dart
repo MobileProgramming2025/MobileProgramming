@@ -8,7 +8,7 @@ class ScoreReviewScreen extends StatefulWidget {
   const ScoreReviewScreen({super.key, required this.quizId});
 
   @override
-  _ScoreReviewScreenState createState() => _ScoreReviewScreenState();
+  State<ScoreReviewScreen> createState() => _ScoreReviewScreenState();
 }
 
 class _ScoreReviewScreenState extends State<ScoreReviewScreen> {
