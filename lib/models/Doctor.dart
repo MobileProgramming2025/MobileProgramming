@@ -21,12 +21,12 @@ class Doctor {
     );
   }
 
-  // // Convert Doctor object to Firestore format
-  // Map<String, dynamic> toMap() {
-  //   return {
-  //     'name': name,
-  //     'email': email,
-  //     'specialization': specialization,
-  //   };
-  // }
+  // Convert Doctor object to Firestore format
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'email': email,
+      'specialization': specialization,
+    };
+  }
 }
