@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class User {
   final String id;
   final String name;
@@ -35,6 +37,12 @@ class User {
       role: map['role'] as String,
       department: map['department'] as String,
     );
+  }
+
+  // Save user to Firestore
+  Future<void> saveToFirestore() async {
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
+    await firestore.collection('users').doc(id).set(toMap());
   }
 
 }
