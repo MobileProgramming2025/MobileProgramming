@@ -10,7 +10,7 @@ class StaticTextSection extends StatelessWidget {
       child: Column(
         children: const [
           Text(
-            'Immersion in the \nworld of knowledge',
+            'Welcome to the Moodle Learning Platform',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 35,
@@ -20,8 +20,9 @@ class StaticTextSection extends StatelessWidget {
           ),
           SizedBox(height: 16),
           Text(
-            'Our assignments will help you deepen your knowledge of math, '
-            'languages, history, science, and more!',
+            'Enhance your learning experience with a variety of courses, resources, '
+            'and tools to help you achieve academic success. Explore subjects across '
+            'multiple disciplines and connect with a global community of learners.',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 16,
