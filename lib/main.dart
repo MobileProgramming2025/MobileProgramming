@@ -5,9 +5,9 @@ import 'package:flutter/services.dart';
 // import 'package:mobileprogramming/screens/Assignment/EditSubmissionScreen.dart';
 // import 'package:mobileprogramming/screens/Assignment/TeacherViewSubmissionsScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:mobileprogramming/screens/AdminScreens/add_users.dart';
 import 'package:mobileprogramming/screens/AdminScreens/admin_dashboard.dart';
 import 'package:mobileprogramming/screens/Assignment/assignment_list_screen.dart';
-import 'package:mobileprogramming/screens/AdminScreens/admin_home.dart';
 // import 'package:mobileprogramming/screens/Assignment/student_assignments_screen.dart';
 import 'package:mobileprogramming/screens/Quiz/quiz_creation_screen.dart';
 import 'package:mobileprogramming/screens/UserScreens/user_home.dart';
@@ -54,6 +54,7 @@ class MyApp extends StatelessWidget {
         '/signup': (context) => SignUpScreen(),
         '/user_home': (context) => UserHomeScreen(),
         '/admin_home': (context) => AdminDashboard(),
+        '/add_users': (context) => AddUserScreen(),
         '/signin': (context) => LoginScreen(),
         'create_assignment': (context) => AssignmentListScreen(courseId: "course123"),
         '/createQuiz': (context) => QuizCreationScreen(),
