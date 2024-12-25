@@ -49,8 +49,10 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Color.fromARGB(255, 255, 255, 255),
       ),
       initialRoute: '/signin',
+      // initialRoute: '/create_assignment',
       routes: {
         '/': (context) => LoginScreen(),
+      //  '/': (context) =>AssignmentListScreen(courseId: "course123"),
         '/signup': (context) => SignUpScreen(),
         '/user_home': (context) => UserHomeScreen(),
         '/admin_home': (context) => AdminDashboard(),
