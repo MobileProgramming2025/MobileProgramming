@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; 
+import 'package:flutter/services.dart';
 // import 'package:mobileprogramming/screens/Assignment/CreateAssignmentScreen.dart';
 // import 'package:mobileprogramming/screens/Assignment/StudentViewAssignmentsScreen.dart';
 // import 'package:mobileprogramming/screens/Assignment/EditSubmissionScreen.dart';
@@ -12,19 +12,21 @@ import 'package:mobileprogramming/screens/Quiz/quiz_creation_screen.dart';
 import 'package:mobileprogramming/screens/UserScreens/user_home.dart';
 import 'package:mobileprogramming/screens/Registration/signin.dart';
 import 'package:mobileprogramming/screens/Registration/signup.dart';
+import 'package:mobileprogramming/screens/AdminScreens/AddDoctorScreen.dart';
+import 'package:mobileprogramming/screens/AdminScreens/EditDoctorScreen.dart';
+import 'package:mobileprogramming/screens/AdminScreens/DashboardScreen.dart';
+
 // import 'package:mobileprogramming/screens/welcome_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-    SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp
-  ]).then((fn) {
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((fn) {
     runApp(const MyApp());
   });
 
   await Firebase.initializeApp();
-  
 }
 
 class MyApp extends StatelessWidget {
@@ -47,16 +49,20 @@ class MyApp extends StatelessWidget {
         ),
         scaffoldBackgroundColor: Color.fromARGB(255, 255, 255, 255),
       ),
-      initialRoute: '/signin',
+      // initialRoute: '/signin',
+      // routes: {
+      //   '/': (context) => LoginScreen(),
+      //   '/signup': (context) => SignUpScreen(),
+      //   '/user_home': (context) => UserHomeScreen(),
+      //   '/admin_home': (context) => AdminHomeScreen(),
+      //   '/signin': (context) => LoginScreen(),
+      //   'create_assignment': (context) =>
+      //       AssignmentListScreen(courseId: "course123"),
+      //   '/createQuiz': (context) => QuizCreationScreen(),
+      initialRoute: '/',
       routes: {
-        '/': (context) => LoginScreen(),
-        '/signup': (context) => SignUpScreen(),
-        '/user_home': (context) => UserHomeScreen(),
-        '/admin_home': (context) => AdminHomeScreen(),
-        '/signin': (context) => LoginScreen(),
-        'create_assignment': (context) =>
-            AssignmentListScreen(courseId: "course123"),
-        '/createQuiz': (context) => QuizCreationScreen(),
+        '/': (context) => DashboardScreen(),
+        '/add-doctor': (context) => AddDoctorScreen(),
       },
     );
   }
