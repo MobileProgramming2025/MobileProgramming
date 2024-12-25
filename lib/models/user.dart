@@ -49,6 +49,7 @@ class User {
   static Future<List<User>> getAllUsers() async {
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
     final QuerySnapshot querySnapshot = await firestore.collection('users').get();
+    // print('Fetched ${querySnapshot.docs.length} users from Firestore');
     return querySnapshot.docs.map((doc) => User.fromMap(doc.data() as Map<String, dynamic>)).toList();
   }
 

@@ -9,6 +9,13 @@ class ListUsersScreen extends StatefulWidget {
 }
 
 class _ListUsersScreenState extends State<ListUsersScreen> {
+  late Future<List<User>> _futureUsers;
+
+  @override
+  void initState() {
+    super.initState();
+    _futureUsers = User.getAllUsers();
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -17,11 +24,16 @@ class _ListUsersScreenState extends State<ListUsersScreen> {
         title: const Text('User List'),
       ),
       body: FutureBuilder(
-        future: null,
+        future: _futureUsers,
         builder: (BuildContext context, AsyncSnapshot<List<User>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
               child: CircularProgressIndicator(),
+            );
+          }
+          else if (snapshot.hasError) {
+            return Center(
+              child: Text('Error: ${snapshot.error}'),
             );
           }
           else if (!snapshot.hasData || snapshot.data!.isEmpty) {
