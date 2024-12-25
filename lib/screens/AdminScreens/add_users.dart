@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mobileprogramming/models/user.dart';
+import 'package:uuid/uuid.dart';
 
 class AddUserScreen extends StatefulWidget {
   const AddUserScreen({super.key});
@@ -13,6 +15,43 @@ class _AddUserScreenState extends State<AddUserScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _roleController = TextEditingController();
   final TextEditingController _departmentController = TextEditingController();
+
+  final Uuid _uuid = Uuid();
+
+  Future<void> _addUser() async {
+    String userId = _uuid.v4();
+
+    User newUser = User(
+      id: userId,
+      name: _nameController.text.trim(),
+      email: _emailController.text.trim(),
+      role: _roleController.text.trim(),
+      department: _departmentController.text.trim(),
+    );
+
+    try {
+      await newUser.saveToFirestore();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('User added successfully!')
+        ),
+      );
+      _clearFields();
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to add user: $e')
+        ),
+      );
+    }
+  }
+
+  void _clearFields() {
+    _nameController.clear();
+    _emailController.clear();
+    _roleController.clear();
+    _departmentController.clear();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +85,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
               SizedBox(height: 20),
               Center(
                 child: ElevatedButton(
-                  onPressed: null,
+                  onPressed: _addUser,
                   child: Text('Add User')
                 ),
               ),

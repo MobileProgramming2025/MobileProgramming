@@ -57,7 +57,7 @@ class MyApp extends StatelessWidget {
         '/user_home': (context) => UserHomeScreen(),
         '/admin_home': (context) => AdminDashboard(),
         '/add_users': (context) => AddUserScreen(),
-        'create_assignment': (context) => AssignmentListScreen(courseId: "course123"),
+        '/create_assignment': (context) => AssignmentListScreen(courseId: "course123"),
         '/createQuiz': (context) => QuizCreationScreen(),
       },
     );
