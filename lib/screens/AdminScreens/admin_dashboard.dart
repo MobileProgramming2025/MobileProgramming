@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mobileprogramming/screens/AdminScreens/add_users.dart';
 
 class AdminDashboard extends StatelessWidget{
   const AdminDashboard({super.key});
@@ -43,7 +42,7 @@ class AdminDashboard extends StatelessWidget{
               leading: Icon(Icons.add),
               title: Text('Add users'),
               onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => AddUserScreen(),)); // Fixed
+                Navigator.pushNamed(context, '/add_users');
               },
             ),
           ],
