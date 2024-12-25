@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class AdminDashboard extends StatelessWidget{
+class AdminDashboard extends StatelessWidget {
   const AdminDashboard({super.key});
 
   @override
@@ -52,6 +52,13 @@ class AdminDashboard extends StatelessWidget{
                 Navigator.pushNamed(context, '/list_users');
               },
             ),
+            ListTile(
+              leading: Icon(Icons.group),
+              title: Text('Doctors Dashboard'),
+              onTap: () {
+                Navigator.pushNamed(context, '/Doctors Dashboard');
+              },
+            ),
           ],
         ),
       ),
@@ -59,9 +66,7 @@ class AdminDashboard extends StatelessWidget{
         child: Text(
           'Swipe from the left or tap the menu icon to open the drawer.',
           textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 16
-          ),
+          style: TextStyle(fontSize: 16),
         ),
       ),
     );
