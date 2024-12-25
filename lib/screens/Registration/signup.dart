@@ -53,7 +53,7 @@ class SignUpScreen extends StatelessWidget {
 
                     try {
                       await AuthService().signUp(email, password, role);
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => UserHomeScreen(),)); // Fixed
+                      Navigator.pushNamed(context, '/user_home');
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text("Sign-Up Failed: $e")));
