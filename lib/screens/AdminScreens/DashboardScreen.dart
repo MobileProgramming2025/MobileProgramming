@@ -55,7 +55,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Admin Dashboard"),
+        title: const Text("Doctors Dashboard"),
         backgroundColor: const Color.fromARGB(255, 186, 124, 236),
       ),
       body: Padding(
