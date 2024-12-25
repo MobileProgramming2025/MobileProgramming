@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mobileprogramming/screens/AdminScreens/add_users.dart';
 
-class AdminDashboard extends StatelessWidget{
+class AdminDashboard extends StatelessWidget {
   const AdminDashboard({super.key});
 
   @override
@@ -40,10 +39,24 @@ class AdminDashboard extends StatelessWidget{
               },
             ),
             ListTile(
-              leading: Icon(Icons.add),
+              leading: Icon(Icons.group_add_outlined),
               title: Text('Add users'),
               onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => AddUserScreen(),)); // Fixed
+                Navigator.pushNamed(context, '/add_users');
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.group),
+              title: Text('List users'),
+              onTap: () {
+                Navigator.pushNamed(context, '/list_users');
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.group),
+              title: Text('Doctors Dashboard'),
+              onTap: () {
+                Navigator.pushNamed(context, '/Doctors Dashboard');
               },
             ),
           ],
@@ -53,9 +66,7 @@ class AdminDashboard extends StatelessWidget{
         child: Text(
           'Swipe from the left or tap the menu icon to open the drawer.',
           textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 16
-          ),
+          style: TextStyle(fontSize: 16),
         ),
       ),
     );

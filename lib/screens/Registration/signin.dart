@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:mobileprogramming/screens/AdminScreens/admin_dashboard.dart';
-import 'package:mobileprogramming/screens/AdminScreens/admin_home.dart';
-import 'package:mobileprogramming/screens/Registration/signup.dart';
-import 'package:mobileprogramming/screens/UserScreens/user_home.dart';
 import 'package:mobileprogramming/services/auth_service.dart';
 import 'package:mobileprogramming/widgets/Signin/custom_button.dart';
 
@@ -85,11 +81,7 @@ class LoginScreen extends StatelessWidget {
                 // Sign-up Navigation
                 TextButton(
                   onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SignUpScreen(),
-                        )); // Fixed
+                    Navigator.pushNamed(context, '/signup');
                   },
                   child: Text("Don't have an account? Sign up"),
                 ),
@@ -127,19 +119,9 @@ class LoginScreen extends StatelessWidget {
         // Fetch user data (role)
         var userModel = await AuthService().getUserDetails(user.uid);
         if (userModel != null && userModel.role == 'admin') {
-          // Navigate to admin screen
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => AdminDashboard(),
-              )); // Fixed
+          Navigator.pushNamed(context, '/admin_home');
         } else {
-          // Navigate to user screen
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => UserHomeScreen(),
-              )); // Fixed
+          Navigator.pushNamed(context, '/user_home');
         }
       }
     } on FirebaseAuthException catch (e) {
