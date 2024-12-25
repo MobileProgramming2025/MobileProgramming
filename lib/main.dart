@@ -13,6 +13,7 @@ import 'package:mobileprogramming/screens/Quiz/quiz_creation_screen.dart';
 import 'package:mobileprogramming/screens/UserScreens/user_home.dart';
 import 'package:mobileprogramming/screens/Registration/signin.dart';
 import 'package:mobileprogramming/screens/Registration/signup.dart';
+import 'package:mobileprogramming/screens/onboarding_screen.dart';
 // import 'package:mobileprogramming/screens/welcome_screen.dart';
 
 void main() async {
@@ -42,14 +43,17 @@ class MyApp extends StatelessWidget {
         textTheme: TextTheme(
           titleLarge: TextStyle(
               fontSize: 32, fontWeight: FontWeight.bold, color: Colors.teal),
-          bodySmall: TextStyle(fontSize: 16, color: Colors.grey[800]),
+              bodySmall: TextStyle(fontSize: 16, color: Colors.grey[800]),
         ),
         scaffoldBackgroundColor: Color.fromARGB(255, 255, 255, 255),
       ),
-      initialRoute: '/signin',
+      
+      initialRoute: '/onboarding',
       // initialRoute: '/create_assignment',
       routes: {
-        '/': (context) => LoginScreen(),
+       
+        '/':(context) => OnboardingScreen(),
+        '/onboarding':(context)=> OnboardingScreen(),
       //  '/': (context) =>AssignmentListScreen(courseId: "course123"),
         '/signup': (context) => SignUpScreen(),
         '/user_home': (context) => UserHomeScreen(),
