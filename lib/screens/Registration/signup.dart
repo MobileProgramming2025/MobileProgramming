@@ -1,6 +1,4 @@
-// signup_screen.dart
 import 'package:flutter/material.dart';
-import 'package:mobileprogramming/screens/UserScreens/user_home.dart';
 import 'package:mobileprogramming/services/auth_service.dart';
 import 'package:mobileprogramming/widgets/Signin/customTextField.dart';
 import 'package:mobileprogramming/widgets/Signin/custom_button.dart';
