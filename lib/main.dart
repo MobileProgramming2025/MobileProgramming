@@ -27,15 +27,13 @@ void main() async {
   await Firebase.initializeApp();
   
 }
-
 class MyApp extends StatelessWidget {
-  @override
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'University LMS',
+      title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.teal,

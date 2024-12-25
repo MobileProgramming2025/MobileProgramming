@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:mobileprogramming/screens/AdminScreens/admin_dashboard.dart';
+import 'package:mobileprogramming/screens/AdminScreens/admin_home.dart';
+import 'package:mobileprogramming/screens/Registration/signup.dart';
+import 'package:mobileprogramming/screens/UserScreens/user_home.dart';
 import 'package:mobileprogramming/services/auth_service.dart';
 import 'package:mobileprogramming/widgets/Signin/custom_button.dart';
-
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
@@ -82,7 +85,11 @@ class LoginScreen extends StatelessWidget {
                 // Sign-up Navigation
                 TextButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, '/signup');
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SignUpScreen(),
+                        )); // Fixed
                   },
                   child: Text("Don't have an account? Sign up"),
                 ),
@@ -121,10 +128,18 @@ class LoginScreen extends StatelessWidget {
         var userModel = await AuthService().getUserDetails(user.uid);
         if (userModel != null && userModel.role == 'admin') {
           // Navigate to admin screen
-          Navigator.pushReplacementNamed(context, '/admin_home');
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => AdminDashboard(),
+              )); // Fixed
         } else {
           // Navigate to user screen
-          Navigator.pushReplacementNamed(context, '/user_home');
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => UserHomeScreen(),
+              )); // Fixed
         }
       }
     } on FirebaseAuthException catch (e) {
@@ -140,5 +155,4 @@ class LoginScreen extends StatelessWidget {
       SnackBar(content: Text(message)),
     );
   }
-
 }
