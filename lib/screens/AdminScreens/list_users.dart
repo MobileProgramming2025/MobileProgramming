@@ -55,7 +55,7 @@ class _ListUsersScreenState extends State<ListUsersScreen> {
                   // Navigate to user details
                 },
               );
-            }
+            },
           );
         },
       ),

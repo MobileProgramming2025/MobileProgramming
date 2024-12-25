@@ -31,11 +31,11 @@ class User {
   // Create a User object from Firestore Map
   static User fromMap(Map<String, dynamic> map) {
     return User(
-      id: map['id'] as String,
-      name: map['name'] as String,
-      email: map['email'] as String,
-      role: map['role'] as String,
-      department: map['department'] as String,
+      id: map['id'] as String? ?? '',  // provide default value if null
+      name: map['name'] as String? ?? '', 
+      email: map['email'] as String? ?? '', 
+      role: map['role'] as String? ?? 'Unknown',
+      department: map['department'] as String? ?? 'Unknown',
     );
   }
 
@@ -50,6 +50,9 @@ class User {
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
     final QuerySnapshot querySnapshot = await firestore.collection('users').get();
     // print('Fetched ${querySnapshot.docs.length} users from Firestore');
+    for (var doc in querySnapshot.docs) {
+      print('User document: ${doc.data()}');
+    }
     return querySnapshot.docs.map((doc) => User.fromMap(doc.data() as Map<String, dynamic>)).toList();
   }
 
