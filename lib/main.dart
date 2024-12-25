@@ -1,6 +1,13 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mobileprogramming/screens/AdminScreens/add_users.dart';
+import 'package:mobileprogramming/screens/AdminScreens/admin_dashboard.dart';
+import 'package:mobileprogramming/screens/Assignment/assignment_list_screen.dart';
+import 'package:mobileprogramming/screens/Quiz/quiz_creation_screen.dart';
+import 'package:mobileprogramming/screens/Registration/signin.dart';
+import 'package:mobileprogramming/screens/Registration/signup.dart';
+import 'package:mobileprogramming/screens/UserScreens/user_home.dart';
 import 'package:mobileprogramming/screens/onboarding_screen.dart';
 
 void main() async {
@@ -21,13 +28,38 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'University LMS',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        useMaterial3: true,
-        fontFamily: 'Arial',
+        primarySwatch: Colors.teal,
+        hintColor: Colors.amber,
+        fontFamily: 'Poppins',
+        textTheme: TextTheme(
+          titleLarge: TextStyle(
+            fontSize: 32,
+            fontWeight: FontWeight.bold,
+            color: Colors.teal
+          ),
+          bodySmall: TextStyle(
+            fontSize: 16,
+            color: Colors.grey[80]
+          ),
+        ),
+        // useMaterial3: true,
+        scaffoldBackgroundColor: Color.fromARGB(255, 255, 255, 255),
       ),
-      home: const OnboardingScreen(),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => OnboardingScreen(),
+        '/login': (context) => LoginScreen(),
+        '/signin': (context) => LoginScreen(),
+        '/signup': (context) => SignUpScreen(),
+        '/user_home': (context) => UserHomeScreen(),
+        '/admin_home': (context) => AdminDashboard(),
+        '/add_users': (context) => AddUserScreen(),
+        'create_assignment': (context) => AssignmentListScreen(courseId: "course123"),
+        '/createQuiz': (context) => QuizCreationScreen(),
+      },
     );
   }
 }
