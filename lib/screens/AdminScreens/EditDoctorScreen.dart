@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import '../../models/Doctor.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../services/DoctorService.dart';
 
 class EditDoctorScreen extends StatelessWidget {
   final Map<String, dynamic> doctor;
 
-  EditDoctorScreen({required this.doctor});
+  EditDoctorScreen({super.key, required this.doctor});
 
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();

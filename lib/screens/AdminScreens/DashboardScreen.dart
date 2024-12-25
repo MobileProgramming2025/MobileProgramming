@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'AddDoctorScreen.dart';
 import 'EditDoctorScreen.dart';
-// import 'add_doctor_screen.dart';
-// import 'edit_doctor_screen.dart';
-import '../../models/Doctor.dart';
 import '../../services/DoctorService.dart';
 
 class DashboardScreen extends StatefulWidget {
+  const DashboardScreen({super.key});
+
   @override
-  _DashboardScreenState createState() => _DashboardScreenState();
+  State<DashboardScreen> createState() => _DashboardScreenState();
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
