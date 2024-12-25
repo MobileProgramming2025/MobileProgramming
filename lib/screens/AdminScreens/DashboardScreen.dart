@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'AddDoctorScreen.dart';
 import 'EditDoctorScreen.dart';
 import '../../services/DoctorService.dart';
 
@@ -21,10 +20,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   void _addDoctor() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => AddDoctorScreen()),
-    );
+    Navigator.pushNamed(context, '/add-doctor');
   }
 
   void _editDoctor(Map<String, dynamic> doctor) {
@@ -58,7 +54,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: StreamBuilder<List<Map<String, dynamic>>>(
+        child: StreamBuilder<List<Map<String, dynamic>>>( 
           stream: _doctorsStream,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -112,23 +108,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            ElevatedButton.icon(
-                              icon: const Icon(Icons.edit),
-                              label: const Text("Edit"),
-                              onPressed: () => _editDoctor(doctor),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    Color.fromARGB(255, 186, 124, 236),
-                                textStyle: const TextStyle(fontSize: 12),
+                            Expanded(
+                              child: IconButton(
+                                icon: const Icon(Icons.edit),
+                                onPressed: () => _editDoctor(doctor),
+                                color: Color.fromARGB(255, 186, 124, 236),
+                                iconSize: 28,
                               ),
                             ),
-                            ElevatedButton.icon(
-                              icon: const Icon(Icons.delete),
-                              label: const Text("Delete"),
-                              onPressed: () => _deleteDoctor(doctor['id']),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                textStyle: const TextStyle(fontSize: 12),
+                            Expanded(
+                              child: IconButton(
+                                icon: const Icon(Icons.delete),
+                                onPressed: () => _deleteDoctor(doctor['id']),
+                                color: Colors.red,
+                                iconSize: 28,
                               ),
                             ),
                           ],
@@ -145,8 +138,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: _addDoctor,
         backgroundColor: Color.fromARGB(255, 186, 124, 236),
-        child: const Icon(Icons.add),
         tooltip: "Add Doctor",
+        child: const Icon(Icons.add),
       ),
     );
   }
