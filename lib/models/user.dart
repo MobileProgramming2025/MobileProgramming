@@ -32,7 +32,7 @@ class User {
   static User fromMap(Map<String, dynamic> map) {
     return User(
       id: map['id'] as String? ?? '',  // provide default value if null
-      name: map['name'] as String? ?? '', 
+      name: (map['name'] as String?) ?? map['email'].split('@')[0],  // Default to email before '@'
       email: map['email'] as String? ?? '', 
       role: map['role'] as String? ?? 'Unknown',
       department: map['department'] as String? ?? 'Unknown',
