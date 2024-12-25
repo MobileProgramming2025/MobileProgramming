@@ -1,4 +1,3 @@
-// signup_screen.dart
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/services/auth_service.dart';
 import 'package:mobileprogramming/widgets/Signin/customTextField.dart';
@@ -52,7 +51,7 @@ class SignUpScreen extends StatelessWidget {
 
                     try {
                       await AuthService().signUp(email, password, role);
-                      Navigator.pushReplacementNamed(context, '/user_home'); // Fixed
+                      Navigator.pushNamed(context, '/user_home');
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text("Sign-Up Failed: $e")));

@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mobileprogramming/services/auth_service.dart';
 import 'package:mobileprogramming/widgets/Signin/custom_button.dart';
 
-
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
 
@@ -120,11 +119,9 @@ class LoginScreen extends StatelessWidget {
         // Fetch user data (role)
         var userModel = await AuthService().getUserDetails(user.uid);
         if (userModel != null && userModel.role == 'admin') {
-          // Navigate to admin screen
-          Navigator.pushReplacementNamed(context, '/createQuiz');
+          Navigator.pushNamed(context, '/admin_home');
         } else {
-          // Navigate to user screen
-          Navigator.pushReplacementNamed(context, '/user_home');
+          Navigator.pushNamed(context, '/user_home');
         }
       }
     } on FirebaseAuthException catch (e) {
@@ -140,5 +137,4 @@ class LoginScreen extends StatelessWidget {
       SnackBar(content: Text(message)),
     );
   }
-
 }
