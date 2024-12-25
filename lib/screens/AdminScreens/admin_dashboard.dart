@@ -39,10 +39,17 @@ class AdminDashboard extends StatelessWidget{
               },
             ),
             ListTile(
-              leading: Icon(Icons.add),
+              leading: Icon(Icons.group_add_outlined),
               title: Text('Add users'),
               onTap: () {
                 Navigator.pushNamed(context, '/add_users');
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.group),
+              title: Text('List users'),
+              onTap: () {
+                Navigator.pushNamed(context, '/list_users');
               },
             ),
           ],

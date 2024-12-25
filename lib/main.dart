@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobileprogramming/screens/AdminScreens/add_users.dart';
 import 'package:mobileprogramming/screens/AdminScreens/admin_dashboard.dart';
+import 'package:mobileprogramming/screens/AdminScreens/list_users.dart';
 import 'package:mobileprogramming/screens/Assignment/assignment_list_screen.dart';
 import 'package:mobileprogramming/screens/Quiz/quiz_creation_screen.dart';
 import 'package:mobileprogramming/screens/Registration/signin.dart';
@@ -57,6 +58,7 @@ class MyApp extends StatelessWidget {
         '/user_home': (context) => UserHomeScreen(),
         '/admin_home': (context) => AdminDashboard(),
         '/add_users': (context) => AddUserScreen(),
+        '/list_users': (context) => ListUsersScreen(),
         '/create_assignment': (context) => AssignmentListScreen(courseId: "course123"),
         '/createQuiz': (context) => QuizCreationScreen(),
       },
