@@ -57,7 +57,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Admin dashboard'),
+        title: Text('Add a user'),
       ),
       body: Center(
         child: Padding (
@@ -67,15 +67,15 @@ class _AddUserScreenState extends State<AddUserScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text(
-                    "Add a user",
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 20),
+                  // Text(
+                  //   "Add a user",
+                  //   style: TextStyle(
+                  //     fontSize: 32,
+                  //     fontWeight: FontWeight.bold,
+                  //   ),
+                  //   textAlign: TextAlign.center,
+                  // ),
+                  // SizedBox(height: 20),
 
                   TextFormField(
                     controller: _nameController,
