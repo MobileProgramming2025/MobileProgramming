@@ -15,6 +15,8 @@ import 'package:mobileprogramming/screens/Quiz/quiz_creation_screen.dart';
 import 'package:mobileprogramming/screens/Registration/signin.dart';
 import 'package:mobileprogramming/screens/Registration/signup.dart';
 import 'package:mobileprogramming/screens/UserScreens/user_home.dart';
+import 'package:mobileprogramming/screens/doctorScreens/doctor_dashboard.dart';
+
 import 'package:mobileprogramming/screens/onboarding_screen.dart';
 // import 'package:mobileprogramming/screens/welcome_screen.dart';
 import 'package:mobileprogramming/screens/Assignment/assignment_screen.dart'; 
@@ -52,20 +54,7 @@ class MyApp extends StatelessWidget {
         // useMaterial3: true,
         scaffoldBackgroundColor: Color.fromARGB(255, 255, 255, 255),
       ),
-      // initialRoute: '/signin',
-      // routes: {
-      //   '/': (context) => LoginScreen(),
-      //   '/signup': (context) => SignUpScreen(),
-      //   '/user_home': (context) => UserHomeScreen(),
-      //   '/admin_home': (context) => AdminHomeScreen(),
-      //   '/signin': (context) => LoginScreen(),
-      //   'create_assignment': (context) =>
-      //       AssignmentListScreen(courseId: "course123"),
-      //   '/createQuiz': (context) => QuizCreationScreen(),
-      // initialRoute: '/',
-      // routes: {
-      //   '/': (context) => DashboardScreen(),
-      //   '/add-doctor': (context) => AddDoctorScreen(),
+      
       initialRoute: '/',
       routes: {
         '/': (context) => OnboardingScreen(),
@@ -81,6 +70,7 @@ class MyApp extends StatelessWidget {
             '/assignment_screen' : (context) => AssignmentScreen(),
         '/createQuiz': (context) => QuizCreationScreen(),
         '/add-doctor': (context) => AddDoctorScreen(),
+        '/doctor_dashboard': (context) => DoctorDashboard(),
         '/Doctors Dashboard': (context) => DashboardScreen(),
       },
     );
