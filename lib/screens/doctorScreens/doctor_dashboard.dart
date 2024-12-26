@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class DoctorDashboard extends StatefulWidget {
+  const DoctorDashboard({super.key});
 
   @override
   State<DoctorDashboard> createState() => _DoctorDashboardState();

@@ -11,6 +11,7 @@ import 'package:mobileprogramming/screens/Quiz/quiz_creation_screen.dart';
 import 'package:mobileprogramming/screens/Registration/signin.dart';
 import 'package:mobileprogramming/screens/Registration/signup.dart';
 import 'package:mobileprogramming/screens/UserScreens/user_home.dart';
+import 'package:mobileprogramming/screens/doctorScreens/doctor_dashboard.dart';
 import 'package:mobileprogramming/screens/onboarding_screen.dart';
 
 void main() async {
@@ -52,6 +53,7 @@ class MyApp extends StatelessWidget {
         '/signup': (context) => SignUpScreen(),
         '/user_home': (context) => UserHomeScreen(),
         '/admin_home': (context) => AdminDashboard(),
+        '/doctor_dashboard': (context) => DoctorDashboard(),
         '/add_users': (context) => AddUserScreen(),
         '/list_users': (context) => ListUsersScreen(),
         '/create_assignment': (context) => AssignmentListScreen(courseId: "course123"),
