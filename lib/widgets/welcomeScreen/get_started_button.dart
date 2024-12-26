@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobileprogramming/screens/Registration/signin.dart';
 
 class GetStartedButton extends StatelessWidget {
-  const GetStartedButton();
+  const GetStartedButton({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -8,6 +8,8 @@ import '../../models/Doctor.dart';
 import '../../services/DoctorService.dart';
 
 class DashboardScreen extends StatefulWidget {
+  const DashboardScreen({super.key});
+
   @override
   _DashboardScreenState createState() => _DashboardScreenState();
 }
@@ -147,8 +149,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: _addDoctor,
         backgroundColor: Color.fromARGB(255, 186, 124, 236),
-        child: const Icon(Icons.add),
         tooltip: "Add Doctor",
+        child: const Icon(Icons.add),
       ),
     );
   }

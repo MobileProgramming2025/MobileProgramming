@@ -9,6 +9,8 @@ class AddDoctorScreen extends StatelessWidget {
   final _specializationController = TextEditingController();
   final DoctorService _doctorService = DoctorService();
 
+  AddDoctorScreen({super.key});
+
   void _saveDoctor(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
       try {

@@ -5,8 +5,6 @@ import 'package:flutter/services.dart';
 // import 'package:mobileprogramming/screens/Assignment/EditSubmissionScreen.dart';
 // import 'package:mobileprogramming/screens/Assignment/TeacherViewSubmissionsScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:mobileprogramming/screens/AdminScreens/AddDoctorScreen.dart';
 import 'package:mobileprogramming/screens/AdminScreens/DashboardScreen.dart';
 import 'package:mobileprogramming/screens/AdminScreens/add_users.dart';
@@ -19,7 +17,9 @@ import 'package:mobileprogramming/screens/Registration/signup.dart';
 import 'package:mobileprogramming/screens/UserScreens/user_home.dart';
 import 'package:mobileprogramming/screens/onboarding_screen.dart';
 // import 'package:mobileprogramming/screens/welcome_screen.dart';
-
+import 'package:mobileprogramming/screens/Assignment/assignment_screen.dart'; 
+// import 'package:sizer/sizer.dart';
+import 'package:flutter_sizer/flutter_sizer.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -36,7 +36,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+   return FlutterSizer(builder: (context, orientation, device){
+      return MaterialApp(
       title: 'University LMS',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -77,10 +78,13 @@ class MyApp extends StatelessWidget {
         '/list_users': (context) => ListUsersScreen(),
         '/create_assignment': (context) =>
             AssignmentListScreen(courseId: "course123"),
+            '/assignment_screen' : (context) => AssignmentScreen(),
         '/createQuiz': (context) => QuizCreationScreen(),
         '/add-doctor': (context) => AddDoctorScreen(),
         '/Doctors Dashboard': (context) => DashboardScreen(),
       },
     );
   }
+   );
+}
 }

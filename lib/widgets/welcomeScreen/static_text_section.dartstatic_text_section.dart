@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class StaticTextSection extends StatelessWidget {
-  const StaticTextSection();
+  const StaticTextSection({super.key});
 
   @override
   Widget build(BuildContext context) {
