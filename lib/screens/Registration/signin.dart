@@ -120,7 +120,11 @@ class LoginScreen extends StatelessWidget {
         var userModel = await AuthService().getUserDetails(user.uid);
         if (userModel != null && userModel.role == 'admin') {
           Navigator.pushNamed(context, '/admin_home');
-        } else {
+        } 
+        else if (userModel != null && (userModel.role == 'doctor' || userModel.role == 'ta')) {
+          Navigator.pushNamed(context, '/doctor_dashboard');
+        }
+        else {
           Navigator.pushNamed(context, '/user_home');
         }
       }

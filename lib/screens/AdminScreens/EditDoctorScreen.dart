@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../models/Doctor.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../services/DoctorService.dart';
 
 class EditDoctorScreen extends StatelessWidget {
