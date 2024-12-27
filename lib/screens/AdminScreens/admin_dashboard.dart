@@ -21,7 +21,7 @@ class AdminDashboard extends StatelessWidget {
           children: <Widget>[
             DrawerHeader(
               decoration: BoxDecoration(
-                color: Colors.red,
+                color: const Color.fromARGB(255,248, 128, 18),
               ),
               child: Text(
                 'Menu',
@@ -46,7 +46,7 @@ class AdminDashboard extends StatelessWidget {
               },
             ),
             ListTile(
-              leading: Icon(Icons.add),
+              leading: Icon(Icons.assignment_add),
               title: Text('Add Courses'),
               onTap: () {
                 Navigator.pushNamed(context, '/add_courses');

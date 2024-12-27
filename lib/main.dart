@@ -67,7 +67,7 @@ class MyApp extends StatelessWidget {
         '/createQuiz': (context) => QuizCreationScreen(),
         '/add-doctor': (context) => AddDoctorScreen(),
         '/Doctors Dashboard': (context) => DashboardScreen(),
-        '/add_course': (context) => AddCourses(),
+        '/add_courses': (context) => AddCourses(),
       },
     );
   }
