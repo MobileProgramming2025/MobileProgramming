@@ -4,7 +4,7 @@ import 'package:mobileprogramming/widgets/Signin/customTextField.dart';
 import 'package:mobileprogramming/widgets/Signin/custom_button.dart';
 
 class SignUpScreen extends StatelessWidget {
-  SignUpScreen({super.key}); 
+  SignUpScreen({super.key});
 
   final nameController = TextEditingController();
   final emailController = TextEditingController();
@@ -51,10 +51,17 @@ class SignUpScreen extends StatelessWidget {
 
                     try {
                       await AuthService().signUp(email, password, role);
-                      Navigator.pushNamed(context, '/user_home');
+                      if (context.mounted) {
+                        Navigator.pushNamed(context, '/user_home');
+                      }
                     } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Sign-Up Failed: $e")));
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text("Sign-Up Failed: $e"),
+                          ),
+                        );
+                      }
                     }
                   },
                 ),
