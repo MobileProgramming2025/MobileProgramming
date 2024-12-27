@@ -3,10 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:mobileprogramming/screens/AdminScreens/AddDoctorScreen.dart';
 import 'package:mobileprogramming/screens/AdminScreens/DashboardScreen.dart';
-import 'package:mobileprogramming/screens/AdminScreens/add_courses.dart';
+import 'package:mobileprogramming/screens/AdminScreens/add_courses_screen.dart';
 import 'package:mobileprogramming/screens/AdminScreens/add_users.dart';
 import 'package:mobileprogramming/screens/AdminScreens/admin_dashboard.dart';
 import 'package:mobileprogramming/screens/AdminScreens/list_users.dart';
+import 'package:mobileprogramming/screens/AdminScreens/view_courses_screen.dart';
 import 'package:mobileprogramming/screens/Assignment/assignment_list_screen.dart';
 import 'package:mobileprogramming/screens/Quiz/quiz_creation_screen.dart';
 import 'package:mobileprogramming/screens/Registration/signin.dart';
@@ -67,7 +68,8 @@ class MyApp extends StatelessWidget {
         '/createQuiz': (context) => QuizCreationScreen(),
         '/add-doctor': (context) => AddDoctorScreen(),
         '/Doctors Dashboard': (context) => DashboardScreen(),
-        '/add_courses': (context) => AddCourses(),
+        '/add_courses': (context) => AddCoursesScreen(),
+        '/view_courses': (context) => ViewCoursesScreen(),
       },
     );
   }

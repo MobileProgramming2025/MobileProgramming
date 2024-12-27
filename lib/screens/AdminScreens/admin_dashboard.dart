@@ -40,7 +40,7 @@ class AdminDashboard extends StatelessWidget {
             ),
             ListTile(
               leading: Icon(Icons.group_add_outlined),
-              title: Text('Add users'),
+              title: Text('Add Users'),
               onTap: () {
                 Navigator.pushNamed(context, '/add_users');
               },
@@ -54,9 +54,16 @@ class AdminDashboard extends StatelessWidget {
             ),
             ListTile(
               leading: Icon(Icons.group),
-              title: Text('List users'),
+              title: Text('List Users'),
               onTap: () {
                 Navigator.pushNamed(context, '/list_users');
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.menu_book_rounded),
+              title: Text('View Courses'),
+              onTap: () {
+                Navigator.pushNamed(context, '/view_courses');
               },
             ),
             ListTile(

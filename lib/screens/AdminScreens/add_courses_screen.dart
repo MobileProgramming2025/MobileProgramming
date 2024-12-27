@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 
-class AddCourses extends StatelessWidget {
-  const AddCourses({super.key});
+class AddCoursesScreen extends StatelessWidget {
+  const AddCoursesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Course'),
+        title: const Text(
+          "All Courses",
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: const Color.fromARGB(255, 248, 128, 18),
       ),
       body: Center(
         child: Padding(
