@@ -133,7 +133,8 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
         'submittedAt': Timestamp.now(),
         'studentId': 'sample_student_id', // Replace with the actual student ID
       });
-
+      // Check if the widget is still in the tree before using context
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Submission uploaded successfully!')));
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to upload submission: $e')));
@@ -153,7 +154,8 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
       setState(() {
         _uploadedFileUrl = null;
       });
-
+      // Check if the widget is still in the tree before using context
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Submission deleted successfully!')));
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to delete submission: $e')));

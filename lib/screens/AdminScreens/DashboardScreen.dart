@@ -35,6 +35,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void _deleteDoctor(String id) async {
     try {
       await _doctorService.deleteDoctor(id);
+      // Check if the widget is still in the tree before using context
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Doctor deleted successfully")),
       );

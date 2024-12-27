@@ -56,6 +56,8 @@ class _EditSubmissionScreenState extends State<EditSubmissionScreen> {
             ElevatedButton(
               onPressed: () async {
                 await updateSubmission();
+                // Check if the widget is still in the tree before using context
+                if (!context.mounted) return;
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Submission updated!')),
                 );

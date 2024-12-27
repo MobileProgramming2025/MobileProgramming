@@ -31,6 +31,8 @@ class _AddUserScreenState extends State<AddUserScreen> {
 
     try {
       await newUser.saveToFirestore();
+      // Check if the widget is still in the tree before using context
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('User added successfully!')

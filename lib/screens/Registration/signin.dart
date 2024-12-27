@@ -118,6 +118,10 @@ class LoginScreen extends StatelessWidget {
       if (user != null) {
         // Fetch user data (role)
         var userModel = await AuthService().getUserDetails(user.uid);
+
+        // Check if the widget is still in the tree before using context
+        if (!context.mounted) return;
+
         if (userModel != null && userModel.role == 'admin') {
           Navigator.pushNamed(context, '/admin_home');
         } 
@@ -129,8 +133,12 @@ class LoginScreen extends StatelessWidget {
         }
       }
     } on FirebaseAuthException catch (e) {
+      // Check if the widget is still in the tree before using context
+      if (!context.mounted) return;
       _showError(context, e.message ?? "Login failed. Please try again.");
     } catch (e) {
+      // Check if the widget is still in the tree before using context
+      if (!context.mounted) return;
       _showError(context, "An unexpected error occurred: $e");
     }
   }

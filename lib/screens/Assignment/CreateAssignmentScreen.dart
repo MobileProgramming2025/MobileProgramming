@@ -6,7 +6,7 @@ class CreateAssignmentScreen extends StatefulWidget {
   const CreateAssignmentScreen({super.key});
 
   @override
-  _CreateAssignmentScreenState createState() => _CreateAssignmentScreenState();
+  State<CreateAssignmentScreen> createState() => _CreateAssignmentScreenState();
 }
 
 class _CreateAssignmentScreenState extends State<CreateAssignmentScreen> {
@@ -86,7 +86,9 @@ class _CreateAssignmentScreenState extends State<CreateAssignmentScreen> {
       };
 
       await _firestore.collection('Assignments').add(assignment);
-
+      
+      // Check if the widget is still in the tree before using context
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Assignment created successfully!')),
       );

@@ -53,6 +53,8 @@ class SubmitAssignmentScreen extends StatelessWidget {
                       icon: const Icon(Icons.delete),
                       onPressed: () async {
                         await _submissionService.deleteSubmission(submission['id']);
+                        // Check if the widget is still in the tree before using context
+                        if (!context.mounted) return;
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Submission deleted!')),
                         );

@@ -8,7 +8,7 @@ class AssignmentListScreen extends StatefulWidget {
   const AssignmentListScreen({super.key, required this.courseId});
 
   @override
-  _AssignmentListScreenState createState() => _AssignmentListScreenState();
+  State<AssignmentListScreen> createState() => _AssignmentListScreenState();
 }
 
 class _AssignmentListScreenState extends State<AssignmentListScreen> {
@@ -41,6 +41,8 @@ class _AssignmentListScreenState extends State<AssignmentListScreen> {
       setState(() {
         _assignments.removeWhere((assignment) => assignment['id'] == assignmentId);
       });
+      // Check if the widget is still in the tree before using context
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Assignment deleted successfully!')),
       );
