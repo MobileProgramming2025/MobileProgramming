@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mobileprogramming/screens/userDrawer.dart';
 import 'add_edit_assignment_screen.dart';
 
 class AssignmentListScreen extends StatefulWidget {
@@ -92,9 +93,18 @@ class _AssignmentListScreenState extends State<AssignmentListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+    
       appBar: AppBar(
         title: Text('Assignments'),
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: Icon(Icons.menu),
+            onPressed: () => Scaffold.of(context).openDrawer(),
+          ),
+        ),
       ),
+      drawer: const UserDrawer(),
+      
       body: ListView.builder(
         itemCount: _assignments.length,
         itemBuilder: (context, index) {
