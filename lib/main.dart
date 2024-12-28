@@ -15,7 +15,7 @@ import 'package:mobileprogramming/screens/Registration/signup.dart';
 import 'package:mobileprogramming/screens/UserScreens/user_home.dart';
 import 'package:mobileprogramming/screens/doctorScreens/doctor_dashboard.dart';
 import 'package:mobileprogramming/screens/onboarding_screen.dart';
-import 'package:mobileprogramming/screens/Assignment/assignment_screen.dart'; 
+import 'package:mobileprogramming/screens/Assignment/assignment_screen.dart';
 
 import 'package:flutter_sizer/flutter_sizer.dart';
 
@@ -35,44 +35,57 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-   return FlutterSizer(builder: (context, orientation, device){
-      return MaterialApp(
-      title: 'University LMS',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.teal,
-        hintColor: Colors.amber,
-        fontFamily: 'Poppins',
-        textTheme: TextTheme(
-          titleLarge: TextStyle(
-              fontSize: 32, fontWeight: FontWeight.bold, color: Colors.teal),
-          bodySmall: TextStyle(fontSize: 16, color: Colors.grey[80]),
-        ),
-        // useMaterial3: true,
-        scaffoldBackgroundColor: Color.fromARGB(255, 255, 255, 255),
-      ),
-      
-      initialRoute: '/',
-      routes: {
-        '/': (context) => OnboardingScreen(),
-        '/login': (context) => LoginScreen(),
-        '/signin': (context) => LoginScreen(),
-        '/signup': (context) => SignUpScreen(),
-        '/user_home': (context) => UserHomeScreen(),
-        '/admin_home': (context) => AdminDashboard(),
-        '/doctor_dashboard': (context) => DoctorDashboard(),
-        '/add_users': (context) => AddUserScreen(),
-        '/list_users': (context) => ListUsersScreen(),
-        '/create_assignment': (context) => AssignmentListScreen(courseId: "course123"),
-        '/assignment_screen' : (context) => AssignmentScreen(),
-        '/createQuiz': (context) => QuizCreationScreen(),
-        '/add-doctor': (context) => AddDoctorScreen(),
-        '/Doctors Dashboard': (context) => DashboardScreen(),
-        '/add_courses': (context) => AddCoursesScreen(),
-        '/view_courses': (context) => ViewCoursesScreen(),
-      },
+    var darkColorScheme = ColorScheme.fromSeed(
+      //optimize our color scheme to shades for dark mode
+      brightness: Brightness.dark,
+      seedColor: const Color.fromARGB(255, 5, 90, 125),
+
     );
+
+    return FlutterSizer(builder: (context, orientation, device) {
+      return MaterialApp(
+        title: 'University LMS',
+        debugShowCheckedModeBanner: false,
+
+        //Light Mode Theme
+        theme: ThemeData(
+          primarySwatch: Colors.teal,
+          hintColor: Colors.amber,
+          fontFamily: 'Poppins',
+          textTheme: TextTheme(
+            titleLarge: TextStyle(
+                fontSize: 32, fontWeight: FontWeight.bold, color: Colors.teal),
+            bodySmall: TextStyle(fontSize: 16, color: Colors.grey[80]),
+          ),
+          scaffoldBackgroundColor: Color.fromARGB(255, 255, 255, 255),
+        ),
+
+        //Dark Theme Mode
+        darkTheme: ThemeData.dark().copyWith(
+          colorScheme: darkColorScheme,
+        ),
+
+        initialRoute: '/',
+        routes: {
+          '/': (context) => OnboardingScreen(),
+          '/login': (context) => LoginScreen(),
+          '/signin': (context) => LoginScreen(),
+          '/signup': (context) => SignUpScreen(),
+          '/user_home': (context) => UserHomeScreen(),
+          '/admin_home': (context) => AdminDashboard(),
+          '/doctor_dashboard': (context) => DoctorDashboard(),
+          '/add_users': (context) => AddUserScreen(),
+          '/list_users': (context) => ListUsersScreen(),
+          '/create_assignment': (context) =>
+              AssignmentListScreen(courseId: "course123"),
+          '/assignment_screen': (context) => AssignmentScreen(),
+          '/createQuiz': (context) => QuizCreationScreen(),
+          '/add-doctor': (context) => AddDoctorScreen(),
+          '/Doctors Dashboard': (context) => DashboardScreen(),
+          '/add_courses': (context) => AddCoursesScreen(),
+          '/view_courses': (context) => ViewCoursesScreen(),
+        },
+      );
+    });
   }
-   );
-}
 }
