@@ -19,7 +19,7 @@ class CustomTextField extends StatelessWidget {
     return TextField(
       controller: controller,
       obscureText: isPassword,
-      decoration: InputDecoration(
+      decoration: InputDecoration( 
         labelText: labelText,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         filled: true,

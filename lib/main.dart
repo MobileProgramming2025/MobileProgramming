@@ -70,11 +70,26 @@ class MyApp extends StatelessWidget {
               ),
             ),
           ),
-          floatingActionButtonTheme: FloatingActionButtonThemeData(
-            //backgroundColor: colorScheme.onPrimary,
-            //foregroundColor: colorScheme.onPrimaryContainer,
+          drawerTheme: DrawerThemeData(
+            elevation: 10,
+          ),
+          listTileTheme: ListTileThemeData(
+            titleTextStyle: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: colorScheme.onPrimaryContainer,
+            ),
+          ),
+          textTheme: TextTheme(
+            headlineMedium: TextStyle(
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+              color: colorScheme.onPrimaryContainer,
+              
+            ),
           ),
         ),
+
         //Dark Theme Mode
         darkTheme: ThemeData.dark().copyWith(
           colorScheme: darkColorScheme,

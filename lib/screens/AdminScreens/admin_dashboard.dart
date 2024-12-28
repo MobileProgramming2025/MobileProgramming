@@ -22,9 +22,8 @@ class AdminDashboard extends StatelessWidget {
             DrawerHeader(
               child: Text(
                 'Menu',
-                style: TextStyle(
-                  fontSize: 24,
-                ),
+                style: Theme.of(context).textTheme.headlineMedium,
+                textAlign: TextAlign.center,
               ),
             ),
             ListTile(
@@ -76,7 +75,7 @@ class AdminDashboard extends StatelessWidget {
         child: Text(
           'Swipe from the left or tap the menu icon to open the drawer.',
           textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 16),
+          style: TextStyle(fontSize: 20),
         ),
       ),
     );
