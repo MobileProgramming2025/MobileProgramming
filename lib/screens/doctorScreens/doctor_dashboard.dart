@@ -59,7 +59,15 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
               leading: Icon(Icons.person),
               title: Text('Profile'),
               onTap: () {
-                // Navigate to doctor's profile
+
+              },
+            ),
+             ListTile(
+              leading: Icon(Icons.person),
+              title: Text('courses'),
+              onTap: () {
+                Navigator.pushNamed(context, '/createQuiz');
+
               },
             ),
             ListTile(

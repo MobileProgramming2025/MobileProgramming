@@ -9,6 +9,7 @@ import 'package:mobileprogramming/screens/AdminScreens/admin_dashboard.dart';
 import 'package:mobileprogramming/screens/AdminScreens/list_users.dart';
 import 'package:mobileprogramming/screens/AdminScreens/view_courses_screen.dart';
 import 'package:mobileprogramming/screens/Assignment/assignment_list_screen.dart';
+//import 'package:mobileprogramming/screens/CourseList.dart';
 import 'package:mobileprogramming/screens/Quiz/quiz_creation_screen.dart';
 import 'package:mobileprogramming/screens/Registration/signin.dart';
 import 'package:mobileprogramming/screens/Registration/signup.dart';
@@ -142,7 +143,7 @@ class MyApp extends StatelessWidget {
           '/create_assignment': (context) =>
               AssignmentListScreen(courseId: "course123"),
           '/assignment_screen': (context) => AssignmentScreen(),
-          '/createQuiz': (context) => QuizCreationScreen(),
+        //  '/createQuiz': (context) => CourseListPage(),
           '/add-doctor': (context) => AddDoctorScreen(),
           '/Doctors Dashboard': (context) => DashboardScreen(),
           '/add_courses': (context) => AddCoursesScreen(),

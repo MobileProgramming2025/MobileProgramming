@@ -13,7 +13,8 @@ class Question {
     required this.correctAnswer,
   });
 
-  Map<String, dynamic> toMap() {
+  // Converts the object to a map for serialization
+  Map<String, dynamic> toJson() {
     return {
       'id': id,
       'text': text,
@@ -21,5 +22,16 @@ class Question {
       'options': options,
       'correctAnswer': correctAnswer,
     };
+  }
+
+  // Parses a JSON object into a Question instance
+  factory Question.fromJson(Map<String, dynamic> json) {
+    return Question(
+      id: json['id'],
+      text: json['text'],
+      type: json['type'],
+      options: json['options'] != null ? List<String>.from(json['options']) : null,
+      correctAnswer: json['correctAnswer'],
+    );
   }
 }

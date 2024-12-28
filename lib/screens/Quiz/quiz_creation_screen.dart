@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-// import 'package:intl/intl.dart';
 import 'package:mobileprogramming/models/Question.dart';
 import 'package:mobileprogramming/models/Quiz.dart';
 import 'package:mobileprogramming/services/quiz_service.dart';
 import 'package:mobileprogramming/widgets/Quiz/date_picker_field.dart';
 import 'package:mobileprogramming/widgets/Quiz/options_editor.dart';
-
-
+import 'package:mobileprogramming/widgets/Quiz/question_editor.dart'; // Renamed for clarity
 class QuizCreationScreen extends StatefulWidget {
-  const QuizCreationScreen({super.key});
+  final String courseId;  
+
+  const QuizCreationScreen({super.key, required this.courseId});  
 
   @override
   State<QuizCreationScreen> createState() => _QuizCreationScreenState();
@@ -22,20 +22,6 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
   DateTime _endDate = DateTime.now();
   final List<Question> _questions = [];
 
-  void _addQuestion() {
-    setState(() {
-      _questions.add(
-        Question(
-          id: DateTime.now().toString(),
-          text: '',
-          type: 'multiple choice',
-          options: ['Option 1', 'Option 2'],
-          correctAnswer: '',
-        ),
-      );
-    });
-  }
-
   void _submitQuiz() async {
     if (_quizTitle.isEmpty || _questions.isEmpty || _startDate.isAfter(_endDate)) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -44,19 +30,18 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
       return;
     }
 
-    String quizId = DateTime.now().toString();
+    String quizId = DateTime.now().toIso8601String();
     Quiz quiz = Quiz(
       id: quizId,
       title: _quizTitle,
       startDate: _startDate,
       endDate: _endDate,
       questions: _questions,
-      courseId: 'tryid',
+      courseId: widget.courseId, 
     );
 
     await _quizService.createQuiz(quiz);
-    
-    // Check if the widget is still in the tree before using context
+
     if (!mounted) return;
     Navigator.pushNamed(context, '/attemptQuiz', arguments: quizId);
   }
@@ -109,5 +94,19 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
         ),
       ),
     );
+  }
+
+  void _addQuestion() {
+    setState(() {
+      _questions.add(
+        Question(
+          id: DateTime.now().toString(),
+          text: '',
+          type: 'multiple choice',
+          options: ['Option 1', 'Option 2'],
+          correctAnswer: '',
+        ),
+      );
+    });
   }
 }
