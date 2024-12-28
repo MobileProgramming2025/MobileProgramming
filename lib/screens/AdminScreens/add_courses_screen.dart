@@ -8,7 +8,7 @@ class AddCoursesScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "Add Courses",
+          "Add Course",
         ),
       ),
       body: Center(
