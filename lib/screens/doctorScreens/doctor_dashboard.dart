@@ -38,46 +38,7 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
               // Handle Notifications
             },
           ),
-        ],
-      ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-              child: Text(
-                'Doctor Menu',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
-              ),
-            ),
-            ListTile(
-              leading: Icon(Icons.person),
-              title: Text('Profile'),
-              onTap: () {
-
-              },
-            ),
-             ListTile(
-              leading: Icon(Icons.person),
-              title: Text('courses'),
-              onTap: () {
-                Navigator.pushNamed(context, '/createQuiz');
-
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.logout),
-              title: Text('Logout'),
-              onTap: () {
-                // Handle logout
-              },
-            ),
+  
           ],
           leading: Builder(
           builder: (context) => IconButton(

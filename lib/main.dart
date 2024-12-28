@@ -143,7 +143,7 @@ class MyApp extends StatelessWidget {
           '/create_assignment': (context) =>
               AssignmentListScreen(courseId: "course123"),
           '/assignment_screen': (context) => AssignmentScreen(),
-        //  '/createQuiz': (context) => CourseListPage(),
+    //      '/createQuiz': (context) => CourseListPage(),
           '/add-doctor': (context) => AddDoctorScreen(),
           '/Doctors Dashboard': (context) => DashboardScreen(),
           '/Doctor-dashboard':(context)=>DoctorDashboard(),
