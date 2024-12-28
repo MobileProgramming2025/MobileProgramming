@@ -20,15 +20,10 @@ class AdminDashboard extends StatelessWidget {
           padding: EdgeInsets.zero,
           children: <Widget>[
             DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.red,
-              ),
               child: Text(
                 'Menu',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
+                style: Theme.of(context).textTheme.headlineLarge,
+                textAlign: TextAlign.center,
               ),
             ),
             ListTile(
@@ -40,16 +35,30 @@ class AdminDashboard extends StatelessWidget {
             ),
             ListTile(
               leading: Icon(Icons.group_add_outlined),
-              title: Text('Add users'),
+              title: Text('Add Users'),
               onTap: () {
                 Navigator.pushNamed(context, '/add_users');
               },
             ),
             ListTile(
+              leading: Icon(Icons.assignment_add),
+              title: Text('Add Courses'),
+              onTap: () {
+                Navigator.pushNamed(context, '/add_courses');
+              },
+            ),
+            ListTile(
               leading: Icon(Icons.group),
-              title: Text('List users'),
+              title: Text('List Users'),
               onTap: () {
                 Navigator.pushNamed(context, '/list_users');
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.menu_book_rounded),
+              title: Text('View Courses'),
+              onTap: () {
+                Navigator.pushNamed(context, '/view_courses');
               },
             ),
             ListTile(
@@ -66,7 +75,7 @@ class AdminDashboard extends StatelessWidget {
         child: Text(
           'Swipe from the left or tap the menu icon to open the drawer.',
           textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 16),
+          style: TextStyle(fontSize: 20),
         ),
       ),
     );

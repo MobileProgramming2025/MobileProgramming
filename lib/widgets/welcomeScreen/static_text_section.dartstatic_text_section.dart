@@ -15,7 +15,7 @@ class StaticTextSection extends StatelessWidget {
             style: TextStyle(
               fontSize: 35,
               fontWeight: FontWeight.bold,
-              color: Colors.white,
+              color: Color.fromARGB(255,87, 55, 31),
             ),
           ),
           SizedBox(height: 16),
@@ -27,7 +27,7 @@ class StaticTextSection extends StatelessWidget {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w400,
-              color: Colors.white,
+              color: Color.fromARGB(255,87, 55, 31),
             ),
           ),
         ],

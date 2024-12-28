@@ -6,12 +6,11 @@ import 'package:mobileprogramming/widgets/welcomeScreen/get_started_button.dart'
 import 'package:mobileprogramming/widgets/welcomeScreen/image_slider.dart';
 import 'package:mobileprogramming/widgets/welcomeScreen/static_text_section.dartstatic_text_section.dart';
 
-
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
 
   @override
-  _OnboardingScreenState createState() => _OnboardingScreenState();
+  State<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
@@ -38,7 +37,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       if (_currentPage < images.length - 1) {
         _currentPage++;
       } else {
-        _currentPage = 0; 
+        _currentPage = 0;
       }
       _pageController.animateToPage(
         _currentPage.toInt(),
@@ -66,15 +65,23 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF6B4EFF), Color(0xFFB881FF)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+            colors: [
+              Color.fromARGB(255, 248, 128, 18),
+              Color.fromARGB(255, 242, 191, 144)
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
         ),
         child: Column(
           children: [
-            CustomProgressBar(currentPage: _currentPage, totalPages: images.length),
-            Expanded(child: ImageSlider(pageController: _pageController, images: images, onPageChanged: _onPageChanged)),
+            CustomProgressBar(
+                currentPage: _currentPage, totalPages: images.length),
+            Expanded(
+                child: ImageSlider(
+                    pageController: _pageController,
+                    images: images,
+                    onPageChanged: _onPageChanged)),
             const StaticTextSection(),
             const GetStartedButton(),
           ],

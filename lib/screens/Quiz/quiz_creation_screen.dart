@@ -55,7 +55,9 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
     );
 
     await _quizService.createQuiz(quiz);
-
+    
+    // Check if the widget is still in the tree before using context
+    if (!mounted) return;
     Navigator.pushNamed(context, '/attemptQuiz', arguments: quizId);
   }
 

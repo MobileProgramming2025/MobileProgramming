@@ -13,7 +13,7 @@ class GetStartedButton extends StatelessWidget {
           Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen(),));
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.black,
+          backgroundColor: Color.fromARGB(255,87, 55, 31),
           foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),

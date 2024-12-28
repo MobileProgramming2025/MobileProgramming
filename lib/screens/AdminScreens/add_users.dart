@@ -31,6 +31,8 @@ class _AddUserScreenState extends State<AddUserScreen> {
 
     try {
       await newUser.saveToFirestore();
+      // Check if the widget is still in the tree before using context
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('User added successfully!')
@@ -65,18 +67,9 @@ class _AddUserScreenState extends State<AddUserScreen> {
           child: Form(
             child: SingleChildScrollView(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Text(
-                  //   "Add a user",
-                  //   style: TextStyle(
-                  //     fontSize: 32,
-                  //     fontWeight: FontWeight.bold,
-                  //   ),
-                  //   textAlign: TextAlign.center,
-                  // ),
-                  // SizedBox(height: 20),
-
                   TextFormField(
                     controller: _nameController,
                     decoration: InputDecoration(

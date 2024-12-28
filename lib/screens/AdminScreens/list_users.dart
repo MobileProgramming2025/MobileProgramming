@@ -16,7 +16,7 @@ class _ListUsersScreenState extends State<ListUsersScreen> {
     super.initState();
     _futureUsers = User.getAllUsers();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,15 +30,16 @@ class _ListUsersScreenState extends State<ListUsersScreen> {
             return const Center(
               child: CircularProgressIndicator(),
             );
-          }
-          else if (snapshot.hasError) {
+          } else if (snapshot.hasError) {
             return Center(
               child: Text('Error: ${snapshot.error}'),
             );
-          }
-          else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(
-              child: Text('No users found'),
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(
+              child: Text(
+                'No users found',
+                style: Theme.of(context).textTheme.displayMedium,
+              ),
             );
           }
 
@@ -48,9 +49,18 @@ class _ListUsersScreenState extends State<ListUsersScreen> {
             itemBuilder: (context, index) {
               final user = users[index];
               return ListTile(
-                title: Text(user.name),
-                subtitle: Text(user.email),
-                trailing: Text(user.role),
+                title: Text(
+                  user.name,
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+                subtitle: Text(
+                  user.email,
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+                trailing: Text(
+                  user.role,
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
                 onTap: () {
                   // Navigate to user details
                 },

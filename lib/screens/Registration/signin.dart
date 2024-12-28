@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mobileprogramming/services/auth_service.dart';
-import 'package:mobileprogramming/widgets/Signin/custom_button.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
@@ -22,10 +21,7 @@ class LoginScreen extends StatelessWidget {
                 // Welcome Text
                 Text(
                   "Welcome Back!",
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: Theme.of(context).textTheme.headlineLarge,
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 20),
@@ -73,8 +69,8 @@ class LoginScreen extends StatelessWidget {
                 SizedBox(height: 30),
 
                 // Login Button
-                CustomButton(
-                  text: "Login",
+                ElevatedButton(
+                  child: Text("Login"),
                   onPressed: () => _handleLogin(context),
                 ),
 
@@ -118,19 +114,26 @@ class LoginScreen extends StatelessWidget {
       if (user != null) {
         // Fetch user data (role)
         var userModel = await AuthService().getUserDetails(user.uid);
+
+        // Check if the widget is still in the tree before using context
+        if (!context.mounted) return;
+
         if (userModel != null && userModel.role == 'admin') {
           Navigator.pushNamed(context, '/admin_home');
-        } 
-        else if (userModel != null && (userModel.role == 'doctor' || userModel.role == 'ta')) {
+        } else if (userModel != null &&
+            (userModel.role == 'doctor' || userModel.role == 'ta')) {
           Navigator.pushNamed(context, '/doctor_dashboard');
-        }
-        else {
+        } else {
           Navigator.pushNamed(context, '/user_home');
         }
       }
     } on FirebaseAuthException catch (e) {
+      // Check if the widget is still in the tree before using context
+      if (!context.mounted) return;
       _showError(context, e.message ?? "Login failed. Please try again.");
     } catch (e) {
+      // Check if the widget is still in the tree before using context
+      if (!context.mounted) return;
       _showError(context, "An unexpected error occurred: $e");
     }
   }

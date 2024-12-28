@@ -85,6 +85,8 @@ class StudentViewAssignmentsScreen extends StatelessWidget {
                                   .collection('Submissions')
                                   .doc(state['id'])
                                   .delete();
+                              // Check if the widget is still in the tree before using context
+                              if (!context.mounted) return;
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(content: Text('Submission deleted!')),
                               );

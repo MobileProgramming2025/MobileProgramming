@@ -73,6 +73,8 @@ class _AddEditAssignmentScreenState extends State<AddEditAssignmentScreen> {
           'dueDateTime': dueDateTime,
         });
       }
+      // Check if the widget is still in the tree before using context
+      if (!mounted) return;
       Navigator.of(context).pop();
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(

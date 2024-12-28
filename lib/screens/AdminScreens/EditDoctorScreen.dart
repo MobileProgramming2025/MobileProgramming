@@ -28,6 +28,8 @@ class EditDoctorScreen extends StatelessWidget {
           email: _emailController.text.trim(),
           specialization: _specializationController.text.trim(),
         );
+        // Check if the widget is still in the tree before using context
+        if (!context.mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Doctor updated successfully")),
         );
@@ -56,12 +58,15 @@ class EditDoctorScreen extends StatelessWidget {
                 validator: (value) =>
                     value!.isEmpty ? "Please enter the name" : null,
               ),
+              const SizedBox(height: 16),
+
               TextFormField(
                 controller: _emailController,
                 decoration: const InputDecoration(labelText: "Email"),
                 validator: (value) =>
                     value!.isEmpty ? "Please enter the email" : null,
               ),
+              const SizedBox(height: 16),
               TextFormField(
                 controller: _specializationController,
                 decoration: const InputDecoration(labelText: "Specialization"),
