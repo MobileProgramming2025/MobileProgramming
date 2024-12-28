@@ -25,11 +25,11 @@ class _ViewCoursesScreenState extends State<ViewCoursesScreen> {
           "All Courses",
           style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: const Color.fromARGB(255, 248, 128, 18),
+     //   backgroundColor: const Color.fromARGB(255, 248, 128, 18),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _addCourse,
-        backgroundColor: Color.fromARGB(255, 248, 128, 18),
+   //     backgroundColor: Color.fromARGB(255, 248, 128, 18),
         tooltip: "Add Doctor",
         child: const Icon(Icons.add, color: Colors.white),
       ),

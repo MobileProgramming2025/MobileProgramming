@@ -20,7 +20,7 @@ class CustomProgressBar extends StatelessWidget {
           width: 280,
           child: LinearProgressIndicator(
             value: (currentPage + 1) / totalPages,
-            backgroundColor: const Color(0xFFB881FF),
+            backgroundColor: Color.fromARGB(255,87, 55, 31),
             borderRadius: BorderRadius.circular(3),
             valueColor: const AlwaysStoppedAnimation<Color>(Color.fromARGB(255, 255, 255, 255)),
             minHeight: 7,

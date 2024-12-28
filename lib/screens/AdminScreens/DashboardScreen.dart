@@ -52,7 +52,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Doctors Dashboard"),
-        backgroundColor: const Color.fromARGB(255, 186, 124, 236),
+        //backgroundColor: const Color.fromARGB(255, 186, 124, 236),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -101,7 +101,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         Text(
                           doctor['specialization'],
                           style: TextStyle(
-                            color: Colors.grey[700],
                             fontSize: 14,
                           ),
                           textAlign: TextAlign.center,
@@ -114,7 +113,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               child: IconButton(
                                 icon: const Icon(Icons.edit),
                                 onPressed: () => _editDoctor(doctor),
-                                color: Color.fromARGB(255, 186, 124, 236),
+                               // color: Color.fromARGB(255, 186, 124, 236),
                                 iconSize: 28,
                               ),
                             ),
@@ -139,7 +138,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _addDoctor,
-        backgroundColor: Color.fromARGB(255, 186, 124, 236),
         tooltip: "Add Doctor",
         child: const Icon(Icons.add),
       ),

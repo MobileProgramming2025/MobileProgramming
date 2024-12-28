@@ -38,28 +38,43 @@ class MyApp extends StatelessWidget {
     var darkColorScheme = ColorScheme.fromSeed(
       //optimize our color scheme to shades for dark mode
       brightness: Brightness.dark,
-      seedColor: const Color.fromARGB(255, 5, 90, 125),
+      seedColor: const Color.fromARGB(255, 228, 151, 78),
+    );
 
+    var colorScheme = ColorScheme.fromSeed(
+      seedColor: const Color.fromARGB(255, 248, 128, 18),
     );
 
     return FlutterSizer(builder: (context, orientation, device) {
       return MaterialApp(
-        title: 'University LMS',
         debugShowCheckedModeBanner: false,
 
         //Light Mode Theme
-        theme: ThemeData(
-          primarySwatch: Colors.teal,
-          hintColor: Colors.amber,
-          fontFamily: 'Poppins',
-          textTheme: TextTheme(
-            titleLarge: TextStyle(
-                fontSize: 32, fontWeight: FontWeight.bold, color: Colors.teal),
-            bodySmall: TextStyle(fontSize: 16, color: Colors.grey[80]),
+        theme: ThemeData.light().copyWith(
+          colorScheme: colorScheme,
+          appBarTheme: AppBarTheme(
+            centerTitle: true,
+            backgroundColor: colorScheme.onPrimaryFixed,
+            foregroundColor: colorScheme.onSecondary,
+            titleTextStyle: TextStyle(
+              fontSize: 25,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-          scaffoldBackgroundColor: Color.fromARGB(255, 255, 255, 255),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+              textStyle: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(40),
+              ),
+            ),
+          ),
+          floatingActionButtonTheme: FloatingActionButtonThemeData(
+            //backgroundColor: colorScheme.onPrimary,
+            //foregroundColor: colorScheme.onPrimaryContainer,
+          ),
         ),
-
         //Dark Theme Mode
         darkTheme: ThemeData.dark().copyWith(
           colorScheme: darkColorScheme,

@@ -67,18 +67,9 @@ class _AddUserScreenState extends State<AddUserScreen> {
           child: Form(
             child: SingleChildScrollView(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Text(
-                  //   "Add a user",
-                  //   style: TextStyle(
-                  //     fontSize: 32,
-                  //     fontWeight: FontWeight.bold,
-                  //   ),
-                  //   textAlign: TextAlign.center,
-                  // ),
-                  // SizedBox(height: 20),
-
                   TextFormField(
                     controller: _nameController,
                     decoration: InputDecoration(

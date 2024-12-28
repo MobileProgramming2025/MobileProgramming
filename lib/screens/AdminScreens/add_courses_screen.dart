@@ -9,9 +9,7 @@ class AddCoursesScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text(
           "All Courses",
-          style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: const Color.fromARGB(255, 248, 128, 18),
       ),
       body: Center(
         child: Padding(
@@ -51,15 +49,6 @@ class AddCoursesScreen extends StatelessWidget {
                   SizedBox(height: 20),
                   Center(
                     child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color.fromARGB(255, 248, 128, 18),
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 40, vertical: 10),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(40),
-                        ),
-                      ),
                       onPressed: () {},
                       child: Text(
                         'Add Course',

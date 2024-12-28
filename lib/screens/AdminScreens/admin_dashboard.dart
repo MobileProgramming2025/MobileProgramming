@@ -20,13 +20,9 @@ class AdminDashboard extends StatelessWidget {
           padding: EdgeInsets.zero,
           children: <Widget>[
             DrawerHeader(
-              decoration: BoxDecoration(
-                color: const Color.fromARGB(255,248, 128, 18),
-              ),
               child: Text(
                 'Menu',
                 style: TextStyle(
-                  color: Colors.white,
                   fontSize: 24,
                 ),
               ),
