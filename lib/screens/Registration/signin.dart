@@ -22,10 +22,7 @@ class LoginScreen extends StatelessWidget {
                 // Welcome Text
                 Text(
                   "Welcome Back!",
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: Theme.of(context).textTheme.headlineLarge,
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 20),
@@ -124,11 +121,10 @@ class LoginScreen extends StatelessWidget {
 
         if (userModel != null && userModel.role == 'admin') {
           Navigator.pushNamed(context, '/admin_home');
-        } 
-        else if (userModel != null && (userModel.role == 'doctor' || userModel.role == 'ta')) {
+        } else if (userModel != null &&
+            (userModel.role == 'doctor' || userModel.role == 'ta')) {
           Navigator.pushNamed(context, '/doctor_dashboard');
-        }
-        else {
+        } else {
           Navigator.pushNamed(context, '/user_home');
         }
       }

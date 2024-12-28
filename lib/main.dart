@@ -73,20 +73,36 @@ class MyApp extends StatelessWidget {
           drawerTheme: DrawerThemeData(
             elevation: 10,
           ),
-          listTileTheme: ListTileThemeData(
-            titleTextStyle: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
+          textTheme: TextTheme(
+            bodyLarge: TextStyle(
               color: colorScheme.onPrimaryContainer,
+            ),
+            headlineLarge: TextStyle(
+              color: colorScheme.onPrimaryContainer,
+              fontWeight: FontWeight.bold,
             ),
           ),
-          textTheme: TextTheme(
-            headlineMedium: TextStyle(
-              fontSize: 30,
-              fontWeight: FontWeight.bold,
-              color: colorScheme.onPrimaryContainer,
-              
+          inputDecorationTheme: InputDecorationTheme(
+            border: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: colorScheme.onPrimaryContainer,
+                width: 2.0,
+              ),
             ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: colorScheme.onPrimaryContainer,
+                width: 2.0,
+              ),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: colorScheme.onPrimaryContainer,
+                width: 1.5,
+              ),
+            ),
+            hintStyle: TextStyle(color: colorScheme.onPrimaryContainer,),
+            labelStyle: TextStyle(color: colorScheme.onPrimaryContainer,),
           ),
         ),
 

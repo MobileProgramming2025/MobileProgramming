@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/services/auth_service.dart';
-import 'package:mobileprogramming/widgets/Signin/customTextField.dart';
+// import 'package:mobileprogramming/widgets/Signin/customTextField.dart';
 import 'package:mobileprogramming/widgets/Signin/custom_button.dart';
 
 class SignUpScreen extends StatelessWidget {
@@ -22,24 +22,25 @@ class SignUpScreen extends StatelessWidget {
               children: [
                 Text(
                   "Create an Account",
-                  style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                  style: Theme.of(context).textTheme.headlineLarge,
                   textAlign: TextAlign.center,
                 ),
-                // SizedBox(height: 16),
-                // CustomTextField(
-                //   labelText: "Name",
-                //   controller: nameController,
-                // ),
                 SizedBox(height: 16),
-                CustomTextField(
-                  labelText: "Email",
+                TextFormField(
+                  decoration: InputDecoration(
+                    labelText: "Email",
+                    border: OutlineInputBorder(),
+                  ),
                   controller: emailController,
                 ),
                 SizedBox(height: 16),
-                CustomTextField(
-                  labelText: "Password",
+                TextFormField(
+                  decoration: InputDecoration(
+                    labelText: "Password",
+                    border: OutlineInputBorder(),
+                  ),
                   controller: passwordController,
-                  isPassword: true,
+                  //isPassword: true,
                 ),
                 SizedBox(height: 30),
                 CustomButton(
