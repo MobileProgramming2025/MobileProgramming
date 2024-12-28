@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobileprogramming/screens/doctorDrawer.dart';
 
 class DoctorDashboard extends StatefulWidget {
   const DoctorDashboard({super.key});
@@ -38,40 +39,15 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
             },
           ),
         ],
-      ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-              child: Text(
-                'Doctor Menu',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
-              ),
-            ),
-            ListTile(
-              leading: Icon(Icons.person),
-              title: Text('Profile'),
-              onTap: () {
-                // Navigate to doctor's profile
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.logout),
-              title: Text('Logout'),
-              onTap: () {
-                // Handle logout
-              },
-            ),
-          ],
+          leading: Builder(
+          builder: (context) => IconButton(
+            icon: Icon(Icons.menu),
+            onPressed: () => Scaffold.of(context).openDrawer(),
+          ),
         ),
       ),
+      drawer: const DoctorDrawer(),
+     
       body: isLoading
           ? Center(
             child: CircularProgressIndicator(),
