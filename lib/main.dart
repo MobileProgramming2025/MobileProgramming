@@ -134,7 +134,7 @@ class MyApp extends StatelessWidget {
           '/login': (context) => LoginScreen(),
           '/signin': (context) => LoginScreen(),
           '/signup': (context) => SignUpScreen(),
-          '/user_home': (context) => UserHomeScreen(),
+          '/user_home': (context) => UserHome(),
           '/admin_home': (context) => AdminDashboard(),
           '/doctor_dashboard': (context) => DoctorDashboard(),
           '/add_users': (context) => AddUserScreen(),
