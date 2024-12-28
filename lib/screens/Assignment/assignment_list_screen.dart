@@ -107,11 +107,11 @@ class _AssignmentListScreenState extends State<AssignmentListScreen> {
               margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
               padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.teal[50],
+                color: Color.fromARGB(255, 228, 151, 78),
                 borderRadius: BorderRadius.circular(15),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.teal.withOpacity(0.2),
+                   // color: Color.fromARGB(255, 228, 151, 78)
                     blurRadius: 8,
                     offset: Offset(0, 4),
                   ),
@@ -122,7 +122,7 @@ class _AssignmentListScreenState extends State<AssignmentListScreen> {
                 children: [
                   Text(
                     assignment['title'],
-                    style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.teal[800]),
+                    //style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.teal[800]),
                   ),
                   SizedBox(height: 8),
                   Text(
@@ -132,7 +132,7 @@ class _AssignmentListScreenState extends State<AssignmentListScreen> {
                   SizedBox(height: 8),
                   Text(
                     'Due: ${assignment['dueDateTime'].toDate()}',
-                    style: TextStyle(color: Colors.amber[800]),
+                   // style: TextStyle(color: Colors.amber[800]),
                   ),
                   SizedBox(height: 16),
                   Row(
