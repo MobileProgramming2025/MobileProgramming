@@ -22,6 +22,7 @@ import 'package:mobileprogramming/screens/onboarding_screen.dart';
 import 'package:mobileprogramming/screens/Assignment/assignment_screen.dart'; 
 // import 'package:sizer/sizer.dart';
 import 'package:flutter_sizer/flutter_sizer.dart';
+import 'package:mobileprogramming/theme.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -38,21 +39,22 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-   return FlutterSizer(builder: (context, orientation, device){
+   return FlutterSizer(builder: (context, orientation, screenType){
       return MaterialApp(
       title: 'University LMS',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
+      //  theme: CustomTheme().baseTheme,
+     
+       theme: ThemeData( 
         primarySwatch: Colors.teal,
         hintColor: Colors.amber,
         fontFamily: 'Poppins',
-        textTheme: TextTheme(
+        textTheme: TextTheme(         
           titleLarge: TextStyle(
               fontSize: 32, fontWeight: FontWeight.bold, color: Colors.teal),
           bodySmall: TextStyle(fontSize: 16, color: Colors.grey[80]),
-        ),
+        ),        
         // useMaterial3: true,
-        scaffoldBackgroundColor: Color.fromARGB(255, 255, 255, 255),
+        scaffoldBackgroundColor: Color.fromARGB(255, 255, 255, 255),       
       ),
       
       initialRoute: '/',

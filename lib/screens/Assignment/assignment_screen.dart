@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:mobileprogramming/widgets/Assignment/assignment_widgets.dart';
 import 'package:mobileprogramming/screens/Assignment/data/assignment_data.dart';
 import 'package:flutter_sizer/flutter_sizer.dart';
+import 'package:mobileprogramming/constants.dart';
 class AssignmentScreen extends StatelessWidget {
-  const AssignmentScreen({super.key});
+  const AssignmentScreen({Key? key}) : super(key: key);
   static String routeName = 'AssignmentScreen';
 
   @override
@@ -18,28 +19,29 @@ class AssignmentScreen extends StatelessWidget {
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.grey.shade200, // Replacing kOtherColor
-                borderRadius: BorderRadius.vertical(
+                color: kOtherColor,
+               borderRadius: BorderRadius.vertical(
                   top: Radius.circular(20.0), // Replacing kTopBorderRadius
                 ),
               ),
               child: ListView.builder(
-                  padding: EdgeInsets.all(16.0), // Replacing kDefaultPadding
+                  padding: EdgeInsets.all(kDefaultPadding),
                   itemCount: assignment.length,
                   itemBuilder: (context, int index) {
                     return Container(
-                      margin: EdgeInsets.only(bottom: 16.0), // Replacing kDefaultPadding
+                      margin: EdgeInsets.only(bottom: kDefaultPadding),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Container(
-                            padding: EdgeInsets.all(16.0), // Replacing kDefaultPadding
+                            padding: EdgeInsets.all(kDefaultPadding),
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(16.0), // Replacing kDefaultPadding
-                              color: Colors.grey.shade200, // Replacing kOtherColor
+                              borderRadius:
+                                  BorderRadius.circular(kDefaultPadding),
+                              color: kOtherColor,
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.grey.shade400, // Replacing kTextLightColor
+                                  color: kTextLightColor,
                                   blurRadius: 2.0,
                                 ),
                               ],
@@ -51,8 +53,9 @@ class AssignmentScreen extends StatelessWidget {
                                   width: 40.w,
                                   height: 4.h,
                                   decoration: BoxDecoration(
-                                    color: Colors.blue.withOpacity(0.4), // Replacing kSecondaryColor
-                                    borderRadius: BorderRadius.circular(16.0), // Replacing kDefaultPadding
+                                    color: kSecondaryColor.withOpacity(0.4),
+                                    borderRadius:
+                                        BorderRadius.circular(kDefaultPadding),
                                   ),
                                   child: Center(
                                     child: Text(
@@ -61,34 +64,36 @@ class AssignmentScreen extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                SizedBox(height: 8.0), // Replacing kHalfSizedBox
+                                kHalfSizedBox,
                                 Text(
                                   assignment[index].topicName,
                                   style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                                    color: Colors.black, // Replacing kTextBlackColor
+                                    color: kTextBlackColor,
                                     fontWeight: FontWeight.w900,
                                   ),
                                 ),
-                                SizedBox(height: 8.0), // Replacing kHalfSizedBox
+                                kHalfSizedBox,
                                 AssignmentDetailRow(
                                   title: 'Assign Date',
                                   statusValue: assignment[index].assignDate,
                                 ),
-                                SizedBox(height: 8.0), // Replacing kHalfSizedBox
+                                kHalfSizedBox,
                                 AssignmentDetailRow(
                                   title: 'Last Date',
                                   statusValue: assignment[index].lastDate,
                                 ),
-                                SizedBox(height: 8.0), // Replacing kHalfSizedBox
+                                kHalfSizedBox,
                                 AssignmentDetailRow(
                                   title: 'Status',
                                   statusValue: assignment[index].status,
                                 ),
-                                SizedBox(height: 8.0), // Replacing kHalfSizedBox
+                                kHalfSizedBox,
+                                //use condition here to display button
                                 if (assignment[index].status == 'Pending')
+                                  //then show button
                                   AssignmentButton(
                                     onPress: () {
-                                      // Submit here
+                                      //submit here
                                     },
                                     title: 'To be Submitted',
                                   ),
