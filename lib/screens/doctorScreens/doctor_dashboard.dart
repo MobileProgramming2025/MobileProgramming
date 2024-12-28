@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobileprogramming/screens/doctorDrawer.dart';
 
 class DoctorDashboard extends StatefulWidget {
   const DoctorDashboard({super.key});
@@ -78,8 +79,15 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
               },
             ),
           ],
+          leading: Builder(
+          builder: (context) => IconButton(
+            icon: Icon(Icons.menu),
+            onPressed: () => Scaffold.of(context).openDrawer(),
+          ),
         ),
       ),
+      drawer: const DoctorDrawer(),
+     
       body: isLoading
           ? Center(
             child: CircularProgressIndicator(),

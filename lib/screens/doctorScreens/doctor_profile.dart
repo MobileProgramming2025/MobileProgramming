@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/user.dart';
+import 'package:mobileprogramming/screens/doctorDrawer.dart';
 
 class DoctorProfile extends StatefulWidget {
   final User doctor;
@@ -25,7 +26,14 @@ class _DoctorProfileState extends State<DoctorProfile> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Profile'),
+       leading: Builder(
+          builder: (context) => IconButton(
+            icon: Icon(Icons.menu),
+            onPressed: () => Scaffold.of(context).openDrawer(),
+          ),
+        ),
       ),
+      drawer: const DoctorDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

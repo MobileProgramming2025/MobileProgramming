@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobileprogramming/screens/userDrawer.dart';
 // import 'package:sizer/sizer.dart';
 import 'package:mobileprogramming/widgets/Assignment/assignment_widgets.dart';
 import 'package:mobileprogramming/screens/Assignment/data/assignment_data.dart';
@@ -11,10 +12,19 @@ class AssignmentScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+     
       appBar: AppBar(
         title: Text('Assignments'),
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: Icon(Icons.menu),
+            onPressed: () => Scaffold.of(context).openDrawer(),
+          ),
+        ),
       ),
-      body: Column(
+      drawer: const UserDrawer(),
+      
+ body: Column(
         children: [
           Expanded(
             child: Container(
