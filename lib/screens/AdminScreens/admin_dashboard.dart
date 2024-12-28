@@ -22,7 +22,7 @@ class AdminDashboard extends StatelessWidget {
             DrawerHeader(
               child: Text(
                 'Menu',
-                style: Theme.of(context).textTheme.headlineMedium,
+                style: Theme.of(context).textTheme.headlineLarge,
                 textAlign: TextAlign.center,
               ),
             ),

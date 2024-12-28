@@ -8,7 +8,7 @@ class AddCoursesScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "All Courses",
+          "Add Courses",
         ),
       ),
       body: Center(
@@ -45,6 +45,14 @@ class AddCoursesScreen extends StatelessWidget {
                       labelText: 'Teaching Assistant Name',
                       border: OutlineInputBorder(),
                     ),
+                  ),
+                  SizedBox(height: 16),
+                  TextFormField(
+                    decoration: InputDecoration(
+                      labelText: 'Year',
+                      border: OutlineInputBorder(),
+                    ),
+                    keyboardType: TextInputType.number,
                   ),
                   SizedBox(height: 20),
                   Center(

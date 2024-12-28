@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/services/auth_service.dart';
-// import 'package:mobileprogramming/widgets/Signin/customTextField.dart';
-import 'package:mobileprogramming/widgets/Signin/custom_button.dart';
 
 class SignUpScreen extends StatelessWidget {
   SignUpScreen({super.key});
@@ -43,8 +41,8 @@ class SignUpScreen extends StatelessWidget {
                   //isPassword: true,
                 ),
                 SizedBox(height: 30),
-                CustomButton(
-                  text: "Sign Up",
+                ElevatedButton(
+                  child: Text("Sign Up"),
                   onPressed: () async {
                     final email = emailController.text.trim();
                     final password = passwordController.text.trim();

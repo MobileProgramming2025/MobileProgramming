@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobileprogramming/constants.dart';
 import '../../services/DoctorService.dart';
 
 class AddDoctorScreen extends StatelessWidget {
@@ -9,7 +10,6 @@ class AddDoctorScreen extends StatelessWidget {
   final _emailController = TextEditingController();
   final _specializationController = TextEditingController();
   final DoctorService _doctorService = DoctorService();
-
 
   void _saveDoctor(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
@@ -49,12 +49,15 @@ class AddDoctorScreen extends StatelessWidget {
                 validator: (value) =>
                     value!.isEmpty ? "Please enter the name" : null,
               ),
+              SizedBox(height:16),
               TextFormField(
                 controller: _emailController,
                 decoration: const InputDecoration(labelText: "Email"),
                 validator: (value) =>
                     value!.isEmpty ? "Please enter the email" : null,
               ),
+              SizedBox(height:16),
+
               TextFormField(
                 controller: _specializationController,
                 decoration: const InputDecoration(labelText: "Specialization"),

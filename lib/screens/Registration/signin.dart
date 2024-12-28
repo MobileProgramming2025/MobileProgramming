@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mobileprogramming/services/auth_service.dart';
-import 'package:mobileprogramming/widgets/Signin/custom_button.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
@@ -70,8 +69,8 @@ class LoginScreen extends StatelessWidget {
                 SizedBox(height: 30),
 
                 // Login Button
-                CustomButton(
-                  text: "Login",
+                ElevatedButton(
+                  child: Text("Login"),
                   onPressed: () => _handleLogin(context),
                 ),
 

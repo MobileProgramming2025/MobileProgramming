@@ -58,12 +58,15 @@ class EditDoctorScreen extends StatelessWidget {
                 validator: (value) =>
                     value!.isEmpty ? "Please enter the name" : null,
               ),
+              const SizedBox(height: 16),
+
               TextFormField(
                 controller: _emailController,
                 decoration: const InputDecoration(labelText: "Email"),
                 validator: (value) =>
                     value!.isEmpty ? "Please enter the email" : null,
               ),
+              const SizedBox(height: 16),
               TextFormField(
                 controller: _specializationController,
                 decoration: const InputDecoration(labelText: "Specialization"),

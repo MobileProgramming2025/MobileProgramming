@@ -63,8 +63,14 @@ class MyApp extends StatelessWidget {
           ),
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
-              //textStyle: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 40,
+                vertical: 10,
+              ),
+              // textStyle: TextStyle(
+              //   fontSize: 15,
+              //   //fontWeight: FontWeight.bold,
+              // ),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(40),
               ),
@@ -73,6 +79,8 @@ class MyApp extends StatelessWidget {
           drawerTheme: DrawerThemeData(
             elevation: 10,
           ),
+
+          //Text Style
           textTheme: TextTheme(
             bodyLarge: TextStyle(
               color: colorScheme.onPrimaryContainer,
@@ -81,7 +89,13 @@ class MyApp extends StatelessWidget {
               color: colorScheme.onPrimaryContainer,
               fontWeight: FontWeight.bold,
             ),
+            headlineMedium: TextStyle(
+              color: colorScheme.onPrimaryContainer,
+              fontWeight: FontWeight.bold,
+            ),
           ),
+
+          //Text Input Field
           inputDecorationTheme: InputDecorationTheme(
             border: OutlineInputBorder(
               borderSide: BorderSide(
@@ -101,8 +115,12 @@ class MyApp extends StatelessWidget {
                 width: 1.5,
               ),
             ),
-            hintStyle: TextStyle(color: colorScheme.onPrimaryContainer,),
-            labelStyle: TextStyle(color: colorScheme.onPrimaryContainer,),
+            hintStyle: TextStyle(
+              color: colorScheme.onPrimaryContainer,
+            ),
+            labelStyle: TextStyle(
+              color: colorScheme.onPrimaryContainer,
+            ),
           ),
         ),
 

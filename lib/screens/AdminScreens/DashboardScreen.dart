@@ -91,18 +91,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       children: [
                         Text(
                           doctor['name'],
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                          ),
+                          style: Theme.of(context).textTheme.headlineMedium,
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 8),
                         Text(
                           doctor['specialization'],
-                          style: TextStyle(
-                            fontSize: 14,
-                          ),
+                          style: Theme.of(context).textTheme.bodyLarge,
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 16),
