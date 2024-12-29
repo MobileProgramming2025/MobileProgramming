@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
 
 final uuid = Uuid();
@@ -20,7 +19,7 @@ class Course {
       required this.taName,
       required this.year,
       required this.departmentName});
-      
+
   // Convert a Course object to a Map for Firestore
   Map<String, String> toMap() {
     return {
@@ -34,9 +33,16 @@ class Course {
     };
   }
 
-  // Save course to Firestore
-  // Future<void> saveToFirestore() async {
-  //   final FirebaseFirestore firestore = FirebaseFirestore.instance;
-  //   await firestore.collection('Courses').doc(id).set(toMap());
-  // }
+  // Convert Firestore data to a course object
+   factory Course.fromMap(Map<String, dynamic> data) {
+    return Course(
+      id: data['id'] ?? '',
+      name: data['name'] ?? '',
+      code: data['code'] ?? '',
+      drName: data['drName'] ?? '',
+      taName: data['taName'] ?? '',
+      departmentName: data['departmentName'] ?? '',
+      year: data['year'] ?? 0,
+    );
+  }
 }

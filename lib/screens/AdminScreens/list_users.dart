@@ -11,7 +11,7 @@ class ListUsersScreen extends StatefulWidget {
 class _ListUsersScreenState extends State<ListUsersScreen> {
   late Future<List<User>> _futureUsers;
 
-  @override
+  @override 
   void initState() {
     super.initState();
     _futureUsers = User.getAllUsers();
