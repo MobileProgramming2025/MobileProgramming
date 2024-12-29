@@ -38,9 +38,8 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
               // Handle Notifications
             },
           ),
-  
-          ],
-          leading: Builder(
+        ],
+        leading: Builder(
           builder: (context) => IconButton(
             icon: Icon(Icons.menu),
             onPressed: () => Scaffold.of(context).openDrawer(),
