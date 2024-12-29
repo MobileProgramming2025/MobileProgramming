@@ -6,7 +6,8 @@ import 'package:flutter_sizer/flutter_sizer.dart';
 import 'package:mobileprogramming/constants.dart';
 
 class AssignmentScreen extends StatelessWidget {
-  const AssignmentScreen({Key? key}) : super(key: key);
+  const AssignmentScreen({super.key});
+
   static String routeName = 'AssignmentScreen';
 
   @override
@@ -16,8 +17,10 @@ class AssignmentScreen extends StatelessWidget {
         title: Text('Assignments'),
         leading: Builder(
           builder: (context) => IconButton(
-            icon: Icon(Icons.menu),
-            onPressed: () => Scaffold.of(context).openDrawer(),
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
         ),
       ),
