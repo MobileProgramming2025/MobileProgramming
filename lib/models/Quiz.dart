@@ -1,4 +1,3 @@
-
 import 'package:mobileprogramming/models/Question.dart';
 
 class Quiz {
@@ -7,7 +6,7 @@ class Quiz {
   final DateTime startDate;
   final DateTime endDate;
   final List<Question> questions;
-  final String courseId; // Add this field
+  final String courseId;
 
   Quiz({
     required this.id,
@@ -15,7 +14,7 @@ class Quiz {
     required this.startDate,
     required this.endDate,
     required this.questions,
-    required this.courseId, // Add it to the constructor
+    required this.courseId,
   });
 
   Map<String, dynamic> toJson() {
@@ -25,7 +24,7 @@ class Quiz {
       'startDate': startDate.toIso8601String(),
       'endDate': endDate.toIso8601String(),
       'questions': questions.map((q) => q.toJson()).toList(),
-      'courseId': courseId, // Include in JSON
+      'courseId': courseId,
     };
   }
 
@@ -38,7 +37,26 @@ class Quiz {
       questions: (json['questions'] as List<dynamic>)
           .map((q) => Question.fromJson(q))
           .toList(),
-      courseId: json['courseId'], // Parse from JSON
+      courseId: json['courseId'],
+    );
+  }
+
+  /// Create a new quiz with a provided `id` instead of generating a UUID.
+  factory Quiz.create({
+    required String id, // Accept `id` as a parameter.
+    required String title,
+    required DateTime startDate,
+    required DateTime endDate,
+    required List<Question> questions,
+    required String courseId,
+  }) {
+    return Quiz(
+      id: id, // Use the provided `id`.
+      title: title,
+      startDate: startDate,
+      endDate: endDate,
+      questions: questions,
+      courseId: courseId,
     );
   }
 }
