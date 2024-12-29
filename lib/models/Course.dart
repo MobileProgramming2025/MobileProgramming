@@ -34,7 +34,7 @@ class Course {
   }
 
   // Convert Firestore data to a course object
-   factory Course.fromMap(Map<String, dynamic> data) {
+  factory Course.fromMap(Map<String, dynamic> data) {
     return Course(
       id: data['id'] ?? '',
       name: data['name'] ?? '',

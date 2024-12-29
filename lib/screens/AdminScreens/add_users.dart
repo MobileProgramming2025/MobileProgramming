@@ -26,6 +26,8 @@ class _AddUserScreenState extends State<AddUserScreen> {
       email: _emailController.text.trim(),
       role: _roleController.text.trim(),
       department: _departmentController.text.trim(),
+      takenCourses: [],
+      enrolledCourses: [],
     );
 
     try {

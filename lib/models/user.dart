@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mobileprogramming/models/Course.dart';
 
 class AppUser {
   final String id;
@@ -6,7 +7,8 @@ class AppUser {
   final String email;
   final String role;
   final String department;
-  // final List<Course> courses;
+  final List<Course> enrolledCourses;
+  final List<Course> takenCourses;
   
   AppUser({
     required this.id,
@@ -14,7 +16,8 @@ class AppUser {
     required this.email,
     required this.role,
     required this.department,
-    // required this.courses,
+    required this.enrolledCourses,
+    required this.takenCourses,
   });
 
   // Convert a User object to a Map for Firestore
@@ -25,9 +28,11 @@ class AppUser {
       'email': email,
       'role': role,
       'department': department,
+      'enrolled_courses': enrolledCourses,
+      'taken_courses': takenCourses,
     };
   }
-
+ 
   // Create a User object from Firestore Map
   static AppUser fromMap(Map<String, dynamic> map) {
     return AppUser(
@@ -36,6 +41,8 @@ class AppUser {
       email: map['email'] as String? ?? '', 
       role: map['role'] as String? ?? 'Unknown',
       department: map['department'] as String? ?? 'Unknown',
+      enrolledCourses: map['enrolledCourses'] ?? [],
+      takenCourses: map['takenCourses'] ?? [],
     );
   }
 
@@ -49,10 +56,6 @@ class AppUser {
   static Future<List<AppUser>> getAllUsers() async {
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
     final QuerySnapshot querySnapshot = await firestore.collection('users').get();
-    // print('Fetched ${querySnapshot.docs.length} users from Firestore');
-    // for (var doc in querySnapshot.docs) {
-    //   print('User document: ${doc.data()}');
-    // }
     return querySnapshot.docs.map((doc) => AppUser.fromMap(doc.data() as Map<String, dynamic>)).toList();
   }
 
