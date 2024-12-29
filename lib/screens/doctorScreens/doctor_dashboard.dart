@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:mobileprogramming/models/user.dart';
 import 'package:mobileprogramming/screens/partials/doctorDrawer.dart';
 
 class DoctorDashboard extends StatefulWidget {
-  const DoctorDashboard({super.key});
+  final User doctor;
+
+  const DoctorDashboard({super.key, required this.doctor});
 
   @override
   State<DoctorDashboard> createState() => _DoctorDashboardState();
@@ -30,7 +33,7 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Welcome, Dr. [Name]'),
+        title: Text('Welcome, Dr. ${widget.doctor.name}'),
         actions: [
           IconButton(
             icon: Icon(Icons.notifications),
@@ -46,7 +49,9 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
           ),
         ),
       ),
-      drawer: const DoctorDrawer(),
+      
+      // Pass the doctor object to the DoctorDrawer
+      drawer: DoctorDrawer(user: widget.doctor),
      
       body: isLoading
           ? Center(
