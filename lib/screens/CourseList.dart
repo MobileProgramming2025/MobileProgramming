@@ -86,7 +86,7 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
   void _addCourse() async {
     String courseName = _courseNameController.text.trim();
     if (courseName.isNotEmpty) {
-      // await _courseService.addCourse(courseName);
+      //await _courseService.addCourse(courseName);
       widget.onCourseAdded(); // Update the course list in the parent widget
       Navigator.pop(context); // Go back to the course list page
     } else {

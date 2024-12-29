@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/user.dart';
+import 'package:mobileprogramming/screens/CourseList.dart';
 import 'package:mobileprogramming/screens/UserScreens/profile.dart';
 
 class DoctorDrawer extends StatefulWidget {
@@ -64,7 +65,12 @@ class _DoctorDrawerState extends State<DoctorDrawer> {
             leading: Icon(Icons.group_add_outlined),
             title: Text('View Courses'),
             onTap: () {
-              Navigator.pushNamed(context, '/view_course');
+               Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CourseListPage(),
+                  )
+                );
             },
           ),
           ListTile(
