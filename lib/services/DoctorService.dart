@@ -30,6 +30,7 @@ class DoctorService {
     //.map() is used to transform the raw snapshot data into map that includes all dr details
     return _firestore.collection('doctors').snapshots().map((snapshot) {
       return snapshot.docs.map((doc) {
+        // Extract the document's ID and fields, and create a usable map
         return {
           'id': doc.id,
           ...doc.data(),
