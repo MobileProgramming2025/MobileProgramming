@@ -4,7 +4,7 @@ import '../../services/DoctorService.dart';
 
 class AddDoctorScreen extends StatelessWidget {
   AddDoctorScreen({super.key});
-
+//_formKey:This is an instance of GlobalKey<FormState>, which uniquely identifies the Form widget and allows you to manage its validation state.
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
@@ -40,7 +40,7 @@ class AddDoctorScreen extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
-          key: _formKey,
+          key: _formKey, // _formKey bykhali ybaa fe validation to the input.
           child: Column(
             children: [
               TextFormField(
@@ -49,15 +49,14 @@ class AddDoctorScreen extends StatelessWidget {
                 validator: (value) =>
                     value!.isEmpty ? "Please enter the name" : null,
               ),
-              SizedBox(height:16),
+              SizedBox(height: 16),
               TextFormField(
                 controller: _emailController,
                 decoration: const InputDecoration(labelText: "Email"),
                 validator: (value) =>
                     value!.isEmpty ? "Please enter the email" : null,
               ),
-              SizedBox(height:16),
-
+              SizedBox(height: 16),
               TextFormField(
                 controller: _specializationController,
                 decoration: const InputDecoration(labelText: "Specialization"),
