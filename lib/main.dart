@@ -92,6 +92,10 @@ class MyApp extends StatelessWidget {
               color: colorScheme.onPrimaryContainer,
               fontWeight: FontWeight.bold,
             ),
+            titleLarge: TextStyle(
+              color: colorScheme.onPrimaryContainer,
+              fontWeight: FontWeight.bold,
+            ),
           ),
 
           //Text Input Field
@@ -141,13 +145,13 @@ class MyApp extends StatelessWidget {
           '/list_users': (context) => ListUsersScreen(),
           '/create_assignment-static': (context) => AssignmentListScreen(courseId: "course123"),
           '/assignment_screen': (context) => AssignmentScreen(),
-         // '/createQuiz': (context) => CourseListPage(),
+          // '/createQuiz': (context) => CourseListPage(),
           '/add-doctor': (context) => AddDoctorScreen(),
           '/Doctors Dashboard': (context) => DashboardScreen(),
           // '/Doctor-dashboard':(context)=>DoctorDashboard(),
           '/add_courses': (context) => AddCoursesScreen(),
           '/view_courses': (context) => ViewCoursesScreen(),
-          '/create-assignment' : (context)=>CourseListPage()
+          '/create-assignment': (context) => CourseListPage()
         },
       );
     });
