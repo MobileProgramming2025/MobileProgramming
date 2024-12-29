@@ -58,7 +58,7 @@ class SignUpScreen extends StatelessWidget {
                       }
                     } catch (e) {
                       if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
+                        ScaffoldMessenger.of(context).showSnackBar( 
                           SnackBar(
                             content: Text("Sign-Up Failed: $e"),
                           ),
@@ -66,6 +66,12 @@ class SignUpScreen extends StatelessWidget {
                       }
                     }
                   },
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/signin');
+                  },
+                  child: Text("Already have an account? Log in"),
                 ),
               ],
             ),

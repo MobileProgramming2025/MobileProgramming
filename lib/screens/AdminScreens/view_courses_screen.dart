@@ -68,8 +68,7 @@ class _ViewCoursesScreenState extends State<ViewCoursesScreen> {
                       children: [
                         Text(
                           course.name,
-                          style:
-                              Theme.of(context).textTheme.headlineMedium,
+                          style: Theme.of(context).textTheme.headlineMedium,
                         ),
                         const SizedBox(height: 8),
                         Text(
@@ -95,6 +94,13 @@ class _ViewCoursesScreenState extends State<ViewCoursesScreen> {
                         Text(
                           'Year: ${course.year}',
                           style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                        ElevatedButton(
+                          onPressed: () {},
+                          child: Text(
+                            "Enroll Students",
+                            style: TextStyle(fontSize: 20),
+                          ),
                         ),
                       ],
                     ),
