@@ -43,17 +43,23 @@ class User {
   static User fromMap(Map<String, dynamic> map) {
     return User(
       id: map['id'] as String? ?? '', // provide default value if null
-      name: (map['name'] as String?) ??
-          map['email'].split('@')[0], // Default to email before '@'
+      name: (map['name'] as String?) ?? map['email'].split('@')[0], // Default to email before '@'
       email: map['email'] as String? ?? '',
       role: map['role'] as String? ?? 'Unknown',
       department: map['department'] as String? ?? 'Unknown',
-      enrolledCourses: map['enrolledCourses'] ?? [],
-      takenCourses: map['takenCourses'] ?? [],
-      addedDate:DateTime.utc(map['added_date']),
-      year: map['year'] as String? ?? '',
+      enrolledCourses: (map['enrolled_courses'] as List<dynamic>? ?? [])
+          .map((e) => Course.fromMap(e as Map<String, dynamic>))
+          .toList(),
+      takenCourses: (map['taken_courses'] as List<dynamic>? ?? [])
+          .map((e) => Course.fromMap(e as Map<String, dynamic>))
+          .toList(),
+      addedDate: map['added_date'] != null
+          ? DateTime.parse(map['added_date'] as String)
+          : DateTime.now(), // Default to current date
+      year: map['year'] as String? ?? 'Unknown',
     );
   }
+
 
   // Save user to Firestore
   Future<void> saveToFirestore() async {

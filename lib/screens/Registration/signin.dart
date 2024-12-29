@@ -139,12 +139,12 @@ class LoginScreen extends StatelessWidget {
             Navigator.pushNamed(context, '/admin_home');
           } else {
             Navigator.pushNamed(context, '/user_home');
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => UserHome(/*user: userModel*/),
-              ),
-            );
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(
+            //     builder: (context) => UserHome(/*user: userModel*/),
+            //   ),
+            // );
           }
         }
       }
