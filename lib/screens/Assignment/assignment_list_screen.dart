@@ -104,7 +104,7 @@ class _AssignmentListScreenState extends State<AssignmentListScreen> {
           ),
         ),
       ),
-      drawer: const DoctorDrawer(),
+      // drawer: const DoctorDrawer(),
       
       body: ListView.builder(
         itemCount: _assignments.length,

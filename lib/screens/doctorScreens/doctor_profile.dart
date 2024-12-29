@@ -33,7 +33,10 @@ class _DoctorProfileState extends State<DoctorProfile> {
           ),
         ),
       ),
-      drawer: const DoctorDrawer(),
+      
+      // Pass the doctor object to the DoctorDrawer
+      drawer: DoctorDrawer(user: doctor),
+
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

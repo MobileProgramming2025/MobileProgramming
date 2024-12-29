@@ -1,7 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:mobileprogramming/models/user.dart';
+import 'package:mobileprogramming/screens/UserScreens/profile.dart';
 
-class DoctorDrawer extends StatelessWidget {
-  const DoctorDrawer({super.key});
+class DoctorDrawer extends StatefulWidget {
+  final User user;
+ 
+  const DoctorDrawer({super.key, required this.user});
+
+  @override
+  State<DoctorDrawer> createState() => _DoctorDrawerState();
+}
+
+class _DoctorDrawerState extends State<DoctorDrawer> {
+  late User user;
+
+  @override
+  void initState() {
+    super.initState();
+    user = widget.user;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +28,7 @@ class DoctorDrawer extends StatelessWidget {
         children: <Widget>[
           DrawerHeader(
             child: Text(
-              'Menu',
+              'Hello, ${user.name}',
               style: Theme.of(context).textTheme.headlineLarge,
               textAlign: TextAlign.center,
             ),
@@ -27,8 +44,13 @@ class DoctorDrawer extends StatelessWidget {
               leading: Icon(Icons.person),
               title: Text('Profile'),
               onTap: () {
-               
-              },
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ProfileScreen(user: user),
+                  )
+                );
+              }
             ),
             ListTile(
               leading: Icon(Icons.logout),
