@@ -68,15 +68,15 @@ class AdminDashboard extends StatelessWidget {
                 Navigator.pushNamed(context, '/Doctors Dashboard');
               },
             ),
-            
           ],
         ),
       ),
       body: Center(
         child: Text(
-          'Swipe from the left or tap the menu icon to open the drawer.',
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 20),
+            'Swipe from the left or tap the menu icon to open the drawer.',
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyLarge,
+
         ),
       ),
     );
