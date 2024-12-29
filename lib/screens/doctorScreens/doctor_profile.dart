@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/user.dart';
 
 class DoctorProfile extends StatefulWidget {
-  final AppUser doctor;
+  final User doctor;
 
   const DoctorProfile({super.key, required this.doctor});
 
@@ -11,7 +11,7 @@ class DoctorProfile extends StatefulWidget {
 }
 
 class _DoctorProfileState extends State<DoctorProfile> {
-  late AppUser doctor;
+  late User doctor;
 
   @override
   void initState() {

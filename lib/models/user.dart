@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class AppUser {
+class User {
   final String id;
   final String name;
   final String email;
@@ -8,7 +8,7 @@ class AppUser {
   final String department;
   // final List<Course> courses;
   
-  AppUser({
+  User({
     required this.id,
     required this.name,
     required this.email,
@@ -29,8 +29,8 @@ class AppUser {
   }
 
   // Create a User object from Firestore Map
-  static AppUser fromMap(Map<String, dynamic> map) {
-    return AppUser(
+  static User fromMap(Map<String, dynamic> map) {
+    return User(
       id: map['id'] as String? ?? '',  // provide default value if null
       name: (map['name'] as String?) ?? map['email'].split('@')[0],  // Default to email before '@'
       email: map['email'] as String? ?? '', 
@@ -46,25 +46,25 @@ class AppUser {
   }
 
   // Retrieve all users from Firestore
-  static Future<List<AppUser>> getAllUsers() async {
+  static Future<List<User>> getAllUsers() async {
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
     final QuerySnapshot querySnapshot = await firestore.collection('users').get();
     // print('Fetched ${querySnapshot.docs.length} users from Firestore');
     // for (var doc in querySnapshot.docs) {
     //   print('User document: ${doc.data()}');
     // }
-    return querySnapshot.docs.map((doc) => AppUser.fromMap(doc.data() as Map<String, dynamic>)).toList();
+    return querySnapshot.docs.map((doc) => User.fromMap(doc.data() as Map<String, dynamic>)).toList();
   }
 
   // Retrieve a user by ID from Firestore
-  static Future<AppUser?> getUserDetails(String id) async {
+  static Future<User?> getUserDetails(String id) async {
     try {
       final FirebaseFirestore firestore = FirebaseFirestore.instance;
       final DocumentSnapshot<Map<String, dynamic>> docSnapshot =
           await firestore.collection('users').doc(id).get();
 
       if (docSnapshot.exists && docSnapshot.data() != null) {
-        return AppUser.fromMap(docSnapshot.data()!);
+        return User.fromMap(docSnapshot.data()!);
       } else {
         print('User with ID $id not found in Firestore.');
         return null;
