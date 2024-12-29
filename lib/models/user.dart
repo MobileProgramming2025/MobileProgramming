@@ -9,7 +9,9 @@ class AppUser {
   final String department;
   final List<Course> enrolledCourses;
   final List<Course> takenCourses;
-  
+  final DateTime addedDate;
+  final String year;
+
   AppUser({
     required this.id,
     required this.name,
@@ -18,6 +20,8 @@ class AppUser {
     required this.department,
     required this.enrolledCourses,
     required this.takenCourses,
+    required this.addedDate,
+    required this.year,
   });
 
   // Convert a User object to a Map for Firestore
@@ -30,19 +34,24 @@ class AppUser {
       'department': department,
       'enrolled_courses': enrolledCourses,
       'taken_courses': takenCourses,
+      'added_date': addedDate,
+      'year': year,
     };
   }
- 
+
   // Create a User object from Firestore Map
   static AppUser fromMap(Map<String, dynamic> map) {
     return AppUser(
-      id: map['id'] as String? ?? '',  // provide default value if null
-      name: (map['name'] as String?) ?? map['email'].split('@')[0],  // Default to email before '@'
-      email: map['email'] as String? ?? '', 
+      id: map['id'] as String? ?? '', // provide default value if null
+      name: (map['name'] as String?) ??
+          map['email'].split('@')[0], // Default to email before '@'
+      email: map['email'] as String? ?? '',
       role: map['role'] as String? ?? 'Unknown',
       department: map['department'] as String? ?? 'Unknown',
       enrolledCourses: map['enrolledCourses'] ?? [],
       takenCourses: map['takenCourses'] ?? [],
+      addedDate:DateTime.utc(map['added_date']),
+      year: map['year'] as String? ?? '',
     );
   }
 
@@ -55,8 +64,11 @@ class AppUser {
   // Retrieve all users from Firestore
   static Future<List<AppUser>> getAllUsers() async {
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
-    final QuerySnapshot querySnapshot = await firestore.collection('users').get();
-    return querySnapshot.docs.map((doc) => AppUser.fromMap(doc.data() as Map<String, dynamic>)).toList();
+    final QuerySnapshot querySnapshot =
+        await firestore.collection('users').get();
+    return querySnapshot.docs
+        .map((doc) => AppUser.fromMap(doc.data() as Map<String, dynamic>))
+        .toList();
   }
 
   // Retrieve a user by ID from Firestore
@@ -77,6 +89,4 @@ class AppUser {
       return null;
     }
   }
-
-
 }
