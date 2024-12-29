@@ -16,9 +16,9 @@ class _CourseListPageState extends State<CourseListPage> {
   // Fetch courses only
   Future<void> _fetchCourses() async {
     try {
-      final courses = await _courseService.getCourses();  // Fetch courses only
+     // final courses = await _courseService.getCourses();  // Fetch courses only
       setState(() {
-        _courses = courses; // Store the courses in the state
+  //      _courses = courses; // Store the courses in the state
       });
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(

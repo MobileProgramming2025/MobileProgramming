@@ -1,149 +1,115 @@
-// import 'package:flutter/material.dart';
-// import 'package:mobileprogramming/models/Course.dart';
-// import 'package:mobileprogramming/services/CourseService.dart';
-// import 'package:mobileprogramming/widgets/Course/courses_list.dart';
+import 'package:flutter/material.dart';
+import 'package:mobileprogramming/models/Course.dart';
+import 'package:mobileprogramming/services/CourseService.dart';
 
-// class ViewCoursesScreen extends StatelessWidget {
-//   const ViewCoursesScreen({super.key});
+class ViewCoursesScreen extends StatefulWidget {
+  const ViewCoursesScreen({super.key});
 
-//   final CourseService _courseService = CourseService();
-//   // List<Course> courses = await _courseService; getAllCourses(); // Await the future here
+  @override
+  State<ViewCoursesScreen> createState() => _ViewCoursesScreenState();
+}
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text(
-//           "All Courses",
-//         ),
-//       ),
-//       body: CoursesList(
-//         // courses: await _courseService.getAllCourses();
-//       ),
+class _ViewCoursesScreenState extends State<ViewCoursesScreen> {
+  final CourseService _courseService = CourseService();
+  late Future<List<Course>> _futureCourses;
 
-//       floatingActionButton: FloatingActionButton(
-//         onPressed: () {
-//           Navigator.pushNamed(context, '/add_courses');
-//         },
-//         tooltip: "add_courses",
-//         child: const Icon(Icons.add),
-//       ),
-//     );
-//   }
-// }
+  @override
+  void initState() {
+    super.initState();
+    _futureCourses = _courseService.getAllCourses();
+  }
 
-// // import 'package:flutter/material.dart';
-// // import 'package:mobileprogramming/services/CourseService.dart';
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("All Courses"),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: FutureBuilder(
+          future: _futureCourses,
+          builder: (BuildContext context, AsyncSnapshot<List<Course>> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (snapshot.hasError) {
+              return Center(
+                child: Text('Error: ${snapshot.error}'),
+              );
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return Center(
+                child: Text(
+                  'No Courses Found',
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+              );
+            }
 
-// // class DashboardScreen extends StatefulWidget {
-// //   const DashboardScreen({super.key});
-
-// //   @override
-// //   State<DashboardScreen> createState() => _DashboardScreenState();
-// // }
-
-// // class _DashboardScreenState extends State<DashboardScreen> {
-// //   final CourseService _courseService = CourseService();
-// //   late Stream<List<Map<String, dynamic>>> _coursesStream;
-
-// //   @override
-// //   void initState() {
-// //     // super.initState();
-// //     // _coursesStream = _courseService.getCourses();
-// //   }
-
-// //   @override
-// //   Widget build(BuildContext context) {
-
-
-// //         return Scaffold(
-// //       appBar: AppBar(
-// //         title: const Text(
-// //           "All Courses",
-// //         ),
-// //       ),
-// //       body:  Padding(
-// //         padding: const EdgeInsets.all(16.0),
-// //         child: StreamBuilder<List<Map<String, dynamic>>>(
-// //           stream: _coursesStream,
-// //           builder: (context, snapshot) {
-// //             if (snapshot.connectionState == ConnectionState.waiting) {
-// //               return const Center(child: CircularProgressIndicator());
-// //             }
-// //             if (snapshot.hasError) {
-// //               return Center(child: Text("Error: ${snapshot.error}"));
-// //             }
-// //             if (!snapshot.hasData || snapshot.data!.isEmpty) {
-// //               return const Center(child: Text("No doctors available."));
-// //             }
-
-// //             final doctors = snapshot.data!;
-// //             return GridView.builder(
-// //               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-// //                 crossAxisCount: 2,
-// //                 crossAxisSpacing: 16.0,
-// //                 mainAxisSpacing: 16.0,
-// //               ),
-// //               itemCount: doctors.length,
-// //               itemBuilder: (context, index) {
-// //                 final doctor = doctors[index];
-// //                 return Card(
-// //                   elevation: 5,
-// //                   shape: RoundedRectangleBorder(
-// //                     borderRadius: BorderRadius.circular(15),
-// //                   ),
-// //                   child: Padding(
-// //                     padding: const EdgeInsets.all(12.0),
-// //                     child: Column(
-// //                       mainAxisAlignment: MainAxisAlignment.center,
-// //                       children: [
-// //                         Text(
-// //                           doctor['name'],
-// //                           style: Theme.of(context).textTheme.headlineMedium,
-// //                           textAlign: TextAlign.center,
-// //                         ),
-// //                         const SizedBox(height: 8),
-// //                         Text(
-// //                           doctor['specialization'],
-// //                           style: Theme.of(context).textTheme.bodyLarge,
-// //                           textAlign: TextAlign.center,
-// //                         ),
-// //                         const SizedBox(height: 16),
-// //                         Row(
-// //                           mainAxisAlignment: MainAxisAlignment.spaceAround,
-// //                           children: [
-// //                             Expanded(
-// //                               child: IconButton(
-// //                                 icon: const Icon(Icons.edit),
-// //                                 onPressed: () => _editDoctor(doctor),
-// //                                 // color: Color.fromARGB(255, 186, 124, 236),
-// //                                 iconSize: 28,
-// //                               ),
-// //                             ),
-// //                             Expanded(
-// //                               child: IconButton(
-// //                                 icon: const Icon(Icons.delete),
-// //                                 onPressed: () => _deleteDoctor(doctor['id']),
-// //                                 color: Colors.red,
-// //                                 iconSize: 28,
-// //                               ),
-// //                             ),
-// //                           ],
-// //                         ),
-// //                       ],
-// //                     ),
-// //                   ),
-// //                 );
-// //               },
-// //             );
-// //           },
-// //         ),
-// //       ),
-// //       floatingActionButton: FloatingActionButton(
-// //         onPressed: _addDoctor,
-// //         tooltip: "Add Doctor",
-// //         child: const Icon(Icons.add),
-// //       ),
-// //     );
-// //   }
-// // }
+            final courses = snapshot.data!;
+            return ListView.builder(
+              itemCount: courses.length,
+              itemBuilder: (context, index) {
+                final course = courses[index];
+                return Card(
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Course Name: ${course.name}',
+                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Course Code: ${course.code}',
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Doctor: ${course.drName}',
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Teaching Assistant: ${course.taName}',
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Department: ${course.departmentName}',
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Year: ${course.year}',
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            );
+          },
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, '/add_courses');
+        },
+        tooltip: "add_courses",
+        child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
