@@ -4,7 +4,7 @@ import 'package:mobileprogramming/screens/CourseList.dart';
 import 'package:mobileprogramming/screens/UserScreens/profile.dart';
 
 class DoctorDashboard extends StatefulWidget {
-  final User doctor;
+  final AppUser doctor;
 
   const DoctorDashboard({super.key, required this.doctor});
 
@@ -131,11 +131,8 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                 children: [
                   Text(
                     'Welcome, Doctor ${widget.doctor.name}',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black
-                    ),
+                    style: Theme.of(context).textTheme.titleLarge,
+                    
                   ),
                   SizedBox(height: 16),
                   Expanded(
@@ -159,16 +156,11 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                                 Icon(
                                   Icons.book,
                                   size: 40,
-                                  color: Colors.blue,
                                 ),
                                 SizedBox(height: 8),
                                 Text(
                                   courses[index],
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black
-                                  ),
+                                  style: Theme.of(context).textTheme.titleLarge,
                                 ),
                               ],
                             ),

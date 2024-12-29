@@ -119,7 +119,7 @@ class LoginScreen extends StatelessWidget {
       if (firebaseUser != null) {
         // Fetch user details (e.g., role) from your custom User model
         // var userModel = await AuthService().getUserDetails(firebaseUser.uid);
-        User? userModel = await User.getUserDetails(firebaseUser.uid);
+        AppUser? userModel = await AppUser.getUserDetails(firebaseUser.uid);
 
         // Check if the widget is still in the tree before using context
         if (!context.mounted) return;
