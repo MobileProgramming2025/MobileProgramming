@@ -38,7 +38,7 @@ class _ListUsersScreenState extends State<ListUsersScreen> {
             return Center(
               child: Text(
                 'No users found',
-                style: Theme.of(context).textTheme.displayMedium,
+                style: Theme.of(context).textTheme.bodyLarge,
               ),
             );
           }

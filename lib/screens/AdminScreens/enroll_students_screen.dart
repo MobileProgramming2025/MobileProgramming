@@ -42,7 +42,9 @@ class _EnrollStudentsScreenState extends State<EnrollStudentsScreen> {
   }
 
   void _enroll(){
-    
+   var enrolled_courses =0;
+
+
   }
 
   @override

@@ -25,7 +25,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
     String userId = _uuid.v4();
     final _firstAdded = DateTime.utc(2021, DateTime.november, 9);
     final _currentYear = DateTime.now();
-    final educationYear = _currentYear.year - _firstAdded.year ;
+    final educationYear = _currentYear.year - _firstAdded.year;
 
     User newUser = User(
       id: userId,
@@ -36,7 +36,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
       takenCourses: [],
       enrolledCourses: [],
       addedDate: _firstAdded,
-      year: (educationYear).toString(),
+      year: (educationYear + 1).toString(),
     );
 
     try {
