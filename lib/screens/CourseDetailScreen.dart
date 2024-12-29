@@ -3,7 +3,9 @@ import 'package:mobileprogramming/models/user.dart';
 import 'package:mobileprogramming/screens/Assignment/CreateAssignmentScreen.dart';
 import 'package:mobileprogramming/screens/AssignmentScreens/assignment_list_screen.dart';
 import 'package:mobileprogramming/screens/Quiz/QuizListScreen.dart';
-import 'package:mobileprogramming/screens/Quiz/quiz_creation_screen.dart'; 
+import 'package:mobileprogramming/screens/Quiz/quiz_creation_screen.dart';
+import 'package:mobileprogramming/screens/QuizTrail/QuizListScreen.dart';
+import 'package:mobileprogramming/screens/QuizTrail/quiz_creation_screen.dart'; 
 
 class CourseDetailScreen extends StatelessWidget {
   final String courseId;
