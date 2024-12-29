@@ -69,14 +69,14 @@ class _UserHomeState extends State<UserHome> {
                         Icon(
                           Icons.book,
                           size: 40,
-                          color: Colors.blue,
                         ),
                         SizedBox(height: 8),
                         Text(
                           courses[index],
                           style: TextStyle(
                             fontSize: 16,
-                            fontWeight: FontWeight.bold
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.onPrimaryContainer,
                           ),
                         ),
                       ],

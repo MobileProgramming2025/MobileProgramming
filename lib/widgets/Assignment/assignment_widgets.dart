@@ -2,6 +2,7 @@ import 'package:mobileprogramming/constants.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_sizer/flutter_sizer.dart';
+
 class AssignmentDetailRow extends StatelessWidget {
   const AssignmentDetailRow(
       {super.key, required this.title, required this.statusValue});
@@ -29,7 +30,8 @@ class AssignmentDetailRow extends StatelessWidget {
 }
 
 class AssignmentButton extends StatelessWidget {
-  const AssignmentButton({super.key, required this.title, required this.onPress});
+  const AssignmentButton(
+      {super.key, required this.title, required this.onPress});
   final String title;
   final VoidCallback onPress;
 
@@ -38,12 +40,14 @@ class AssignmentButton extends StatelessWidget {
     return GestureDetector(
       onTap: onPress,
       child: Container(
-     width: 100.w,
+        width: 100.w,
         height: 7.h,
-        
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: const [kSecondaryColor, kPrimaryColor],
+            colors: [
+              Theme.of(context).colorScheme.onPrimaryContainer,
+              Theme.of(context).colorScheme.onSecondaryFixed,
+            ],
             begin: const FractionalOffset(0.0, 0.0),
             end: const FractionalOffset(0.5, 0.0),
             stops: const [0.0, 1.0],
@@ -52,10 +56,7 @@ class AssignmentButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(kDefaultPadding),
         ),
         child: Center(
-          child: Text(
-            title,
-            style: Theme.of(context).textTheme.titleSmall
-          ),
+          child: Text(title, style: Theme.of(context).textTheme.titleSmall),
         ),
       ),
     );

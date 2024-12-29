@@ -5,6 +5,7 @@ import 'package:mobileprogramming/widgets/Assignment/assignment_widgets.dart';
 import 'package:mobileprogramming/screens/Assignment/data/assignment_data.dart';
 import 'package:flutter_sizer/flutter_sizer.dart';
 import 'package:mobileprogramming/constants.dart';
+
 class AssignmentScreen extends StatelessWidget {
   const AssignmentScreen({Key? key}) : super(key: key);
   static String routeName = 'AssignmentScreen';
@@ -12,7 +13,6 @@ class AssignmentScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     
       appBar: AppBar(
         title: Text('Assignments'),
         leading: Builder(
@@ -23,14 +23,13 @@ class AssignmentScreen extends StatelessWidget {
         ),
       ),
       drawer: const UserDrawer(),
-      
- body: Column(
+      body: Column(
         children: [
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                color: kOtherColor,
-               borderRadius: BorderRadius.vertical(
+                color: Theme.of(context).colorScheme.onSecondary,
+                borderRadius: BorderRadius.vertical(
                   top: Radius.circular(20.0), // Replacing kTopBorderRadius
                 ),
               ),
@@ -48,10 +47,12 @@ class AssignmentScreen extends StatelessWidget {
                             decoration: BoxDecoration(
                               borderRadius:
                                   BorderRadius.circular(kDefaultPadding),
-                              color: kOtherColor,
+                              color: Theme.of(context).colorScheme.onSecondary,
                               boxShadow: [
                                 BoxShadow(
-                                  color: kTextLightColor,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onPrimaryContainer,
                                   blurRadius: 2.0,
                                 ),
                               ],
@@ -63,25 +64,25 @@ class AssignmentScreen extends StatelessWidget {
                                   width: 40.w,
                                   height: 4.h,
                                   decoration: BoxDecoration(
-                                    color: kSecondaryColor.withOpacity(0.4),
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onPrimaryContainer
+                                        .withOpacity(0.4),
                                     borderRadius:
                                         BorderRadius.circular(kDefaultPadding),
                                   ),
                                   child: Center(
                                     child: Text(
                                       assignment[index].subjectName,
-                                      style: Theme.of(context).textTheme.bodySmall,
+                                      style:
+                                          Theme.of(context).textTheme.bodySmall,
                                     ),
                                   ),
                                 ),
                                 kHalfSizedBox,
-                                Text(
-                                  assignment[index].topicName,
-                                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                                    color: kTextBlackColor,
-                                    fontWeight: FontWeight.w900,
-                                  ),
-                                ),
+                                Text(assignment[index].topicName,
+                                    style:
+                                        Theme.of(context).textTheme.titleLarge,),
                                 kHalfSizedBox,
                                 AssignmentDetailRow(
                                   title: 'Assign Date',
