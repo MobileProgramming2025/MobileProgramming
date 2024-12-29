@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart'; // Import for Firebase Authentication
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AddEditAssignmentScreen extends StatefulWidget {
   final String courseId;
   final String? assignmentId;
+  final Future<void> Function() onAssignmentAdded;
+  final Future<void> Function() onAssignmentUpdated;
 
-  const AddEditAssignmentScreen({super.key, required this.courseId, this.assignmentId});
+  const AddEditAssignmentScreen({
+    Key? key,
+    required this.courseId,
+    this.assignmentId,
+    required this.onAssignmentAdded,
+    required this.onAssignmentUpdated,
+  }) : super(key: key);
 
   @override
   State<AddEditAssignmentScreen> createState() => _AddEditAssignmentScreenState();
@@ -66,9 +74,10 @@ class _AddEditAssignmentScreenState extends State<AddEditAssignmentScreen> {
           'title': _title,
           'description': _description,
           'dueDateTime': dueDateTime,
-          'createdBy': user.uid, // Include the logged-in user's UID
-          'createdAt': FieldValue.serverTimestamp(), // Optional: Track creation time
+          'createdBy': user.uid,
+          'createdAt': FieldValue.serverTimestamp(),
         });
+        await widget.onAssignmentAdded(); // Trigger the callback
       } else {
         // Update an existing assignment
         await FirebaseFirestore.instance
@@ -78,9 +87,10 @@ class _AddEditAssignmentScreenState extends State<AddEditAssignmentScreen> {
           'title': _title,
           'description': _description,
           'dueDateTime': dueDateTime,
-          'updatedBy': user.uid, // Track the user who updated
-          'updatedAt': FieldValue.serverTimestamp(), // Optional: Track update time
+          'updatedBy': user.uid,
+          'updatedAt': FieldValue.serverTimestamp(),
         });
+        await widget.onAssignmentUpdated(); // Trigger the callback
       }
 
       if (!mounted) return;
