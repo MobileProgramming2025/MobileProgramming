@@ -22,6 +22,7 @@ class DoctorService {
     }
   }
 
+//Each data item in the stream is a list of maps. Each map represents a doctor’s details.
   Stream<List<Map<String, dynamic>>> fetchDoctors() {
     return _firestore.collection('doctors').snapshots().map((snapshot) {
       return snapshot.docs.map((doc) {
