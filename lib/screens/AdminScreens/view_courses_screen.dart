@@ -1,21 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:mobileprogramming/models/Course.dart';
+import 'package:mobileprogramming/widgets/Course/courses_list.dart';
 
-class ViewCoursesScreen extends StatefulWidget {
+class ViewCoursesScreen extends StatelessWidget {
   const ViewCoursesScreen({super.key});
-
-  @override
-  State<ViewCoursesScreen> createState() => _ViewCoursesScreenState();
-}
-
-class _ViewCoursesScreenState extends State<ViewCoursesScreen> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  void _addCourse() {
-    Navigator.pushNamed(context, '/add_courses_screen');
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,15 +11,18 @@ class _ViewCoursesScreenState extends State<ViewCoursesScreen> {
       appBar: AppBar(
         title: const Text(
           "All Courses",
-          style: TextStyle(color: Colors.white),
         ),
-     //   backgroundColor: const Color.fromARGB(255, 248, 128, 18),
+      ),
+      body: CoursesList( 
+        
+        courses: [
+          
+        ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _addCourse,
-   //     backgroundColor: Color.fromARGB(255, 248, 128, 18),
-        tooltip: "Add Doctor",
-        child: const Icon(Icons.add, color: Colors.white),
+        onPressed: () {},
+        tooltip: "add_courses",
+        child: const Icon(Icons.add),
       ),
     );
   }
