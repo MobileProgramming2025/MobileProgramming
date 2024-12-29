@@ -23,7 +23,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
     final _currentYear = DateTime.now();
     final educationYear = _currentYear.year - _firstAdded.year ;
 
-    AppUser newUser = AppUser(
+    User newUser = User(
       id: userId,
       name: _nameController.text.trim(),
       email: _emailController.text.trim(),

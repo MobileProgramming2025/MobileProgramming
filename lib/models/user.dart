@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mobileprogramming/models/Course.dart';
 
-class AppUser {
+class User {
   final String id;
   final String name;
   final String email;
@@ -62,7 +62,7 @@ class AppUser {
   }
 
   // Retrieve all users from Firestore
-  static Future<List<AppUser>> getAllUsers() async {
+  static Future<List<User>> getAllUsers() async {
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
     final QuerySnapshot querySnapshot =
         await firestore.collection('users').get();
@@ -72,14 +72,14 @@ class AppUser {
   }
 
   // Retrieve a user by ID from Firestore
-  static Future<AppUser?> getUserDetails(String id) async {
+  static Future<User?> getUserDetails(String id) async {
     try {
       final FirebaseFirestore firestore = FirebaseFirestore.instance;
       final DocumentSnapshot<Map<String, dynamic>> docSnapshot =
           await firestore.collection('users').doc(id).get();
 
       if (docSnapshot.exists && docSnapshot.data() != null) {
-        return AppUser.fromMap(docSnapshot.data()!);
+        return User.fromMap(docSnapshot.data()!);
       } else {
         print('User with ID $id not found in Firestore.');
         return null;

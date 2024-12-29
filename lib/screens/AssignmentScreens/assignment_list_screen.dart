@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'add_edit_assignment_screen.dart';
-import 'package:mobileprogramming/models/user.dart';
+// import 'package:mobileprogramming/models/user.dart' as AppUser;
 
 class AssignmentListScreen extends StatefulWidget {
   final String courseId;
