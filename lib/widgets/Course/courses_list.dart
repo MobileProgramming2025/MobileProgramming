@@ -19,6 +19,7 @@ class CoursesList extends StatelessWidget {
       itemBuilder: (context, index) => ListTile(
         title: Text(courses[index].name,
             style: Theme.of(context).textTheme.headlineMedium),
+        
       ),
     );
   }

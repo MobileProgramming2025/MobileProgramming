@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/Course.dart';
-import 'package:mobileprogramming/screens/AdminScreens/add_courses_screen.dart';
 import 'package:mobileprogramming/widgets/Course/courses_list.dart';
 
 class ViewCoursesScreen extends StatelessWidget {
@@ -14,15 +13,12 @@ class ViewCoursesScreen extends StatelessWidget {
           "All Courses",
         ),
       ),
-      body: CoursesList( 
-        
-        courses: [
-          
-        ],
+      body: CoursesList(
+        courses: [],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushNamed(context,'/add_courses');
+          Navigator.pushNamed(context, '/add_courses');
         },
         tooltip: "add_courses",
         child: const Icon(Icons.add),
