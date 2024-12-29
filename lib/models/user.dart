@@ -53,9 +53,11 @@ class User {
       takenCourses: (map['taken_courses'] as List<dynamic>? ?? [])
           .map((e) => Course.fromMap(e as Map<String, dynamic>))
           .toList(),
-      addedDate: map['added_date'] != null
-          ? DateTime.parse(map['added_date'] as String)
-          : DateTime.now(), // Default to current date
+      addedDate: map['added_date'] is Timestamp
+          ? (map['added_date'] as Timestamp).toDate() // Convert Timestamp to DateTime
+          : (map['added_date'] is String
+              ? DateTime.parse(map['added_date'] as String) // Parse String to DateTime
+              : DateTime.now()), // Default to current date
       year: map['year'] as String? ?? 'Unknown',
     );
   }
