@@ -28,8 +28,12 @@ class _ViewCoursesScreenState extends State<ViewCoursesScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: FutureBuilder(
+          //Helps you handle asynchronous data fetching, db query
           future: _futureCourses,
-          builder: (BuildContext context, AsyncSnapshot<List<Course>> snapshot) {
+
+          builder:
+              (BuildContext context, AsyncSnapshot<List<Course>> snapshot) {
+            //snapshot -> represent the current state Future
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
                 child: CircularProgressIndicator(),
@@ -53,7 +57,7 @@ class _ViewCoursesScreenState extends State<ViewCoursesScreen> {
               itemBuilder: (context, index) {
                 final course = courses[index];
                 return Card(
-                  elevation: 4,
+                  elevation: 4, //shadow effect
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -63,11 +67,9 @@ class _ViewCoursesScreenState extends State<ViewCoursesScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Course Name: ${course.name}',
-                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                              ),
+                          course.name,
+                          style:
+                              Theme.of(context).textTheme.headlineMedium,
                         ),
                         const SizedBox(height: 8),
                         Text(
