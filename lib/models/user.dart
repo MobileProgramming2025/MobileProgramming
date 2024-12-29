@@ -12,7 +12,7 @@ class User {
   final DateTime addedDate;
   final String year;
 
-  AppUser({
+  User({
     required this.id,
     required this.name,
     required this.email,
@@ -40,8 +40,8 @@ class User {
   }
 
   // Create a User object from Firestore Map
-  static AppUser fromMap(Map<String, dynamic> map) {
-    return AppUser(
+  static User fromMap(Map<String, dynamic> map) {
+    return User(
       id: map['id'] as String? ?? '', // provide default value if null
       name: (map['name'] as String?) ??
           map['email'].split('@')[0], // Default to email before '@'
@@ -67,7 +67,7 @@ class User {
     final QuerySnapshot querySnapshot =
         await firestore.collection('users').get();
     return querySnapshot.docs
-        .map((doc) => AppUser.fromMap(doc.data() as Map<String, dynamic>))
+        .map((doc) => User.fromMap(doc.data() as Map<String, dynamic>))
         .toList();
   }
 
