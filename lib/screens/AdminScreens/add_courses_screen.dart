@@ -1,14 +1,37 @@
 import 'package:flutter/material.dart';
 
-class AddCoursesScreen extends StatelessWidget {
+class AddCoursesScreen extends StatefulWidget {
   const AddCoursesScreen({super.key});
+
+  @override
+  State<AddCoursesScreen> createState() {
+    return _AddCoursesScreenState();
+  }
+}
+
+class _AddCoursesScreenState extends State<AddCoursesScreen> {
+  final _nameController = TextEditingController();
+  final _codeController = TextEditingController();
+  final _drNameController = TextEditingController();
+  final _taNameController = TextEditingController();
+  final _yearController = TextEditingController();
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _codeController.dispose();
+    _drNameController.dispose();
+    _taNameController.dispose();
+    _yearController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "Add Course",
+          "Add New Course",
         ),
       ),
       body: Center(
@@ -24,6 +47,7 @@ class AddCoursesScreen extends StatelessWidget {
                       labelText: 'Course Name',
                       border: OutlineInputBorder(),
                     ),
+                    controller: _nameController,
                   ),
                   SizedBox(height: 16),
                   TextFormField(
@@ -31,6 +55,7 @@ class AddCoursesScreen extends StatelessWidget {
                       labelText: 'Course Code',
                       border: OutlineInputBorder(),
                     ),
+                    controller: _codeController,
                   ),
                   SizedBox(height: 16),
                   TextFormField(
@@ -38,6 +63,7 @@ class AddCoursesScreen extends StatelessWidget {
                       labelText: 'Lecturer Name',
                       border: OutlineInputBorder(),
                     ),
+                    controller: _drNameController,
                   ),
                   SizedBox(height: 16),
                   TextFormField(
@@ -45,6 +71,7 @@ class AddCoursesScreen extends StatelessWidget {
                       labelText: 'Teaching Assistant Name',
                       border: OutlineInputBorder(),
                     ),
+                    controller: _taNameController,
                   ),
                   SizedBox(height: 16),
                   TextFormField(
@@ -53,6 +80,7 @@ class AddCoursesScreen extends StatelessWidget {
                       border: OutlineInputBorder(),
                     ),
                     keyboardType: TextInputType.number,
+                    controller: _yearController,
                   ),
                   SizedBox(height: 20),
                   Center(

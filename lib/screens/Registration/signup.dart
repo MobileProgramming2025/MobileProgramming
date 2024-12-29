@@ -38,11 +38,14 @@ class SignUpScreen extends StatelessWidget {
                     border: OutlineInputBorder(),
                   ),
                   controller: passwordController,
-                  //isPassword: true,
+                  obscureText: true,
                 ),
                 SizedBox(height: 30),
                 ElevatedButton(
-                  child: Text("Sign Up"),
+                  child: Text(
+                    "Sign Up",
+                    style: TextStyle(fontSize: 20),
+                  ),
                   onPressed: () async {
                     final email = emailController.text.trim();
                     final password = passwordController.text.trim();

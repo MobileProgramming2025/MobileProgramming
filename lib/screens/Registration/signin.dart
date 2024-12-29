@@ -70,7 +70,10 @@ class LoginScreen extends StatelessWidget {
 
                 // Login Button
                 ElevatedButton(
-                  child: Text("Login"),
+                  child: Text(
+                    "Login",
+                    style: TextStyle(fontSize: 20),
+                  ),
                   onPressed: () => _handleLogin(context),
                 ),
 

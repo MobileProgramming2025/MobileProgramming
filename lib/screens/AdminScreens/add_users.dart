@@ -7,7 +7,6 @@ class AddUserScreen extends StatefulWidget {
 
   @override
   State<AddUserScreen> createState() => _AddUserScreenState();
-
 }
 
 class _AddUserScreenState extends State<AddUserScreen> {
@@ -34,16 +33,12 @@ class _AddUserScreenState extends State<AddUserScreen> {
       // Check if the widget is still in the tree before using context
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('User added successfully!')
-        ),
+        SnackBar(content: Text('User added successfully!')),
       );
       _clearFields();
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Failed to add user: $e')
-        ),
+        SnackBar(content: Text('Failed to add user: $e')),
       );
     }
   }
@@ -62,7 +57,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
         title: Text('Add a user'),
       ),
       body: Center(
-        child: Padding (
+        child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Form(
             child: SingleChildScrollView(
@@ -78,7 +73,6 @@ class _AddUserScreenState extends State<AddUserScreen> {
                     ),
                   ),
                   SizedBox(height: 16),
-
                   TextFormField(
                     controller: _emailController,
                     decoration: InputDecoration(
@@ -88,7 +82,6 @@ class _AddUserScreenState extends State<AddUserScreen> {
                     keyboardType: TextInputType.emailAddress,
                   ),
                   SizedBox(height: 16),
-
                   TextFormField(
                     controller: _roleController,
                     decoration: InputDecoration(
@@ -97,7 +90,6 @@ class _AddUserScreenState extends State<AddUserScreen> {
                     ),
                   ),
                   SizedBox(height: 16),
-
                   TextFormField(
                     controller: _departmentController,
                     decoration: InputDecoration(
@@ -106,11 +98,13 @@ class _AddUserScreenState extends State<AddUserScreen> {
                     ),
                   ),
                   SizedBox(height: 20),
-
                   Center(
                     child: ElevatedButton(
                       onPressed: _addUser,
-                      child: Text('Add User')
+                      child: Text(
+                        'Add User',
+                        style: TextStyle(fontSize: 20),
+                      ),
                     ),
                   ),
                 ],
