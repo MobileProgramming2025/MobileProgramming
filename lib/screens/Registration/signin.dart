@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+import 'package:mobileprogramming/screens/UserScreens/user_home.dart';
 import 'package:mobileprogramming/screens/doctorScreens/doctor_dashboard.dart';
 import 'package:mobileprogramming/services/auth_service.dart';
 import 'package:mobileprogramming/models/user.dart';
@@ -119,7 +120,7 @@ class LoginScreen extends StatelessWidget {
       if (firebaseUser != null) {
         // Fetch user details (e.g., role) from your custom User model
         // var userModel = await AuthService().getUserDetails(firebaseUser.uid);
-        AppUser? userModel = await AppUser.getUserDetails(firebaseUser.uid);
+        User? userModel = await User.getUserDetails(firebaseUser.uid);
 
         // Check if the widget is still in the tree before using context
         if (!context.mounted) return;
@@ -138,6 +139,12 @@ class LoginScreen extends StatelessWidget {
             Navigator.pushNamed(context, '/admin_home');
           } else {
             Navigator.pushNamed(context, '/user_home');
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(
+            //     builder: (context) => UserHome(/*user: userModel*/),
+            //   ),
+            // );
           }
         }
       }

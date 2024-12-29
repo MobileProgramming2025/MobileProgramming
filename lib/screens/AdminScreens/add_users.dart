@@ -19,13 +19,20 @@ class _AddUserScreenState extends State<AddUserScreen> {
 
   Future<void> _addUser() async {
     String userId = _uuid.v4();
+    final _firstAdded = DateTime.utc(2021, DateTime.november, 9);
+    final _currentYear = DateTime.now();
+    final educationYear = _currentYear.year - _firstAdded.year ;
 
-    AppUser newUser = AppUser(
+    User newUser = User(
       id: userId,
       name: _nameController.text.trim(),
       email: _emailController.text.trim(),
       role: _roleController.text.trim(),
       department: _departmentController.text.trim(),
+      takenCourses: [],
+      enrolledCourses: [],
+      addedDate: _firstAdded,
+      year: (educationYear).toString(),
     );
 
     try {

@@ -210,7 +210,7 @@ class _AddCoursesScreenState extends State<AddCoursesScreen> {
                     },
                   ),
                   SizedBox(height: 20),
-                  Center(
+                  Center( 
                     child: ElevatedButton(
                       onPressed: _submit,
                       child: Text(
