@@ -148,6 +148,7 @@ class MyApp extends StatelessWidget {
           '/Doctor-dashboard':(context)=>DoctorDashboard(),
           '/add_courses': (context) => AddCoursesScreen(),
           '/view_courses': (context) => ViewCoursesScreen(),
+          '/create-assignment' : (context)=>CourseListPage()
         },
       );
     });

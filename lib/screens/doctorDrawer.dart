@@ -49,7 +49,7 @@ class DoctorDrawer extends StatelessWidget {
             leading: Icon(Icons.assignment_add),
             title: Text('Create Assignment'),
             onTap: () {
-              Navigator.pushNamed(context, '/create_assignment');
+              Navigator.pushNamed(context, '/create-assignment');
             },
           ),
           ListTile(
