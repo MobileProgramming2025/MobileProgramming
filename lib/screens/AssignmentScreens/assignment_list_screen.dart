@@ -6,6 +6,7 @@ import 'add_edit_assignment_screen.dart';
 
 class AssignmentListScreen extends StatefulWidget {
   final String courseId;
+   //final User doctor;
 
   const AssignmentListScreen({super.key, required this.courseId});
 
@@ -110,7 +111,7 @@ void _confirmDelete(BuildContext context, String assignmentId) {
           ),
         ),
       ),
-      // drawer: const DoctorDrawer(),
+     // drawer: const DoctorDrawer(user: widget.doctor),
      body: ListView.builder(
         itemCount: _assignments.length,
         itemBuilder: (context, index) {
