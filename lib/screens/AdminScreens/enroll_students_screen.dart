@@ -41,6 +41,10 @@ class _EnrollStudentsScreenState extends State<EnrollStudentsScreen> {
     super.dispose();
   }
 
+  void _enroll(){
+    
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,27 +62,15 @@ class _EnrollStudentsScreenState extends State<EnrollStudentsScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Row(
-                  //   children: [
-                  //     TextFormField(
-                  //       decoration: InputDecoration(
-                  //         labelText: 'Choose Education Year...',
-                  //         border: OutlineInputBorder(),
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
-                  // SizedBox(height: 16),
-                  // SizedBox(height: 20),
-                  // Center(
-                  //   child: ElevatedButton(
-                  //     onPressed: () {},
-                  //     child: Text(
-                  //       'Add Course',
-                  //       style: TextStyle(fontSize: 20),
-                  //     ),
-                  //   ),
-                  // ),
+                  Center(
+                    child: ElevatedButton(
+                      onPressed: _enroll,
+                      child: Text(
+                        'Enroll Students To Courses',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),

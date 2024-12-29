@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mobileprogramming/models/Course.dart';
 
 class User {
   final String id;
@@ -6,7 +7,8 @@ class User {
   final String email;
   final String role;
   final String department;
-  // final List<Course> courses;
+  final List<Course> enrolledCourses;
+  final List<Course> takenCourses;
   
   User({
     required this.id,
@@ -14,7 +16,8 @@ class User {
     required this.email,
     required this.role,
     required this.department,
-    // required this.courses,
+    required this.enrolledCourses,
+    required this.takenCourses,
   });
 
   // Convert a User object to a Map for Firestore
@@ -25,9 +28,11 @@ class User {
       'email': email,
       'role': role,
       'department': department,
+      'enrolled_courses': enrolledCourses,
+      'taken_courses': takenCourses,
     };
   }
-
+ 
   // Create a User object from Firestore Map
   static User fromMap(Map<String, dynamic> map) {
     return User(
@@ -36,6 +41,8 @@ class User {
       email: map['email'] as String? ?? '', 
       role: map['role'] as String? ?? 'Unknown',
       department: map['department'] as String? ?? 'Unknown',
+      enrolledCourses: map['enrolledCourses'] ?? [],
+      takenCourses: map['takenCourses'] ?? [],
     );
   }
 
