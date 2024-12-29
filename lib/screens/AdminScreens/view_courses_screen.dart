@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mobileprogramming/models/Course.dart';
 import 'package:mobileprogramming/widgets/Course/courses_list.dart';
 
 class ViewCoursesScreen extends StatelessWidget {
