@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/user.dart';
-import 'package:mobileprogramming/screens/doctorDrawer.dart';
+import 'package:mobileprogramming/screens/partials/doctorDrawer.dart';
 
 class DoctorProfile extends StatefulWidget {
   final User doctor;

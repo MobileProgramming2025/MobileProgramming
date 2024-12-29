@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mobileprogramming/screens/doctorDrawer.dart';
+import 'package:mobileprogramming/screens/partials/doctorDrawer.dart';
 
 class DoctorDashboard extends StatefulWidget {
   const DoctorDashboard({super.key});
