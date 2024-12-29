@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mobileprogramming/screens/partials/userDrawer.dart';
 // import 'package:sizer/sizer.dart';
 import 'package:mobileprogramming/widgets/Assignment/assignment_widgets.dart';
 import 'package:mobileprogramming/screens/Assignment/data/assignment_data.dart';
@@ -22,7 +21,6 @@ class AssignmentScreen extends StatelessWidget {
           ),
         ),
       ),
-      drawer: const UserDrawer(),
       body: Column(
         children: [
           Expanded(
