@@ -8,7 +8,11 @@ import 'package:mobileprogramming/screens/AdminScreens/add_users.dart';
 import 'package:mobileprogramming/screens/AdminScreens/admin_dashboard.dart';
 import 'package:mobileprogramming/screens/AdminScreens/list_users.dart';
 import 'package:mobileprogramming/screens/AdminScreens/view_courses_screen.dart';
-import 'package:mobileprogramming/screens/Assignment/assignment_list_screen.dart';
+import 'package:mobileprogramming/screens/AssignmentScreens/assignment_list_screen.dart';
+//import 'package:mobileprogramming/screens/Assignment/assignment_list_screen.dart';
+//import 'package:mobileprogramming/screens/AssignmentScreens/create_assignment_screen.dart';
+import 'package:mobileprogramming/screens/CourseList.dart';
+//import 'package:mobileprogramming/screens/CourseList.dart';
 import 'package:mobileprogramming/screens/Quiz/quiz_creation_screen.dart';
 import 'package:mobileprogramming/screens/Registration/signin.dart';
 import 'package:mobileprogramming/screens/Registration/signup.dart';
@@ -18,7 +22,6 @@ import 'package:mobileprogramming/screens/onboarding_screen.dart';
 import 'package:mobileprogramming/screens/Assignment/assignment_screen.dart';
 
 import 'package:flutter_sizer/flutter_sizer.dart';
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -135,17 +138,19 @@ class MyApp extends StatelessWidget {
           '/login': (context) => LoginScreen(),
           '/signin': (context) => LoginScreen(),
           '/signup': (context) => SignUpScreen(),
-          '/user_home': (context) => UserHomeScreen(),
+          '/user_home': (context) => UserHome(),
           '/admin_home': (context) => AdminDashboard(),
           '/doctor_dashboard': (context) => DoctorDashboard(),
           '/add_users': (context) => AddUserScreen(),
           '/list_users': (context) => ListUsersScreen(),
           '/create_assignment': (context) =>
               AssignmentListScreen(courseId: "course123"),
+       
           '/assignment_screen': (context) => AssignmentScreen(),
-          '/createQuiz': (context) => QuizCreationScreen(),
+          '/createQuiz': (context) => CourseListPage(),
           '/add-doctor': (context) => AddDoctorScreen(),
           '/Doctors Dashboard': (context) => DashboardScreen(),
+          '/Doctor-dashboard':(context)=>DoctorDashboard(),
           '/add_courses': (context) => AddCoursesScreen(),
           '/view_courses': (context) => ViewCoursesScreen(),
         },

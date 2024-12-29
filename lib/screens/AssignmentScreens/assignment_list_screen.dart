@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:mobileprogramming/constants.dart';
 import 'package:mobileprogramming/screens/doctorDrawer.dart';
-import 'package:mobileprogramming/screens/userDrawer.dart';
 import 'add_edit_assignment_screen.dart';
 
 class AssignmentListScreen extends StatefulWidget {
   final String courseId;
 
-  const AssignmentListScreen({super.key, required this.courseId});
+  const AssignmentListScreen({Key? key, required this.courseId}) : super(key: key);
 
   @override
   State<AssignmentListScreen> createState() => _AssignmentListScreenState();
 }
 
 class _AssignmentListScreenState extends State<AssignmentListScreen> {
+  final User? _currentUser = FirebaseAuth.instance.currentUser; // Current logged-in user
   List<Map<String, dynamic>> _assignments = [];
 
   @override
@@ -23,45 +25,30 @@ class _AssignmentListScreenState extends State<AssignmentListScreen> {
   }
 
   void _fetchAssignments() async {
+  if (_currentUser == null) return; // Ensure user is logged in
+  try {
     final snapshot = await FirebaseFirestore.instance
         .collection('assignments')
         .where('courseId', isEqualTo: widget.courseId)
+        .where('createdBy', isEqualTo: _currentUser!.uid) 
         .get();
+
     setState(() {
-      _assignments = snapshot.docs
-          .map((doc) => {'id': doc.id, ...doc.data()})
-          .toList();
+      _assignments = snapshot.docs.map((doc) => {'id': doc.id, ...doc.data()}).toList();
     });
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Failed to fetch assignments: $e')),
+    );
   }
-
-  void _deleteAssignment(String assignmentId) async {
-    try {
-      await FirebaseFirestore.instance
-          .collection('assignments')
-          .doc(assignmentId)
-          .delete();
-      setState(() {
-        _assignments.removeWhere((assignment) => assignment['id'] == assignmentId);
-      });
-      // Check if the widget is still in the tree before using context
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Assignment deleted successfully!')),
-      );
-    } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to delete assignment: $error')),
-      );
-    }
-  }
-
-  void _confirmDelete(BuildContext context, String assignmentId) {
+}
+void _confirmDelete(BuildContext context, String assignmentId) {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Delete Assignment'),
-          content: Text('Are you sure you want to delete this assignment?'),
+          title: Text('Delete Assignment', style: TextStyle(color: const Color.fromARGB(255, 10, 1, 0))),
+          content: Text('Are you sure you want to delete this assignment?' , style: TextStyle(color: Colors.grey[700])),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
@@ -79,25 +66,45 @@ class _AssignmentListScreenState extends State<AssignmentListScreen> {
       },
     );
   }
+  void _deleteAssignment(String assignmentId) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('assignments')
+          .doc(assignmentId)
+          .delete();
+      setState(() {
+        _assignments.removeWhere((assignment) => assignment['id'] == assignmentId);
+      });
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Assignment deleted successfully!')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to delete assignment: $e')),
+      );
+    }
+  }
 
   void _navigateToAddEditAssignment({String? assignmentId}) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => AddEditAssignmentScreen(
-          courseId: widget.courseId,
-          assignmentId: assignmentId,
-        ),
-      ),
-    ).then((_) => _fetchAssignments());
+    Navigator.of(context)
+        .push(
+          MaterialPageRoute(
+            builder: (context) => AddEditAssignmentScreen(
+              courseId: widget.courseId,
+              assignmentId: assignmentId,
+            ),
+          ),
+        )
+        .then((_) => _fetchAssignments());
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-    
       appBar: AppBar(
         title: Text('Assignments'),
-        leading: Builder(
+       leading: Builder(
           builder: (context) => IconButton(
             icon: Icon(Icons.menu),
             onPressed: () => Scaffold.of(context).openDrawer(),
@@ -105,8 +112,7 @@ class _AssignmentListScreenState extends State<AssignmentListScreen> {
         ),
       ),
       drawer: const DoctorDrawer(),
-      
-      body: ListView.builder(
+     body: ListView.builder(
         itemCount: _assignments.length,
         itemBuilder: (context, index) {
           final assignment = _assignments[index];
