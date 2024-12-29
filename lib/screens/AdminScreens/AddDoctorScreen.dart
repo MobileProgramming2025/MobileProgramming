@@ -40,8 +40,7 @@ class AddDoctorScreen extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
-          key:
-              _formKey, //By attaching the _formKey to a Form, you can now control and validate all the input fields inside that Form.
+          key: _formKey, // _formKey bykhali ybaa fe validation to the input.
           child: Column(
             children: [
               TextFormField(
