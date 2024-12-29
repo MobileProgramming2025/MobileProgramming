@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+import 'package:mobileprogramming/screens/UserScreens/user_home.dart';
 import 'package:mobileprogramming/screens/doctorScreens/doctor_dashboard.dart';
 import 'package:mobileprogramming/services/auth_service.dart';
 import 'package:mobileprogramming/models/user.dart';
@@ -138,6 +139,12 @@ class LoginScreen extends StatelessWidget {
             Navigator.pushNamed(context, '/admin_home');
           } else {
             Navigator.pushNamed(context, '/user_home');
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => UserHome(/*user: userModel*/),
+              ),
+            );
           }
         }
       }
