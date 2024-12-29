@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart'; // For date formatting
 
-class DatePickerField extends StatefulWidget {
+class DateTimePickerField extends StatelessWidget {
   final String label;
   final DateTime initialDateTime;
   final ValueChanged<DateTime> onDateTimeChanged;
 
-  const DatePickerField({
+  const DateTimePickerField({
     super.key,
     required this.label,
     required this.initialDateTime,
@@ -14,66 +14,38 @@ class DatePickerField extends StatefulWidget {
   });
 
   @override
-  State<DatePickerField> createState() => _DatePickerFieldState();
-}
-
-class _DatePickerFieldState extends State<DatePickerField> {
-  late TextEditingController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = TextEditingController(
-      text: DateFormat('yyyy-MM-dd HH:mm').format(widget.initialDateTime),
-    );
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  Future<void> _selectDateTime(BuildContext context) async {
-    final DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: widget.initialDateTime,
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2100),
-    );
-
-    if (pickedDate == null) return;
-
-    final TimeOfDay? pickedTime = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.fromDateTime(widget.initialDateTime),
-    );
-
-    if (pickedTime == null) return;
-
-    final DateTime selectedDateTime = DateTime(
-      pickedDate.year,
-      pickedDate.month,
-      pickedDate.day,
-      pickedTime.hour,
-      pickedTime.minute,
-    );
-
-    _controller.text = DateFormat('yyyy-MM-dd HH:mm').format(selectedDateTime);
-    widget.onDateTimeChanged(selectedDateTime);
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => _selectDateTime(context),
-      child: TextField(
-        controller: _controller,
-        enabled: false,
-        decoration: InputDecoration(
-          labelText: widget.label,
-        ),
-      ),
+    return ListTile(
+      title: Text(label),
+      subtitle: Text(DateFormat('yyyy-MM-dd HH:mm').format(initialDateTime)),
+      trailing: const Icon(Icons.calendar_today),
+      onTap: () async {
+        // Show Date Picker
+        DateTime? pickedDate = await showDatePicker(
+          context: context,
+          initialDate: initialDateTime,
+          firstDate: DateTime(2000),
+          lastDate: DateTime(2100),
+        );
+        if (pickedDate != null) {
+          // Show Time Picker after date is selected
+          TimeOfDay? pickedTime = await showTimePicker(
+            context: context,
+            initialTime: TimeOfDay.fromDateTime(initialDateTime),
+          );
+          if (pickedTime != null) {
+            // Combine the selected date and time into a single DateTime object
+            DateTime newDateTime = DateTime(
+              pickedDate.year,
+              pickedDate.month,
+              pickedDate.day,
+              pickedTime.hour,
+              pickedTime.minute,
+            );
+            onDateTimeChanged(newDateTime);
+          }
+        }
+      },
     );
   }
 }

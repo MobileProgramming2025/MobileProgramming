@@ -13,17 +13,24 @@ class _CourseListPageState extends State<CourseListPage> {
   final CourseService _courseService = CourseService();
   List<Map<String, dynamic>> _courses = [];
 
+  // Fetch courses only
   Future<void> _fetchCourses() async {
-    final courses = await _courseService.getCourses();
-    setState(() {
-      _courses = courses;
-    });
+    try {
+      final courses = await _courseService.getCourses();  // Fetch courses only
+      setState(() {
+        _courses = courses; // Store the courses in the state
+      });
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error fetching courses: $error')),
+      );
+    }
   }
 
   @override
   void initState() {
     super.initState();
-    _fetchCourses();
+    _fetchCourses();  // Fetch courses when the page loads
   }
 
   @override
@@ -35,35 +42,30 @@ class _CourseListPageState extends State<CourseListPage> {
           IconButton(
             icon: Icon(Icons.add),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      AddCourseScreen(onCourseAdded: _fetchCourses),
-                ),
-              );
+             
             },
           ),
         ],
       ),
-      body: ListView.builder(
-        itemCount: _courses.length,
-        itemBuilder: (context, index) {
-          final course = _courses[index];
-          return ListTile(
-            title: Text(course['name']),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      CourseDetailScreen(courseId: course['id']),
-                ),
-              );
-            },
-          );
-        },
-      ),
+      body: _courses.isEmpty
+          ? Center(child: CircularProgressIndicator())  // Show loading indicator while fetching
+          : ListView.builder(
+              itemCount: _courses.length,
+              itemBuilder: (context, index) {
+                final course = _courses[index];
+                return ListTile(
+                  title: Text(course['name'] ?? 'No Name'),  // Display course name
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CourseDetailScreen(courseId: course['id']),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
     );
   }
 }
@@ -84,7 +86,7 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
   void _addCourse() async {
     String courseName = _courseNameController.text.trim();
     if (courseName.isNotEmpty) {
-      //await _courseService.addCourse(courseName);
+      await _courseService.addCourse(courseName);
       widget.onCourseAdded(); // Update the course list in the parent widget
       Navigator.pop(context); // Go back to the course list page
     } else {

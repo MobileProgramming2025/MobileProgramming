@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:mobileprogramming/constants.dart';
 import 'package:mobileprogramming/screens/partials/doctorDrawer.dart';
 import 'add_edit_assignment_screen.dart';
 
 class AssignmentListScreen extends StatefulWidget {
   final String courseId;
 
-  const AssignmentListScreen({Key? key, required this.courseId}) : super(key: key);
+  const AssignmentListScreen({super.key, required this.courseId});
 
   @override
   State<AssignmentListScreen> createState() => _AssignmentListScreenState();
@@ -29,8 +28,8 @@ class _AssignmentListScreenState extends State<AssignmentListScreen> {
   try {
     final snapshot = await FirebaseFirestore.instance
         .collection('assignments')
-        .where('courseId', isEqualTo: widget.courseId)
-        .where('createdBy', isEqualTo: _currentUser!.uid) 
+        .where('courseId', isEqualTo: widget.courseId) // Filter by courseId
+        .where('createdBy', isEqualTo: _currentUser!.uid)
         .get();
 
     setState(() {
@@ -111,7 +110,7 @@ void _confirmDelete(BuildContext context, String assignmentId) {
           ),
         ),
       ),
-      drawer: const DoctorDrawer(),
+      // drawer: const DoctorDrawer(),
      body: ListView.builder(
         itemCount: _assignments.length,
         itemBuilder: (context, index) {

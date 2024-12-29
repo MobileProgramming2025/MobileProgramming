@@ -137,7 +137,7 @@ class MyApp extends StatelessWidget {
           '/signup': (context) => SignUpScreen(),
           '/user_home': (context) => UserHome(),
           '/admin_home': (context) => AdminDashboard(),
-          '/doctor_dashboard': (context) => DoctorDashboard(),
+          // '/doctor_dashboard': (context) => DoctorDashboard(),
           '/add_users': (context) => AddUserScreen(),
           '/list_users': (context) => ListUsersScreen(),
           '/create_assignment': (context) => AssignmentListScreen(courseId: "course123"),
@@ -145,9 +145,10 @@ class MyApp extends StatelessWidget {
           '/createQuiz': (context) => CourseListPage(),
           '/add-doctor': (context) => AddDoctorScreen(),
           '/Doctors Dashboard': (context) => DashboardScreen(),
-          '/Doctor-dashboard':(context)=>DoctorDashboard(),
+          // '/Doctor-dashboard':(context)=>DoctorDashboard(),
           '/add_courses': (context) => AddCoursesScreen(),
           '/view_courses': (context) => ViewCoursesScreen(),
+          '/create-assignment' : (context)=>CourseListPage()
         },
       );
     });
