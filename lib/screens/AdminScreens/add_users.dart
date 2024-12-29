@@ -20,7 +20,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
   Future<void> _addUser() async {
     String userId = _uuid.v4();
 
-    User newUser = User(
+    AppUser newUser = AppUser(
       id: userId,
       name: _nameController.text.trim(),
       email: _emailController.text.trim(),

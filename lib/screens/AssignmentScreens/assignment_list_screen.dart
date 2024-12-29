@@ -3,12 +3,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mobileprogramming/screens/partials/doctorDrawer.dart';
 import 'add_edit_assignment_screen.dart';
+import 'package:mobileprogramming/models/user.dart';
 
 class AssignmentListScreen extends StatefulWidget {
   final String courseId;
-   //final User doctor;
+  // final Doctor doctor;
 
-  const AssignmentListScreen({super.key, required this.courseId});
+  const AssignmentListScreen({
+    super.key, required this.courseId ,
+    // required this.doctor
+    });
 
   @override
   State<AssignmentListScreen> createState() => _AssignmentListScreenState();
@@ -125,7 +129,7 @@ Future<void> _onAssignmentUpdated() async {
           ),
         ),
       ),
-     // drawer: const DoctorDrawer(user: widget.doctor),
+   //  drawer: DoctorDrawer(user: widget.doctor),
      body: ListView.builder(
         itemCount: _assignments.length,
         itemBuilder: (context, index) {

@@ -3,7 +3,7 @@ import 'package:mobileprogramming/models/user.dart';
 import 'package:mobileprogramming/screens/partials/doctorDrawer.dart';
 
 class DoctorDashboard extends StatefulWidget {
-  final User doctor;
+  final AppUser doctor;
 
   const DoctorDashboard({super.key, required this.doctor});
 

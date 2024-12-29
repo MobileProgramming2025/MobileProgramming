@@ -9,12 +9,12 @@ class ListUsersScreen extends StatefulWidget {
 }
 
 class _ListUsersScreenState extends State<ListUsersScreen> {
-  late Future<List<User>> _futureUsers;
+  late Future<List<AppUser>> _futureUsers;
 
   @override 
   void initState() {
     super.initState();
-    _futureUsers = User.getAllUsers();
+    _futureUsers = AppUser.getAllUsers();
   }
 
   @override
@@ -25,7 +25,7 @@ class _ListUsersScreenState extends State<ListUsersScreen> {
       ),
       body: FutureBuilder(
         future: _futureUsers,
-        builder: (BuildContext context, AsyncSnapshot<List<User>> snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<List<AppUser>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
               child: CircularProgressIndicator(),
