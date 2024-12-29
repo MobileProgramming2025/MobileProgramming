@@ -58,6 +58,22 @@ class QuizService {
       throw Exception('Failed to fetch quiz: $e');
     }
   }
+  Future<Quiz?> getQuizById(String quizId) async {
+  try {
+    DocumentSnapshot doc = await FirebaseFirestore.instance
+        .collection('quizzes')
+        .doc(quizId)
+        .get();
+
+    if (doc.exists) {
+      return Quiz.fromJson(doc.data() as Map<String, dynamic>);
+    }
+    return null; // Return null if quiz doesn't exist
+  } catch (error) {
+    rethrow; // Let the caller handle the error
+  }
+}
+
 
   /// Parse questions from Firestore data
   List<Question> _parseQuestions(dynamic questionsData) {
@@ -73,5 +89,31 @@ class QuizService {
       }).toList();
     }
     return [];
+  }
+Future<void> updateQuiz(Quiz quiz) async {
+  try {
+    // Create a map of the updated quiz data
+    final quizData = {
+      'title': quiz.title,
+      'startDate': quiz.startDate.toIso8601String(),
+      'endDate': quiz.endDate.toIso8601String(),
+      'courseId': quiz.courseId,
+      'questions': quiz.questions.map((q) => q.toJson()).toList(),
+    };
+
+    // Update the quiz document in Firestore
+    await _firestore.collection('quizzes').doc(quiz.id).update(quizData);
+  } catch (e) {
+    throw Exception('Failed to update quiz: $e');
+  }
+}
+
+
+  Future<void> deleteQuiz(String quizId) async {
+    try {
+      await _firestore.collection('quizzes').doc(quizId).delete();
+    } catch (error) {
+      throw Exception('Failed to delete quiz: $error');
+    }
   }
 }

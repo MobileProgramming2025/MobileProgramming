@@ -1,12 +1,12 @@
 import 'package:mobileprogramming/models/Question.dart';
 
 class Quiz {
-  final String id;
-  final String title;
-  final DateTime startDate;
-  final DateTime endDate;
-  final List<Question> questions;
-  final String courseId;
+   String id;
+   String title;
+   DateTime startDate;
+   DateTime endDate;
+   List<Question> questions;
+   String courseId;
 
   Quiz({
     required this.id,
@@ -41,9 +41,8 @@ class Quiz {
     );
   }
 
-  /// Create a new quiz with a provided `id` instead of generating a UUID.
   factory Quiz.create({
-    required String id, // Accept `id` as a parameter.
+    required String id,
     required String title,
     required DateTime startDate,
     required DateTime endDate,
@@ -51,7 +50,7 @@ class Quiz {
     required String courseId,
   }) {
     return Quiz(
-      id: id, // Use the provided `id`.
+      id: id, 
       title: title,
       startDate: startDate,
       endDate: endDate,

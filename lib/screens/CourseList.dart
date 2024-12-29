@@ -82,8 +82,8 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
     String courseName = _courseNameController.text.trim();
     if (courseName.isNotEmpty) {
       await _courseService.addCourse(courseName);
-      widget.onCourseAdded(); // Update the course list in the parent widget
-      Navigator.pop(context); // Go back to the course list page
+      widget.onCourseAdded(); 
+      Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Please enter a course name')),

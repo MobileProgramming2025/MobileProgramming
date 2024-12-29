@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/screens/Assignment/CreateAssignmentScreen.dart';
+import 'package:mobileprogramming/screens/Quiz/QuizListScreen.dart';
 import 'package:mobileprogramming/screens/Quiz/quiz_creation_screen.dart'; 
 
 class CourseDetailScreen extends StatelessWidget {
@@ -40,17 +41,18 @@ class CourseDetailScreen extends StatelessWidget {
               child: Text('Create Quiz'),
             ),
             SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => CreateAssignmentScreen(),
-                  ),
-                );
-              },
-              child: Text('Create Assignment'),
-            ),
+           ElevatedButton(
+  onPressed: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => QuizListScreen(courseId: courseId),
+      ),
+    );
+  },
+  child: Text('Quizzes'),
+),
+
           ],
         ),
       ),

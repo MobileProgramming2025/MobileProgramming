@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/Quiz.dart';
+import 'package:mobileprogramming/services/quiz_service.dart';
 
 class QuizDetailsScreen extends StatefulWidget {
   final Quiz quiz;
+  
 
   const QuizDetailsScreen({Key? key, required this.quiz}) : super(key: key);
 
@@ -13,11 +15,14 @@ class QuizDetailsScreen extends StatefulWidget {
 class _QuizDetailsScreenState extends State<QuizDetailsScreen> {
   late List<TextEditingController> questionControllers;
   late List<TextEditingController> answerControllers;
+    final QuizService _quizService = QuizService(); 
+
+
 
   @override
   void initState() {
     super.initState();
-    // Initialize the controllers for each question and answer
+   
     questionControllers = widget.quiz.questions
         .map((question) => TextEditingController(text: question.text))
         .toList();
@@ -28,7 +33,7 @@ class _QuizDetailsScreenState extends State<QuizDetailsScreen> {
 
   @override
   void dispose() {
-    // Dispose controllers to avoid memory leaks
+    
     for (var controller in questionControllers) {
       controller.dispose();
     }
@@ -38,15 +43,24 @@ class _QuizDetailsScreenState extends State<QuizDetailsScreen> {
     super.dispose();
   }
 
-  void _saveChanges() {
-    // You can add logic to save the changes to the quiz model
+  void _saveChanges() async {
+    
     for (int i = 0; i < widget.quiz.questions.length; i++) {
       widget.quiz.questions[i].text = questionControllers[i].text;
       widget.quiz.questions[i].correctAnswer = answerControllers[i].text;
     }
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Changes saved successfully!')),
-    );
+
+  
+    try {
+      await _quizService.updateQuiz(widget.quiz);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Changes saved successfully!')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to save changes: $e')),
+      );
+    }
   }
 
   @override
