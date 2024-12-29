@@ -26,6 +26,7 @@ class DoctorService {
 //list  of doctors as there maybe more than one doctor and map will include the details of the dr as name,email,..
   Stream<List<Map<String, dynamic>>> fetchDoctors() {
     //.snapshots(): creates a stream ashan lama ay update (any crud of dr in firestore) ysamaa ala tol
+    //A snapshot represents a "snapshot" of the current state of the database at that moment and contains all the documents in drs collection.
     //.map() is used to transform the raw snapshot data into map that includes all dr details
     return _firestore.collection('doctors').snapshots().map((snapshot) {
       return snapshot.docs.map((doc) {
