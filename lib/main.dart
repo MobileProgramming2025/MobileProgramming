@@ -11,6 +11,7 @@ import 'package:mobileprogramming/screens/AdminScreens/view_courses_screen.dart'
 import 'package:mobileprogramming/screens/AssignmentScreens/assignment_list_screen.dart';
 //import 'package:mobileprogramming/screens/Assignment/assignment_list_screen.dart';
 //import 'package:mobileprogramming/screens/AssignmentScreens/create_assignment_screen.dart';
+import 'package:mobileprogramming/screens/CourseList.dart';
 //import 'package:mobileprogramming/screens/CourseList.dart';
 import 'package:mobileprogramming/screens/Quiz/quiz_creation_screen.dart';
 import 'package:mobileprogramming/screens/Registration/signin.dart';
@@ -146,7 +147,7 @@ class MyApp extends StatelessWidget {
               AssignmentListScreen(courseId: "course123"),
        
           '/assignment_screen': (context) => AssignmentScreen(),
-        //  '/createQuiz': (context) => CourseListPage(),
+          '/createQuiz': (context) => CourseListPage(),
           '/add-doctor': (context) => AddDoctorScreen(),
           '/Doctors Dashboard': (context) => DashboardScreen(),
           '/Doctor-dashboard':(context)=>DoctorDashboard(),

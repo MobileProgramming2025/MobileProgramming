@@ -52,6 +52,13 @@ class DoctorDrawer extends StatelessWidget {
               Navigator.pushNamed(context, '/create_assignment');
             },
           ),
+          ListTile(
+            leading: Icon(Icons.assignment_add),
+            title: Text('Create Quiz'),
+            onTap: () {
+              Navigator.pushNamed(context, '/createQuiz');
+            },
+          ),
         ],
       ),
     );

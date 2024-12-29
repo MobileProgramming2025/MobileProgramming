@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/screens/Assignment/CreateAssignmentScreen.dart';
-import 'package:mobileprogramming/screens/Quiz/quiz_creation_screen.dart';
+import 'package:mobileprogramming/screens/Quiz/quiz_creation_screen.dart'; 
 
 class CourseDetailScreen extends StatelessWidget {
   final String courseId;
@@ -20,11 +20,21 @@ class CourseDetailScreen extends StatelessWidget {
           children: [
             ElevatedButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => QuizCreationScreen(courseId: courseId),
-                  ),
+             
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  useSafeArea: true,
+                  builder: (BuildContext context) {
+                    return Wrap(
+                      children: [
+                        Container(
+                          height: MediaQuery.of(context).size.height /1.2 ,
+                          child: QuizCreationScreen(courseId: courseId),
+                        ),
+                      ],
+                    );
+                  },
                 );
               },
               child: Text('Create Quiz'),
