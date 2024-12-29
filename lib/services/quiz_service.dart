@@ -4,7 +4,20 @@ import 'package:mobileprogramming/models/Quiz.dart';
 
 class QuizService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+Future<List<Quiz>> getQuizzesByUser(String userId) async {
+  try {
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('quizzes')
+        .where('createdBy', isEqualTo: userId)
+        .get();
 
+    return snapshot.docs
+        .map((doc) => Quiz.fromJson(doc.data() as Map<String, dynamic>))
+        .toList();
+  } catch (error) {
+    throw Exception('Error fetching quizzes: $error');
+  }
+}
   /// Create a new quiz in Firestore
   Future<void> createQuiz(Quiz quiz) async {
     try {
@@ -32,6 +45,7 @@ class QuizService {
           endDate: DateTime.parse(doc['endDate']),
           courseId: doc['courseId'] ?? '',
           questions: _parseQuestions(doc['questions']),
+          createdBy : doc['createdBy'],
         );
       }).toList();
     } catch (e) {
@@ -53,6 +67,7 @@ class QuizService {
         endDate: DateTime.parse(quizDoc['endDate']),
         courseId: quizDoc['courseId'] ?? '',
         questions: _parseQuestions(quizDoc['questions']),
+        createdBy : quizDoc['createdBy'],
       );
     } catch (e) {
       throw Exception('Failed to fetch quiz: $e');
