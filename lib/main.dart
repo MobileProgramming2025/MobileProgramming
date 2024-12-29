@@ -6,6 +6,7 @@ import 'package:mobileprogramming/screens/AdminScreens/DashboardScreen.dart';
 import 'package:mobileprogramming/screens/AdminScreens/add_courses_screen.dart';
 import 'package:mobileprogramming/screens/AdminScreens/add_users.dart';
 import 'package:mobileprogramming/screens/AdminScreens/admin_dashboard.dart';
+import 'package:mobileprogramming/screens/AdminScreens/enroll_students_screen.dart';
 import 'package:mobileprogramming/screens/AdminScreens/list_users.dart';
 import 'package:mobileprogramming/screens/AdminScreens/view_courses_screen.dart';
 import 'package:mobileprogramming/screens/AssignmentScreens/assignment_list_screen.dart';
@@ -13,6 +14,7 @@ import 'package:mobileprogramming/screens/CourseList.dart';
 import 'package:mobileprogramming/screens/Registration/signin.dart';
 import 'package:mobileprogramming/screens/Registration/signup.dart';
 import 'package:mobileprogramming/screens/UserScreens/user_home.dart';
+import 'package:mobileprogramming/screens/UserScreens/view_courses_list_screen.dart';
 import 'package:mobileprogramming/screens/onboarding_screen.dart';
 import 'package:mobileprogramming/screens/Assignment/assignment_screen.dart';
 
@@ -62,6 +64,7 @@ class MyApp extends StatelessWidget {
           ),
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
+
               padding: const EdgeInsets.symmetric(
                 horizontal: 40,
                 vertical: 10,
@@ -75,6 +78,8 @@ class MyApp extends StatelessWidget {
               ),
             ),
           ),
+
+          //Drawer Theme
           drawerTheme: DrawerThemeData(
             elevation: 10,
           ),
@@ -152,7 +157,8 @@ class MyApp extends StatelessWidget {
           // '/Doctor-dashboard':(context)=>DoctorDashboard(),
           '/add_courses': (context) => AddCoursesScreen(),
           '/view_courses': (context) => ViewCoursesScreen(),
-          '/create-assignment': (context) => CourseListPage()
+          '/create-assignment': (context) => CourseListPage(),
+          '/enroll_students': (context) => EnrollStudentsScreen(),
         },
       );
     });
