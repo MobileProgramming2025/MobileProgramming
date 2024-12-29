@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:mobileprogramming/models/Course.dart';
+import 'package:mobileprogramming/services/CourseService.dart';
+import 'package:uuid/uuid.dart';
+
+final uuid = Uuid();
+
 
 class AddCoursesScreen extends StatefulWidget {
   const AddCoursesScreen({super.key});
@@ -11,6 +15,11 @@ class AddCoursesScreen extends StatefulWidget {
 }
 
 class _AddCoursesScreenState extends State<AddCoursesScreen> {
+  final CourseService _courseService = CourseService();
+  //Doesn't allow to re-build form widget, keeps its internal state (show validation state or not)
+  //Access form
+  final _form = GlobalKey<FormState>();
+
   final _nameController = TextEditingController();
   final _codeController = TextEditingController();
   final _drNameController = TextEditingController();
@@ -18,44 +27,55 @@ class _AddCoursesScreenState extends State<AddCoursesScreen> {
   final _yearController = TextEditingController();
   final _departmentController = TextEditingController();
 
-  //Doesn't allow to re-build form widget, keeps its internal state (show validation state or not)
-  //Access form
-  final _form = GlobalKey<FormState>();
-
   var _enteredName = '';
   var _enteredCode = '';
   var _enteredDrName = '';
   var _enteredTaName = '';
   var _enteredYear = '';
+  var _enteredDepartment = '';
+
+  //To avoid memory leak
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _codeController.dispose();
+    _drNameController.dispose();
+    _taNameController.dispose();
+    _yearController.dispose();
+    _departmentController.dispose();
+    super.dispose();
+  }
 
   //hold value of textfields, called whnerver button is pressed
   void _submit() {
     final isValid = _form.currentState!.validate();
     //! -> will not be null, filled later, validate()-> bool
-
     if (isValid) {
       _form.currentState!.save();
-      print(_enteredName);
-      print(_enteredCode);
-      print(_enteredDrName);
-      print(_enteredTaName);
-      print(_enteredYear);
-      _addCourse();
+      _saveCourse();
     }
   }
 
-  Future<void> _addCourse() async {
-    Course newCourse = Course(
-      name: _enteredName,
-      code: _enteredCode,
-      drName: _enteredDrName,
-      taName: _enteredTaName,
-      departmentName: _departmentController.text.trim(),
-      year: _enteredYear,
-    );
+  void _clearFields() {
+    _nameController.clear();
+    _codeController.clear();
+    _drNameController.clear();
+    _taNameController.clear();
+    _yearController.clear();
+    _departmentController.clear();
+  }
 
+  void _saveCourse() async {
+    String _uuid = uuid.v4();
     try {
-      await newCourse.saveToFirestore();
+      await _courseService.addCourse(
+          id:_uuid,
+          name: _enteredName,
+          code: _enteredCode,
+          drName: _enteredDrName,
+          taName: _enteredTaName,
+          departmentName: _enteredDepartment,
+          year: _enteredYear);
       // Check if the widget is still in the tree before using context
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -67,15 +87,6 @@ class _AddCoursesScreenState extends State<AddCoursesScreen> {
         SnackBar(content: Text('Failed to add course: $e')),
       );
     }
-  }
-
-  void _clearFields() {
-    _nameController.clear();
-    _codeController.clear();
-    _drNameController.clear();
-    _taNameController.clear();
-    _departmentController.clear();
-    _yearController.clear();
   }
 
   @override
@@ -161,6 +172,23 @@ class _AddCoursesScreenState extends State<AddCoursesScreen> {
                     },
                     onSaved: (value) {
                       _enteredTaName = value!;
+                    },
+                  ),
+                  SizedBox(height: 16),
+                  TextFormField(
+                    decoration: InputDecoration(
+                      labelText: 'Department Name',
+                      border: OutlineInputBorder(),
+                    ),
+                    controller: _departmentController,
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return "please enter a valid Department Name";
+                      }
+                      return null;
+                    },
+                    onSaved: (value) {
+                      _enteredDepartment = value!;
                     },
                   ),
                   SizedBox(height: 16),

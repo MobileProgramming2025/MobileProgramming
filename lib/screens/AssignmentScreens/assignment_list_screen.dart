@@ -28,8 +28,8 @@ class _AssignmentListScreenState extends State<AssignmentListScreen> {
   try {
     final snapshot = await FirebaseFirestore.instance
         .collection('assignments')
-        .where('courseId', isEqualTo: widget.courseId)
-        .where('createdBy', isEqualTo: _currentUser!.uid) 
+        .where('courseId', isEqualTo: widget.courseId) // Filter by courseId
+        .where('createdBy', isEqualTo: _currentUser!.uid)
         .get();
 
     setState(() {
