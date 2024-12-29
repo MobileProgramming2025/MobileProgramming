@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobileprogramming/screens/userDrawer.dart';
 
 class UserHome extends StatefulWidget {
   const UserHome({super.key});
@@ -30,6 +31,7 @@ class _UserHomeState extends State<UserHome> {
     return Scaffold(
       appBar: AppBar(
         title: Text("User home"),
+      
         leading: Builder(
           builder: (context) => IconButton(
             icon: Icon(Icons.menu),
@@ -37,27 +39,9 @@ class _UserHomeState extends State<UserHome> {
           ),
         ),
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              child: Text(
-                'Menu',
-                style: Theme.of(context).textTheme.headlineLarge,
-                textAlign: TextAlign.center,
-              ),
-            ),
-            ListTile(
-              leading: Icon(Icons.home),
-              title: Text('Home'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        ),
-      ),
+      drawer: const UserDrawer(),
+      
+     
       body: isLoading
           ? Center(
             child: CircularProgressIndicator(),

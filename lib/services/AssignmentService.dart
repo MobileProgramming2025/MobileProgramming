@@ -1,31 +1,37 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:mobileprogramming/models/assignment_model.dart';
 
-class AssignmentService {
-  final _assignmentsCollection = FirebaseFirestore.instance.collection('Assignments');
+class ApiService {
+  final String baseUrl;
+  final String userId; // Pass the signed-in doctor's ID
 
-  Future<void> createAssignment(String courseId, String title, String description, DateTime dueDate, String createdBy) async {
-    try {
-      await _assignmentsCollection.add({
-        'courseId': courseId,
-        'title': title,
-        'description': description,
-        'dueDate': dueDate.toIso8601String(),
-        'createdBy': createdBy,
-      });
-      print("Assignment created successfully!");
-    } catch (e) {
-      print("Error creating assignment: $e");
+  ApiService({required this.baseUrl, required this.userId});
+
+  Future<List<Assignment>> getAssignments(String courseId) async {
+    final response = await http.get(Uri.parse('$baseUrl/assignments?courseId=$courseId&createdBy=$userId'));
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+      return data.map((json) => Assignment.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to load assignments');
     }
   }
 
-  Stream<QuerySnapshot> getAssignmentsByCourse(String courseId) {
-    return _assignmentsCollection.where('courseId', isEqualTo: courseId).snapshots();
-  }
-   Future<List<Map<String, dynamic>>> fetchAssignments(String courseId) async {
-    final assignments = await FirebaseFirestore.instance
-        .collection('Assignments')
-        .where('courseId', isEqualTo: courseId)
-        .get();
-    return assignments.docs.map((doc) => doc.data()).toList();
+  Future<void> createAssignment(Assignment assignment) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/assignments'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'title': assignment.title,
+        'description': assignment.description,
+        'courseId': assignment.courseId,
+        'createdBy': userId,
+      }),
+    );
+
+    if (response.statusCode != 201) {
+      throw Exception('Failed to create assignment');
+    }
   }
 }
