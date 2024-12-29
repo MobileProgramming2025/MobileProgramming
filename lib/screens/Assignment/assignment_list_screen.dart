@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mobileprogramming/screens/partials/doctorDrawer.dart';
-import 'package:mobileprogramming/screens/partials/userDrawer.dart';
 import 'add_edit_assignment_screen.dart';
 
 class AssignmentListScreen extends StatefulWidget {

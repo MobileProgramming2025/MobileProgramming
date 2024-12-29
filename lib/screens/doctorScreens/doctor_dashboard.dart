@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/user.dart';
-import 'package:mobileprogramming/screens/partials/doctorDrawer.dart';
+import 'package:mobileprogramming/screens/CourseList.dart';
+import 'package:mobileprogramming/screens/UserScreens/profile.dart';
 
 class DoctorDashboard extends StatefulWidget {
   final User doctor;
@@ -50,8 +51,74 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
         ),
       ),
 
-      // Pass the doctor object to the DoctorDrawer
-      drawer: DoctorDrawer(user: widget.doctor),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              child: Text(
+                'Hello, ${widget.doctor.name}',
+                style: Theme.of(context).textTheme.headlineLarge,
+                textAlign: TextAlign.center,
+              ),
+            ),
+              ListTile(
+                leading: Icon(Icons.person),
+                title: Text('Dashboard'),
+                onTap: () {
+                Navigator.pushNamed(context, '/Doctor-dashboard');
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.person),
+                title: Text('Profile'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ProfileScreen(user: widget.doctor),
+                    )
+                  );
+                }
+              ),
+              ListTile(
+                leading: Icon(Icons.logout),
+                title: Text('Logout'),
+                onTap: () {
+                  // Handle logout
+                },
+              ),
+        
+            ListTile(
+              leading: Icon(Icons.group_add_outlined),
+              title: Text('View Courses'),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CourseListPage(),
+                    )
+                  );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.assignment_add),
+              title: Text('Create Assignment'),
+              onTap: () {
+                Navigator.pushNamed(context, '/create-assignment');
+              },
+            ),
+          
+            ListTile(
+              leading: Icon(Icons.assignment_add),
+              title: Text('Create Quiz'),
+              onTap: () {
+                Navigator.pushNamed(context, '/createQuiz');
+              },
+            ),
+          ],
+        ),
+      ),
 
       body: isLoading
           ? Center(
