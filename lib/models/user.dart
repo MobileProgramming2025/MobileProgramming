@@ -50,10 +50,30 @@ class User {
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
     final QuerySnapshot querySnapshot = await firestore.collection('users').get();
     // print('Fetched ${querySnapshot.docs.length} users from Firestore');
-    for (var doc in querySnapshot.docs) {
-      print('User document: ${doc.data()}');
-    }
+    // for (var doc in querySnapshot.docs) {
+    //   print('User document: ${doc.data()}');
+    // }
     return querySnapshot.docs.map((doc) => User.fromMap(doc.data() as Map<String, dynamic>)).toList();
   }
+
+  // Retrieve a user by ID from Firestore
+  static Future<User?> getUserDetails(String id) async {
+    try {
+      final FirebaseFirestore firestore = FirebaseFirestore.instance;
+      final DocumentSnapshot<Map<String, dynamic>> docSnapshot =
+          await firestore.collection('users').doc(id).get();
+
+      if (docSnapshot.exists && docSnapshot.data() != null) {
+        return User.fromMap(docSnapshot.data()!);
+      } else {
+        print('User with ID $id not found in Firestore.');
+        return null;
+      }
+    } catch (e) {
+      print('Error retrieving user with ID $id: $e');
+      return null;
+    }
+  }
+
 
 }

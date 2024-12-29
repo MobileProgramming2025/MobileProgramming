@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+import 'package:mobileprogramming/screens/doctorScreens/doctor_dashboard.dart';
 import 'package:mobileprogramming/services/auth_service.dart';
+import 'package:mobileprogramming/models/user.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
@@ -112,25 +114,34 @@ class LoginScreen extends StatelessWidget {
     }
 
     try {
-      User? user = await AuthService().login(email, password);
+      firebase_auth.User? firebaseUser = await AuthService().login(email, password);
 
-      if (user != null) {
-        // Fetch user data (role)
-        var userModel = await AuthService().getUserDetails(user.uid);
+      if (firebaseUser != null) {
+        // Fetch user details (e.g., role) from your custom User model
+        // var userModel = await AuthService().getUserDetails(firebaseUser.uid);
+        User? userModel = await User.getUserDetails(firebaseUser.uid);
 
         // Check if the widget is still in the tree before using context
         if (!context.mounted) return;
 
-        if (userModel != null && userModel.role == 'admin') {
-          Navigator.pushNamed(context, '/admin_home');
-        } else if (userModel != null &&
-            (userModel.role == 'doctor' || userModel.role == 'ta')) {
-          Navigator.pushNamed(context, '/doctor_dashboard');
-        } else {
-          Navigator.pushNamed(context, '/user_home');
+        if (userModel != null) {
+
+          if (userModel.role == 'doctor' || userModel.role == 'ta') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => DoctorDashboard(doctor: userModel),
+              ),
+            );
+          }
+          else if (userModel.role == 'admin') {
+            Navigator.pushNamed(context, '/admin_home');
+          } else {
+            Navigator.pushNamed(context, '/user_home');
+          }
         }
       }
-    } on FirebaseAuthException catch (e) {
+    } on firebase_auth.FirebaseAuthException catch (e) {
       // Check if the widget is still in the tree before using context
       if (!context.mounted) return;
       _showError(context, e.message ?? "Login failed. Please try again.");

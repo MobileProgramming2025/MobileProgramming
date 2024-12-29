@@ -13,7 +13,6 @@ import 'package:mobileprogramming/screens/CourseList.dart';
 import 'package:mobileprogramming/screens/Registration/signin.dart';
 import 'package:mobileprogramming/screens/Registration/signup.dart';
 import 'package:mobileprogramming/screens/UserScreens/user_home.dart';
-import 'package:mobileprogramming/screens/doctorScreens/doctor_dashboard.dart';
 import 'package:mobileprogramming/screens/onboarding_screen.dart';
 import 'package:mobileprogramming/screens/Assignment/assignment_screen.dart';
 
