@@ -1,6 +1,6 @@
 import 'package:uuid/uuid.dart';
 
-final uuid = Uuid();
+// final uuid = Uuid();
 
 class Course {
   final String id;
@@ -21,7 +21,7 @@ class Course {
       required this.departmentName});
 
   // Convert a Course object to a Map for Firestore
-  Map<String, String> toMap() {
+  Map<String, dynamic> toMap() {
     return {
       'id': id,
       'name': name,
@@ -42,7 +42,7 @@ class Course {
       drName: data['drName'] ?? '',
       taName: data['taName'] ?? '',
       departmentName: data['departmentName'] ?? '',
-      year: data['year'] ?? 0,
+      year: data['year'] ?? '',
     );
   }
 }
