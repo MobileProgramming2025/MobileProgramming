@@ -12,10 +12,14 @@ class AddUserScreen extends StatefulWidget {
 class _AddUserScreenState extends State<AddUserScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _roleController = TextEditingController();
-  final TextEditingController _departmentController = TextEditingController();
 
   final Uuid _uuid = Uuid();
+
+  String? _selectedRole;
+  String? _selectedDepartment;
+
+  final List<String> _roles = ['student', 'doctor', 'ta', 'admin'];
+  final List<String> _departments = ['Computer Science', 'Business', 'Engineering', 'Architecture'];
 
   Future<void> _addUser() async {
     String userId = _uuid.v4();
@@ -27,8 +31,8 @@ class _AddUserScreenState extends State<AddUserScreen> {
       id: userId,
       name: _nameController.text.trim(),
       email: _emailController.text.trim(),
-      role: _roleController.text.trim(),
-      department: _departmentController.text.trim(),
+      role: _selectedRole ?? 'Unknown',
+      department: _selectedDepartment ?? 'Unknown',
       takenCourses: [],
       enrolledCourses: [],
       addedDate: _firstAdded,
@@ -53,8 +57,10 @@ class _AddUserScreenState extends State<AddUserScreen> {
   void _clearFields() {
     _nameController.clear();
     _emailController.clear();
-    _roleController.clear();
-    _departmentController.clear();
+    setState(() {
+      _selectedRole = null;
+      _selectedDepartment = null;
+    });
   }
 
   @override
@@ -80,6 +86,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
                     ),
                   ),
                   SizedBox(height: 16),
+
                   TextFormField(
                     controller: _emailController,
                     decoration: InputDecoration(
@@ -89,22 +96,57 @@ class _AddUserScreenState extends State<AddUserScreen> {
                     keyboardType: TextInputType.emailAddress,
                   ),
                   SizedBox(height: 16),
-                  TextFormField(
-                    controller: _roleController,
+
+                  DropdownButtonFormField<String>(
+                    value: _selectedRole,
+                    items: _roles.map((role) {
+                      return DropdownMenuItem(
+                        value: role,
+                        child: Text(
+                          role,
+                          style: TextStyle(
+                            color: Colors.black,
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedRole = value;
+                      });
+                    },
                     decoration: InputDecoration(
                       labelText: 'Role',
                       border: OutlineInputBorder(),
                     ),
                   ),
                   SizedBox(height: 16),
-                  TextFormField(
-                    controller: _departmentController,
+
+                  DropdownButtonFormField<String>(
+                    value: _selectedDepartment,
+                    items: _departments.map((department) {
+                      return DropdownMenuItem(
+                        value: department,
+                        child: Text(
+                          department,
+                          style: TextStyle(
+                            color: Colors.black
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedDepartment = value;
+                      });
+                    },
                     decoration: InputDecoration(
                       labelText: 'Department',
                       border: OutlineInputBorder(),
                     ),
                   ),
                   SizedBox(height: 20),
+
                   Center(
                     child: ElevatedButton(
                       onPressed: _addUser,
