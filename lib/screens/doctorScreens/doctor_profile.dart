@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/user.dart';
-import 'package:mobileprogramming/screens/doctorDrawer.dart';
+import 'package:mobileprogramming/screens/partials/doctorDrawer.dart';
 
 class DoctorProfile extends StatefulWidget {
   final User doctor;
@@ -33,7 +33,10 @@ class _DoctorProfileState extends State<DoctorProfile> {
           ),
         ),
       ),
-      drawer: const DoctorDrawer(),
+      
+      // Pass the doctor object to the DoctorDrawer
+      drawer: DoctorDrawer(user: doctor),
+
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

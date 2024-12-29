@@ -13,7 +13,6 @@ class Question {
     required this.correctAnswer,
   });
 
-  // Converts the object to a map for serialization
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -24,7 +23,7 @@ class Question {
     };
   }
 
-  // Parses a JSON object into a Question instance
+
   factory Question.fromJson(Map<String, dynamic> json) {
     return Question(
       id: json['id'],

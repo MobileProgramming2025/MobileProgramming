@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mobileprogramming/screens/doctorDrawer.dart';
-import 'package:mobileprogramming/screens/userDrawer.dart';
+import 'package:mobileprogramming/screens/partials/doctorDrawer.dart';
+import 'package:mobileprogramming/screens/partials/userDrawer.dart';
 import 'add_edit_assignment_screen.dart';
 
 class AssignmentListScreen extends StatefulWidget {
@@ -104,7 +104,7 @@ class _AssignmentListScreenState extends State<AssignmentListScreen> {
           ),
         ),
       ),
-      drawer: const DoctorDrawer(),
+      // drawer: const DoctorDrawer(),
       
       body: ListView.builder(
         itemCount: _assignments.length,
