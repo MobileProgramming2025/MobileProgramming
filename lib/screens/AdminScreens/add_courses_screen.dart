@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/services/CourseService.dart';
+import 'package:uuid/uuid.dart';
+
+final uuid = Uuid();
+
 
 class AddCoursesScreen extends StatefulWidget {
   const AddCoursesScreen({super.key});
@@ -48,12 +52,6 @@ class _AddCoursesScreenState extends State<AddCoursesScreen> {
     //! -> will not be null, filled later, validate()-> bool
     if (isValid) {
       _form.currentState!.save();
-      print(_enteredName);
-      print(_enteredCode);
-      print(_enteredDrName);
-      print(_enteredTaName);
-      print(_enteredDepartment);
-      print(_enteredYear);
       _saveCourse();
     }
   }
@@ -68,8 +66,10 @@ class _AddCoursesScreenState extends State<AddCoursesScreen> {
   }
 
   void _saveCourse() async {
+    String _uuid = uuid.v4();
     try {
       await _courseService.addCourse(
+          id:_uuid,
           name: _enteredName,
           code: _enteredCode,
           drName: _enteredDrName,

@@ -13,16 +13,16 @@ class Course {
   final String year;
 
   Course(
-      {required this.name,
+      {required this.id,
+      required this.name,
       required this.code,
       required this.drName,
       required this.taName,
       required this.year,
-      required this.departmentName})
-      : id = uuid.v4();
-
+      required this.departmentName});
+      
   // Convert a Course object to a Map for Firestore
-  Map<String, dynamic> toMap() {
+  Map<String, String> toMap() {
     return {
       'id': id,
       'name': name,
@@ -35,8 +35,8 @@ class Course {
   }
 
   // Save course to Firestore
-  Future<void> saveToFirestore() async {
-    final FirebaseFirestore firestore = FirebaseFirestore.instance;
-    await firestore.collection('Courses').doc(id).set(toMap());
-  }
+  // Future<void> saveToFirestore() async {
+  //   final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  //   await firestore.collection('Courses').doc(id).set(toMap());
+  // }
 }

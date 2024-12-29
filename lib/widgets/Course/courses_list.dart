@@ -14,6 +14,7 @@ class CoursesList extends StatelessWidget {
             style: Theme.of(context).textTheme.bodyLarge),
       );
     }
+    
     return ListView.builder(
       itemCount: courses.length,
       itemBuilder: (context, index) => ListTile(

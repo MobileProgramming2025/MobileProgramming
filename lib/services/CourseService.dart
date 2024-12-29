@@ -1,10 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mobileprogramming/models/Course.dart';
 
 class CourseService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // // Fetch courses
+  // Fetch courses
   Future<List<Map<String, dynamic>>> getCourses() async {
     try {
       QuerySnapshot snapshot = await _firestore.collection('courses').get();
@@ -20,10 +19,9 @@ class CourseService {
     }
   }
 
-
-
   // add course to Firestore
   Future<void> addCourse({
+    required String id,
     required String name,
     required String code,
     required String drName,
@@ -33,6 +31,7 @@ class CourseService {
   }) async {
     try {
       await _firestore.collection('Courses').add({
+        'id': id,
         'name': name,
         'code': code,
         'drName': drName,
@@ -41,7 +40,7 @@ class CourseService {
         'year': year,
       });
     } catch (e) {
-      throw Exception("Failed to add doctor: $e");
+      throw Exception("Failed to add Course: $e");
     }
   }
 }

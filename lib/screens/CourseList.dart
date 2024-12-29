@@ -3,6 +3,8 @@ import 'package:mobileprogramming/screens/CourseDetailScreen.dart';
 import 'package:mobileprogramming/services/CourseService.dart';
 
 class CourseListPage extends StatefulWidget {
+  const CourseListPage({super.key});
+
   @override
   _CourseListPageState createState() => _CourseListPageState();
 }
@@ -36,7 +38,8 @@ class _CourseListPageState extends State<CourseListPage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => AddCourseScreen(onCourseAdded: _fetchCourses),
+                  builder: (context) =>
+                      AddCourseScreen(onCourseAdded: _fetchCourses),
                 ),
               );
             },
@@ -53,7 +56,8 @@ class _CourseListPageState extends State<CourseListPage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => CourseDetailScreen(courseId: course['id']),
+                  builder: (context) =>
+                      CourseDetailScreen(courseId: course['id']),
                 ),
               );
             },
