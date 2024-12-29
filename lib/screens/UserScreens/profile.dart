@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/user.dart';
 
 class ProfileScreen extends StatefulWidget {
-  final User user;
+  final AppUser user;
 
   const ProfileScreen({super.key, required this.user});
 
@@ -11,7 +11,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  late User user;
+  late AppUser user;
 
   @override
   Widget build(BuildContext context) {

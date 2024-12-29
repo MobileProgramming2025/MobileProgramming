@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobileprogramming/models/user.dart';
 import 'package:mobileprogramming/screens/Assignment/CreateAssignmentScreen.dart';
 import 'package:mobileprogramming/screens/AssignmentScreens/assignment_list_screen.dart';
 import 'package:mobileprogramming/screens/Quiz/QuizListScreen.dart';
@@ -6,8 +7,9 @@ import 'package:mobileprogramming/screens/Quiz/quiz_creation_screen.dart';
 
 class CourseDetailScreen extends StatelessWidget {
   final String courseId;
+  //final AppUser doctor;
 
-  CourseDetailScreen({required this.courseId});
+  CourseDetailScreen({required this.courseId });
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +50,8 @@ class CourseDetailScreen extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => AssignmentListScreen(courseId: courseId ),
+                  builder: (context) => AssignmentListScreen(courseId: courseId )
+                //  , doctor: doctor,),
                 ),
               );
             },
