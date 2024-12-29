@@ -86,18 +86,32 @@ void _confirmDelete(BuildContext context, String assignmentId) {
     }
   }
 
-  void _navigateToAddEditAssignment({String? assignmentId}) {
-    Navigator.of(context)
-        .push(
-          MaterialPageRoute(
-            builder: (context) => AddEditAssignmentScreen(
-              courseId: widget.courseId,
-              assignmentId: assignmentId,
-            ),
+ void _navigateToAddEditAssignment({String? assignmentId}) {
+  Navigator.of(context)
+      .push(
+        MaterialPageRoute(
+          builder: (context) => AddEditAssignmentScreen(
+            courseId: widget.courseId,
+            assignmentId: assignmentId,
+            onAssignmentAdded: _onAssignmentAdded,
+            onAssignmentUpdated: _onAssignmentUpdated,
           ),
-        )
-        .then((_) => _fetchAssignments());
-  }
+        ),
+      )
+      .then((_) => _fetchAssignments());
+}
+
+Future<void> _onAssignmentAdded() async {
+  // Handle logic when an assignment is added
+  print('Assignment added!');
+  _fetchAssignments();
+}
+
+Future<void> _onAssignmentUpdated() async {
+  // Handle logic when an assignment is updated
+  print('Assignment updated!');
+   _fetchAssignments();
+}
 
   @override
   Widget build(BuildContext context) {

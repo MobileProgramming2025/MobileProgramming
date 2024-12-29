@@ -68,8 +68,7 @@ class _ViewCoursesScreenState extends State<ViewCoursesScreen> {
                       children: [
                         Text(
                           course.name,
-                          style:
-                              Theme.of(context).textTheme.headlineMedium,
+                          style: Theme.of(context).textTheme.headlineMedium,
                         ),
                         const SizedBox(height: 8),
                         Text(
@@ -96,6 +95,7 @@ class _ViewCoursesScreenState extends State<ViewCoursesScreen> {
                           'Year: ${course.year}',
                           style: Theme.of(context).textTheme.bodyLarge,
                         ),
+                        ElevatedButton(onPressed: () {}, child: Text("Enroll Course"),),
                       ],
                     ),
                   ),
@@ -104,13 +104,6 @@ class _ViewCoursesScreenState extends State<ViewCoursesScreen> {
             );
           },
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, '/add_courses');
-        },
-        tooltip: "add_courses",
-        child: const Icon(Icons.add),
       ),
     );
   }
