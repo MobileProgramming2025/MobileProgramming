@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class DoctorDrawer extends StatelessWidget {
-  const DoctorDrawer({Key? key}) : super(key: key);
+  const DoctorDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
