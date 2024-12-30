@@ -59,7 +59,6 @@ class _AddUserScreenState extends State<AddUserScreen> {
       enrolledCourses: [],
       addedDate: _firstAdded,
       year: (educationYear + 1).toString(),
-      password: _passwordController.text.trim()
       
     );
 

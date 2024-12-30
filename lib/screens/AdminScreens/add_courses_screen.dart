@@ -4,6 +4,7 @@ import 'package:uuid/uuid.dart';
 
 final uuid = Uuid();
 
+
 class AddCoursesScreen extends StatefulWidget {
   const AddCoursesScreen({super.key});
 
@@ -68,7 +69,7 @@ class _AddCoursesScreenState extends State<AddCoursesScreen> {
     String _uuid = uuid.v4();
     try {
       await _courseService.addCourse(
-          id: _uuid,
+          id:_uuid,
           name: _enteredName,
           code: _enteredCode,
           drName: _enteredDrName,
@@ -157,28 +158,21 @@ class _AddCoursesScreenState extends State<AddCoursesScreen> {
                     },
                   ),
                   SizedBox(height: 16),
-                  Row(
-                    children: [
-                      TextFormField(
-                        decoration: InputDecoration(
-                          labelText: 'Teaching Assistant Name',
-                          border: OutlineInputBorder(),
-                        ),
-                       // controller: _taNameController,
-
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return "please enter a valid Course Name";
-                          }
-                          return null;
-                        },
-                        onSaved: (value) {
-                          _enteredTaName = value!;
-                        },
-                      ),
-                      SizedBox(width: 8),
-                    //  DropdownButtonFormField(items: [], onChanged: (){}),
-                    ],
+                  TextFormField(
+                    decoration: InputDecoration(
+                      labelText: 'Teaching Assistant Name',
+                      border: OutlineInputBorder(),
+                    ),
+                    controller: _taNameController,
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return "please enter a valid Course Name";
+                      }
+                      return null;
+                    },
+                    onSaved: (value) {
+                      _enteredTaName = value!;
+                    },
                   ),
                   SizedBox(height: 16),
                   TextFormField(
@@ -216,7 +210,7 @@ class _AddCoursesScreenState extends State<AddCoursesScreen> {
                     },
                   ),
                   SizedBox(height: 20),
-                  Center(
+                  Center( 
                     child: ElevatedButton(
                       onPressed: _submit,
                       child: Text(
