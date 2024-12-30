@@ -32,7 +32,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
     final _firstAdded = DateTime.utc(2021, DateTime.november, 9);
     final _currentYear = DateTime.now();
     final educationYear = _currentYear.year - _firstAdded.year;
-
+  
     User newUser = User(
       id: userId,
       name: _nameController.text.trim(),
@@ -163,7 +163,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
                     },
                     decoration: InputDecoration(
                       labelText: 'Department',
-                      border: OutlineInputBorder(),
+                      border: OutlineInputBorder(), 
                     ),
                   ),
                   SizedBox(height: 20),

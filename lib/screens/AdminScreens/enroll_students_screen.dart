@@ -23,7 +23,6 @@ class _EnrollStudentsScreenState extends State<EnrollStudentsScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Students are enrolled Sucessfully!')),
       );
-      _clearFields();
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to enroll students: $e')),
@@ -64,13 +63,4 @@ class _EnrollStudentsScreenState extends State<EnrollStudentsScreen> {
       ),
     );
   }
-}
-
-void _clearFields() {
-  // _nameController.clear();
-  // _codeController.clear();
-  // _drNameController.clear();
-  // _taNameController.clear();
-  // _yearController.clear();
-  // _departmentController.clear();
 }
