@@ -32,7 +32,9 @@ class User {
       'email': email,
       'role': role,
       'department': department,
-      'enrolled_courses': enrolledCourses,
+      'enrolledCourses': enrolledCourses
+          .map((course) => course.toMap())
+          .toList(), // Serialize Course objects
       'taken_courses': takenCourses,
       'added_date': addedDate,
       'year': year,
@@ -43,25 +45,28 @@ class User {
   static User fromMap(Map<String, dynamic> map) {
     return User(
       id: map['id'] as String? ?? '', // provide default value if null
-      name: (map['name'] as String?) ?? map['email'].split('@')[0], // Default to email before '@'
+      name: (map['name'] as String?) ??
+          map['email'].split('@')[0], // Default to email before '@'
       email: map['email'] as String? ?? '',
       role: map['role'] as String? ?? 'Unknown',
       department: map['department'] as String? ?? 'Unknown',
       enrolledCourses: (map['enrolled_courses'] as List<dynamic>? ?? [])
           .map((e) => Course.fromMap(e as Map<String, dynamic>))
           .toList(),
+
       takenCourses: (map['taken_courses'] as List<dynamic>? ?? [])
           .map((e) => Course.fromMap(e as Map<String, dynamic>))
           .toList(),
       addedDate: map['added_date'] is Timestamp
-          ? (map['added_date'] as Timestamp).toDate() // Convert Timestamp to DateTime
+          ? (map['added_date'] as Timestamp)
+              .toDate() // Convert Timestamp to DateTime
           : (map['added_date'] is String
-              ? DateTime.parse(map['added_date'] as String) // Parse String to DateTime
+              ? DateTime.parse(
+                  map['added_date'] as String) // Parse String to DateTime
               : DateTime.now()), // Default to current date
       year: map['year'] as String? ?? 'Unknown',
     );
   }
-
 
   // Save user to Firestore
   Future<void> saveToFirestore() async {
@@ -69,15 +74,15 @@ class User {
     await firestore.collection('users').doc(id).set(toMap());
   }
 
-  // Retrieve all users from Firestore
-  static Future<List<User>> getAllUsers() async {
-    final FirebaseFirestore firestore = FirebaseFirestore.instance;
-    final QuerySnapshot querySnapshot =
-        await firestore.collection('users').get();
-    return querySnapshot.docs
-        .map((doc) => User.fromMap(doc.data() as Map<String, dynamic>))
-        .toList();
-  }
+  // // Retrieve all users from Firestore
+  // static Future<List<User>> getAllUsers() async {
+  //   final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  //   final QuerySnapshot querySnapshot =
+  //       await firestore.collection('users').get();
+  //   return querySnapshot.docs
+  //       .map((doc) => User.fromMap(doc.data() as Map<String, dynamic>))
+  //       .toList();
+  // }
 
   // Retrieve a user by ID from Firestore
   static Future<User?> getUserDetails(String id) async {

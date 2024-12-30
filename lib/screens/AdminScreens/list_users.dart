@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/user.dart';
+import 'package:mobileprogramming/services/user_service.dart';
 
 class ListUsersScreen extends StatefulWidget {
   const ListUsersScreen({super.key});
@@ -10,11 +11,15 @@ class ListUsersScreen extends StatefulWidget {
 
 class _ListUsersScreenState extends State<ListUsersScreen> {
   late Future<List<User>> _futureUsers;
+  final UserService _userService = UserService();
 
   @override 
   void initState() {
     super.initState();
-    _futureUsers = User.getAllUsers();
+    _futureUsers = _userService.getAllUsers();
+
+
+  
   }
 
   @override

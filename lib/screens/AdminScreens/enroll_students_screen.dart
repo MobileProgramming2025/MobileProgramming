@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobileprogramming/services/user_service.dart';
 import 'package:uuid/uuid.dart';
 
 final uuid = Uuid();
@@ -14,6 +15,7 @@ class EnrollStudentsScreen extends StatefulWidget {
 
 class _EnrollStudentsScreenState extends State<EnrollStudentsScreen> {
   final _form = GlobalKey<FormState>();
+  final UserService _userService = UserService();
 
   // final _nameController = TextEditingController();
   // final _codeController = TextEditingController();
@@ -43,7 +45,8 @@ class _EnrollStudentsScreenState extends State<EnrollStudentsScreen> {
 
   void _enroll(){
    var enrolled_courses =0;
-
+   _userService.enrollStudent();
+  
 
   }
 

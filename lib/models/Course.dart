@@ -1,7 +1,3 @@
-import 'package:uuid/uuid.dart';
-
-// final uuid = Uuid();
-
 class Course {
   final String id;
   final String name;
