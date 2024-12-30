@@ -19,6 +19,22 @@ class _ViewCoursesScreenState extends State<ViewCoursesScreen> {
     _futureCourses = _courseService.getAllCourses();
   }
 
+    void _deleteCourse(String id) async {
+    try {
+      await _courseService.deleteCourse(id);
+      // Check if the widget is still in the tree before using context
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Course deleted successfully")),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Failed to delete doctor: $e")),
+      );
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,12 +111,11 @@ class _ViewCoursesScreenState extends State<ViewCoursesScreen> {
                           'Year: ${course.year}',
                           style: Theme.of(context).textTheme.bodyLarge,
                         ),
-                        ElevatedButton(
-                          onPressed: () {},
-                          child: Text(
-                            "Enroll Students",
-                            style: TextStyle(fontSize: 20),
-                          ),
+                        IconButton(
+                          icon: const Icon(Icons.delete),
+                          onPressed: () => _deleteCourse(course.id),
+                          color: Colors.red,
+                          iconSize: 28,
                         ),
                       ],
                     ),

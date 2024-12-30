@@ -35,7 +35,7 @@ class CourseService {
 
 
   // add course to Firestore
-  Future<void> addCourse({
+  Future<void> addCourse({ 
     required String id,
     required String name,
     required String code,
@@ -56,6 +56,15 @@ class CourseService {
       });
     } catch (e) {
       throw Exception("Failed to add Course: $e");
+    }
+  }
+
+
+  Future<void> deleteCourse(String id) async {
+    try {
+      await _firestore.collection('Courses').doc(id).delete();
+    } catch (e) {
+      throw Exception("Failed to delete Course: $e");
     }
   }
 }
