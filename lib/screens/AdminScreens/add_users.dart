@@ -37,6 +37,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
       id: userId,
       name: _nameController.text.trim(),
       email: _emailController.text.trim(),
+      password: _passwordController.text.trim(),
       role: _selectedRole ?? 'Unknown',
       department: _selectedDepartment ?? 'Unknown',
       takenCourses: [],

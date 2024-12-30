@@ -17,7 +17,7 @@ class User {
     required this.id,
     required this.name,
     required this.email,
-    required this.password;
+    required this.password,
     required this.role,
     required this.department,
     required this.enrolledCourses,
@@ -32,7 +32,7 @@ class User {
       'id': id,
       'name': name,
       'email': email,
-      'password': password;
+      'password': password,
       'role': role,
       'department': department,
       'enrolledCourses': enrolledCourses

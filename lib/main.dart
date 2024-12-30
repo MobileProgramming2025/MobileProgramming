@@ -11,7 +11,6 @@ import 'package:mobileprogramming/screens/AdminScreens/list_users.dart';
 import 'package:mobileprogramming/screens/AdminScreens/view_courses_screen.dart';
 import 'package:mobileprogramming/screens/AssignmentScreens/assignment_list_screen.dart';
 import 'package:mobileprogramming/screens/AssignmentScreens/student_assignment_list.dart';
-import 'package:mobileprogramming/screens/CourseList.dart';
 import 'package:mobileprogramming/screens/Registration/signin.dart';
 import 'package:mobileprogramming/screens/Registration/signup.dart';
 import 'package:mobileprogramming/screens/UserScreens/user_home.dart';
