@@ -20,21 +20,21 @@ class _ViewCoursesScreenState extends State<ViewCoursesScreen> {
   }
 
 
-  void _deleteCourse(String id) async {
-    try {
-      await _courseService.deleteCourse(id);
-      print(id);
-      // Check if the widget is still in the tree before using context
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Course deleted successfully")),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Failed to delete course: $e")),
-      );
-    }
-  }
+  // void _deleteCourse(String id) async {
+  //   try {
+  //     await _courseService.deleteCourse(id);
+  //     print(id);
+  //     // Check if the widget is still in the tree before using context
+  //     if (!mounted) return;
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       const SnackBar(content: Text("Course deleted successfully")),
+  //     );
+  //   } catch (e) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(content: Text("Failed to delete course: $e")),
+  //     );
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
