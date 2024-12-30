@@ -12,7 +12,6 @@ class User {
   final List<Course> takenCourses;
   final DateTime addedDate;
   final String year;
-final String password;
   User({
     required this.id,
     required this.name,
@@ -24,7 +23,6 @@ final String password;
     required this.takenCourses,
     required this.addedDate,
     required this.year, 
-    required this.password,
   });
 
   // Convert a User object to a Map for Firestore
@@ -55,7 +53,6 @@ final String password;
       email: map['email'] as String? ?? '',
       password: map['password'] as String? ?? '',
       role: map['role'] as String? ?? 'Unknown',
-      password: map['email'] as String? ??'' ,
       department: map['department'] as String? ?? 'Unknown',
       enrolledCourses: (map['enrolled_courses'] as List<dynamic>? ?? [])
           .map((e) => Course.fromMap(e as Map<String, dynamic>))
