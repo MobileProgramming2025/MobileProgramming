@@ -5,6 +5,7 @@ class User {
   final String id;
   final String name;
   final String email;
+  final String password;
   final String role;
   final String department;
   final List<Course> enrolledCourses;
@@ -16,6 +17,7 @@ class User {
     required this.id,
     required this.name,
     required this.email,
+    required this.password;
     required this.role,
     required this.department,
     required this.enrolledCourses,
@@ -30,6 +32,7 @@ class User {
       'id': id,
       'name': name,
       'email': email,
+      'password': password;
       'role': role,
       'department': department,
       'enrolledCourses': enrolledCourses
@@ -48,6 +51,7 @@ class User {
       name: (map['name'] as String?) ??
           map['email'].split('@')[0], // Default to email before '@'
       email: map['email'] as String? ?? '',
+      password: map['password'] as String? ?? '',
       role: map['role'] as String? ?? 'Unknown',
       department: map['department'] as String? ?? 'Unknown',
       enrolledCourses: (map['enrolled_courses'] as List<dynamic>? ?? [])
