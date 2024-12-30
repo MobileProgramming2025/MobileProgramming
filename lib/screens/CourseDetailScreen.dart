@@ -24,7 +24,7 @@ class CourseDetailScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ElevatedButton(
+            TextButton(
               onPressed: () {
              
                 showModalBottomSheet(
@@ -47,7 +47,7 @@ class CourseDetailScreen extends StatelessWidget {
               
             ),
             SizedBox(height: 20),
-           ElevatedButton(
+           TextButton(
             onPressed: () {
               Navigator.push(
                 context,
@@ -59,7 +59,7 @@ class CourseDetailScreen extends StatelessWidget {
             },
             child: Text('View Assignments'),
           ),
-           ElevatedButton(
+           TextButton(
   onPressed: () {
     Navigator.push(
       context,

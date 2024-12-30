@@ -26,9 +26,24 @@ class _AddUserScreenState extends State<AddUserScreen> {
     'Engineering',
     'Architecture'
   ];
+  
 
   Future<void> _addUser() async {
     String userId = _uuid.v4();
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
     final _firstAdded = DateTime.utc(2021, DateTime.november, 9);
     final _currentYear = DateTime.now();
     final educationYear = _currentYear.year - _firstAdded.year;
@@ -43,6 +58,8 @@ class _AddUserScreenState extends State<AddUserScreen> {
       enrolledCourses: [],
       addedDate: _firstAdded,
       year: (educationYear + 1).toString(),
+      password: _passwordController.text.trim()
+      
     );
 
     try {
@@ -108,6 +125,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
                     decoration: InputDecoration(
                       labelText: "Password",
                       border: OutlineInputBorder(),
+                      
                     ),
                     obscureText: true,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -120,6 +138,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
                       }
                       return null;
                     },
+                    keyboardType: TextInputType.visiblePassword,
                   ),
                   SizedBox(height: 16),
 
