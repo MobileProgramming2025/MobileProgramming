@@ -76,19 +76,21 @@ class UserService {
     var enrolledCourses = 0;
     final users = await getAllUsers();
     final courses = await _courseService.getAllCourses();
-
+    
     for (var user in users) {
+    // isSucceeded(user);
+
       if (user.role == 'user') {
         for (var course in courses) {
           if (user.year == course.year &&
               user.department == course.departmentName) {
-            if (!_isEnrolled(course, user)) {
+            if (!_isEnrolled(course, user) && !_isTaken(course, user)) {
               _enroll(course, user);
               enrolledCourses++;
               print("enrolled");
             }
           }
-          if (enrolledCourses >= 5) {
+          if (enrolledCourses >= 1) {
             break;
           }
         }
@@ -109,4 +111,30 @@ class UserService {
     }
     return false;
   }
+
+  bool _isTaken(Course course, User user) {
+    for (var taken in user.takenCourses) {
+      if (taken.code == course.code) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  // Future<bool> isSucceeded(User user)async{
+  //   final now = DateTime.now();
+  //   final currentYear = now.year;
+  //   final studentAddedYear = user.addedDate.year;
+  //   final educationYears = ((currentYear - studentAddedYear) + 1);
+  //   var userYear = int.parse(user.year);
+  //   if(educationYears > userYear){
+  //    // userYear++;
+  //    // await updateUser(user);
+  //     return true;
+  //   }
+  //   return false;
+  // }
+
+
 }
+

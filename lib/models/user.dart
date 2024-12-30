@@ -64,7 +64,7 @@ class User {
               ? DateTime.parse(
                   map['added_date'] as String) // Parse String to DateTime
               : DateTime.now()), // Default to current date
-      year: map['year'] as String? ?? 'Unknown',
+      year: map['year'] as String? ?? '',
     );
   }
 
