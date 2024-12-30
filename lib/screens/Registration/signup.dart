@@ -8,6 +8,9 @@ class SignUpScreen extends StatelessWidget {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
+  AuthService service = AuthService();
+  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,7 +43,9 @@ class SignUpScreen extends StatelessWidget {
                   controller: passwordController,
                   obscureText: true,
                 ),
-                SizedBox(height: 30),
+                SizedBox(height: 16),
+
+                SizedBox(height: 20),
                 ElevatedButton(
                   child: Text(
                     "Sign Up",
@@ -49,16 +54,18 @@ class SignUpScreen extends StatelessWidget {
                   onPressed: () async {
                     final email = emailController.text.trim();
                     final password = passwordController.text.trim();
-                    const role = "user";
+
+                    const role = "student";
 
                     try {
-                      await AuthService().signUp(email, password, role);
+                      await AuthService()
+                          .signUp(email, password, role);
                       if (context.mounted) {
                         Navigator.pushNamed(context, '/user_home');
                       }
                     } catch (e) {
                       if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar( 
+                        ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text("Sign-Up Failed: $e"),
                           ),

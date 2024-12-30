@@ -4,21 +4,24 @@ import 'package:mobileprogramming/models/Quiz.dart';
 
 class QuizService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-Future<List<Quiz>> getQuizzesByUser(String userId) async {
-  try {
-    QuerySnapshot snapshot = await FirebaseFirestore.instance
-        .collection('quizzes')
-        .where('createdBy', isEqualTo: userId)
-        .get();
 
-    return snapshot.docs
-        .map((doc) => Quiz.fromJson(doc.data() as Map<String, dynamic>))
-        .toList();
-  } catch (error) {
-    throw Exception('Error fetching quizzes: $error');
+  // Fetch all quizzes created by a specific user
+  Future<List<Quiz>> getQuizzesByUser(String userId) async {
+    try {
+      QuerySnapshot snapshot = await _firestore
+          .collection('quizzes')
+          .where('createdBy', isEqualTo: userId)
+          .get();
+
+      return snapshot.docs
+          .map((doc) => Quiz.fromJson(doc.data() as Map<String, dynamic>))
+          .toList();
+    } catch (error) {
+      throw Exception('Error fetching quizzes by user: $error');
+    }
   }
-}
-  /// Create a new quiz in Firestore
+
+  // Create a new quiz
   Future<void> createQuiz(Quiz quiz) async {
     try {
       await _firestore.collection('quizzes').doc(quiz.id).set({
@@ -26,6 +29,7 @@ Future<List<Quiz>> getQuizzesByUser(String userId) async {
         'startDate': quiz.startDate.toIso8601String(),
         'endDate': quiz.endDate.toIso8601String(),
         'courseId': quiz.courseId,
+        'createdBy': quiz.createdBy,
         'questions': quiz.questions.map((q) => q.toJson()).toList(),
       });
     } catch (e) {
@@ -33,7 +37,7 @@ Future<List<Quiz>> getQuizzesByUser(String userId) async {
     }
   }
 
-  /// Fetch all quizzes from Firestore
+  // Fetch all quizzes
   Future<List<Quiz>> getQuizzes() async {
     try {
       QuerySnapshot quizSnapshot = await _firestore.collection('quizzes').get();
@@ -45,7 +49,7 @@ Future<List<Quiz>> getQuizzesByUser(String userId) async {
           endDate: DateTime.parse(doc['endDate']),
           courseId: doc['courseId'] ?? '',
           questions: _parseQuestions(doc['questions']),
-          createdBy : doc['createdBy'],
+          createdBy: doc['createdBy'],
         );
       }).toList();
     } catch (e) {
@@ -53,7 +57,7 @@ Future<List<Quiz>> getQuizzesByUser(String userId) async {
     }
   }
 
-  /// Fetch a single quiz by ID from Firestore
+  // Fetch a specific quiz by ID
   Future<Quiz> getQuiz(String quizId) async {
     try {
       DocumentSnapshot quizDoc = await _firestore.collection('quizzes').doc(quizId).get();
@@ -67,13 +71,14 @@ Future<List<Quiz>> getQuizzesByUser(String userId) async {
         endDate: DateTime.parse(quizDoc['endDate']),
         courseId: quizDoc['courseId'] ?? '',
         questions: _parseQuestions(quizDoc['questions']),
-        createdBy : quizDoc['createdBy'],
+        createdBy: quizDoc['createdBy'],
       );
     } catch (e) {
       throw Exception('Failed to fetch quiz: $e');
     }
   }
-  Future<Quiz?> getQuizById(String quizId) async {
+
+ Future<Quiz?> getQuizById(String quizId) async {
   try {
     DocumentSnapshot doc = await FirebaseFirestore.instance
         .collection('quizzes')
@@ -83,14 +88,40 @@ Future<List<Quiz>> getQuizzesByUser(String userId) async {
     if (doc.exists) {
       return Quiz.fromJson(doc.data() as Map<String, dynamic>);
     }
-    return null; // Return null if quiz doesn't exist
+    return null; 
   } catch (error) {
-    rethrow; // Let the caller handle the error
+    rethrow; 
   }
 }
 
+  // Update an existing quiz
+  Future<void> updateQuiz(Quiz quiz) async {
+    try {
+      final quizData = {
+        'title': quiz.title,
+        'startDate': quiz.startDate.toIso8601String(),
+        'endDate': quiz.endDate.toIso8601String(),
+        'courseId': quiz.courseId,
+        'createdBy': quiz.createdBy,
+        'questions': quiz.questions.map((q) => q.toJson()).toList(),
+      };
 
-  /// Parse questions from Firestore data
+      await _firestore.collection('quizzes').doc(quiz.id).update(quizData);
+    } catch (e) {
+      throw Exception('Failed to update quiz: $e');
+    }
+  }
+
+  // Delete a quiz
+  Future<void> deleteQuiz(String quizId) async {
+    try {
+      await _firestore.collection('quizzes').doc(quizId).delete();
+    } catch (error) {
+      throw Exception('Failed to delete quiz: $error');
+    }
+  }
+
+  // Parse questions from Firestore data
   List<Question> _parseQuestions(dynamic questionsData) {
     if (questionsData is List) {
       return questionsData.map((q) {
@@ -104,31 +135,5 @@ Future<List<Quiz>> getQuizzesByUser(String userId) async {
       }).toList();
     }
     return [];
-  }
-Future<void> updateQuiz(Quiz quiz) async {
-  try {
-    // Create a map of the updated quiz data
-    final quizData = {
-      'title': quiz.title,
-      'startDate': quiz.startDate.toIso8601String(),
-      'endDate': quiz.endDate.toIso8601String(),
-      'courseId': quiz.courseId,
-      'questions': quiz.questions.map((q) => q.toJson()).toList(),
-    };
-
-    // Update the quiz document in Firestore
-    await _firestore.collection('quizzes').doc(quiz.id).update(quizData);
-  } catch (e) {
-    throw Exception('Failed to update quiz: $e');
-  }
-}
-
-
-  Future<void> deleteQuiz(String quizId) async {
-    try {
-      await _firestore.collection('quizzes').doc(quizId).delete();
-    } catch (error) {
-      throw Exception('Failed to delete quiz: $error');
-    }
   }
 }

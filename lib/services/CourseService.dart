@@ -3,7 +3,7 @@ import 'package:mobileprogramming/models/Course.dart';
 
 class CourseService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
+  // final UserService _userService = UserService();
 
   Future<List<Course>> getAllCourses() async {
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -13,6 +13,7 @@ class CourseService {
         .map((doc) => Course.fromMap(doc.data() as Map<String, dynamic>))
         .toList();
   }
+
   Future<List<Map<String, dynamic>>> getCourses() async {
     try {
       QuerySnapshot snapshot = await _firestore.collection('Courses').get();
@@ -32,7 +33,6 @@ class CourseService {
       return [];
     }
   }
-
 
   // add course to Firestore
   Future<void> addCourse({
@@ -58,4 +58,45 @@ class CourseService {
       throw Exception("Failed to add Course: $e");
     }
   }
+
+  // Future<void> deleteCourse(String id) async {
+  //   try {
+  //     // Delete subcollections first (if any)
+  //     print("here ${id}");
+
+  //     deleteAllCoursesFromUser(id);
+
+  //     // Delete the parent document
+  //     await _firestore.collection('Courses').doc(id).delete();
+  //   } catch (e) {
+  //     print("Failed to delete Course: $e");
+  //     throw Exception("Failed to delete Course: $e");
+  //   }
+  // }
+
+  // Future<void> deleteCourseFromUser(String userId, String courseId) async {
+  //   try {
+  //     print("courseId ${courseId}");
+  //     await _firestore
+  //         .collection('users')
+  //         .doc(userId)
+  //         .collection("enrolledCourses")
+  //         .doc(courseId)
+  //         .delete();
+  //   } catch (e) {
+  //     print("Failed to delete course: $e");
+  //     throw Exception("Failed to delete course");
+  //   }
+  // }
+
+  // Future<void> deleteAllCoursesFromUser(String courseId) async {
+  //   final users = await _userService.getAllUsers();
+  //   for (var user in users) {
+  //     for (var course in user.enrolledCourses) {
+  //       if (course.id == courseId) {
+  //         deleteCourseFromUser(user.id, courseId);
+  //       }
+  //     }
+  //   }
+  // }
 }

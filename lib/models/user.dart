@@ -5,6 +5,7 @@ class User {
   final String id;
   final String name;
   final String email;
+  final String password;
   final String role;
   final String department;
   final List<Course> enrolledCourses;
@@ -16,6 +17,7 @@ final String password;
     required this.id,
     required this.name,
     required this.email,
+    required this.password,
     required this.role,
     required this.department,
     required this.enrolledCourses,
@@ -31,6 +33,7 @@ final String password;
       'id': id,
       'name': name,
       'email': email,
+      'password': password,
       'role': role,
       'department': department,
       'enrolledCourses': enrolledCourses
@@ -50,6 +53,7 @@ final String password;
       name: (map['name'] as String?) ??
           map['email'].split('@')[0], // Default to email before '@'
       email: map['email'] as String? ?? '',
+      password: map['password'] as String? ?? '',
       role: map['role'] as String? ?? 'Unknown',
       password: map['email'] as String? ??'' ,
       department: map['department'] as String? ?? 'Unknown',
