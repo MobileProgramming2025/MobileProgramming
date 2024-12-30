@@ -7,7 +7,6 @@ class SignUpScreen extends StatelessWidget {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  String? _selectedDepartment;
 
   AuthService service = AuthService();
   
