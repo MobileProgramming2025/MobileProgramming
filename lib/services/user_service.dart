@@ -7,6 +7,7 @@ import 'package:uuid/uuid.dart';
 
 class UserService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final CourseService _courseService = CourseService();
 
   // Save user to firestore
   Future<void> saveUser(User user) async {
@@ -71,23 +72,23 @@ class UserService {
     }
   }
 
-  final CourseService _courseService = CourseService();
   Future<void> enrollStudent() async {
-    var enrolled_courses = 0;
+    var enrolledCourses = 0;
     final users = await getAllUsers();
     final courses = await _courseService.getAllCourses();
-    var isEnrolled = false;
 
     for (var user in users) {
       if (user.role == 'user') {
         for (var course in courses) {
-          if (user.year == course.year) {
-            _enroll(course,user);
-            isEnrolled = true;
-            print('User: ${user.name} ${user.year}can enroll in course: ${course.name}${course.year}');
+          if (user.year == course.year &&
+              user.department == course.departmentName) {
+            if (!_isEnrolled(course, user)) {
+              _enroll(course, user);
+              enrolledCourses++;
+              print("enrolled");
+            }
           }
-
-          if (enrolled_courses >= 5) {
+          if (enrolledCourses >= 5) {
             break;
           }
         }
@@ -95,25 +96,17 @@ class UserService {
     }
   }
 
-  void _enroll(Course course, User user) async{
+  void _enroll(Course course, User user) async {
     user.enrolledCourses.add(course);
     await updateUser(user);
-    for(var e in user.enrolledCourses){
-      print(e.name);
-      print(e.code);
-
-    }
-  //   _courseService.addCourse(
-  //       id: course.id,
-  //       name: course.name,
-  //       code: course.code,
-  //       drName: course.drName,
-  //       taName: course.taName,
-  //       departmentName: course.departmentName,
-  //       year: course.year);
   }
-  bool _isEnrolled(){
 
+  bool _isEnrolled(Course course, User user) {
+    for (var enrolled in user.enrolledCourses) {
+      if (enrolled.code == course.code) {
+        return true;
+      }
+    }
     return false;
   }
 }
