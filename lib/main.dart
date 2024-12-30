@@ -10,6 +10,7 @@ import 'package:mobileprogramming/screens/AdminScreens/enroll_students_screen.da
 import 'package:mobileprogramming/screens/AdminScreens/list_users.dart';
 import 'package:mobileprogramming/screens/AdminScreens/view_courses_screen.dart';
 import 'package:mobileprogramming/screens/AssignmentScreens/assignment_list_screen.dart';
+import 'package:mobileprogramming/screens/AssignmentScreens/student_assignment_list.dart';
 import 'package:mobileprogramming/screens/CourseList.dart';
 import 'package:mobileprogramming/screens/Registration/signin.dart';
 import 'package:mobileprogramming/screens/Registration/signup.dart';
@@ -153,8 +154,10 @@ class MyApp extends StatelessWidget {
           '/Doctors Dashboard': (context) => DashboardScreen(),
           '/add_courses': (context) => AddCoursesScreen(),
           '/view_courses': (context) => ViewCoursesScreen(),
-          '/create-assignment': (context) => CourseListPage(),
+        // '/create-assignment': (context) => CourseListPage(),
           '/enroll_students': (context) => EnrollStudentsScreen(),
+        //  '/list-assignments-for-dr' : (context) => CourseListPage(),
+        '/student-assignment-list': (context) => StudentAssignmentListScreen()
         },
       );
     });

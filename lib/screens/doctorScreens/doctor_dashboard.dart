@@ -101,13 +101,13 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                   );
               },
             ),
-            ListTile(
-              leading: Icon(Icons.assignment_add),
-              title: Text('Create Assignment'),
-              onTap: () {
-                Navigator.pushNamed(context, '/create-assignment');
-              },
-            ),
+            // ListTile(
+            //   leading: Icon(Icons.assignment_add),
+            //   title: Text('Create Assignment'),
+            //   onTap: () {
+            //     Navigator.pushNamed(context, '/list-assignments-for-dr');
+            //   },
+            // ),
           
             ListTile(
               leading: Icon(Icons.assignment_add),

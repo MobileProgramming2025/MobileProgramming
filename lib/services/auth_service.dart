@@ -36,6 +36,7 @@ class AuthService {
           'email': email,
           'role': role, // Store role in Firestore
           'createdAt': FieldValue.serverTimestamp(),
+          'password' : password
         });
       }
       return user;

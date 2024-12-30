@@ -70,7 +70,7 @@ class _UserHomeState extends State<UserHome> {
               leading: Icon(Icons.assignment_add),
               title: Text('View Assignments'),
               onTap: () {
-                Navigator.pushNamed(context, '/assignment_screen');
+                Navigator.pushNamed(context, '/student-assignment-list');
               },
             ),
           ],
