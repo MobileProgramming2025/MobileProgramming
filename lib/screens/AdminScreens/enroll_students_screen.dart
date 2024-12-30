@@ -14,40 +14,21 @@ class EnrollStudentsScreen extends StatefulWidget {
 }
 
 class _EnrollStudentsScreenState extends State<EnrollStudentsScreen> {
-  final _form = GlobalKey<FormState>();
   final UserService _userService = UserService();
 
-  // final _nameController = TextEditingController();
-  // final _codeController = TextEditingController();
-  // final _drNameController = TextEditingController();
-  // final _taNameController = TextEditingController();
-  // final _yearController = TextEditingController();
-  // final _departmentController = TextEditingController();
-
-  // var _enteredName = '';
-  // var _enteredCode = '';
-  // var _enteredDrName = '';
-  // var _enteredTaName = '';
-  // var _enteredYear = '';
-  // var _enteredDepartment = '';
-
-  //To avoid memory leak
-  @override
-  void dispose() {
-    // _nameController.dispose();
-    // _codeController.dispose();
-    // _drNameController.dispose();
-    // _taNameController.dispose();
-    // _yearController.dispose();
-    // _departmentController.dispose();
-    super.dispose();
-  }
-
-  void _enroll(){
-   var enrolled_courses =0;
+  void _enroll()async{
+   try {
    _userService.enrollStudent();
-  
-
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Students are enrolled Sucessfully!')),
+      );
+      _clearFields();
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to enroll students: $e')),
+      );
+    }
   }
 
   @override
@@ -62,7 +43,6 @@ class _EnrollStudentsScreenState extends State<EnrollStudentsScreen> {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Form(
-            // key: _form,
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
