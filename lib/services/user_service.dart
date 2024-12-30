@@ -76,14 +76,17 @@ class UserService {
     var enrolledCourses = 0;
     final users = await getAllUsers();
     final courses = await _courseService.getAllCourses();
-    
-    for (var user in users) {
-    // isSucceeded(user);
 
-      if (user.role == 'user') {
+    for (var user in users) {
+      // isSucceeded(user);
+          print('User: ${user.name}, Email: ${user.email}, Role: ${user.role}');
+
+
+      if (user.role == 'student') {
         for (var course in courses) {
           if (user.year == course.year &&
               user.department == course.departmentName) {
+
             if (!_isEnrolled(course, user) && !_isTaken(course, user)) {
               _enroll(course, user);
               enrolledCourses++;
@@ -99,7 +102,11 @@ class UserService {
   }
 
   void _enroll(Course course, User user) async {
-    user.enrolledCourses.add(course);
+    final enrolledCoursesList = user.enrolledCourses;
+    if (user.enrolledCourses.isEmpty) {
+      print("Empty");
+      enrolledCoursesList.add(course);
+    }
     await updateUser(user);
   }
 
@@ -134,7 +141,4 @@ class UserService {
   //   }
   //   return false;
   // }
-
-
 }
-

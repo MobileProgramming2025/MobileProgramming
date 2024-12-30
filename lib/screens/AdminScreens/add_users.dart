@@ -12,14 +12,20 @@ class AddUserScreen extends StatefulWidget {
 class _AddUserScreenState extends State<AddUserScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   final Uuid _uuid = Uuid();
 
   String? _selectedRole;
   String? _selectedDepartment;
 
-  final List<String> _roles = ['student', 'doctor', 'ta', 'admin'];
-  final List<String> _departments = ['Computer Science', 'Business', 'Engineering', 'Architecture'];
+  final List<String> _roles = ['student', 'Doctor', 'ta', 'Admin'];
+  final List<String> _departments = [
+    'Computer Science',
+    'Business',
+    'Engineering',
+    'Architecture'
+  ];
 
   Future<void> _addUser() async {
     String userId = _uuid.v4();
@@ -57,6 +63,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
   void _clearFields() {
     _nameController.clear();
     _emailController.clear();
+    _passwordController.clear();
     setState(() {
       _selectedRole = null;
       _selectedDepartment = null;
@@ -86,7 +93,6 @@ class _AddUserScreenState extends State<AddUserScreen> {
                     ),
                   ),
                   SizedBox(height: 16),
-
                   TextFormField(
                     controller: _emailController,
                     decoration: InputDecoration(
@@ -94,6 +100,26 @@ class _AddUserScreenState extends State<AddUserScreen> {
                       border: OutlineInputBorder(),
                     ),
                     keyboardType: TextInputType.emailAddress,
+                  ),
+                  SizedBox(height: 16),
+                  // Password Field
+                  TextFormField(
+                    controller: _passwordController,
+                    decoration: InputDecoration(
+                      labelText: "Password",
+                      border: OutlineInputBorder(),
+                    ),
+                    obscureText: true,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Please, enter your password.";
+                      }
+                      if (value.length < 8) {
+                        return "Password must be at least 8 characters.";
+                      }
+                      return null;
+                    },
                   ),
                   SizedBox(height: 16),
 
@@ -104,9 +130,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
                         value: role,
                         child: Text(
                           role,
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
+                          style: Theme.of(context).textTheme.bodyLarge,
                         ),
                       );
                     }).toList(),
@@ -121,7 +145,6 @@ class _AddUserScreenState extends State<AddUserScreen> {
                     ),
                   ),
                   SizedBox(height: 16),
-
                   DropdownButtonFormField<String>(
                     value: _selectedDepartment,
                     items: _departments.map((department) {
@@ -129,9 +152,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
                         value: department,
                         child: Text(
                           department,
-                          style: TextStyle(
-                            color: Colors.black
-                          ),
+                          style: Theme.of(context).textTheme.bodyLarge,
                         ),
                       );
                     }).toList(),
@@ -146,7 +167,6 @@ class _AddUserScreenState extends State<AddUserScreen> {
                     ),
                   ),
                   SizedBox(height: 20),
-
                   Center(
                     child: ElevatedButton(
                       onPressed: _addUser,
