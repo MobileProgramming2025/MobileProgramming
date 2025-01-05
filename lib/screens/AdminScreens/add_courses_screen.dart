@@ -22,26 +22,22 @@ class _AddCoursesScreenState extends State<AddCoursesScreen> {
 
   final _nameController = TextEditingController();
   final _codeController = TextEditingController();
-  final _drNameController = TextEditingController();
-  final _taNameController = TextEditingController();
-  final _yearController = TextEditingController();
   final _departmentController = TextEditingController();
 
   var _enteredName = '';
   var _enteredCode = '';
-  var _enteredDrName = '';
-  var _enteredTaName = '';
-  var _enteredYear = '';
   var _enteredDepartment = '';
+  var _selectedYear = '1';
+  var _selectedDr = '';
+  var _selectedTa = '';
+
+  final List<String> years = ['1', '2', '3', '4', '5'];
 
   //To avoid memory leak
   @override
   void dispose() {
     _nameController.dispose();
     _codeController.dispose();
-    _drNameController.dispose();
-    _taNameController.dispose();
-    _yearController.dispose();
     _departmentController.dispose();
     super.dispose();
   }
@@ -59,23 +55,24 @@ class _AddCoursesScreenState extends State<AddCoursesScreen> {
   void _clearFields() {
     _nameController.clear();
     _codeController.clear();
-    _drNameController.clear();
-    _taNameController.clear();
-    _yearController.clear();
     _departmentController.clear();
+    setState(() {
+      _selectedYear = '1';
+    });
   }
 
   void _saveCourse() async {
     String _uuid = uuid.v4();
     try {
       await _courseService.addCourse(
-          id: _uuid,
-          name: _enteredName,
-          code: _enteredCode,
-          drName: _enteredDrName,
-          taName: _enteredTaName,
-          departmentName: _enteredDepartment,
-          year: _enteredYear);
+        id: _uuid,
+        name: _enteredName,
+        code: _enteredCode,
+        drName: _selectedDr,
+        taName: _selectedTa,
+        departmentName: _enteredDepartment,
+        year: _selectedYear,
+      );
       // Check if the widget is still in the tree before using context
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -140,116 +137,94 @@ class _AddCoursesScreenState extends State<AddCoursesScreen> {
                       _enteredCode = value!;
                     },
                   ),
-                  // SizedBox(height: 16),
-                  // TextFormField(
-                  //   decoration: InputDecoration(
-                  //     labelText: 'Lecturer Name',
-                  //     border: OutlineInputBorder(),
-                  //   ),
-                  //   controller: _drNameController,
-                  //   validator: (value) {
-                  //     if (value == null || value.trim().isEmpty) {
-                  //       return "please enter a valid Lecturer Name";
-                  //     }
-                  //     return null;
-                  //   },
-                  //   onSaved: (value) {
-                  //     _enteredDrName = value!;
-                  //   },
-                  // ),
                   SizedBox(height: 16),
-
-                  Row(
-                    children: [
-                      StreamBuilder<QuerySnapshot>(
-                        stream: FirebaseFirestore.instance
-                            .collection('users')
-                            .snapshots(),
-                        builder: (context, snapshot) {
-                          List<DropdownMenuItem> doctorItems = [];
-                          if (!snapshot.hasData) {
-                            const CircularProgressIndicator();
-                          } else {
-                            final items = snapshot.data?.docs.reversed.toList();
-                            for (var item in items!) {
-                              if (item['role'] == 'Doctor') {
-                                doctorItems.add(
-                                  DropdownMenuItem(
-                                      value: item.id,
-                                      child: Text(
-                                        item['name'],
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyLarge,
-                                      )),
-                                );
-                              }
-                            }
+                  StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('users')
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      List<DropdownMenuItem> doctorItems = [];
+                      if (!snapshot.hasData) {
+                        const CircularProgressIndicator();
+                      } else {
+                        final items = snapshot.data?.docs.reversed.toList();
+                        for (var item in items!) {
+                          if (item['role'] == 'Doctor') {
+                            doctorItems.add(
+                              DropdownMenuItem(
+                                value: item.id,
+                                child: Text(
+                                  item['name'],
+                                  style: Theme.of(context).textTheme.bodyLarge,
+                                ),
+                              ),
+                            );
                           }
-                          return DropdownButton(
-                              items: doctorItems,
-                              onChanged: (itemValue) {
-                                print(itemValue);
-                              });
+                        }
+                      }
+                      return DropdownButtonFormField(
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return "please select a Lecturer Name";
+                          }
+                          return null;
                         },
-                      ),
-                    ],
+                        decoration: InputDecoration(
+                          labelText: 'Lecturer Name',
+                          border: OutlineInputBorder(),
+                        ),
+                        items: doctorItems,
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedDr = value!;
+                          });
+                        },
+                      );
+                    },
                   ),
-
                   SizedBox(height: 16),
-
-                  // TextFormField(
-                  //   decoration: InputDecoration(
-                  //     labelText: 'Teaching Assistant Name',
-                  //     border: OutlineInputBorder(),
-                  //   ),
-                  //   controller: _taNameController,
-                  //   validator: (value) {
-                  //     if (value == null || value.trim().isEmpty) {
-                  //       return "please enter a valid Course Name";
-                  //     }
-                  //     return null;
-                  //   },
-                  //   onSaved: (value) {
-                  //     _enteredTaName = value!;
-                  //   },
-                  // ),
-
-                                    Row(
-                    children: [
-                      StreamBuilder<QuerySnapshot>(
-                        stream: FirebaseFirestore.instance
-                            .collection('users')
-                            .snapshots(),
-                        builder: (context, snapshot) {
-                          List<DropdownMenuItem> doctorItems = [];
-                          if (!snapshot.hasData) {
-                            const CircularProgressIndicator();
-                          } else {
-                            final items = snapshot.data?.docs.reversed.toList();
-                            for (var item in items!) {
-                              if (item['role'] == 'Teaching Assistant') {
-                                doctorItems.add(
-                                  DropdownMenuItem(
-                                      value: item.id,
-                                      child: Text(
-                                        item['name'],
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyLarge,
-                                      )),
-                                );
-                              }
-                            }
+                  StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('users')
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      List<DropdownMenuItem> taItems = [];
+                      if (!snapshot.hasData) {
+                        const CircularProgressIndicator();
+                      } else {
+                        final items = snapshot.data?.docs.reversed.toList();
+                        for (var item in items!) {
+                          if (item['role'] == 'Teaching Assistant') {
+                            taItems.add(
+                              DropdownMenuItem(
+                                value: item.id,
+                                child: Text(
+                                  item['name'],
+                                  style: Theme.of(context).textTheme.bodyLarge,
+                                ),
+                              ),
+                            );
                           }
-                          return DropdownButton(
-                              items: doctorItems,
-                              onChanged: (itemValue) {
-                                print(itemValue);
-                              });
-                        },
-                      ),
-                    ],
+                        }
+                      }
+                      return DropdownButtonFormField(
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return "please select a Teaching Assistant Name";
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            labelText: 'Teaching Assistant Name',
+                            border: OutlineInputBorder(),
+                          ),
+                          items: taItems,
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedTa = value!;
+                            });
+                          });
+                    },
                   ),
                   SizedBox(height: 16),
                   TextFormField(
@@ -269,22 +244,26 @@ class _AddCoursesScreenState extends State<AddCoursesScreen> {
                     },
                   ),
                   SizedBox(height: 16),
-                  TextFormField(
+                  DropdownButtonFormField<String>(
+                    value: _selectedYear,
+                    items: years.map((year) {
+                      return DropdownMenuItem(
+                        value: year,
+                        child: Text(
+                          year,
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedYear = value!;
+                      });
+                    },
                     decoration: InputDecoration(
-                      labelText: 'Eductaion Year',
+                      labelText: 'Education Year',
                       border: OutlineInputBorder(),
                     ),
-                    keyboardType: TextInputType.number,
-                    controller: _yearController,
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return "please enter a valid Education Year";
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      _enteredYear = value!;
-                    },
                   ),
                   SizedBox(height: 20),
                   Center(
