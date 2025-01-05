@@ -19,7 +19,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
   String? _selectedRole;
   String? _selectedDepartment;
 
-  final List<String> _roles = ['student', 'Doctor', 'ta', 'Admin'];
+  final List<String> _roles = ['Student', 'Doctor', 'Teaching Assistant', 'Admin'];
   final List<String> _departments = [
     'Computer Science',
     'Business',
@@ -30,17 +30,6 @@ class _AddUserScreenState extends State<AddUserScreen> {
 
   Future<void> _addUser() async {
     String userId = _uuid.v4();
-
-
-
-
-
-
-
-
-
-
-
 
 
     

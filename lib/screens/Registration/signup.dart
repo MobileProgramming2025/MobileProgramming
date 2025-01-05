@@ -55,7 +55,7 @@ class SignUpScreen extends StatelessWidget {
                     final email = emailController.text.trim();
                     final password = passwordController.text.trim();
 
-                    const role = "student";
+                    const role = "Student";
 
                     try {
                       await AuthService()
