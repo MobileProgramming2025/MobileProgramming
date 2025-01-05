@@ -126,7 +126,7 @@ class LoginScreen extends StatelessWidget {
 
         if (userModel != null) {
 
-          if (userModel.role == 'doctor' || userModel.role == 'ta') {
+          if (userModel.role == 'Doctor' || userModel.role == 'Teaching Assistant') {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -134,7 +134,7 @@ class LoginScreen extends StatelessWidget {
               ),
             );
           }
-          else if (userModel.role == 'admin') {
+          else if (userModel.role == 'Admin') {
             Navigator.pushNamed(context, '/admin_home');
           } else {
             Navigator.pushNamed(context, '/user_home');

@@ -82,7 +82,7 @@ class UserService {
           print('User: ${user.name}, Email: ${user.email}, Role: ${user.role}');
 
 
-      if (user.role == 'student') {
+      if (user.role == 'Student') {
         for (var course in courses) {
           if (user.year == course.year &&
               user.department == course.departmentName) {
