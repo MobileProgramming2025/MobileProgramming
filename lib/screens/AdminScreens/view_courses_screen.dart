@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:mobileprogramming/models/Department.dart';
 import 'package:mobileprogramming/models/user.dart';
 import 'package:mobileprogramming/services/CourseService.dart';
+import 'package:mobileprogramming/services/DepartmentService.dart';
 import 'package:mobileprogramming/services/user_service.dart';
 
 class ViewCoursesScreen extends StatefulWidget {
@@ -12,7 +14,8 @@ class ViewCoursesScreen extends StatefulWidget {
 
 class _ViewCoursesScreenState extends State<ViewCoursesScreen> {
   final CourseService _courseService = CourseService();
-  UserService userService = UserService();
+  final UserService userService = UserService();
+  final DepartmentService departmentService =DepartmentService();
   late Stream<List<Map<String, dynamic>>> _coursesStream;
 
   @override
@@ -59,6 +62,7 @@ class _ViewCoursesScreenState extends State<ViewCoursesScreen> {
                 final course = courses[index];
                 final Stream<User?> drStream = userService.getUserByID(course['drId']);
                 final Stream<User?> taStream = userService.getUserByID(course['taId']);
+                final Stream<Department?> departmentStream = departmentService.getDepartmentByID(course['departmentId']);
 
                 return Card(
                   elevation: 4,
@@ -101,9 +105,15 @@ class _ViewCoursesScreenState extends State<ViewCoursesScreen> {
                           }
                         ),
                         const SizedBox(height: 8),
-                        Text(
-                          'Department: ${course['departmentName']}',
-                          style: Theme.of(context).textTheme.bodyLarge,
+                        StreamBuilder<Department?>(
+                          stream: departmentStream,
+                          builder: (context, snapshot) {
+                            final Department? dep = snapshot.data;
+                            return Text(
+                              'Department: ${dep?.name}',
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            );
+                          }
                         ),
                         const SizedBox(height: 8),
                         Text(

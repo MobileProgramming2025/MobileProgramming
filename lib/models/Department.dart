@@ -6,12 +6,12 @@ class Department {
   final String capacity;
   final List<Course> courses;
 
-  Department(
-      {required this.id,
-      required this.name,
-      required this.capacity,
-      required this.courses,
-      });
+  Department({
+    required this.id,
+    required this.name,
+    required this.capacity,
+    required this.courses,
+  });
 
   // Convert a Course object to a Map for Firestore
   Map<String, dynamic> toMap() {
@@ -19,9 +19,7 @@ class Department {
       'id': id,
       'name': name,
       'capacity': capacity,
-      'courses': courses
-          .map((course) => course.toMap())
-          .toList(),
+      'courses': courses.map((course) => course.toMap()).toList(),
     };
   }
 
@@ -34,7 +32,6 @@ class Department {
       courses: (map['courses'] as List<dynamic>? ?? [])
           .map((e) => Course.fromMap(e as Map<String, dynamic>))
           .toList(),
-      
     );
   }
 }

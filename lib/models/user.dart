@@ -40,7 +40,6 @@ class User {
       'taken_courses': takenCourses,
       'added_date': addedDate,
       'year': year,
-      'password' : password
     };
   }
 

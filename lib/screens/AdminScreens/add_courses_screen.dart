@@ -22,14 +22,13 @@ class _AddCoursesScreenState extends State<AddCoursesScreen> {
 
   final _nameController = TextEditingController();
   final _codeController = TextEditingController();
-  final _departmentController = TextEditingController();
 
   var _enteredName = '';
   var _enteredCode = '';
-  var _enteredDepartment = '';
   var _selectedYear = '1';
   var _selectedDr = '';
   var _selectedTa = '';
+  var _selectedDepartment = '';
 
   final List<String> years = ['1', '2', '3', '4', '5'];
 
@@ -38,7 +37,6 @@ class _AddCoursesScreenState extends State<AddCoursesScreen> {
   void dispose() {
     _nameController.dispose();
     _codeController.dispose();
-    _departmentController.dispose();
     super.dispose();
   }
 
@@ -55,11 +53,10 @@ class _AddCoursesScreenState extends State<AddCoursesScreen> {
   void _clearFields() {
     _nameController.clear();
     _codeController.clear();
-    _departmentController.clear();
     setState(() {
       _selectedYear = '1';
       _selectedDr = '';
-      _selectedTa = '';
+      _selectedDepartment = '';
     });
   }
 
@@ -72,7 +69,7 @@ class _AddCoursesScreenState extends State<AddCoursesScreen> {
         code: _enteredCode,
         drId: _selectedDr,
         taId: _selectedTa,
-        departmentName: _enteredDepartment,
+        departmentId: _selectedDepartment,
         year: _selectedYear,
       );
       // Check if the widget is still in the tree before using context
@@ -229,20 +226,45 @@ class _AddCoursesScreenState extends State<AddCoursesScreen> {
                     },
                   ),
                   SizedBox(height: 16),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: 'Department Name',
-                      border: OutlineInputBorder(),
-                    ),
-                    controller: _departmentController,
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return "please enter a valid Department Name";
+                  StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('Departments')
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      List<DropdownMenuItem> taItems = [];
+                      if (!snapshot.hasData) {
+                        const CircularProgressIndicator();
+                      } else {
+                        final items = snapshot.data?.docs.reversed.toList();
+                        for (var item in items!) {
+                          taItems.add(
+                            DropdownMenuItem(
+                              value: item.id,
+                              child: Text(
+                                item['name'],
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                            ),
+                          );
+                        }
                       }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      _enteredDepartment = value!;
+                      return DropdownButtonFormField(
+                          validator: (value) {
+                            if (value == null) {
+                              return "please select a Department";
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            labelText: 'Department Name',
+                            border: OutlineInputBorder(),
+                          ),
+                          items: taItems,
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedDepartment = value!;
+                            });
+                          });
                     },
                   ),
                   SizedBox(height: 16),

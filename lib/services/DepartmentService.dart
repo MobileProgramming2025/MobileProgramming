@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mobileprogramming/models/Department.dart';
 
 class DepartmentService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -17,6 +18,26 @@ class DepartmentService {
         };
       }).toList();
     });
+  }
+
+  Stream<Department?> getDepartmentByID(String id) {
+    try {
+      return _firestore
+          .collection('Departments')
+          .doc(id)
+          .snapshots()
+          .map((docSnapshot) {
+        if (docSnapshot.exists && docSnapshot.data() != null) {
+          return Department.fromMap(docSnapshot.data()!);
+        } else {
+          print('Department with ID $id not found in Firestore.');
+          return null;
+        }
+      });
+    } catch (e) {
+      print('Error retrieving user with ID $id: $e');
+      throw Exception('Failed to retrieve user');
+    }
   }
 
   // add course to Firestore
