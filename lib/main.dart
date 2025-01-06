@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:mobileprogramming/screens/AdminScreens/AddDoctorScreen.dart';
+import 'package:mobileprogramming/screens/AdminScreens/Add_department_screen.dart';
 import 'package:mobileprogramming/screens/AdminScreens/DashboardScreen.dart';
 import 'package:mobileprogramming/screens/AdminScreens/add_courses_screen.dart';
 import 'package:mobileprogramming/screens/AdminScreens/add_users.dart';
@@ -156,7 +157,8 @@ class MyApp extends StatelessWidget {
         // '/create-assignment': (context) => CourseListPage(),
           '/enroll_students': (context) => EnrollStudentsScreen(),
         //  '/list-assignments-for-dr' : (context) => CourseListPage(),
-        '/student-assignment-list': (context) => StudentAssignmentListScreen()
+        '/student-assignment-list': (context) => StudentAssignmentListScreen(),
+        '/add_department' : (context) => AddDepartmentScreen(),
         },
       );
     });
