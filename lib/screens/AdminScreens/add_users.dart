@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/user.dart';
 import 'package:uuid/uuid.dart';
@@ -19,24 +20,20 @@ class _AddUserScreenState extends State<AddUserScreen> {
   String? _selectedRole;
   String? _selectedDepartment;
 
-  final List<String> _roles = ['Student', 'Doctor', 'Teaching Assistant', 'Admin'];
-  final List<String> _departments = [
-    'Computer Science',
-    'Business',
-    'Engineering',
-    'Architecture'
+  final List<String> _roles = [
+    'Student',
+    'Doctor',
+    'Teaching Assistant',
+    'Admin'
   ];
-  
 
   Future<void> _addUser() async {
     String userId = _uuid.v4();
 
-
-    
     final _firstAdded = DateTime.utc(2021, DateTime.november, 9);
     final _currentYear = DateTime.now();
     final educationYear = _currentYear.year - _firstAdded.year;
-  
+
     User newUser = User(
       id: userId,
       name: _nameController.text.trim(),
@@ -48,7 +45,6 @@ class _AddUserScreenState extends State<AddUserScreen> {
       enrolledCourses: [],
       addedDate: _firstAdded,
       year: (educationYear + 1).toString(),
-      
     );
 
     try {
@@ -114,7 +110,6 @@ class _AddUserScreenState extends State<AddUserScreen> {
                     decoration: InputDecoration(
                       labelText: "Password",
                       border: OutlineInputBorder(),
-                      
                     ),
                     obscureText: true,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -153,26 +148,46 @@ class _AddUserScreenState extends State<AddUserScreen> {
                     ),
                   ),
                   SizedBox(height: 16),
-                  DropdownButtonFormField<String>(
-                    value: _selectedDepartment,
-                    items: _departments.map((department) {
-                      return DropdownMenuItem(
-                        value: department,
-                        child: Text(
-                          department,
-                          style: Theme.of(context).textTheme.bodyLarge,
-                        ),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedDepartment = value;
-                      });
+                  StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('Departments')
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      List<DropdownMenuItem> taItems = [];
+                      if (!snapshot.hasData) {
+                        const CircularProgressIndicator();
+                      } else {
+                        final items = snapshot.data?.docs.reversed.toList();
+                        for (var item in items!) {
+                          taItems.add(
+                            DropdownMenuItem(
+                              value: item.id,
+                              child: Text(
+                                item['name'],
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                            ),
+                          );
+                        }
+                      }
+                      return DropdownButtonFormField(
+                          validator: (value) {
+                            if (value == null) {
+                              return "please select a Department";
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            labelText: 'Department Name',
+                            border: OutlineInputBorder(),
+                          ),
+                          items: taItems,
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedDepartment = value!;
+                            });
+                          });
                     },
-                    decoration: InputDecoration(
-                      labelText: 'Department',
-                      border: OutlineInputBorder(), 
-                    ),
                   ),
                   SizedBox(height: 20),
                   Center(
