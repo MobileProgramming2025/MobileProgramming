@@ -2,8 +2,8 @@ class Course {
   final String id;
   final String name;
   final String code;
-  final String drName;
-  final String taName;
+  final String drId;
+  final String taId;
   final String departmentName;
   final String year;
 
@@ -11,8 +11,8 @@ class Course {
       {required this.id,
       required this.name,
       required this.code,
-      required this.drName,
-      required this.taName,
+      required this.drId,
+      required this.taId,
       required this.year,
       required this.departmentName});
 
@@ -22,8 +22,8 @@ class Course {
       'id': id,
       'name': name,
       'code': code,
-      'drName': drName,
-      'taName': taName,
+      'drId': drId,
+      'taId': taId,
       'departmentName': departmentName,
       'year': year,
     };
@@ -35,8 +35,8 @@ class Course {
       id: data['id'] ?? '',
       name: data['name'] ?? '',
       code: data['code'] ?? '',
-      drName: data['drName'] ?? '',
-      taName: data['taName'] ?? '',
+      drId: data['drId'] ?? '',
+      taId: data['taId'] ?? '',
       departmentName: data['departmentName'] ?? '',
       year: data['year'] ?? '',
     );

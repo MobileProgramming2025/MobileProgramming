@@ -20,7 +20,7 @@ class _CourseListPageState extends State<CourseListPage> {
     try {
       final courses = await _courseService.getAllCourses();
       setState(() {
-        _courses = courses;
+        // _courses = courses;
         _isLoading = false;
       });
     } catch (error) {
@@ -46,7 +46,7 @@ class _CourseListPageState extends State<CourseListPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Courses'),
-        actions: [
+        actions:const [
           IconButton(
             icon: Icon(Icons.add),
             onPressed: null,
@@ -63,7 +63,7 @@ class _CourseListPageState extends State<CourseListPage> {
                     final course = _courses[index];
                     return ListTile(
                       title: Text(course.name),
-                      subtitle: Text('Dr: ${course.drName}'),
+                      subtitle: Text('Dr: ${course.drId}'),
                       onTap: () {
                         Navigator.push(
                           context,

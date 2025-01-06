@@ -5,42 +5,49 @@ class CourseService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   // final UserService _userService = UserService();
 
-  Future<List<Course>> getAllCourses() async {
-    final FirebaseFirestore firestore = FirebaseFirestore.instance;
-    final QuerySnapshot querySnapshot =
-        await firestore.collection('Courses').get();
-    return querySnapshot.docs
-        .map((doc) => Course.fromMap(doc.data() as Map<String, dynamic>))
-        .toList();
+  Stream<List<Map<String, dynamic>>> getAllCourses() {
+    return FirebaseFirestore.instance.collection('Courses').snapshots().map(
+        (snapshot){
+      return snapshot.docs.map((doc) {
+        // Extract the document's ID and fields, and create a usable map
+        return {
+          'id': doc.id,
+          ...doc.data(),
+        };
+      }).toList();
+    });
   }
 
-  Future<List<Map<String, dynamic>>> getCourses() async {
-    try {
-      QuerySnapshot snapshot = await _firestore.collection('Courses').get();
-      return snapshot.docs
-          .map((doc) => {
-                'id': doc.id,
-                'name': doc['name'],
-                'code': doc['code'],
-                'drName': doc['drName'],
-                'taName': doc['taName'],
-                'departmentName': doc['departmentName'],
-                'year': doc['year'],
-              })
-          .toList();
-    } catch (e) {
-      print('Error fetching courses: $e');
-      return [];
-    }
-  }
+
+
+
+  // Future<List<Map<String, dynamic>>> getCourses() async {
+  //   try {
+  //     QuerySnapshot snapshot = await _firestore.collection('Courses').get();
+  //     return snapshot.docs
+  //         .map((doc) => {
+  //               'id': doc.id,
+  //               'name': doc['name'],
+  //               'code': doc['code'],
+  //               'drId': doc['drId'],
+  //               'taId': doc['taId'],
+  //               'departmentName': doc['departmentName'],
+  //               'year': doc['year'],
+  //             })
+  //         .toList();
+  //   } catch (e) {
+  //     print('Error fetching courses: $e');
+  //     return [];
+  //   }
+  // }
 
   // add course to Firestore
   Future<void> addCourse({
     required String id,
     required String name,
     required String code,
-    required String drName,
-    required String taName,
+    required String drId,
+    required String taId,
     required String departmentName,
     required String year,
   }) async {
@@ -49,8 +56,8 @@ class CourseService {
         'id': id,
         'name': name,
         'code': code,
-        'drName': drName,
-        'taName': taName,
+        'drId': drId,
+        'taId': taId,
         'departmentName': departmentName,
         'year': year,
       });

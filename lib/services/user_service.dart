@@ -35,17 +35,20 @@ class UserService {
   }
 
   // Retrieve a user by ID from Firestore
-  Future<User?> getUserByID(String id) async {
+  Stream<User?> getUserByID(String id) {
     try {
-      final DocumentSnapshot<Map<String, dynamic>> docSnapshot =
-          await _firestore.collection('users').doc(id).get();
-
-      if (docSnapshot.exists && docSnapshot.data() != null) {
-        return User.fromMap(docSnapshot.data()!);
-      } else {
-        print('User with ID $id not found in Firestore.');
-        return null;
-      }
+      return _firestore
+          .collection('users')
+          .doc(id)
+          .snapshots()
+          .map((docSnapshot) {
+        if (docSnapshot.exists && docSnapshot.data() != null) {
+          return User.fromMap(docSnapshot.data()!);
+        } else {
+          print('User with ID $id not found in Firestore.');
+          return null;
+        }
+      });
     } catch (e) {
       print('Error retrieving user with ID $id: $e');
       throw Exception('Failed to retrieve user');
@@ -72,61 +75,60 @@ class UserService {
     }
   }
 
-  Future<void> enrollStudent() async {
-    var enrolledCourses = 0;
-    final users = await getAllUsers();
-    final courses = await _courseService.getAllCourses();
+  // Future<void> enrollStudent() async {
+  //   var enrolledCourses = 0;
+  //   final users = await getAllUsers();
+  //   final courses = _courseService.getAllCourses();
 
-    for (var user in users) {
-      // isSucceeded(user);
-          print('User: ${user.name}, Email: ${user.email}, Role: ${user.role}');
+  //   for (var user in users) {
+  //     // isSucceeded(user);
+  //         print('User: ${user.name}, Email: ${user.email}, Role: ${user.role}');
 
+  //     if (user.role == 'Student') {
+  //       for (var course in courses) {
+  //         if (user.year == course.year &&
+  //             user.department == course.departmentName) {
 
-      if (user.role == 'Student') {
-        for (var course in courses) {
-          if (user.year == course.year &&
-              user.department == course.departmentName) {
+  //           if (!_isEnrolled(course, user) && !_isTaken(course, user)) {
+  //             _enroll(course, user);
+  //             enrolledCourses++;
+  //             print("enrolled");
+  //           }
+  //         }
+  //         if (enrolledCourses >= 1) {
+  //           break;
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
 
-            if (!_isEnrolled(course, user) && !_isTaken(course, user)) {
-              _enroll(course, user);
-              enrolledCourses++;
-              print("enrolled");
-            }
-          }
-          if (enrolledCourses >= 1) {
-            break;
-          }
-        }
-      }
-    }
-  }
+  // void _enroll(Course course, User user) async {
+  //   final enrolledCoursesList = user.enrolledCourses;
+  //   if (user.enrolledCourses.isEmpty) {
+  //     print("Empty");
+  //     enrolledCoursesList.add(course);
+  //   }
+  //   await updateUser(user);
+  // }
 
-  void _enroll(Course course, User user) async {
-    final enrolledCoursesList = user.enrolledCourses;
-    if (user.enrolledCourses.isEmpty) {
-      print("Empty");
-      enrolledCoursesList.add(course);
-    }
-    await updateUser(user);
-  }
+  // bool _isEnrolled(Course course, User user) {
+  //   for (var enrolled in user.enrolledCourses) {
+  //     if (enrolled.code == course.code) {
+  //       return true;
+  //     }
+  //   }
+  //   return false;
+  // }
 
-  bool _isEnrolled(Course course, User user) {
-    for (var enrolled in user.enrolledCourses) {
-      if (enrolled.code == course.code) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  bool _isTaken(Course course, User user) {
-    for (var taken in user.takenCourses) {
-      if (taken.code == course.code) {
-        return true;
-      }
-    }
-    return false;
-  }
+  // bool _isTaken(Course course, User user) {
+  //   for (var taken in user.takenCourses) {
+  //     if (taken.code == course.code) {
+  //       return true;
+  //     }
+  //   }
+  //   return false;
+  // }
 
   // Future<bool> isSucceeded(User user)async{
   //   final now = DateTime.now();

@@ -58,6 +58,8 @@ class _AddCoursesScreenState extends State<AddCoursesScreen> {
     _departmentController.clear();
     setState(() {
       _selectedYear = '1';
+      _selectedDr = '';
+      _selectedTa = '';
     });
   }
 
@@ -68,8 +70,8 @@ class _AddCoursesScreenState extends State<AddCoursesScreen> {
         id: _uuid,
         name: _enteredName,
         code: _enteredCode,
-        drName: _selectedDr,
-        taName: _selectedTa,
+        drId: _selectedDr,
+        taId: _selectedTa,
         departmentName: _enteredDepartment,
         year: _selectedYear,
       );
@@ -164,7 +166,7 @@ class _AddCoursesScreenState extends State<AddCoursesScreen> {
                       }
                       return DropdownButtonFormField(
                         validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
+                          if (value == null) {
                             return "please select a Lecturer Name";
                           }
                           return null;
@@ -209,7 +211,7 @@ class _AddCoursesScreenState extends State<AddCoursesScreen> {
                       }
                       return DropdownButtonFormField(
                           validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
+                            if (value == null) {
                               return "please select a Teaching Assistant Name";
                             }
                             return null;

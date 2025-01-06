@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mobileprogramming/models/Course.dart';
+import 'package:mobileprogramming/models/user.dart';
 import 'package:mobileprogramming/services/CourseService.dart';
+import 'package:mobileprogramming/services/user_service.dart';
 
 class UserHome extends StatefulWidget {
   const UserHome({super.key});
@@ -10,172 +11,115 @@ class UserHome extends StatefulWidget {
 }
 
 class _UserHomeState extends State<UserHome> {
-  bool isLoading = true;
   final CourseService _courseService = CourseService();
-  late Future<List<Course>> _futureCourses;
+  UserService userService = UserService();
+  late Stream<List<Map<String, dynamic>>> _coursesStream;
 
   @override
   void initState() {
     super.initState();
-    _fetchData();
-  }
-
-  Future<void> _fetchData() async {
-    await Future.delayed(Duration(seconds: 2));
-    setState(() {
-      isLoading = false;
-      _futureCourses = _courseService.getAllCourses();
-    });
+    _coursesStream = _courseService.getAllCourses();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("User home"),
-        leading: Builder(
-          builder: (context) => IconButton(
-            icon: Icon(Icons.menu),
-            onPressed: () => Scaffold.of(context).openDrawer(),
-          ),
-        ),
+        title: const Text("All Courses"),
       ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: StreamBuilder<List<Map<String, dynamic>>>(
+          // Using Stream to get real-time updates
+          stream: _coursesStream,
+          builder: (context, snapshot) {
+            // Handling different connection states
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (snapshot.hasError) {
+              return Center(
+                child: Text('Error: ${snapshot.error}'),
+              );
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return Center(
+                child: Text(
+                  'No Courses Found',
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+              );
+            }
 
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              child: Text(
-                'Menu',
-                style: Theme.of(context).textTheme.headlineLarge,
-                textAlign: TextAlign.center,
-              ),
-            ),
-            ListTile(
-              leading: Icon(Icons.home),
-              title: Text('Home'),
-              onTap: () {
-                Navigator.pushNamed(context, '/user_home');
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.group_add_outlined),
-              title: Text('View Courses'),
-              onTap: () {
-                Navigator.pushNamed(context, '/view_course');
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.assignment_add),
-              title: Text('View Assignments'),
-              onTap: () {
-                Navigator.pushNamed(context, '/student-assignment-list');
-              },
-            ),
-          ],
-        ),
-      ),
+            final courses = snapshot.data!;
 
-      body: isLoading
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: FutureBuilder(
-                //Helps you handle asynchronous data fetching, db query
-                future: _futureCourses,
+            return ListView.builder(
+              itemCount: courses.length,
+              itemBuilder: (context, index) {
+                final course = courses[index];
+                final Stream<User?> drStream = userService.getUserByID(course['drId']);
+                final Stream<User?> taStream = userService.getUserByID(course['taId']);
 
-                builder: (BuildContext context,
-                    AsyncSnapshot<List<Course>> snapshot) {
-                  //snapshot -> represent the current state Future
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  } else if (snapshot.hasError) {
-                    return Center(
-                      child: Text('Error: ${snapshot.error}'),
-                    );
-                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return Center(
-                      child: Text(
-                        'No Courses Found',
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      ),
-                    );
-                  }
+                return Card(
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          course['name'],
+                          style: Theme.of(context).textTheme.headlineMedium,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Course Code: ${course['code']}',
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                        const SizedBox(height: 8),
 
-                  final courses = snapshot.data!;
-                  return SizedBox(
-                    child: ListView.builder(
-                      itemCount: courses.length,
-                      itemBuilder: (context, index) {
-                        final course = courses[index];
-                        return Card(
-                          elevation: 4, //shadow effect
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                Center(
-                                  child: Icon(
-                                    Icons.book,
-                                    size: 100, //use as much as as you need
-                                  ),
-                                ),
-                                SizedBox(height: 8),
-                                Text(
-                                  course.name,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headlineMedium,
-                                  textAlign: TextAlign.center,
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  'Course Code: ${course.code}',
-                                  style: Theme.of(context).textTheme.bodyLarge,
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  'Doctor: ${course.drName}',
-                                  style: Theme.of(context).textTheme.bodyLarge,
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  'Teaching Assistant: ${course.taName}',
-                                  style: Theme.of(context).textTheme.bodyLarge,
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  'Department: ${course.departmentName}',
-                                  style: Theme.of(context).textTheme.bodyLarge,
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  'Year: ${course.year}',
-                                  style: Theme.of(context).textTheme.bodyLarge,
-                                ),
-                                ElevatedButton(
-                                  onPressed: () {},
-                                  child: Text("Enroll Course"),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
+                        StreamBuilder<User?>(
+                          stream: drStream,
+                          builder: (context, snapshot) {
+                            final User? user = snapshot.data;
+                            return Text('Doctor: ${user?.name}',
+                                style: Theme.of(context).textTheme.bodyLarge);
+                          },
+                        ),
+                        const SizedBox(height: 8),
+                        StreamBuilder<User?>(
+                          stream: taStream,
+                          builder: (context, snapshot) {
+                            final User? user = snapshot.data;
+                            return Text(
+                              'Teaching Assistant: ${user?.name}',
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            );
+                          }
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Department: ${course['departmentName']}',
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Year: ${course['year']}',
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                      ],
                     ),
-                  );
-                },
-              ),
-            ),
+                  ),
+                );
+              },
+            );
+          },
+        ),
+      ),
+      
     );
   }
 }
