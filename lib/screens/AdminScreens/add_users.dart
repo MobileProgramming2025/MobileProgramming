@@ -53,7 +53,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
         role: _selectedRole ?? 'Unknown',
-        department: _selectedDepartment ?? 'Unknown',
+        departmentId: _selectedDepartment ?? 'Unknown',
         takenCourses: [],
         enrolledCourses: [],
         addedDate: firstAdded,
@@ -68,7 +68,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
         role: _selectedRole ?? 'Unknown',
-        department: _selectedDepartment ?? 'Unknown',
+        departmentId: _selectedDepartment ?? 'Unknown',
         enrolledCourses: [],
       );
     } else if (_selectedRole == "Admin") {

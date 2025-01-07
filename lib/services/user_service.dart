@@ -34,6 +34,21 @@ class UserService {
     }
   }
 
+  Stream<List<Map<String, dynamic>>> fetchAllUsers() {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs.map((doc) {
+        // Extract the document's ID and fields, and create a usable map
+        return {
+          'id': doc.id,
+          ...doc.data(),
+        };
+      }).toList();
+    });
+  }
+
   // Retrieve a user by ID from Firestore
   Stream<User?> getUserByID(String id) {
     try {
@@ -75,60 +90,62 @@ class UserService {
     }
   }
 
-  // Future<void> enrollStudent() async {
-  //   var enrolledCourses = 0;
-  //   final users = await getAllUsers();
-  //   final courses = _courseService.getAllCourses();
+  Future<void> enrollStudent() async {
+    var enrolledCourses = 0;
+    final users = await fetchAllUsers().first;
+    final courses = await _courseService.getAllCourses().first;
+    for (var user in users) {
+      // isSucceeded(user);
+      if (user['role'] == 'Student') {
+        print('\x1B[37m ${user['role']}');
 
-  //   for (var user in users) {
-  //     // isSucceeded(user);
-  //         print('User: ${user.name}, Email: ${user.email}, Role: ${user.role}');
+        for (var course in courses) {
+          if (user['year'] == course['year'] &&
+              user['departmentId'] == course['departmentId']) {
+            print(
+                '\x1B[35m User: ${user['name']}, Email: ${user['email']}, Role: ${user['role']},year: ${user['year']}, dep: ${user['departmentId']} \x1B[0m');
+            print('\x1B[35m ${course}\x1B[0m');
 
-  //     if (user.role == 'Student') {
-  //       for (var course in courses) {
-  //         if (user.year == course.year &&
-  //             user.department == course.departmentName) {
+            if (!_isEnrolled(course, user) && !_isTaken(course, user)) {
+              _enroll(course, user);
+              enrolledCourses++;
+              print("'\x1B[32m Enrolled \x1B[0m");
+            }
+          }
+          if (enrolledCourses >= 1) {
+            break;
+          }
+        }
+      }
+    }
+  }
 
-  //           if (!_isEnrolled(course, user) && !_isTaken(course, user)) {
-  //             _enroll(course, user);
-  //             enrolledCourses++;
-  //             print("enrolled");
-  //           }
-  //         }
-  //         if (enrolledCourses >= 1) {
-  //           break;
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
+  void _enroll(Map<String, dynamic> course, Map<String, dynamic> user) async {
+    user['enrolledCourses'] ??= [];
+    user['enrolledCourses'].add(course);
 
-  // void _enroll(Course course, User user) async {
-  //   final enrolledCoursesList = user.enrolledCourses;
-  //   if (user.enrolledCourses.isEmpty) {
-  //     print("Empty");
-  //     enrolledCoursesList.add(course);
-  //   }
-  //   await updateUser(user);
-  // }
+    await _firestore.collection('users').doc(user['id']).update(user);
+  }
 
-  // bool _isEnrolled(Course course, User user) {
-  //   for (var enrolled in user.enrolledCourses) {
-  //     if (enrolled.code == course.code) {
-  //       return true;
-  //     }
-  //   }
-  //   return false;
-  // }
+  bool _isEnrolled(Map<String, dynamic> course, Map<String, dynamic> user) {
+    final enrolledCourses = user['enrolledCourses'] ?? [];
+    for (var enrolled in enrolledCourses) {
+      if (enrolled['code'] == course['code']) {
+        return true;
+      }
+    }
+    return false;
+  }
 
-  // bool _isTaken(Course course, User user) {
-  //   for (var taken in user.takenCourses) {
-  //     if (taken.code == course.code) {
-  //       return true;
-  //     }
-  //   }
-  //   return false;
-  // }
+  bool _isTaken(Map<String, dynamic> course, Map<String, dynamic> user) {
+    final takenCourses = user['takenCourses'] ?? [];
+    for (var taken in takenCourses) {
+      if (taken['code'] == course['code']) {
+        return true;
+      }
+    }
+    return false;
+  }
 
   // Future<bool> isSucceeded(User user)async{
   //   final now = DateTime.now();
