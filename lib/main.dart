@@ -161,7 +161,7 @@ class MyApp extends StatelessWidget {
           '/add_courses': (context) => AddCoursesScreen(),
           '/view_courses': (context) => ViewCoursesScreen(),
           // '/create-assignment': (context) => CourseListPage(),
-          '/enroll_students': (context) => EnrollStudentsScreen(),
+          // '/enroll_students': (context) => EnrollStudentsScreen(),
           //  '/list-assignments-for-dr' : (context) => CourseListPage(),
           '/student-assignment-list': (context) =>
               StudentAssignmentListScreen(),

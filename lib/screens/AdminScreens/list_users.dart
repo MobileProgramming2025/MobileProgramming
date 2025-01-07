@@ -13,13 +13,24 @@ class _ListUsersScreenState extends State<ListUsersScreen> {
   late Future<List<User>> _futureUsers;
   final UserService _userService = UserService();
 
-  @override 
+  void _enroll() async {
+    try {
+      _userService.enrollStudent();
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Students are enrolled Sucessfully!')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to enroll students: $e')),
+      );
+    }
+  }
+
+  @override
   void initState() {
     super.initState();
     _futureUsers = _userService.getAllUsers();
-
-
-  
   }
 
   @override
@@ -73,6 +84,13 @@ class _ListUsersScreenState extends State<ListUsersScreen> {
             },
           );
         },
+      ),
+      floatingActionButton: ElevatedButton(
+        onPressed: _enroll,
+        child: Text(
+          'Enroll Students To Courses',
+          style: TextStyle(fontSize: 20),
+        ),
       ),
     );
   }
