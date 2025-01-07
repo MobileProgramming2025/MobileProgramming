@@ -28,7 +28,7 @@ class _AddDepartmentScreenState extends State<AddDepartmentScreen> {
 
 
 
-  //To avoid memory leak
+  //clean memory, To avoid memory leak
   @override
   void dispose() {
     _nameController.dispose();

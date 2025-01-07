@@ -21,12 +21,12 @@ import 'package:mobileprogramming/screens/Assignment/assignment_screen.dart';
 import 'package:flutter_sizer/flutter_sizer.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  // WidgetsFlutterBinding.ensureInitialized();
 
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
-      .then((fn) {
+  // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp,DeviceOrientation.landscapeLeft,DeviceOrientation.landscapeRight])
+      // .then((fn) {
     runApp(const MyApp());
-  });
+  // });
 
   await Firebase.initializeApp();
 }
@@ -64,7 +64,6 @@ class MyApp extends StatelessWidget {
           ),
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
-
               padding: const EdgeInsets.symmetric(
                 horizontal: 40,
                 vertical: 10,
@@ -147,18 +146,20 @@ class MyApp extends StatelessWidget {
           '/admin_home': (context) => AdminDashboard(),
           '/add_users': (context) => AddUserScreen(),
           '/list_users': (context) => ListUsersScreen(),
-          '/create_assignment-static': (context) => AssignmentListScreen(courseId: "course123"),
+          '/create_assignment-static': (context) =>
+              AssignmentListScreen(courseId: "course123"),
           '/assignment_screen': (context) => AssignmentScreen(),
           // '/createQuiz': (context) => CourseListPage(),
           '/add-doctor': (context) => AddDoctorScreen(),
           '/Doctors Dashboard': (context) => DashboardScreen(),
           '/add_courses': (context) => AddCoursesScreen(),
           '/view_courses': (context) => ViewCoursesScreen(),
-        // '/create-assignment': (context) => CourseListPage(),
+          // '/create-assignment': (context) => CourseListPage(),
           '/enroll_students': (context) => EnrollStudentsScreen(),
-        //  '/list-assignments-for-dr' : (context) => CourseListPage(),
-        '/student-assignment-list': (context) => StudentAssignmentListScreen(),
-        '/add_department' : (context) => AddDepartmentScreen(),
+          //  '/list-assignments-for-dr' : (context) => CourseListPage(),
+          '/student-assignment-list': (context) =>
+              StudentAssignmentListScreen(),
+          '/add_department': (context) => AddDepartmentScreen(),
         },
       );
     });

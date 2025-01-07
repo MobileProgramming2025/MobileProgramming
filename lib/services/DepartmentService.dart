@@ -3,7 +3,6 @@ import 'package:mobileprogramming/models/Department.dart';
 
 class DepartmentService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  // final UserService _userService = UserService();
 
   Stream<List<Map<String, dynamic>>> getAllDepartments() {
     return FirebaseFirestore.instance
