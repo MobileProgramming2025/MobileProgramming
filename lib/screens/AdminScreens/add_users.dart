@@ -204,6 +204,10 @@ class _AddUserScreenState extends State<AddUserScreen> {
                     onChanged: (value) {
                       setState(() {
                         _selectedRole = value;
+                        // Clear the department selection if role change to "Admin"
+                        if (_selectedRole == "Admin") {
+                          _selectedDepartment = null;
+                        }
                       });
                     },
                     decoration: InputDecoration(
@@ -213,49 +217,51 @@ class _AddUserScreenState extends State<AddUserScreen> {
                   ),
                   SizedBox(height: 16),
                   
-                  StreamBuilder<QuerySnapshot>(
-                    stream: FirebaseFirestore.instance
-                        .collection('Departments')
-                        .snapshots(),
-                    builder: (context, snapshot) {
-                      List<DropdownMenuItem> taItems = [];
-                      if (!snapshot.hasData) {
-                        const CircularProgressIndicator();
-                      } else {
-                        final items = snapshot.data?.docs.reversed.toList();
-                        for (var item in items!) {
-                          taItems.add(
-                            DropdownMenuItem(
-                              value: item.id,
-                              child: Text(
-                                item['name'],
-                                style: Theme.of(context).textTheme.bodyLarge,
+                  // Show department dropdown only f the selected role is not Admin
+                  if (_selectedRole != "Admin")
+                    StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection('Departments')
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        List<DropdownMenuItem> taItems = [];
+                        if (!snapshot.hasData) {
+                          const CircularProgressIndicator();
+                        } else {
+                          final items = snapshot.data?.docs.reversed.toList();
+                          for (var item in items!) {
+                            taItems.add(
+                              DropdownMenuItem(
+                                value: item.id,
+                                child: Text(
+                                  item['name'],
+                                  style: Theme.of(context).textTheme.bodyLarge,
+                                ),
                               ),
-                            ),
-                          );
+                            );
+                          }
                         }
-                      }
-                      return DropdownButtonFormField(
-                          validator: (value) {
-                            if (value == null) {
-                              return "please select a Department";
-                            }
-                            return null;
-                          },
-                          decoration: InputDecoration(
-                            labelText: 'Department Name',
-                            border: OutlineInputBorder(),
-                          ),
-                          items: taItems,
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedDepartment = value!;
+                        return DropdownButtonFormField(
+                            validator: (value) {
+                              if (value == null) {
+                                return "please select a Department";
+                              }
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                              labelText: 'Department Name',
+                              border: OutlineInputBorder(),
+                            ),
+                            items: taItems,
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedDepartment = value!;
+                              });
                             });
-                          });
-                    },
-                  ),
-                  SizedBox(height: 20),
-                  
+                      },
+                    ),
+                    SizedBox(height: 20),
+
                   Center(
                     child: ElevatedButton(
                       onPressed: _addUser,
