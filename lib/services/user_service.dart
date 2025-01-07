@@ -94,15 +94,13 @@ class UserService {
     print("\x1B[33m Courses: $courses \x1B[0m");
 
     for (var user in users) {
-      // isSucceeded(user);
       if (user['role'] == 'Student') {
         var enrolledCourses = 0;
         print('\x1B[37m ${user['role']}\x1B[0m');
         print('\x1B[37m ${enrolledCourses} \x1B[0m');
 
         for (var course in courses) {
-          if (user['year'] == course['year'] &&
-              user['departmentId'] == course['departmentId']) {
+          if (user['year'] == course['year'] && user['departmentId'] == course['departmentId']) {
             print("\x1B[32m Users: ${user['name']}  +  ${user['year']}  + ${user['departmentId']} \x1B[0m");
             print("\x1B[35m Courses: $course \x1B[0m");
             if (!_isEnrolled(course, user) && !_isTaken(course, user)) {
@@ -112,8 +110,6 @@ class UserService {
             }
           }
           if (enrolledCourses >= 5) {
-            print('\x1B[37m ${enrolledCourses} \x1B[0m');
-
             break;
           }
         }
@@ -130,7 +126,7 @@ class UserService {
 
   bool _isEnrolled(Map<String, dynamic> course, Map<String, dynamic> user) {
     // final enrolledCourses = user['enrolled_courses'] ?? [];
-// print(enrolledCourses);
+    // print(enrolledCourses);
 
     for (var enrolled in user['enrolled_courses']) {
 
@@ -152,18 +148,4 @@ class UserService {
     }
     return false;
   }
-
-  // Future<bool> isSucceeded(User user)async{
-  //   final now = DateTime.now();
-  //   final currentYear = now.year;
-  //   final studentAddedYear = user.addedDate.year;
-  //   final educationYears = ((currentYear - studentAddedYear) + 1);
-  //   var userYear = int.parse(user.year);
-  //   if(educationYears > userYear){
-  //    // userYear++;
-  //    // await updateUser(user);
-  //     return true;
-  //   }
-  //   return false;
-  // }
 }
