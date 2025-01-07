@@ -42,9 +42,9 @@ class AuthService {
           'email': email,
           'role': role, // Store role in Firestore
           'password': password,
-          'takenCourses': [],
-          'enrolledCourses': [],
-          'addedDate': firstAdded,
+          'taken_courses': [],
+          'enrolled_courses': [],
+          'added_date': firstAdded,
           'year': (educationYear).toString(),
         });
       }

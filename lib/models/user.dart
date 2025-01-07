@@ -34,7 +34,7 @@ class User {
         'password': password,
         'role': role,
         'departmentId': departmentId,
-        'enrolledCourses': enrolledCourses!= null
+        'enrolled_courses': enrolledCourses!= null
         ? enrolledCourses!.map((course) => Map<String, dynamic>.from(course)).toList()
         : [], // Serialize Course objects
         'taken_courses': takenCourses!= null
@@ -59,7 +59,7 @@ class User {
         'password': password,
         'role': role,
         'departmentId': departmentId,
-        'enrolledCourses': enrolledCourses!, // Serialize Course objects
+        'enrolled_courses': enrolledCourses!, // Serialize Course objects
       };
     }
   }
