@@ -88,22 +88,32 @@ class UserService {
   }
 
   Future<void> enrollStudent() async {
-    var enrolledCourses = 0;
     final users = await fetchAllUsers().first;
     final courses = await _courseService.getAllCourses().first;
+    print("\x1B[33m Users: $users \x1B[0m");
+    print("\x1B[33m Courses: $courses \x1B[0m");
+
     for (var user in users) {
       // isSucceeded(user);
       if (user['role'] == 'Student') {
+        var enrolledCourses = 0;
+        print('\x1B[37m ${user['role']}\x1B[0m');
+        print('\x1B[37m ${enrolledCourses} \x1B[0m');
+
         for (var course in courses) {
           if (user['year'] == course['year'] &&
               user['departmentId'] == course['departmentId']) {
-
+            print("\x1B[32m Users: ${user['name']}  +  ${user['year']}  + ${user['departmentId']} \x1B[0m");
+            print("\x1B[35m Courses: $course \x1B[0m");
             if (!_isEnrolled(course, user) && !_isTaken(course, user)) {
               _enroll(course, user);
               enrolledCourses++;
+              print('\x1B[31m Enrolled \x1B[0m');
             }
           }
-          if (enrolledCourses >= 1) {
+          if (enrolledCourses >= 5) {
+            print('\x1B[37m ${enrolledCourses} \x1B[0m');
+
             break;
           }
         }
@@ -112,16 +122,21 @@ class UserService {
   }
 
   void _enroll(Map<String, dynamic> course, Map<String, dynamic> user) async {
-    user['enrolledCourses'] ??= [];
-    user['enrolledCourses'].add(course);
+    user['enrolled_courses'] ??= [];
+    user['enrolled_courses'].add(course);
 
     await _firestore.collection('users').doc(user['id']).update(user);
   }
 
   bool _isEnrolled(Map<String, dynamic> course, Map<String, dynamic> user) {
-    final enrolledCourses = user['enrolledCourses'] ?? [];
-    for (var enrolled in enrolledCourses) {
+    // final enrolledCourses = user['enrolled_courses'] ?? [];
+// print(enrolledCourses);
+
+    for (var enrolled in user['enrolled_courses']) {
+
+      print(enrolled);
       if (enrolled['code'] == course['code']) {
+        print("da5al");
         return true;
       }
     }
@@ -129,7 +144,7 @@ class UserService {
   }
 
   bool _isTaken(Map<String, dynamic> course, Map<String, dynamic> user) {
-    final takenCourses = user['takenCourses'] ?? [];
+    final takenCourses = user['taken_courses'] ?? [];
     for (var taken in takenCourses) {
       if (taken['code'] == course['code']) {
         return true;
