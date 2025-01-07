@@ -1,3 +1,4 @@
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -20,17 +21,22 @@ import 'package:mobileprogramming/screens/Assignment/assignment_screen.dart';
 
 import 'package:flutter_sizer/flutter_sizer.dart';
 
-
-
 void main() async {
   // WidgetsFlutterBinding.ensureInitialized();
 
   // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp,DeviceOrientation.landscapeLeft,DeviceOrientation.landscapeRight])
-      // .then((fn) {
-    runApp(const MyApp());
+  // .then((fn) {
+  runApp(const MyApp());
   // });
 
   await Firebase.initializeApp();
+  await Future.delayed(Duration(seconds: 2)); // Add a small delay
+
+
+    // Enable App Check
+  await FirebaseAppCheck.instance.activate(
+    androidProvider: AndroidProvider.playIntegrity,
+  );
 }
 
 class MyApp extends StatelessWidget {

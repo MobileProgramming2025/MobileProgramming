@@ -87,7 +87,7 @@ class LoginScreen extends StatelessWidget {
                     "Google Sign In",
                     style: TextStyle(fontSize: 20),
                   ),
-                  onPressed: () =>AuthService().signInWithGoogle(),
+                  onPressed: () => _handleGoogleSignIn(context),
                 ),
 
                 // Sign-up Navigation
@@ -167,6 +167,11 @@ class LoginScreen extends StatelessWidget {
       if (!context.mounted) return;
       _showError(context, "An unexpected error occurred: $e");
     }
+  }
+
+  Future<void> _handleGoogleSignIn(BuildContext context) async {
+    AuthService().signInWithGoogle();
+    Navigator.pushNamed(context, '/user_home');
   }
 
   // Error Display Helper

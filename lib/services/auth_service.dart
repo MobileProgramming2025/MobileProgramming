@@ -54,18 +54,35 @@ class AuthService {
     }
   }
 
-  signInWithGoogle() async {
-    final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
-    if (gUser == null) return;
+  Future<User?> signInWithGoogle() async {
+    try {
+      // Trigger the Google Sign-In flow
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
-    final GoogleSignInAuthentication gAuth = await gUser.authentication;
+      if (googleUser == null) {
+        return null; // User canceled the sign-in process
+      }
 
-    final credential = GoogleAuthProvider.credential(
-      accessToken: gAuth.accessToken,
-      idToken: gAuth.idToken,
-    );
+      // Obtain the Google Sign-In authentication details
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
 
-    return await _auth.signInWithCredential(credential);
+      // Create a Firebase credential using the Google token
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      // Sign in to Firebase with the credential
+      final UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+
+      // Return the signed-in user
+      return userCredential.user;
+    } catch (e) {
+      print("Error signing in with Google: $e");
+      return null;
+    }
   }
 
 //method retieves a user’s information from db by their uid, it is used to access the data of user after sign up or login
