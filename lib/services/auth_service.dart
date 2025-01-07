@@ -54,6 +54,40 @@ class AuthService {
     }
   }
 
+  Future<User?> signUp2(String name, String email, String password, String role, String department) async {
+    final firstAdded = DateTime.utc(2023, DateTime.november, 9);
+    final currentYear = DateTime.now();
+    final educationYear = currentYear.year - firstAdded.year;
+
+    try {
+      UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      User? user = userCredential.user;
+
+      if (user != null) {
+        await _firestore.collection('users').doc(user.uid).set({
+          'id': user.uid,
+          'name': name,
+          'email': email,
+          'password': password,
+          'role': role, // Store role in Firestore
+          'department': department,
+          'takenCourses': [],
+          'enrolledCourses': [],
+          'addedDate': firstAdded,
+          'year': (educationYear).toString(),
+        });
+      }
+      return user;
+    } catch (e) {
+      rethrow;
+    } 
+  }
+
   Future<User?> signInWithGoogle() async {
     try {
       // Trigger the Google Sign-In flow
