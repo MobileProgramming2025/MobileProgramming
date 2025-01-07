@@ -2,22 +2,27 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/services/auth_service.dart';
 
-class SignUpScreen extends StatelessWidget {
-  SignUpScreen({super.key});
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
 
+  @override
+  State<SignUpScreen> createState() => _SignUpScreenState();
+}
+
+class _SignUpScreenState extends State<SignUpScreen> {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
-  String? _selectedRole;
+  // String? _selectedRole;
   String? _selectedDepartment;
 
-  final List<String> _roles = [
-    'Student',
-    'Doctor',
-    'Teaching Assistant',
-    'Admin',
-  ];
+  // final List<String> _roles = [
+  //   'Student',
+  //   'Doctor',
+  //   'Teaching Assistant',
+  //   'Admin',
+  // ];
 
   AuthService service = AuthService();
 
