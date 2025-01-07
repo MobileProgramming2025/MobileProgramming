@@ -21,9 +21,10 @@ class SubmissionService {
         'fileUrl': fileUrl,
         'submittedAt': Timestamp.now(),
       });
-      print("Submission uploaded successfully!");
+      // print("Submission uploaded successfully!");
     } catch (e) {
-      print("Error uploading submission: $e");
+      // print("Error uploading submission: $e");
+      throw Exception("Error uploading submission: $e");
     }
   }
 
@@ -36,9 +37,10 @@ class SubmissionService {
       final fileUrl = await ref.getDownloadURL();
 
       await _submissionsCollection.doc(submissionId).update({'fileUrl': fileUrl});
-      print("Submission updated successfully!");
+      // print("Submission updated successfully!");
     } catch (e) {
-      print("Error updating submission: $e");
+      throw Exception("Error updating submission: $e");
+      // print("Error updating submission: $e");
     }
   }
 

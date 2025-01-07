@@ -115,7 +115,7 @@ class AuthService {
       // Return the signed-in user
       return userCredential.user;
     } catch (e) {
-      print("Error signing in with Google: $e");
+      // print("Error signing in with Google: $e");
       return null;
     }
   }

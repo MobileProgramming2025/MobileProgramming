@@ -11,7 +11,7 @@ class UserService {
     try {
       await _firestore.collection('users').doc(user.id).set(user.toMap());
     } catch (e) {
-      print('Error saving user: $e');
+      // print('Error saving user: $e');
       throw Exception('Failed to save user');
     }
   }
@@ -26,7 +26,7 @@ class UserService {
           .toList();
       return users;
     } catch (e) {
-      print('Error retrieving all users: $e');
+      // print('Error retrieving all users: $e');
       throw Exception('Failed to retrieve users');
     }
   }
@@ -57,12 +57,12 @@ class UserService {
         if (docSnapshot.exists && docSnapshot.data() != null) {
           return User.fromMap(docSnapshot.data()!);
         } else {
-          print('User with ID $id not found in Firestore.');
+          // print('User with ID $id not found in Firestore.');
           return null;
         }
       });
     } catch (e) {
-      print('Error retrieving user with ID $id: $e');
+      // print('Error retrieving user with ID $id: $e');
       throw Exception('Failed to retrieve user');
     }
   }
@@ -72,7 +72,7 @@ class UserService {
     try {
       await _firestore.collection('users').doc(user.id).update(user.toMap());
     } catch (e) {
-      print('Error updating user: $e');
+      // print('Error updating user: $e');
       throw Exception('Failed to update user');
     }
   }
@@ -82,7 +82,7 @@ class UserService {
     try {
       await _firestore.collection('users').doc(id).delete();
     } catch (e) {
-      print('Error deleting user: $e');
+      // print('Error deleting user: $e');
       throw Exception('Failed to delete user');
     }
   }
