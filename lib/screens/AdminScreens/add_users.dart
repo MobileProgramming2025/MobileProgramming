@@ -52,7 +52,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
             .hasMatch(_emailController.text.trim());
       _validPassword = _passwordController.text.trim().length >= 8;
       _validRole = _selectedRole != null;
-      _validDepartment = _selectedDepartment != null;
+      _validDepartment = (_selectedRole == "Admin") || _selectedDepartment != null;
 
       isValid = _validName &&
           _validEmail &&
