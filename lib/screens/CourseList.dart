@@ -39,43 +39,41 @@ class _CourseListPageState extends State<CourseListPage> {
     _fetchCourses();
   }
 
- 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Courses'),
-        actions:const [
+        actions: const [
           IconButton(
             icon: Icon(Icons.add),
             onPressed: null,
           ),
         ],
       ),
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator())
-          : _courses.isEmpty
-              ? Center(child: Text('No courses available'))
-              : ListView.builder(
-                  itemCount: _courses.length,
-                  itemBuilder: (context, index) {
-                    final course = _courses[index];
-                    return ListTile(
-                      title: Text(course.name),
-                      subtitle: Text('Dr: ${course.drId}'),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                CourseDetailScreen(courseId: course.id ),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                ),
+      // body: _isLoading
+      //     ? Center(child: CircularProgressIndicator())
+      //     : _courses.isEmpty
+      //         ? Center(child: Text('No courses available'))
+      //         : ListView.builder(
+      //             itemCount: _courses.length,
+      //             itemBuilder: (context, index) {
+      //               final course = _courses[index];
+      //               return ListTile(
+      //                 title: Text(course.name),
+      //                 // subtitle: Text('Dr: ${course.drId}'),
+      //                 onTap: () {
+      //                   Navigator.push(
+      //                     context,
+      //                     MaterialPageRoute(
+      //                       builder: (context) =>
+      //                           CourseDetailScreen(courseId: course.id),
+      //                     ),
+      //                   );
+      //                 },
+      //               );
+      //             },
+      //           ),
     );
   }
 }

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/Department.dart';
-import 'package:mobileprogramming/models/user.dart';
+// import 'package:mobileprogramming/models/user.dart';
 import 'package:mobileprogramming/services/CourseService.dart';
 import 'package:mobileprogramming/services/DepartmentService.dart';
-import 'package:mobileprogramming/services/user_service.dart';
+// import 'package:mobileprogramming/services/user_service.dart';
 
 class ViewCoursesScreen extends StatefulWidget {
   const ViewCoursesScreen({super.key});
@@ -14,7 +14,7 @@ class ViewCoursesScreen extends StatefulWidget {
 
 class _ViewCoursesScreenState extends State<ViewCoursesScreen> {
   final CourseService _courseService = CourseService();
-  final UserService userService = UserService();
+  // final UserService userService = UserService();
   final DepartmentService departmentService =DepartmentService();
   late Stream<List<Map<String, dynamic>>> _coursesStream;
 
@@ -60,8 +60,8 @@ class _ViewCoursesScreenState extends State<ViewCoursesScreen> {
               itemCount: courses.length,
               itemBuilder: (context, index) {
                 final course = courses[index];
-                final Stream<User?> drStream = userService.getUserByID(course['drId']);
-                final Stream<User?> taStream = userService.getUserByID(course['taId']);
+                // final Stream<User?> drStream = userService.getUserByID(course['drId']);
+                // final Stream<User?> taStream = userService.getUserByID(course['taId']);
                 final Stream<Department?> departmentStream = departmentService.getDepartmentByID(course['departmentId']);
 
                 return Card(
@@ -85,26 +85,26 @@ class _ViewCoursesScreenState extends State<ViewCoursesScreen> {
                         ),
                         const SizedBox(height: 8),
 
-                        StreamBuilder<User?>(
-                          stream: drStream,
-                          builder: (context, snapshot) {
-                            final User? user = snapshot.data;
-                            return Text('Doctor: ${user?.name}',
-                                style: Theme.of(context).textTheme.bodyLarge);
-                          },
-                        ),
-                        const SizedBox(height: 8),
-                        StreamBuilder<User?>(
-                          stream: taStream,
-                          builder: (context, snapshot) {
-                            final User? user = snapshot.data;
-                            return Text(
-                              'Teaching Assistant: ${user?.name}',
-                              style: Theme.of(context).textTheme.bodyLarge,
-                            );
-                          }
-                        ),
-                        const SizedBox(height: 8),
+                        // StreamBuilder<User?>(
+                        //   stream: drStream,
+                        //   builder: (context, snapshot) {
+                        //     final User? user = snapshot.data;
+                        //     return Text('Doctor: ${user?.name}',
+                        //         style: Theme.of(context).textTheme.bodyLarge);
+                        //   },
+                        // ),
+                        // const SizedBox(height: 8),
+                        // StreamBuilder<User?>(
+                        //   stream: taStream,
+                        //   builder: (context, snapshot) {
+                        //     final User? user = snapshot.data;
+                        //     return Text(
+                        //       'Teaching Assistant: ${user?.name}',
+                        //       style: Theme.of(context).textTheme.bodyLarge,
+                        //     );
+                        //   }
+                        // ),
+                        // const SizedBox(height: 8),
                         StreamBuilder<Department?>(
                           stream: departmentStream,
                           builder: (context, snapshot) {

@@ -22,8 +22,8 @@ class CourseService {
     required String id,
     required String name,
     required String code,
-    required String drId,
-    required String taId,
+    // required String drId,
+    // required String taId,
     required String departmentId,
     required String year,
   }) async {
@@ -32,8 +32,8 @@ class CourseService {
         'id': id,
         'name': name,
         'code': code,
-        'drId': drId,
-        'taId': taId,
+        // 'drId': drId,
+        // 'taId': taId,
         'departmentId': departmentId,
         'year': year,
       });
