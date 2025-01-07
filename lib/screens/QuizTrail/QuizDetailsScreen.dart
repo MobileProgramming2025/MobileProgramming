@@ -5,10 +5,10 @@ import 'package:mobileprogramming/services/quiz_service.dart';
 class QuizDetailsScreen extends StatefulWidget {
   final Quiz quiz;
 
-  const QuizDetailsScreen({Key? key, required this.quiz}) : super(key: key);
+  const QuizDetailsScreen({super.key, required this.quiz});
 
   @override
-  _QuizDetailsScreenState createState() => _QuizDetailsScreenState();
+  State<QuizDetailsScreen> createState() => _QuizDetailsScreenState();
 }
 
 class _QuizDetailsScreenState extends State<QuizDetailsScreen> {

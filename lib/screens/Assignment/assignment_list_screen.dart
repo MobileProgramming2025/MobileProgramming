@@ -118,7 +118,7 @@ class _AssignmentListScreenState extends State<AssignmentListScreen> {
               decoration: BoxDecoration(
                 color: Color.fromARGB(255, 228, 151, 78),
                 borderRadius: BorderRadius.circular(15),
-                boxShadow: [
+                boxShadow: const [
                   BoxShadow(
                    // color: Color.fromARGB(255, 228, 151, 78)
                     blurRadius: 8,

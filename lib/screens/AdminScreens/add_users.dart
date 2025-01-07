@@ -27,6 +27,12 @@ class _AddUserScreenState extends State<AddUserScreen> {
     'Admin'
   ];
 
+  bool _validName = true;
+  bool _validEmail = true;
+  bool _validPassword = true;
+  bool _validRole = true;
+  bool _validDepartment = true;
+
   void _clearFields() {
     _nameController.clear();
     _emailController.clear();
@@ -37,10 +43,41 @@ class _AddUserScreenState extends State<AddUserScreen> {
     });
   }
 
+  bool _validateForm() {
+    bool isValid = true;
+
+    setState(() {
+      _validName = _nameController.text.trim().isNotEmpty;
+      _validEmail = RegExp(r"^[a-zA-Z0-9]+@[a-zA-Z]+\.[a-zA-Z]+$")
+            .hasMatch(_emailController.text.trim());
+      _validPassword = _passwordController.text.trim().length >= 8;
+      _validRole = _selectedRole != null;
+      _validDepartment = _selectedDepartment != null;
+
+      isValid = _validName &&
+          _validEmail &&
+          _validPassword &&
+          _validRole &&
+          _validDepartment;
+    });
+    return isValid;
+  }
+
   Future<void> _addUser() async {
+    if(!_validateForm()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Please fill all fields correctly!'
+          ),
+        ),
+      );
+      return;
+    }
+
     String userId = _uuid.v4();
     late User newUser;
-    print(_selectedRole);
+    // print(_selectedRole);
 
     if (_selectedRole == "Student") {
       final firstAdded = DateTime.utc(2023, DateTime.november, 9);
@@ -61,7 +98,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
       );
     } else if (_selectedRole == "Teaching Assistant" ||
         _selectedRole == "Doctor") {
-          print ("yess");
+          // print ("yess");
       newUser = User(
         id: userId,
         name: _nameController.text.trim(),
@@ -80,7 +117,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
         role: _selectedRole ?? 'Unknown',
       );
     }
-    print(newUser.name);
+    // print(newUser.name);
 
     try {
       await newUser.saveToFirestore();
@@ -120,6 +157,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
                     ),
                   ),
                   SizedBox(height: 16),
+
                   TextFormField(
                     controller: _emailController,
                     decoration: InputDecoration(
@@ -129,6 +167,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
                     keyboardType: TextInputType.emailAddress,
                   ),
                   SizedBox(height: 16),
+
                   // Password Field
                   TextFormField(
                     controller: _passwordController,
@@ -173,6 +212,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
                     ),
                   ),
                   SizedBox(height: 16),
+                  
                   StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance
                         .collection('Departments')
@@ -215,6 +255,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
                     },
                   ),
                   SizedBox(height: 20),
+                  
                   Center(
                     child: ElevatedButton(
                       onPressed: _addUser,

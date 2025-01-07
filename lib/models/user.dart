@@ -119,11 +119,11 @@ class User {
       if (docSnapshot.exists && docSnapshot.data() != null) {
         return User.fromMap(docSnapshot.data()!);
       } else {
-        print('User with ID $id not found in Firestore.');
+        // print('User with ID $id not found in Firestore.');
         return null;
       }
     } catch (e) {
-      print('Error retrieving user with ID $id: $e');
+      // print('Error retrieving user with ID $id: $e');
       return null;
     }
   }
