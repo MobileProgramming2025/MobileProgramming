@@ -54,7 +54,7 @@ class AuthService {
     }
   }
 
-  Future<User?> signUp2(String name, String email, String password, String role, String department) async {
+  Future<User?> signUp2(String name, String email, String password, String role, String departmentId) async {
     final firstAdded = DateTime.utc(2023, DateTime.november, 9);
     final currentYear = DateTime.now();
     final educationYear = currentYear.year - firstAdded.year;
@@ -75,10 +75,10 @@ class AuthService {
           'email': email,
           'password': password,
           'role': role, // Store role in Firestore
-          'department': department,
-          'takenCourses': [],
-          'enrolledCourses': [],
-          'addedDate': firstAdded,
+          'departmentId': departmentId,
+          'taken_courses': [],
+          'enrolled_courses': [],
+          'added_date': firstAdded,
           'year': (educationYear).toString(),
         });
       }
