@@ -27,25 +27,60 @@ class _AddUserScreenState extends State<AddUserScreen> {
     'Admin'
   ];
 
+  void _clearFields() {
+    _nameController.clear();
+    _emailController.clear();
+    _passwordController.clear();
+    setState(() {
+      _selectedRole = null;
+      _selectedDepartment = null;
+    });
+  }
+
   Future<void> _addUser() async {
     String userId = _uuid.v4();
+    late User newUser;
+    print(_selectedRole);
 
-    final _firstAdded = DateTime.utc(2021, DateTime.november, 9);
-    final _currentYear = DateTime.now();
-    final educationYear = _currentYear.year - _firstAdded.year;
+    if (_selectedRole == "Student") {
+      final firstAdded = DateTime.utc(2023, DateTime.november, 9);
+      final currentYear = DateTime.now();
+      final educationYear = currentYear.year - firstAdded.year;
 
-    User newUser = User(
-      id: userId,
-      name: _nameController.text.trim(),
-      email: _emailController.text.trim(),
-      password: _passwordController.text.trim(),
-      role: _selectedRole ?? 'Unknown',
-      department: _selectedDepartment ?? 'Unknown',
-      takenCourses: [],
-      enrolledCourses: [],
-      addedDate: _firstAdded,
-      year: (educationYear + 1).toString(),
-    );
+      newUser = User(
+        id: userId,
+        name: _nameController.text.trim(),
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+        role: _selectedRole ?? 'Unknown',
+        department: _selectedDepartment ?? 'Unknown',
+        takenCourses: [],
+        enrolledCourses: [],
+        addedDate: firstAdded,
+        year: (educationYear + 1).toString(),
+      );
+    } else if (_selectedRole == "Teaching Assistant" ||
+        _selectedRole == "Doctor") {
+          print ("yess");
+      newUser = User(
+        id: userId,
+        name: _nameController.text.trim(),
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+        role: _selectedRole ?? 'Unknown',
+        department: _selectedDepartment ?? 'Unknown',
+        enrolledCourses: [],
+      );
+    } else if (_selectedRole == "Admin") {
+      newUser = User(
+        id: userId,
+        name: _nameController.text.trim(),
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+        role: _selectedRole ?? 'Unknown',
+      );
+    }
+    print(newUser.name);
 
     try {
       await newUser.saveToFirestore();
@@ -60,16 +95,6 @@ class _AddUserScreenState extends State<AddUserScreen> {
         SnackBar(content: Text('Failed to add user: $e')),
       );
     }
-  }
-
-  void _clearFields() {
-    _nameController.clear();
-    _emailController.clear();
-    _passwordController.clear();
-    setState(() {
-      _selectedRole = null;
-      _selectedDepartment = null;
-    });
   }
 
   @override

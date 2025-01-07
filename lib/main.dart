@@ -30,13 +30,13 @@ void main() async {
   // });
 
   await Firebase.initializeApp();
-  await Future.delayed(Duration(seconds: 2)); // Add a small delay
+  // await Future.delayed(Duration(seconds: 2)); // Add a small delay
 
 
     // Enable App Check
-  await FirebaseAppCheck.instance.activate(
-    androidProvider: AndroidProvider.playIntegrity,
-  );
+  // await FirebaseAppCheck.instance.activate(
+  //   androidProvider: AndroidProvider.playIntegrity,
+  // );
 }
 
 class MyApp extends StatelessWidget {

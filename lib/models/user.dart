@@ -7,40 +7,65 @@ class User {
   final String email;
   final String password;
   final String role;
-  final String department;
-  final List<Course> enrolledCourses;
-  final List<Course> takenCourses;
-  final DateTime addedDate;
-  final String year;
+  final String? department;
+  final List<Course>? enrolledCourses;
+  final List<Course>? takenCourses;
+  final DateTime? addedDate;
+  final String? year;
   User({
     required this.id,
     required this.name,
     required this.email,
     required this.password,
     required this.role,
-    required this.department,
-    required this.enrolledCourses,
-    required this.takenCourses,
-    required this.addedDate,
-    required this.year, 
+    this.department,
+    this.enrolledCourses,
+    this.takenCourses,
+    this.addedDate,
+    this.year,
   });
 
   // Convert a User object to a Map for Firestore
   Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'name': name,
-      'email': email,
-      'password': password,
-      'role': role,
-      'department': department,
-      'enrolledCourses': enrolledCourses
-          .map((course) => course.toMap())
-          .toList(), // Serialize Course objects
-      'taken_courses': takenCourses,
-      'added_date': addedDate,
-      'year': year,
-    };
+    if (role == "Student") {
+      return {
+        'id': id,
+        'name': name,
+        'email': email,
+        'password': password,
+        'role': role,
+        'department': department,
+        'enrolledCourses': enrolledCourses!
+            .map((course) => course.toMap())
+            .toList(), // Serialize Course objects
+        'taken_courses': takenCourses!.map((course) => course.toMap()).toList(),
+        'added_date': addedDate,
+        'year': year,
+      };
+    }
+    else if (role == "Admin") {
+      return {
+        'id': id,
+        'name': name,
+        'email': email,
+        'password': password,
+        'role': role,
+      };
+    }
+    else{
+      return {
+        'id': id,
+        'name': name,
+        'email': email,
+        'password': password,
+        'role': role,
+        'department': department,
+        'enrolledCourses': enrolledCourses!
+            .map((course) => course.toMap())
+            .toList(), // Serialize Course objects
+      };
+    
+    }
   }
 
   // Create a User object from Firestore Map

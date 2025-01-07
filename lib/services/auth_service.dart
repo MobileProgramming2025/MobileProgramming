@@ -38,14 +38,14 @@ class AuthService {
 
       if (user != null) {
         await _firestore.collection('users').doc(user.uid).set({
-          'uid': user.uid,
+          'id': user.uid,
           'email': email,
           'role': role, // Store role in Firestore
           'password': password,
           'takenCourses': [],
           'enrolledCourses': [],
           'addedDate': firstAdded,
-          'year': (educationYear + 1).toString(),
+          'year': (educationYear).toString(),
         });
       }
       return user;
@@ -75,7 +75,7 @@ class AuthService {
 
       // Sign in to Firebase with the credential
       final UserCredential userCredential =
-          await FirebaseAuth.instance.signInWithCredential(credential);
+          await _auth.signInWithCredential(credential);
 
       // Return the signed-in user
       return userCredential.user;

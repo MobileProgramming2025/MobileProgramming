@@ -10,6 +10,82 @@ class LoginScreen extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+  // Login Handler
+  Future<void> _handleLogin(BuildContext context) async {
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+
+    if (email.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Please enter your E-mail.")),
+      );
+      return;
+    }
+
+    if (password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Please enter your password.")),
+      );
+      return;
+    }
+
+    try {
+      firebase_auth.User? firebaseUser =
+          await AuthService().login(email, password);
+
+      if (firebaseUser != null) {
+        // Fetch user details (e.g., role) from your custom User model
+        // var userModel = await AuthService().getUserDetails(firebaseUser.uid);
+        User? userModel = await User.getUserDetails(firebaseUser.uid);
+
+        // Check if the widget is still in the tree before using context
+        if (!context.mounted) return;
+
+        if (userModel != null) {
+          if (userModel.role == 'Doctor' ||
+              userModel.role == 'Teaching Assistant') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => DoctorDashboard(doctor: userModel),
+              ),
+            );
+          } else if (userModel.role == 'Admin') {
+            Navigator.pushNamed(context, '/admin_home');
+          } else {
+            Navigator.pushNamed(context, '/user_home');
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(
+            //     builder: (context) => UserHome(/*user: userModel*/),
+            //   ),
+            // );
+          }
+        }
+      }
+    } on firebase_auth.FirebaseAuthException catch (e) {
+      // Check if the widget is still in the tree before using context
+      if (!context.mounted) return;
+      _showError(context, e.message ?? "Login failed. Please try again.");
+    } catch (e) {
+      // Check if the widget is still in the tree before using context
+      if (!context.mounted) return;
+      _showError(context, "An unexpected error occurred: $e");
+    }
+  }
+
+  Future<void> _handleGoogleSignIn(BuildContext context) async {
+    AuthService().signInWithGoogle();
+    Navigator.pushNamed(context, '/user_home');
+  }
+
+  // Error Display Helper
+  void _showError(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -102,82 +178,6 @@ class LoginScreen extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  // Login Handler
-  Future<void> _handleLogin(BuildContext context) async {
-    final email = emailController.text.trim();
-    final password = passwordController.text.trim();
-
-    if (email.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Please enter your E-mail.")),
-      );
-      return;
-    }
-
-    if (password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Please enter your password.")),
-      );
-      return;
-    }
-
-    try {
-      firebase_auth.User? firebaseUser =
-          await AuthService().login(email, password);
-
-      if (firebaseUser != null) {
-        // Fetch user details (e.g., role) from your custom User model
-        // var userModel = await AuthService().getUserDetails(firebaseUser.uid);
-        User? userModel = await User.getUserDetails(firebaseUser.uid);
-
-        // Check if the widget is still in the tree before using context
-        if (!context.mounted) return;
-
-        if (userModel != null) {
-          if (userModel.role == 'Doctor' ||
-              userModel.role == 'Teaching Assistant') {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => DoctorDashboard(doctor: userModel),
-              ),
-            );
-          } else if (userModel.role == 'Admin') {
-            Navigator.pushNamed(context, '/admin_home');
-          } else {
-            Navigator.pushNamed(context, '/user_home');
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(
-            //     builder: (context) => UserHome(/*user: userModel*/),
-            //   ),
-            // );
-          }
-        }
-      }
-    } on firebase_auth.FirebaseAuthException catch (e) {
-      // Check if the widget is still in the tree before using context
-      if (!context.mounted) return;
-      _showError(context, e.message ?? "Login failed. Please try again.");
-    } catch (e) {
-      // Check if the widget is still in the tree before using context
-      if (!context.mounted) return;
-      _showError(context, "An unexpected error occurred: $e");
-    }
-  }
-
-  Future<void> _handleGoogleSignIn(BuildContext context) async {
-    AuthService().signInWithGoogle();
-    Navigator.pushNamed(context, '/user_home');
-  }
-
-  // Error Display Helper
-  void _showError(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
     );
   }
 }

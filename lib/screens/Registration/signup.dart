@@ -43,8 +43,7 @@ class SignUpScreen extends StatelessWidget {
                   controller: passwordController,
                   obscureText: true,
                 ),
-                SizedBox(height: 16),
-
+                
                 SizedBox(height: 20),
                 ElevatedButton(
                   child: Text(
@@ -56,7 +55,7 @@ class SignUpScreen extends StatelessWidget {
                     final password = passwordController.text.trim();
 
                     const role = "Student";
-
+ 
                     try {
                       await AuthService()
                           .signUp(email, password, role);

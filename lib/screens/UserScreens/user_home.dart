@@ -57,8 +57,8 @@ class _UserHomeState extends State<UserHome> {
               itemCount: courses.length,
               itemBuilder: (context, index) {
                 final course = courses[index];
-                final Stream<User?> drStream = userService.getUserByID(course['drId']);
-                final Stream<User?> taStream = userService.getUserByID(course['taId']);
+                // final Stream<User?> drStream = userService.getUserByID(course['drId']);
+                // final Stream<User?> taStream = userService.getUserByID(course['taId']);
 
                 return Card(
                   elevation: 4,
@@ -81,25 +81,25 @@ class _UserHomeState extends State<UserHome> {
                         ),
                         const SizedBox(height: 8),
 
-                        StreamBuilder<User?>(
-                          stream: drStream,
-                          builder: (context, snapshot) {
-                            final User? user = snapshot.data;
-                            return Text('Doctor: ${user?.name}',
-                                style: Theme.of(context).textTheme.bodyLarge);
-                          },
-                        ),
-                        const SizedBox(height: 8),
-                        StreamBuilder<User?>(
-                          stream: taStream,
-                          builder: (context, snapshot) {
-                            final User? user = snapshot.data;
-                            return Text(
-                              'Teaching Assistant: ${user?.name}',
-                              style: Theme.of(context).textTheme.bodyLarge,
-                            );
-                          }
-                        ),
+                        // StreamBuilder<User?>(
+                        //   stream: drStream,
+                        //   builder: (context, snapshot) {
+                        //     final User? user = snapshot.data;
+                        //     return Text('Doctor: ${user?.name}',
+                        //         style: Theme.of(context).textTheme.bodyLarge);
+                        //   },
+                        // ),
+                        // const SizedBox(height: 8),
+                        // StreamBuilder<User?>(
+                        //   stream: taStream,
+                        //   builder: (context, snapshot) {
+                        //     final User? user = snapshot.data;
+                        //     return Text(
+                        //       'Teaching Assistant: ${user?.name}',
+                        //       style: Theme.of(context).textTheme.bodyLarge,
+                        //     );
+                        //   }
+                        // ),
                         const SizedBox(height: 8),
                         Text(
                           'Department: ${course['departmentName']}',
