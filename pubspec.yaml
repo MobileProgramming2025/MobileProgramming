@@ -29,6 +29,7 @@ dependencies:
   sizer: ^3.0.0
   flutter_sizer: ^1.0.5
   rename_app: ^1.6.1
+  google_sign_in: ^6.2.2
   # file_picker: ^8.1.5
   # file_picker: ^8.1.5
 

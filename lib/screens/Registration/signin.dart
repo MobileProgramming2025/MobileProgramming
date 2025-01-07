@@ -79,6 +79,17 @@ class LoginScreen extends StatelessWidget {
                   onPressed: () => _handleLogin(context),
                 ),
 
+                SizedBox(height: 20),
+
+                // Login Button
+                ElevatedButton(
+                  child: Text(
+                    "Google Sign In",
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  onPressed: () =>AuthService().signInWithGoogle(),
+                ),
+
                 // Sign-up Navigation
                 TextButton(
                   onPressed: () {
@@ -114,7 +125,8 @@ class LoginScreen extends StatelessWidget {
     }
 
     try {
-      firebase_auth.User? firebaseUser = await AuthService().login(email, password);
+      firebase_auth.User? firebaseUser =
+          await AuthService().login(email, password);
 
       if (firebaseUser != null) {
         // Fetch user details (e.g., role) from your custom User model
@@ -125,16 +137,15 @@ class LoginScreen extends StatelessWidget {
         if (!context.mounted) return;
 
         if (userModel != null) {
-
-          if (userModel.role == 'Doctor' || userModel.role == 'Teaching Assistant') {
+          if (userModel.role == 'Doctor' ||
+              userModel.role == 'Teaching Assistant') {
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => DoctorDashboard(doctor: userModel),
               ),
             );
-          }
-          else if (userModel.role == 'Admin') {
+          } else if (userModel.role == 'Admin') {
             Navigator.pushNamed(context, '/admin_home');
           } else {
             Navigator.pushNamed(context, '/user_home');

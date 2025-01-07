@@ -2,12 +2,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 //Allows interaction with Firestore (to read/write data in Firestore).
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mobileprogramming/models/Admin.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
 
   Future<User?> login(String email, String password) async {
     try {
@@ -22,8 +22,7 @@ class AuthService {
     }
   }
 
-  Future<User?> signUp(
-      String email, String password, String role) async {
+  Future<User?> signUp(String email, String password, String role) async {
     final firstAdded = DateTime.utc(2023, DateTime.november, 9);
     final currentYear = DateTime.now();
     final educationYear = currentYear.year - firstAdded.year;
@@ -53,6 +52,20 @@ class AuthService {
     } catch (e) {
       rethrow;
     }
+  }
+
+  signInWithGoogle() async {
+    final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
+    if (gUser == null) return;
+
+    final GoogleSignInAuthentication gAuth = await gUser.authentication;
+
+    final credential = GoogleAuthProvider.credential(
+      accessToken: gAuth.accessToken,
+      idToken: gAuth.idToken,
+    );
+
+    return await _auth.signInWithCredential(credential);
   }
 
 //method retieves a user’s information from db by their uid, it is used to access the data of user after sign up or login
