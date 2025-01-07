@@ -5,7 +5,7 @@ class CreateAssignmentScreen extends StatelessWidget {
   final String courseId;
   final String userId;
 
-  CreateAssignmentScreen({required this.courseId, required this.userId});
+  CreateAssignmentScreen({super.key, required this.courseId, required this.userId});
 
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();

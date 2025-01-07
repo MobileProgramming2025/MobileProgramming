@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mobileprogramming/constants.dart';
 import '../../services/DoctorService.dart';
 
 class AddDoctorScreen extends StatelessWidget {
