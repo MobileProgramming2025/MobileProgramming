@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/Course.dart';
-import 'package:mobileprogramming/screens/CourseDetailScreen.dart';
 import 'package:mobileprogramming/services/CourseService.dart';
 
 class CourseListPage extends StatefulWidget {
-  const CourseListPage({Key? key}) : super(key: key);
+  const CourseListPage({super.key});
 
   @override
-  _CourseListPageState createState() => _CourseListPageState();
+  State<CourseListPage> createState() => _CourseListPageState();
 }
 
 class _CourseListPageState extends State<CourseListPage> {
   final CourseService _courseService = CourseService();
-  List<Course> _courses = [];
+  final List<Course> _courses = [];
   bool _isLoading = true;
 
   // Fetch all courses from Firestore

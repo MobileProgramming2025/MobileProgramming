@@ -29,12 +29,12 @@ class DepartmentService {
         if (docSnapshot.exists && docSnapshot.data() != null) {
           return Department.fromMap(docSnapshot.data()!);
         } else {
-          print('Department with ID $id not found in Firestore.');
+          // print('Department with ID $id not found in Firestore.');
           return null;
         }
       });
     } catch (e) {
-      print('Error retrieving user with ID $id: $e');
+      // print('Error retrieving user with ID $id: $e');
       throw Exception('Failed to retrieve user');
     }
   }

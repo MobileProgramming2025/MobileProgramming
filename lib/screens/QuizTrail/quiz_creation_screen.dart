@@ -7,7 +7,6 @@ import 'package:mobileprogramming/screens/Quiz/QuizDetailsScreen.dart';
 import 'package:mobileprogramming/services/quiz_service.dart';
 import 'package:mobileprogramming/widgets/Quiz/date_picker_field.dart';
 import 'package:mobileprogramming/widgets/Quiz/options_editor.dart';
-import 'package:mobileprogramming/widgets/Quiz/question_editor.dart';
 
 class QuizCreationScreen extends StatefulWidget {
   final String courseId;

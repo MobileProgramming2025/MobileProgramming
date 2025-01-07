@@ -12,7 +12,7 @@ class EditDoctorScreen extends StatelessWidget {
   final _specializationController = TextEditingController();
   final DoctorService _doctorService = DoctorService();
 
-  @override
+  // @override
   void initState() {
     _nameController.text = doctor['name'];
     _emailController.text = doctor['email'];

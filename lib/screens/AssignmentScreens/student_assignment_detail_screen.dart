@@ -9,10 +9,10 @@ class AssignmentDetailScreen extends StatefulWidget {
   final Map<String, dynamic> assignmentData;
 
   const AssignmentDetailScreen({
-    Key? key,
+    super.key,
     required this.assignmentId,
     required this.assignmentData,
-  }) : super(key: key);
+  });
 
   @override
   State<AssignmentDetailScreen> createState() => _AssignmentDetailScreenState();
