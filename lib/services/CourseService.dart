@@ -10,7 +10,7 @@ class CourseService {
       return snapshot.docs.map((doc) {
         // Extract the document's ID and fields, and create a usable map
         return {
-          'id': doc.id,
+          'id': doc.id, 
           ...doc.data(),
         };
       }).toList();

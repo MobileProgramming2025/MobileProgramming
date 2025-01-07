@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mobileprogramming/models/Course.dart';
 
 class User {
   final String id;
@@ -7,9 +6,9 @@ class User {
   final String email;
   final String password;
   final String role;
-  final String? department;
-  final List<Course>? enrolledCourses;
-  final List<Course>? takenCourses;
+  final String? departmentId;
+  final List<Map<String, dynamic>>? enrolledCourses;
+  final List<Map<String, dynamic>>? takenCourses;
   final DateTime? addedDate;
   final String? year;
   User({
@@ -18,7 +17,7 @@ class User {
     required this.email,
     required this.password,
     required this.role,
-    this.department,
+    this.departmentId,
     this.enrolledCourses,
     this.takenCourses,
     this.addedDate,
@@ -34,16 +33,17 @@ class User {
         'email': email,
         'password': password,
         'role': role,
-        'department': department,
-        'enrolledCourses': enrolledCourses!
-            .map((course) => course.toMap())
-            .toList(), // Serialize Course objects
-        'taken_courses': takenCourses!.map((course) => course.toMap()).toList(),
+        'departmentId': departmentId,
+        'enrolledCourses': enrolledCourses!= null
+        ? enrolledCourses!.map((course) => Map<String, dynamic>.from(course)).toList()
+        : [], // Serialize Course objects
+        'taken_courses': takenCourses!= null
+        ? takenCourses!.map((course) => Map<String, dynamic>.from(course)).toList()
+        : [],
         'added_date': addedDate,
         'year': year,
       };
-    }
-    else if (role == "Admin") {
+    } else if (role == "Admin") {
       return {
         'id': id,
         'name': name,
@@ -51,20 +51,16 @@ class User {
         'password': password,
         'role': role,
       };
-    }
-    else{
+    } else {
       return {
         'id': id,
         'name': name,
         'email': email,
         'password': password,
         'role': role,
-        'department': department,
-        'enrolledCourses': enrolledCourses!
-            .map((course) => course.toMap())
-            .toList(), // Serialize Course objects
+        'departmentId': departmentId,
+        'enrolledCourses': enrolledCourses!, // Serialize Course objects
       };
-    
     }
   }
 
@@ -77,14 +73,15 @@ class User {
       email: map['email'] as String? ?? '',
       password: map['password'] as String? ?? '',
       role: map['role'] as String? ?? 'Unknown',
-      department: map['department'] as String? ?? 'Unknown',
-      enrolledCourses: (map['enrolled_courses'] as List<dynamic>? ?? [])
-          .map((e) => Course.fromMap(e as Map<String, dynamic>))
-          .toList(),
-
-      takenCourses: (map['taken_courses'] as List<dynamic>? ?? [])
-          .map((e) => Course.fromMap(e as Map<String, dynamic>))
-          .toList(),
+      departmentId: map['departmentId'] as String? ?? 'Unknown',
+      enrolledCourses: map['enrolled_courses'] != null
+        ? List<Map<String, dynamic>>.from(
+            map['enrolled_courses'] as List<dynamic>)
+        : [],
+      takenCourses:  map['taken_courses'] != null
+        ? List<Map<String, dynamic>>.from(
+            map['taken_courses'] as List<dynamic>)
+        : [],
       addedDate: map['added_date'] is Timestamp
           ? (map['added_date'] as Timestamp)
               .toDate() // Convert Timestamp to DateTime
