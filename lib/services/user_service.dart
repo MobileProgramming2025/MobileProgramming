@@ -1,9 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mobileprogramming/models/Course.dart';
 import 'package:mobileprogramming/models/user.dart';
-import 'package:mobileprogramming/screens/AdminScreens/add_courses_screen.dart';
 import 'package:mobileprogramming/services/CourseService.dart';
-import 'package:uuid/uuid.dart';
 
 class UserService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -97,19 +94,13 @@ class UserService {
     for (var user in users) {
       // isSucceeded(user);
       if (user['role'] == 'Student') {
-        print('\x1B[37m ${user['role']}');
-
         for (var course in courses) {
           if (user['year'] == course['year'] &&
               user['departmentId'] == course['departmentId']) {
-            print(
-                '\x1B[35m User: ${user['name']}, Email: ${user['email']}, Role: ${user['role']},year: ${user['year']}, dep: ${user['departmentId']} \x1B[0m');
-            print('\x1B[35m ${course}\x1B[0m');
 
             if (!_isEnrolled(course, user) && !_isTaken(course, user)) {
               _enroll(course, user);
               enrolledCourses++;
-              print("'\x1B[32m Enrolled \x1B[0m");
             }
           }
           if (enrolledCourses >= 1) {
