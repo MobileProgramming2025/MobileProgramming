@@ -1,18 +1,19 @@
 //Provides authentication functionality (sign in, sign up, sign out, etc.).
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 //Allows interaction with Firestore (to read/write data in Firestore).
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mobileprogramming/models/Admin.dart';
+import 'package:mobileprogramming/models/user.dart';
 
 class AuthService {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final firebase_auth.FirebaseAuth _auth = firebase_auth.FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<User?> login(String email, String password) async {
+  Future<firebase_auth.User?> login(String email, String password) async {
     try {
       //userCredential: stores the result after Firebase tries to sign in the user
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+      firebase_auth.UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -22,19 +23,19 @@ class AuthService {
     }
   }
 
-  Future<User?> signUp(String email, String password, String role) async {
+  Future<firebase_auth.User?> signUp(String email, String password, String role) async {
     final firstAdded = DateTime.utc(2023, DateTime.november, 9);
     final currentYear = DateTime.now();
     final educationYear = currentYear.year - firstAdded.year;
 
     try {
-      UserCredential userCredential =
+      firebase_auth.UserCredential userCredential =
           await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
 
-      User? user = userCredential.user;
+      firebase_auth.User? user = userCredential.user;
 
       if (user != null) {
         await _firestore.collection('users').doc(user.uid).set({
@@ -54,19 +55,19 @@ class AuthService {
     }
   }
 
-  Future<User?> signUp2(String name, String email, String password, String role, String departmentId) async {
+  Future<firebase_auth.User?> signUp2(String name, String email, String password, String role, String departmentId) async {
     final firstAdded = DateTime.utc(2023, DateTime.november, 9);
     final currentYear = DateTime.now();
     final educationYear = currentYear.year - firstAdded.year;
 
     try {
-      UserCredential userCredential =
+      firebase_auth.UserCredential userCredential =
           await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
 
-      User? user = userCredential.user;
+      firebase_auth.User? user = userCredential.user;
 
       if (user != null) {
         await _firestore.collection('users').doc(user.uid).set({
@@ -88,7 +89,7 @@ class AuthService {
     } 
   }
 
-  Future<User?> signInWithGoogle() async {
+  Future<firebase_auth.User?> signInWithGoogle() async {
     try {
       // Trigger the Google Sign-In flow
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
@@ -102,13 +103,13 @@ class AuthService {
           await googleUser.authentication;
 
       // Create a Firebase credential using the Google token
-      final AuthCredential credential = GoogleAuthProvider.credential(
+      final firebase_auth.AuthCredential credential = firebase_auth.GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
       // Sign in to Firebase with the credential
-      final UserCredential userCredential =
+      final firebase_auth.UserCredential userCredential =
           await _auth.signInWithCredential(credential);
 
       // Return the signed-in user
@@ -133,7 +134,24 @@ class AuthService {
     }
   }
 
+  // Checks if a user with the given uid exists in Firestore
+  Future<bool> checkIfUserExists(String uid) async {
+    try {
+      DocumentSnapshot userDoc =
+          await _firestore.collection('users').doc(uid).get();
+      return userDoc.exists;
+    } catch (e) {
+      // print("Error checking if user exists: $e");
+      return false;
+    }
+  }
+
+  Future<void> saveUserDetails(User userModel) async {
+    await _firestore.collection('users').doc(userModel.id).set(userModel.toMap());
+  }
+
   Future<void> logout() async {
     await _auth.signOut();
   }
+
 }
