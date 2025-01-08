@@ -40,6 +40,7 @@ class CreateAssignmentScreen extends StatelessWidget {
                 );
                 await ApiService(baseUrl: 'http://example.com', userId: userId)
                     .createAssignment(assignment);
+                if(!context.mounted) return;
                 Navigator.pop(context);
               },
               child: Text('Create'),

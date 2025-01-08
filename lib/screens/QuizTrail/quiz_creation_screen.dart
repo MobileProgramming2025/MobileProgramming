@@ -68,6 +68,7 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
         });
       }
     } catch (error) {
+      if(!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error loading quiz: $error')),
       );
@@ -272,7 +273,7 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
                     ),
                   ),
                 );
-              }).toList(),
+              }),   //.toList(),
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Center(

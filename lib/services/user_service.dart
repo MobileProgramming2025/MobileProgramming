@@ -97,7 +97,7 @@ class UserService {
       if (user['role'] == 'Student') {
         var enrolledCourses = 0;
         print('\x1B[37m ${user['role']}\x1B[0m');
-        print('\x1B[37m ${enrolledCourses} \x1B[0m');
+        print('\x1B[37m $enrolledCourses \x1B[0m');
 
         for (var course in courses) {
           if (user['year'] == course['year'] && user['departmentId'] == course['departmentId']) {

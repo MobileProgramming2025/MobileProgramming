@@ -40,6 +40,7 @@ class _AssignmentListScreenState extends State<AssignmentListScreen> {
       _assignments = snapshot.docs.map((doc) => {'id': doc.id, ...doc.data()}).toList();
     });
   } catch (e) {
+    if(!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Failed to fetch assignments: $e')),
     );

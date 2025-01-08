@@ -88,10 +88,12 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
         _submissionUrl = fileUrl;
       });
 
+      if(!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Assignment submitted successfully!')),
       );
     } catch (e) {
+      if(!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to submit assignment: $e')),
       );

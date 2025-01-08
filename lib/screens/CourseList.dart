@@ -23,6 +23,7 @@ class _CourseListPageState extends State<CourseListPage> {
         _isLoading = false;
       });
     } catch (error) {
+      if(!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error fetching courses: $error')),
       );

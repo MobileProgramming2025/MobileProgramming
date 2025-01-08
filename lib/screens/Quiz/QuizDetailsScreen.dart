@@ -53,6 +53,7 @@ class _QuizDetailsScreenState extends State<QuizDetailsScreen> {
   
     try {
       await _quizService.updateQuiz(widget.quiz);
+      if(!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Changes saved successfully!')),
       );
