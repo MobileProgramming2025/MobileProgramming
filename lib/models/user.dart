@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mobileprogramming/models/Course.dart';
 
 class User {
   final String id;
@@ -7,40 +6,62 @@ class User {
   final String email;
   final String password;
   final String role;
-  final String department;
-  final List<Course> enrolledCourses;
-  final List<Course> takenCourses;
-  final DateTime addedDate;
-  final String year;
+  final String? departmentId;
+  final List<Map<String, dynamic>>? enrolledCourses;
+  final List<Map<String, dynamic>>? takenCourses;
+  final DateTime? addedDate;
+  final String? year;
   User({
     required this.id,
     required this.name,
     required this.email,
     required this.password,
     required this.role,
-    required this.department,
-    required this.enrolledCourses,
-    required this.takenCourses,
-    required this.addedDate,
-    required this.year, 
+    this.departmentId,
+    this.enrolledCourses,
+    this.takenCourses,
+    this.addedDate,
+    this.year,
   });
 
   // Convert a User object to a Map for Firestore
   Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'name': name,
-      'email': email,
-      'password': password,
-      'role': role,
-      'department': department,
-      'enrolledCourses': enrolledCourses
-          .map((course) => course.toMap())
-          .toList(), // Serialize Course objects
-      'taken_courses': takenCourses,
-      'added_date': addedDate,
-      'year': year,
-    };
+    if (role == "Student") {
+      return {
+        'id': id,
+        'name': name,
+        'email': email,
+        'password': password,
+        'role': role,
+        'departmentId': departmentId,
+        'enrolled_courses': enrolledCourses!= null
+        ? enrolledCourses!.map((course) => Map<String, dynamic>.from(course)).toList()
+        : [], // Serialize Course objects
+        'taken_courses': takenCourses!= null
+        ? takenCourses!.map((course) => Map<String, dynamic>.from(course)).toList()
+        : [],
+        'added_date': addedDate,
+        'year': year,
+      };
+    } else if (role == "Admin") {
+      return {
+        'id': id,
+        'name': name,
+        'email': email,
+        'password': password,
+        'role': role,
+      };
+    } else {
+      return {
+        'id': id,
+        'name': name,
+        'email': email,
+        'password': password,
+        'role': role,
+        'departmentId': departmentId,
+        'enrolled_courses': enrolledCourses!, // Serialize Course objects
+      };
+    }
   }
 
   // Create a User object from Firestore Map
@@ -52,14 +73,15 @@ class User {
       email: map['email'] as String? ?? '',
       password: map['password'] as String? ?? '',
       role: map['role'] as String? ?? 'Unknown',
-      department: map['department'] as String? ?? 'Unknown',
-      enrolledCourses: (map['enrolled_courses'] as List<dynamic>? ?? [])
-          .map((e) => Course.fromMap(e as Map<String, dynamic>))
-          .toList(),
-
-      takenCourses: (map['taken_courses'] as List<dynamic>? ?? [])
-          .map((e) => Course.fromMap(e as Map<String, dynamic>))
-          .toList(),
+      departmentId: map['departmentId'] as String? ?? 'Unknown',
+      enrolledCourses: map['enrolled_courses'] != null
+        ? List<Map<String, dynamic>>.from(
+            map['enrolled_courses'] as List<dynamic>)
+        : [],
+      takenCourses:  map['taken_courses'] != null
+        ? List<Map<String, dynamic>>.from(
+            map['taken_courses'] as List<dynamic>)
+        : [],
       addedDate: map['added_date'] is Timestamp
           ? (map['added_date'] as Timestamp)
               .toDate() // Convert Timestamp to DateTime
@@ -97,11 +119,11 @@ class User {
       if (docSnapshot.exists && docSnapshot.data() != null) {
         return User.fromMap(docSnapshot.data()!);
       } else {
-        print('User with ID $id not found in Firestore.');
+        // print('User with ID $id not found in Firestore.');
         return null;
       }
     } catch (e) {
-      print('Error retrieving user with ID $id: $e');
+      // print('Error retrieving user with ID $id: $e');
       return null;
     }
   }

@@ -7,7 +7,6 @@ import 'package:mobileprogramming/screens/Quiz/QuizDetailsScreen.dart';
 import 'package:mobileprogramming/services/quiz_service.dart';
 import 'package:mobileprogramming/widgets/Quiz/date_picker_field.dart';
 import 'package:mobileprogramming/widgets/Quiz/options_editor.dart';
-import 'package:mobileprogramming/widgets/Quiz/question_editor.dart';
 
 class QuizCreationScreen extends StatefulWidget {
   final String courseId;
@@ -69,6 +68,7 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
         });
       }
     } catch (error) {
+      if(!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error loading quiz: $error')),
       );
@@ -273,7 +273,7 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
                     ),
                   ),
                 );
-              }).toList(),
+              }),   //.toList(),
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Center(

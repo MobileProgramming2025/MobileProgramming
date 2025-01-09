@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/Course.dart';
-import 'package:mobileprogramming/screens/CourseDetailScreen.dart';
 import 'package:mobileprogramming/services/CourseService.dart';
 
 class CourseListPage extends StatefulWidget {
-  const CourseListPage({Key? key}) : super(key: key);
+  const CourseListPage({super.key});
 
   @override
-  _CourseListPageState createState() => _CourseListPageState();
+  State<CourseListPage> createState() => _CourseListPageState();
 }
 
 class _CourseListPageState extends State<CourseListPage> {
   final CourseService _courseService = CourseService();
-  List<Course> _courses = [];
+  final List<Course> _courses = [];
   bool _isLoading = true;
 
   // Fetch all courses from Firestore
@@ -24,6 +23,7 @@ class _CourseListPageState extends State<CourseListPage> {
         _isLoading = false;
       });
     } catch (error) {
+      if(!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error fetching courses: $error')),
       );
@@ -39,43 +39,41 @@ class _CourseListPageState extends State<CourseListPage> {
     _fetchCourses();
   }
 
- 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Courses'),
-        actions:const [
+        actions: const [
           IconButton(
             icon: Icon(Icons.add),
             onPressed: null,
           ),
         ],
       ),
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator())
-          : _courses.isEmpty
-              ? Center(child: Text('No courses available'))
-              : ListView.builder(
-                  itemCount: _courses.length,
-                  itemBuilder: (context, index) {
-                    final course = _courses[index];
-                    return ListTile(
-                      title: Text(course.name),
-                      subtitle: Text('Dr: ${course.drId}'),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                CourseDetailScreen(courseId: course.id ),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                ),
+      // body: _isLoading
+      //     ? Center(child: CircularProgressIndicator())
+      //     : _courses.isEmpty
+      //         ? Center(child: Text('No courses available'))
+      //         : ListView.builder(
+      //             itemCount: _courses.length,
+      //             itemBuilder: (context, index) {
+      //               final course = _courses[index];
+      //               return ListTile(
+      //                 title: Text(course.name),
+      //                 // subtitle: Text('Dr: ${course.drId}'),
+      //                 onTap: () {
+      //                   Navigator.push(
+      //                     context,
+      //                     MaterialPageRoute(
+      //                       builder: (context) =>
+      //                           CourseDetailScreen(courseId: course.id),
+      //                     ),
+      //                   );
+      //                 },
+      //               );
+      //             },
+      //           ),
     );
   }
 }

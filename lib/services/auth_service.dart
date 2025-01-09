@@ -1,18 +1,19 @@
 //Provides authentication functionality (sign in, sign up, sign out, etc.).
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 //Allows interaction with Firestore (to read/write data in Firestore).
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mobileprogramming/models/Admin.dart';
+import 'package:mobileprogramming/models/user.dart';
 
 class AuthService {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final firebase_auth.FirebaseAuth _auth = firebase_auth.FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<User?> login(String email, String password) async {
+  Future<firebase_auth.User?> login(String email, String password) async {
     try {
       //userCredential: stores the result after Firebase tries to sign in the user
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+      firebase_auth.UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -22,30 +23,30 @@ class AuthService {
     }
   }
 
-  Future<User?> signUp(String email, String password, String role) async {
+  Future<firebase_auth.User?> signUp(String email, String password, String role) async {
     final firstAdded = DateTime.utc(2023, DateTime.november, 9);
     final currentYear = DateTime.now();
     final educationYear = currentYear.year - firstAdded.year;
 
     try {
-      UserCredential userCredential =
+      firebase_auth.UserCredential userCredential =
           await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
 
-      User? user = userCredential.user;
+      firebase_auth.User? user = userCredential.user;
 
       if (user != null) {
         await _firestore.collection('users').doc(user.uid).set({
-          'uid': user.uid,
+          'id': user.uid,
           'email': email,
           'role': role, // Store role in Firestore
           'password': password,
-          'takenCourses': [],
-          'enrolledCourses': [],
-          'addedDate': firstAdded,
-          'year': (educationYear + 1).toString(),
+          'taken_courses': [],
+          'enrolled_courses': [],
+          'added_date': firstAdded,
+          'year': (educationYear).toString(),
         });
       }
       return user;
@@ -54,18 +55,69 @@ class AuthService {
     }
   }
 
-  signInWithGoogle() async {
-    final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
-    if (gUser == null) return;
+  Future<firebase_auth.User?> signUp2(String name, String email, String password, String role, String departmentId) async {
+    final firstAdded = DateTime.utc(2023, DateTime.november, 9);
+    final currentYear = DateTime.now();
+    final educationYear = currentYear.year - firstAdded.year;
 
-    final GoogleSignInAuthentication gAuth = await gUser.authentication;
+    try {
+      firebase_auth.UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-    final credential = GoogleAuthProvider.credential(
-      accessToken: gAuth.accessToken,
-      idToken: gAuth.idToken,
-    );
+      firebase_auth.User? user = userCredential.user;
 
-    return await _auth.signInWithCredential(credential);
+      if (user != null) {
+        await _firestore.collection('users').doc(user.uid).set({
+          'id': user.uid,
+          'name': name,
+          'email': email,
+          'password': password,
+          'role': role, // Store role in Firestore
+          'departmentId': departmentId,
+          'taken_courses': [],
+          'enrolled_courses': [],
+          'added_date': firstAdded,
+          'year': (educationYear).toString(),
+        });
+      }
+      return user;
+    } catch (e) {
+      rethrow;
+    } 
+  }
+
+  Future<firebase_auth.User?> signInWithGoogle() async {
+    try {
+      // Trigger the Google Sign-In flow
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+      if (googleUser == null) {
+        return null; // User canceled the sign-in process
+      }
+
+      // Obtain the Google Sign-In authentication details
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      // Create a Firebase credential using the Google token
+      final firebase_auth.AuthCredential credential = firebase_auth.GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      // Sign in to Firebase with the credential
+      final firebase_auth.UserCredential userCredential =
+          await _auth.signInWithCredential(credential);
+
+      // Return the signed-in user
+      return userCredential.user;
+    } catch (e) {
+      // print("Error signing in with Google: $e");
+      return null;
+    }
   }
 
 //method retieves a user’s information from db by their uid, it is used to access the data of user after sign up or login
@@ -82,7 +134,24 @@ class AuthService {
     }
   }
 
+  // Checks if a user with the given uid exists in Firestore
+  Future<bool> checkIfUserExists(String uid) async {
+    try {
+      DocumentSnapshot userDoc =
+          await _firestore.collection('users').doc(uid).get();
+      return userDoc.exists;
+    } catch (e) {
+      // print("Error checking if user exists: $e");
+      return false;
+    }
+  }
+
+  Future<void> saveUserDetails(User userModel) async {
+    await _firestore.collection('users').doc(userModel.id).set(userModel.toMap());
+  }
+
   Future<void> logout() async {
     await _auth.signOut();
   }
+
 }

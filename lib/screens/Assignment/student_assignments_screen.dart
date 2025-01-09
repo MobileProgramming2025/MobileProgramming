@@ -15,7 +15,7 @@ class StudentAssignmentsScreen extends StatefulWidget {
 }
 
 class _StudentAssignmentsScreenState extends State<StudentAssignmentsScreen> {
-  String? _uploadedFileUrl;
+  // String? _uploadedFileUrl;
 
   @override
   Widget build(BuildContext context) {

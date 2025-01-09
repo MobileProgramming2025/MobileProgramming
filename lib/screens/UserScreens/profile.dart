@@ -39,7 +39,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             _buildProfileItem(title: 'Name', value: user.name),
             _buildProfileItem(title: 'Email', value: user.email),
             _buildProfileItem(title: 'Role', value: user.role),
-            _buildProfileItem(title: 'Department', value: user.department),
+            // _buildProfileItem(title: 'Department', value: user.department),
           ],
         ),
       ),

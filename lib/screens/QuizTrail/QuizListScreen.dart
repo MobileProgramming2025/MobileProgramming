@@ -1,7 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart'; 
 import 'package:flutter/material.dart';
-import 'package:mobileprogramming/screens/Quiz/QuizEditScreen.dart';
-import 'package:mobileprogramming/screens/Quiz/quiz_creation_screen.dart';
 import 'package:mobileprogramming/screens/QuizTrail/QuizEditScreen.dart';
 import 'package:mobileprogramming/screens/QuizTrail/quiz_creation_screen.dart';
 import 'package:mobileprogramming/services/quiz_service.dart';
@@ -10,7 +8,7 @@ import 'package:mobileprogramming/models/Quiz.dart';
 class QuizListScreen extends StatelessWidget {
   final String courseId;
 
-  QuizListScreen({required this.courseId});
+  QuizListScreen({super.key, required this.courseId});
 
   final QuizService _quizService = QuizService(); 
 
@@ -70,10 +68,12 @@ class QuizListScreen extends StatelessWidget {
                             icon: Icon(Icons.delete),
                             onPressed: () {
                               _quizService.deleteQuiz(quiz.id).then((_) {
+                                if(!context.mounted) return;
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(content: Text('Quiz deleted')),
                                 );
                               }).catchError((error) {
+                                if(!context.mounted) return;
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(content: Text('Error deleting quiz: $error')),
                                 );

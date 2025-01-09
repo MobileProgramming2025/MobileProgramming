@@ -26,8 +26,8 @@ class _AddCoursesScreenState extends State<AddCoursesScreen> {
   var _enteredName = '';
   var _enteredCode = '';
   var _selectedYear = '1';
-  var _selectedDr = '';
-  var _selectedTa = '';
+  // var _selectedDr = '';
+  // var _selectedTa = '';
   var _selectedDepartment = '';
 
   final List<String> years = ['1', '2', '3', '4', '5'];
@@ -55,7 +55,7 @@ class _AddCoursesScreenState extends State<AddCoursesScreen> {
     _codeController.clear();
     setState(() {
       _selectedYear = '1';
-      _selectedDr = '';
+      // _selectedDr = '';
       _selectedDepartment = '';
     });
   }
@@ -67,8 +67,8 @@ class _AddCoursesScreenState extends State<AddCoursesScreen> {
         id: _uuid,
         name: _enteredName,
         code: _enteredCode,
-        drId: _selectedDr,
-        taId: _selectedTa,
+        // drId: _selectedDr,
+        // taId: _selectedTa,
         departmentId: _selectedDepartment,
         year: _selectedYear,
       );
@@ -136,95 +136,95 @@ class _AddCoursesScreenState extends State<AddCoursesScreen> {
                       _enteredCode = value!;
                     },
                   ),
-                  SizedBox(height: 16),
-                  StreamBuilder<QuerySnapshot>(
-                    stream: FirebaseFirestore.instance
-                        .collection('users')
-                        .snapshots(),
-                    builder: (context, snapshot) {
-                      List<DropdownMenuItem> doctorItems = [];
-                      if (!snapshot.hasData) {
-                        const CircularProgressIndicator();
-                      } else {
-                        final items = snapshot.data?.docs.reversed.toList();
-                        for (var item in items!) {
-                          if (item['role'] == 'Doctor') {
-                            doctorItems.add(
-                              DropdownMenuItem(
-                                value: item.id,
-                                child: Text(
-                                  item['name'],
-                                  style: Theme.of(context).textTheme.bodyLarge,
-                                ),
-                              ),
-                            );
-                          }
-                        }
-                      }
-                      return DropdownButtonFormField(
-                        validator: (value) {
-                          if (value == null) {
-                            return "please select a Lecturer Name";
-                          }
-                          return null;
-                        },
-                        decoration: InputDecoration(
-                          labelText: 'Lecturer Name',
-                          border: OutlineInputBorder(),
-                        ),
-                        items: doctorItems,
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedDr = value!;
-                          });
-                        },
-                      );
-                    },
-                  ),
-                  SizedBox(height: 16),
-                  StreamBuilder<QuerySnapshot>(
-                    stream: FirebaseFirestore.instance
-                        .collection('users')
-                        .snapshots(),
-                    builder: (context, snapshot) {
-                      List<DropdownMenuItem> taItems = [];
-                      if (!snapshot.hasData) {
-                        const CircularProgressIndicator();
-                      } else {
-                        final items = snapshot.data?.docs.reversed.toList();
-                        for (var item in items!) {
-                          if (item['role'] == 'Teaching Assistant') {
-                            taItems.add(
-                              DropdownMenuItem(
-                                value: item.id,
-                                child: Text(
-                                  item['name'],
-                                  style: Theme.of(context).textTheme.bodyLarge,
-                                ),
-                              ),
-                            );
-                          }
-                        }
-                      }
-                      return DropdownButtonFormField(
-                          validator: (value) {
-                            if (value == null) {
-                              return "please select a Teaching Assistant Name";
-                            }
-                            return null;
-                          },
-                          decoration: InputDecoration(
-                            labelText: 'Teaching Assistant Name',
-                            border: OutlineInputBorder(),
-                          ),
-                          items: taItems,
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedTa = value!;
-                            });
-                          });
-                    },
-                  ),
+                  // SizedBox(height: 16),
+                  // StreamBuilder<QuerySnapshot>(
+                  //   stream: FirebaseFirestore.instance
+                  //       .collection('users')
+                  //       .snapshots(),
+                  //   builder: (context, snapshot) {
+                  //     List<DropdownMenuItem> doctorItems = [];
+                  //     if (!snapshot.hasData) {
+                  //       const CircularProgressIndicator();
+                  //     } else {
+                  //       final items = snapshot.data?.docs.reversed.toList();
+                  //       for (var item in items!) {
+                  //         if (item['role'] == 'Doctor') {
+                  //           doctorItems.add(
+                  //             DropdownMenuItem(
+                  //               value: item.id,
+                  //               child: Text(
+                  //                 item['name'],
+                  //                 style: Theme.of(context).textTheme.bodyLarge,
+                  //               ),
+                  //             ),
+                  //           );
+                  //         }
+                  //       }
+                  //     }
+                  //     return DropdownButtonFormField(
+                  //       validator: (value) {
+                  //         if (value == null) {
+                  //           return "please select a Lecturer Name";
+                  //         }
+                  //         return null;
+                  //       },
+                  //       decoration: InputDecoration(
+                  //         labelText: 'Lecturer Name',
+                  //         border: OutlineInputBorder(),
+                  //       ),
+                  //       items: doctorItems,
+                  //       onChanged: (value) {
+                  //         setState(() {
+                  //           _selectedDr = value!;
+                  //         });
+                  //       },
+                  //     );
+                  //   },
+                  // ),
+                  // SizedBox(height: 16),
+                  // StreamBuilder<QuerySnapshot>(
+                  //   stream: FirebaseFirestore.instance
+                  //       .collection('users')
+                  //       .snapshots(),
+                  //   builder: (context, snapshot) {
+                  //     List<DropdownMenuItem> taItems = [];
+                  //     if (!snapshot.hasData) {
+                  //       const CircularProgressIndicator();
+                  //     } else {
+                  //       final items = snapshot.data?.docs.reversed.toList();
+                  //       for (var item in items!) {
+                  //         if (item['role'] == 'Teaching Assistant') {
+                  //           taItems.add(
+                  //             DropdownMenuItem(
+                  //               value: item.id,
+                  //               child: Text(
+                  //                 item['name'],
+                  //                 style: Theme.of(context).textTheme.bodyLarge,
+                  //               ),
+                  //             ),
+                  //           );
+                  //         }
+                  //       }
+                  //     }
+                  //     return DropdownButtonFormField(
+                  //         validator: (value) {
+                  //           if (value == null) {
+                  //             return "please select a Teaching Assistant Name";
+                  //           }
+                  //           return null;
+                  //         },
+                  //         decoration: InputDecoration(
+                  //           labelText: 'Teaching Assistant Name',
+                  //           border: OutlineInputBorder(),
+                  //         ),
+                  //         items: taItems,
+                  //         onChanged: (value) {
+                  //           setState(() {
+                  //             _selectedTa = value!;
+                  //           });
+                  //         });
+                  //   },
+                  // ),
                   SizedBox(height: 16),
                   StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance

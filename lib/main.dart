@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:mobileprogramming/screens/AdminScreens/AddDoctorScreen.dart';
 import 'package:mobileprogramming/screens/AdminScreens/Add_department_screen.dart';
@@ -7,7 +6,6 @@ import 'package:mobileprogramming/screens/AdminScreens/DashboardScreen.dart';
 import 'package:mobileprogramming/screens/AdminScreens/add_courses_screen.dart';
 import 'package:mobileprogramming/screens/AdminScreens/add_users.dart';
 import 'package:mobileprogramming/screens/AdminScreens/admin_dashboard.dart';
-import 'package:mobileprogramming/screens/AdminScreens/enroll_students_screen.dart';
 import 'package:mobileprogramming/screens/AdminScreens/list_users.dart';
 import 'package:mobileprogramming/screens/AdminScreens/view_courses_screen.dart';
 import 'package:mobileprogramming/screens/AssignmentScreens/assignment_list_screen.dart';
@@ -20,17 +18,22 @@ import 'package:mobileprogramming/screens/Assignment/assignment_screen.dart';
 
 import 'package:flutter_sizer/flutter_sizer.dart';
 
-
-
 void main() async {
   // WidgetsFlutterBinding.ensureInitialized();
 
   // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp,DeviceOrientation.landscapeLeft,DeviceOrientation.landscapeRight])
-      // .then((fn) {
-    runApp(const MyApp());
+  // .then((fn) {
+  runApp(const MyApp());
   // });
 
   await Firebase.initializeApp();
+  // await Future.delayed(Duration(seconds: 2)); // Add a small delay
+
+
+    // Enable App Check
+  // await FirebaseAppCheck.instance.activate(
+  //   androidProvider: AndroidProvider.playIntegrity,
+  // );
 }
 
 class MyApp extends StatelessWidget {
@@ -157,7 +160,7 @@ class MyApp extends StatelessWidget {
           '/add_courses': (context) => AddCoursesScreen(),
           '/view_courses': (context) => ViewCoursesScreen(),
           // '/create-assignment': (context) => CourseListPage(),
-          '/enroll_students': (context) => EnrollStudentsScreen(),
+          // '/enroll_students': (context) => EnrollStudentsScreen(),
           //  '/list-assignments-for-dr' : (context) => CourseListPage(),
           '/student-assignment-list': (context) =>
               StudentAssignmentListScreen(),

@@ -33,13 +33,14 @@ class _AssignmentListScreenState extends State<AssignmentListScreen> {
     final snapshot = await FirebaseFirestore.instance
         .collection('assignments')
         .where('courseId', isEqualTo: widget.courseId) // Filter by courseId
-        .where('createdBy', isEqualTo: _currentUser!.uid)
+        .where('createdBy', isEqualTo: _currentUser.uid)
         .get();
 
     setState(() {
       _assignments = snapshot.docs.map((doc) => {'id': doc.id, ...doc.data()}).toList();
     });
   } catch (e) {
+    if(!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Failed to fetch assignments: $e')),
     );
@@ -106,13 +107,13 @@ void _confirmDelete(BuildContext context, String assignmentId) {
 
 Future<void> _onAssignmentAdded() async {
   // Handle logic when an assignment is added
-  print('Assignment added!');
+  // print('Assignment added!');
   _fetchAssignments();
 }
 
 Future<void> _onAssignmentUpdated() async {
   // Handle logic when an assignment is updated
-  print('Assignment updated!');
+  // print('Assignment updated!');
    _fetchAssignments();
 }
 
@@ -143,7 +144,7 @@ Future<void> _onAssignmentUpdated() async {
               decoration: BoxDecoration(
                 color: Color.fromARGB(255, 228, 151, 78),
                 borderRadius: BorderRadius.circular(15),
-                boxShadow: [
+                boxShadow: const [
                   BoxShadow(
                    // color: Color.fromARGB(255, 228, 151, 78)
                     blurRadius: 8,
