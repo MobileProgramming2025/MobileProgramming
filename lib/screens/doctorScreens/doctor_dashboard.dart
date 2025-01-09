@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/user.dart';
 import 'package:mobileprogramming/screens/CourseList.dart';
 import 'package:mobileprogramming/screens/UserScreens/profile.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DoctorDashboard extends StatefulWidget {
   final User doctor;
@@ -50,7 +51,6 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
           ),
         ),
       ),
-
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -62,33 +62,58 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                 textAlign: TextAlign.center,
               ),
             ),
-              ListTile(
-                leading: Icon(Icons.person),
-                title: Text('Dashboard'),
-                onTap: () {
+            ListTile(
+              leading: Icon(Icons.person),
+              title: Text('Dashboard'),
+              onTap: () {
                 Navigator.pushNamed(context, '/Doctor-dashboard');
-                },
-              ),
-              ListTile(
+              },
+            ),
+            ListTile(
                 leading: Icon(Icons.person),
                 title: Text('Profile'),
                 onTap: () {
                   Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ProfileScreen(user: widget.doctor),
-                    )
-                  );
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            ProfileScreen(user: widget.doctor),
+                      ));
+                }),
+            ListTile(
+              leading: Icon(Icons.logout),
+              title: Text('Logout'),
+              onTap: () async {
+                final shouldLogout = await showDialog<bool>(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: Text('Logout'),
+                      content: Text('Are you sure you want to logout?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(false),
+                          child: Text('Cancel'),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(true),
+                          child: Text('Logout'),
+                        ),
+                      ],
+                    );
+                  },
+                );
+
+                if (shouldLogout == true) {
+                  SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
+                  await prefs.clear();
+
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, '/login', (route) => false);
                 }
-              ),
-              ListTile(
-                leading: Icon(Icons.logout),
-                title: Text('Logout'),
-                onTap: () {
-                  // Handle logout
-                },
-              ),
-        
+              },
+            ),
             ListTile(
               leading: Icon(Icons.group_add_outlined),
               title: Text('View Courses'),
@@ -97,8 +122,7 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => CourseListPage(),
-                    )
-                  );
+                    ));
               },
             ),
             // ListTile(
@@ -108,7 +132,7 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
             //     Navigator.pushNamed(context, '/list-assignments-for-dr');
             //   },
             // ),
-          
+
             ListTile(
               leading: Icon(Icons.assignment_add),
               title: Text('Create Quiz'),
@@ -119,7 +143,6 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
           ],
         ),
       ),
-
       body: isLoading
           ? Center(
               child: CircularProgressIndicator(),
@@ -132,7 +155,6 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                   Text(
                     'Welcome, Doctor ${widget.doctor.name}',
                     style: Theme.of(context).textTheme.titleLarge,
-                    
                   ),
                   SizedBox(height: 16),
                   Expanded(
