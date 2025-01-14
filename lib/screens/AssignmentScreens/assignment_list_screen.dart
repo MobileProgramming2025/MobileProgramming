@@ -121,12 +121,12 @@ Future<void> _onAssignmentUpdated() async {
     return Scaffold(
       appBar: AppBar(
         title: Text('Assignments'),
-       leading: Builder(
-          builder: (context) => IconButton(
-            icon: Icon(Icons.menu),
-            onPressed: () => Scaffold.of(context).openDrawer(),
-          ),
-        ),
+      //  leading: Builder(
+      //     builder: (context) => IconButton(
+      //       icon: Icon(Icons.menu),
+      //       onPressed: () => Scaffold.of(context).openDrawer(),
+      //     ),
+      //   ),
       ),
    //  drawer: DoctorDrawer(user: widget.doctor),
      body: ListView.builder(

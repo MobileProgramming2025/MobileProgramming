@@ -80,7 +80,7 @@ class _StudentAssignmentListScreenState
                     }
 
                     if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                      return Center(child: Text('No assignments found.'));
+                      return Center(child: Text('No assignments found.' , style: TextStyle(color: const Color.fromARGB(255, 10, 1, 0))));
                     }
 
                     final assignments = snapshot.data!.docs;

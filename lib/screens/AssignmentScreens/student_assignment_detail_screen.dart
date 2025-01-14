@@ -136,7 +136,7 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
                         },
                         child: Text(
                           'View File',
-                          style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline),
+                          style: TextStyle(color: const Color.fromARGB(255, 0, 3, 5), decoration: TextDecoration.underline),
                         ),
                       ),
                     ],

@@ -38,7 +38,7 @@ class QuizListScreen extends StatelessWidget {
           }
 
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No quizzes found.'));
+            return Center(child: Text('No quizzes found.' ,style: TextStyle(color: const Color.fromARGB(255, 10, 1, 0)) ));
           }
 
           List<Quiz> quizzes = snapshot.data!;
