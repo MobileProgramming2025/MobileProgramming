@@ -1,13 +1,13 @@
 
 import 'package:flutter/material.dart';
-import 'package:mobileprogramming/screens/componants/WhyMoodle.dart';
-import 'package:mobileprogramming/screens/componants/benefits.dart';
-import 'package:mobileprogramming/screens/componants/center_next_button.dart';
-import 'package:mobileprogramming/screens/componants/moodle.dart';
-import 'package:mobileprogramming/screens/componants/splash_view.dart';
-import 'package:mobileprogramming/screens/componants/splash_view.dart';
-import 'package:mobileprogramming/screens/componants/top_back_skip_view.dart';
-import 'package:mobileprogramming/screens/componants/welcome_view.dart';
+import 'package:mobileprogramming/screens/componantsForIntroduction/WhyMoodle.dart';
+import 'package:mobileprogramming/screens/componantsForIntroduction/benefits.dart';
+import 'package:mobileprogramming/screens/componantsForIntroduction/center_next_button.dart';
+import 'package:mobileprogramming/screens/componantsForIntroduction/moodle.dart';
+import 'package:mobileprogramming/screens/componantsForIntroduction/splash_view.dart';
+import 'package:mobileprogramming/screens/componantsForIntroduction/splash_view.dart';
+import 'package:mobileprogramming/screens/componantsForIntroduction/top_back_skip_view.dart';
+import 'package:mobileprogramming/screens/componantsForIntroduction/welcome_view.dart';
 
 
 class IntroductionAnimationScreen extends StatefulWidget {
@@ -40,7 +40,7 @@ class _IntroductionAnimationScreenState
   Widget build(BuildContext context) {
     print(_animationController?.value);
     return Scaffold(
-      backgroundColor: Color(0xffF7EBE1),
+      backgroundColor: Color.fromARGB(255, 243, 164, 99),
       body: ClipRect(
         child: Stack(
           children: [

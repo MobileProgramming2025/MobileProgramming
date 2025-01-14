@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:mobileprogramming/introduction_animation_screen.dart';
 import 'package:mobileprogramming/screens/AdminScreens/AddDoctorScreen.dart';
 import 'package:mobileprogramming/screens/AdminScreens/Add_department_screen.dart';
 import 'package:mobileprogramming/screens/AdminScreens/DashboardScreen.dart';
@@ -143,7 +144,7 @@ class MyApp extends StatelessWidget {
 
         initialRoute: '/',
         routes: {
-          '/': (context) => OnboardingScreen(),
+          '/': (context) => IntroductionAnimationScreen(),
           '/login': (context) => LoginScreen(),
           '/signin': (context) => LoginScreen(),
           '/signup': (context) => SignUpScreen(),

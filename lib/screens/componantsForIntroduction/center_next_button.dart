@@ -1,25 +1,31 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
+import 'package:mobileprogramming/screens/Registration/signin.dart';
+import 'package:mobileprogramming/screens/Registration/signup.dart';
 
 class CenterNextButton extends StatelessWidget {
   final AnimationController animationController;
   final VoidCallback onNextClick;
-  const CenterNextButton(
-      {Key? key, required this.animationController, required this.onNextClick})
-      : super(key: key);
+  const CenterNextButton({
+    Key? key,
+    required this.animationController,
+    required this.onNextClick,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final _topMoveAnimation =
-        Tween<Offset>(begin: Offset(0, 5), end: Offset(0, 0))
-            .animate(CurvedAnimation(
-      parent: animationController,
-      curve: Interval(
-        0.0,
-        0.2,
-        curve: Curves.fastOutSlowIn,
+        Tween<Offset>(begin: Offset(0, 5), end: Offset(0, 0)).animate(
+      CurvedAnimation(
+        parent: animationController,
+        curve: Interval(
+          0.0,
+          0.2,
+          curve: Curves.fastOutSlowIn,
+        ),
       ),
-    ));
+    );
+
     final _signUpMoveAnimation =
         Tween<double>(begin: 0, end: 1.0).animate(CurvedAnimation(
       parent: animationController,
@@ -29,16 +35,18 @@ class CenterNextButton extends StatelessWidget {
         curve: Curves.fastOutSlowIn,
       ),
     ));
+
     final _loginTextMoveAnimation =
-        Tween<Offset>(begin: Offset(0, 5), end: Offset(0, 0))
-            .animate(CurvedAnimation(
-      parent: animationController,
-      curve: Interval(
-        0.6,
-        0.8,
-        curve: Curves.fastOutSlowIn,
+        Tween<Offset>(begin: Offset(0, 5), end: Offset(0, 0)).animate(
+      CurvedAnimation(
+        parent: animationController,
+        curve: Interval(
+          0.6,
+          0.8,
+          curve: Curves.fastOutSlowIn,
+        ),
       ),
-    ));
+    );
 
     return Padding(
       padding:
@@ -95,9 +103,17 @@ class CenterNextButton extends StatelessWidget {
                     child: _signUpMoveAnimation.value > 0.7
                         ? InkWell(
                             key: ValueKey('Sign Up button'),
-                            onTap: onNextClick,
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SignUpScreen(), // Replace with your sign-up screen widget.
+                                ),
+                              );
+                            },
                             child: Padding(
-                              padding: EdgeInsets.only(left: 16.0, right: 16.0),
+                              padding:
+                                  EdgeInsets.only(left: 16.0, right: 16.0),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -140,17 +156,27 @@ class CenterNextButton extends StatelessWidget {
                   Text(
                     'Already have an account? ',
                     style: TextStyle(
-                      color: Colors.grey,
+                      color: Colors.white,
                       fontSize: 14,
                       fontWeight: FontWeight.normal,
                     ),
                   ),
-                  Text(
-                    'Login',
-                    style: TextStyle(
-                      color: Color(0xff132137),
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => LoginScreen(), // Replace with your login screen widget.
+                        ),
+                      );
+                    },
+                    child: Text(
+                      'Login',
+                      style: TextStyle(
+                        color: Color(0xff132137),
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ],
@@ -189,7 +215,7 @@ class CenterNextButton extends StatelessWidget {
                   borderRadius: BorderRadius.circular(32),
                   color: _selectedIndex == i
                       ? Color(0xff132137)
-                      : Color(0xffE3E4E4),
+                      : Color.fromARGB(255, 228, 227, 228),
                 ),
                 width: 10,
                 height: 10,
