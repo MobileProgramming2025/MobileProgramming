@@ -2,16 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mobileprogramming/screens/AssignmentScreens/student_assignment_detail_screen.dart';
-import 'student_assignment_detail_screen.dart';
 
 class StudentAssignmentListScreen extends StatefulWidget {
+  const StudentAssignmentListScreen({super.key});
+
   @override
-  _StudentAssignmentListScreenState createState() =>
-      _StudentAssignmentListScreenState();
+  State<StudentAssignmentListScreen> createState() => _StudentAssignmentListScreenState();
 }
 
-class _StudentAssignmentListScreenState
-    extends State<StudentAssignmentListScreen> {
+class _StudentAssignmentListScreenState extends State<StudentAssignmentListScreen> {
   List<String> _enrolledCourseIds = [];
   bool _isLoading = true;
 
@@ -52,7 +51,7 @@ class _StudentAssignmentListScreenState
       });
     }
   } catch (e) {
-    print('Error fetching enrolled courses: $e');
+    // print('Error fetching enrolled courses: $e');
     setState(() {
       _isLoading = false;
     });

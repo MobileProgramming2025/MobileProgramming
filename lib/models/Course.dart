@@ -2,19 +2,19 @@ class Course {
   final String id;
   final String name;
   final String code;
-  final String drName;
-  final String taName;
-  final String departmentName;
+  // final String drId;
+  // final String taId;
+  final String departmentId;
   final String year;
 
   Course(
       {required this.id,
       required this.name,
       required this.code,
-      required this.drName,
-      required this.taName,
+      // required this.drId,
+      // required this.taId,
       required this.year,
-      required this.departmentName});
+      required this.departmentId});
 
   // Convert a Course object to a Map for Firestore
   Map<String, dynamic> toMap() {
@@ -22,9 +22,9 @@ class Course {
       'id': id,
       'name': name,
       'code': code,
-      'drName': drName,
-      'taName': taName,
-      'departmentName': departmentName,
+      // 'drId': drId,
+      // 'taId': taId,
+      'departmentId': departmentId,
       'year': year,
     };
   }
@@ -35,9 +35,9 @@ class Course {
       id: data['id'] ?? '',
       name: data['name'] ?? '',
       code: data['code'] ?? '',
-      drName: data['drName'] ?? '',
-      taName: data['taName'] ?? '',
-      departmentName: data['departmentName'] ?? '',
+      // drId: data['drId'] ?? '',
+      // taId: data['taId'] ?? '',
+      departmentId: data['departmentId'] ?? '',
       year: data['year'] ?? '',
     );
   }

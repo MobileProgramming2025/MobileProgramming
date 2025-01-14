@@ -64,7 +64,7 @@ class _DoctorProfileState extends State<DoctorProfile> {
             SizedBox(height: 8), 
 
             Text(
-              'Department: ${doctor.department}',
+              'Department: ${doctor.departmentId}',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold

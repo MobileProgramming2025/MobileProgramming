@@ -1,9 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mobileprogramming/models/Course.dart';
 import 'package:mobileprogramming/models/user.dart';
-import 'package:mobileprogramming/screens/AdminScreens/add_courses_screen.dart';
 import 'package:mobileprogramming/services/CourseService.dart';
-import 'package:uuid/uuid.dart';
 
 class UserService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -14,7 +11,7 @@ class UserService {
     try {
       await _firestore.collection('users').doc(user.id).set(user.toMap());
     } catch (e) {
-      print('Error saving user: $e');
+      // print('Error saving user: $e');
       throw Exception('Failed to save user');
     }
   }
@@ -29,25 +26,43 @@ class UserService {
           .toList();
       return users;
     } catch (e) {
-      print('Error retrieving all users: $e');
+      // print('Error retrieving all users: $e');
       throw Exception('Failed to retrieve users');
     }
   }
 
-  // Retrieve a user by ID from Firestore
-  Future<User?> getUserByID(String id) async {
-    try {
-      final DocumentSnapshot<Map<String, dynamic>> docSnapshot =
-          await _firestore.collection('users').doc(id).get();
+  Stream<List<Map<String, dynamic>>> fetchAllUsers() {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs.map((doc) {
+        // Extract the document's ID and fields, and create a usable map
+        return {
+          'id': doc.id,
+          ...doc.data(),
+        };
+      }).toList();
+    });
+  }
 
-      if (docSnapshot.exists && docSnapshot.data() != null) {
-        return User.fromMap(docSnapshot.data()!);
-      } else {
-        print('User with ID $id not found in Firestore.');
-        return null;
-      }
+  // Retrieve a user by ID from Firestore
+  Stream<User?> getUserByID(String id) {
+    try {
+      return _firestore
+          .collection('users')
+          .doc(id)
+          .snapshots()
+          .map((docSnapshot) {
+        if (docSnapshot.exists && docSnapshot.data() != null) {
+          return User.fromMap(docSnapshot.data()!);
+        } else {
+          // print('User with ID $id not found in Firestore.');
+          return null;
+        }
+      });
     } catch (e) {
-      print('Error retrieving user with ID $id: $e');
+      // print('Error retrieving user with ID $id: $e');
       throw Exception('Failed to retrieve user');
     }
   }
@@ -57,7 +72,7 @@ class UserService {
     try {
       await _firestore.collection('users').doc(user.id).update(user.toMap());
     } catch (e) {
-      print('Error updating user: $e');
+      // print('Error updating user: $e');
       throw Exception('Failed to update user');
     }
   }
@@ -67,33 +82,34 @@ class UserService {
     try {
       await _firestore.collection('users').doc(id).delete();
     } catch (e) {
-      print('Error deleting user: $e');
+      // print('Error deleting user: $e');
       throw Exception('Failed to delete user');
     }
   }
 
   Future<void> enrollStudent() async {
-    var enrolledCourses = 0;
-    final users = await getAllUsers();
-    final courses = await _courseService.getAllCourses();
+    final users = await fetchAllUsers().first;
+    final courses = await _courseService.getAllCourses().first;
+    print("\x1B[33m Users: $users \x1B[0m");
+    print("\x1B[33m Courses: $courses \x1B[0m");
 
     for (var user in users) {
-      // isSucceeded(user);
-          print('User: ${user.name}, Email: ${user.email}, Role: ${user.role}');
+      if (user['role'] == 'Student') {
+        var enrolledCourses = 0;
+        print('\x1B[37m ${user['role']}\x1B[0m');
+        print('\x1B[37m $enrolledCourses \x1B[0m');
 
-
-      if (user.role == 'student') {
         for (var course in courses) {
-          if (user.year == course.year &&
-              user.department == course.departmentName) {
-
+          if (user['year'] == course['year'] && user['departmentId'] == course['departmentId']) {
+            print("\x1B[32m Users: ${user['name']}  +  ${user['year']}  + ${user['departmentId']} \x1B[0m");
+            print("\x1B[35m Courses: $course \x1B[0m");
             if (!_isEnrolled(course, user) && !_isTaken(course, user)) {
               _enroll(course, user);
               enrolledCourses++;
-              print("enrolled");
+              print('\x1B[31m Enrolled \x1B[0m');
             }
           }
-          if (enrolledCourses >= 1) {
+          if (enrolledCourses >= 5) {
             break;
           }
         }
@@ -101,44 +117,35 @@ class UserService {
     }
   }
 
-  void _enroll(Course course, User user) async {
-    final enrolledCoursesList = user.enrolledCourses;
-    if (user.enrolledCourses.isEmpty) {
-      print("Empty");
-      enrolledCoursesList.add(course);
-    }
-    await updateUser(user);
+  void _enroll(Map<String, dynamic> course, Map<String, dynamic> user) async {
+    user['enrolled_courses'] ??= [];
+    user['enrolled_courses'].add(course);
+
+    await _firestore.collection('users').doc(user['id']).update(user);
   }
 
-  bool _isEnrolled(Course course, User user) {
-    for (var enrolled in user.enrolledCourses) {
-      if (enrolled.code == course.code) {
+  bool _isEnrolled(Map<String, dynamic> course, Map<String, dynamic> user) {
+    // final enrolledCourses = user['enrolled_courses'] ?? [];
+    // print(enrolledCourses);
+
+    for (var enrolled in user['enrolled_courses']) {
+
+      print(enrolled);
+      if (enrolled['code'] == course['code']) {
+        print("da5al");
         return true;
       }
     }
     return false;
   }
 
-  bool _isTaken(Course course, User user) {
-    for (var taken in user.takenCourses) {
-      if (taken.code == course.code) {
+  bool _isTaken(Map<String, dynamic> course, Map<String, dynamic> user) {
+    final takenCourses = user['taken_courses'] ?? [];
+    for (var taken in takenCourses) {
+      if (taken['code'] == course['code']) {
         return true;
       }
     }
     return false;
   }
-
-  // Future<bool> isSucceeded(User user)async{
-  //   final now = DateTime.now();
-  //   final currentYear = now.year;
-  //   final studentAddedYear = user.addedDate.year;
-  //   final educationYears = ((currentYear - studentAddedYear) + 1);
-  //   var userYear = int.parse(user.year);
-  //   if(educationYears > userYear){
-  //    // userYear++;
-  //    // await updateUser(user);
-  //     return true;
-  //   }
-  //   return false;
-  // }
 }

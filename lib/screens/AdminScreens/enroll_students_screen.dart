@@ -16,9 +16,9 @@ class EnrollStudentsScreen extends StatefulWidget {
 class _EnrollStudentsScreenState extends State<EnrollStudentsScreen> {
   final UserService _userService = UserService();
 
-  void _enroll()async{
-   try {
-   _userService.enrollStudent();
+  void _enroll() async {
+    try {
+      _userService.enrollStudent();
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Students are enrolled Sucessfully!')),

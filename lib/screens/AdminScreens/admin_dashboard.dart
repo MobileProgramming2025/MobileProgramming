@@ -48,6 +48,13 @@ class AdminDashboard extends StatelessWidget {
               },
             ),
             ListTile(
+              leading: Icon(Icons.group_add_rounded),
+              title: Text('Add Department'),
+              onTap: () {
+                Navigator.pushNamed(context, '/add_department');
+              },
+            ),
+            ListTile(
               leading: Icon(Icons.groups_2_sharp),
               title: Text('List Users'),
               onTap: () {
@@ -61,13 +68,13 @@ class AdminDashboard extends StatelessWidget {
                 Navigator.pushNamed(context, '/view_courses');
               },
             ),
-            ListTile(
-              leading: Icon(Icons.group_add),
-              title: Text('Enroll Students to Courses'),
-              onTap: () {
-                Navigator.pushNamed(context, '/enroll_students');
-              },
-            ),
+            // ListTile(
+            //   leading: Icon(Icons.group_add),
+            //   title: Text('Enroll Students to Courses'),
+            //   onTap: () {
+            //     Navigator.pushNamed(context, '/enroll_students');
+            //   },
+            // ),
             ListTile(
               leading: Icon(Icons.groups_2_outlined),
               title: Text('Doctors Dashboard'),
@@ -75,16 +82,14 @@ class AdminDashboard extends StatelessWidget {
                 Navigator.pushNamed(context, '/Doctors Dashboard');
               },
             ),
-
           ],
         ),
       ),
       body: Center(
         child: Text(
-            'Swipe from the left or tap the menu icon to open the drawer.',
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyLarge,
-
+          'Swipe from the left or tap the menu icon to open the drawer.',
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.bodyLarge,
         ),
       ),
     );

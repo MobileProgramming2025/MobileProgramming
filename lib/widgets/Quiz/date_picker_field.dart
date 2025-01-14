@@ -28,6 +28,7 @@ class DateTimePickerField extends StatelessWidget {
           lastDate: DateTime(2100),
         );
         if (pickedDate != null) {
+          if(!context.mounted) return;
           // Show Time Picker after date is selected
           TimeOfDay? pickedTime = await showTimePicker(
             context: context,

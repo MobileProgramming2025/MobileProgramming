@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mobileprogramming/models/Question.dart';
 import 'package:mobileprogramming/models/Quiz.dart';
 import 'package:mobileprogramming/services/quiz_service.dart';
@@ -11,7 +10,7 @@ class QuizEditScreen extends StatefulWidget {
   const QuizEditScreen({super.key, required this.quizId});
 
   @override
-  _QuizEditScreenState createState() => _QuizEditScreenState();
+  State<QuizEditScreen> createState() => _QuizEditScreenState();
 }
 
 class _QuizEditScreenState extends State<QuizEditScreen> {
@@ -37,12 +36,14 @@ class _QuizEditScreenState extends State<QuizEditScreen> {
           _isLoading = false;
         });
       } else {
+        if(!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Quiz not found!')),
         );
         Navigator.pop(context);
       }
     } catch (error) {
+      if(!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error fetching quiz: $error')),
       );
@@ -270,15 +271,15 @@ class _QuizEditScreenState extends State<QuizEditScreen> {
                    
                     ElevatedButton(
                       onPressed: () => _removeQuestion(index),
-                      child: const Text('Remove Question'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red,
                       ),
+                      child: const Text('Remove Question'),
                     ),
                     const SizedBox(height: 16),
                   ],
                 );
-              }).toList(),
+              }),    //.toList(),
 
               ElevatedButton(
                 onPressed: _addNewQuestion,

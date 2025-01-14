@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mobileprogramming/services/DoctorService.dart';
 import 'EditDoctorScreen.dart';
-import '../../services/DoctorService.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});

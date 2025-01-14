@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:mobileprogramming/models/Course.dart';
+import 'package:mobileprogramming/models/Department.dart';
+// import 'package:mobileprogramming/models/user.dart';
 import 'package:mobileprogramming/services/CourseService.dart';
+import 'package:mobileprogramming/services/DepartmentService.dart';
+// import 'package:mobileprogramming/services/user_service.dart';
 
 class ViewCoursesScreen extends StatefulWidget {
   const ViewCoursesScreen({super.key});
@@ -11,30 +14,15 @@ class ViewCoursesScreen extends StatefulWidget {
 
 class _ViewCoursesScreenState extends State<ViewCoursesScreen> {
   final CourseService _courseService = CourseService();
-  late Future<List<Course>> _futureCourses;
+  // final UserService userService = UserService();
+  final DepartmentService departmentService =DepartmentService();
+  late Stream<List<Map<String, dynamic>>> _coursesStream;
 
   @override
   void initState() {
     super.initState();
-    _futureCourses = _courseService.getAllCourses();
+    _coursesStream = _courseService.getAllCourses();
   }
-
-
-  // void _deleteCourse(String id) async {
-  //   try {
-  //     await _courseService.deleteCourse(id);
-  //     print(id);
-  //     // Check if the widget is still in the tree before using context
-  //     if (!mounted) return;
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       const SnackBar(content: Text("Course deleted successfully")),
-  //     );
-  //   } catch (e) {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(content: Text("Failed to delete course: $e")),
-  //     );
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -44,13 +32,11 @@ class _ViewCoursesScreenState extends State<ViewCoursesScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: FutureBuilder(
-          //Helps you handle asynchronous data fetching, db query
-          future: _futureCourses,
-
-          builder:
-              (BuildContext context, AsyncSnapshot<List<Course>> snapshot) {
-            //snapshot -> represent the current state Future
+        child: StreamBuilder<List<Map<String, dynamic>>>(
+          // Using Stream to get real-time updates
+          stream: _coursesStream,
+          builder: (context, snapshot) {
+            // Handling different connection states
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
                 child: CircularProgressIndicator(),
@@ -69,12 +55,17 @@ class _ViewCoursesScreenState extends State<ViewCoursesScreen> {
             }
 
             final courses = snapshot.data!;
+
             return ListView.builder(
               itemCount: courses.length,
               itemBuilder: (context, index) {
                 final course = courses[index];
+                // final Stream<User?> drStream = userService.getUserByID(course['drId']);
+                // final Stream<User?> taStream = userService.getUserByID(course['taId']);
+                final Stream<Department?> departmentStream = departmentService.getDepartmentByID(course['departmentId']);
+
                 return Card(
-                  elevation: 4, //shadow effect
+                  elevation: 4,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -84,32 +75,49 @@ class _ViewCoursesScreenState extends State<ViewCoursesScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          course.name,
+                          course['name'],
                           style: Theme.of(context).textTheme.headlineMedium,
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          'Course Code: ${course.code}',
+                          'Course Code: ${course['code']}',
                           style: Theme.of(context).textTheme.bodyLarge,
                         ),
                         const SizedBox(height: 8),
-                        Text(
-                          'Doctor: ${course.drName}',
-                          style: Theme.of(context).textTheme.bodyLarge,
+
+                        // StreamBuilder<User?>(
+                        //   stream: drStream,
+                        //   builder: (context, snapshot) {
+                        //     final User? user = snapshot.data;
+                        //     return Text('Doctor: ${user?.name}',
+                        //         style: Theme.of(context).textTheme.bodyLarge);
+                        //   },
+                        // ),
+                        // const SizedBox(height: 8),
+                        // StreamBuilder<User?>(
+                        //   stream: taStream,
+                        //   builder: (context, snapshot) {
+                        //     final User? user = snapshot.data;
+                        //     return Text(
+                        //       'Teaching Assistant: ${user?.name}',
+                        //       style: Theme.of(context).textTheme.bodyLarge,
+                        //     );
+                        //   }
+                        // ),
+                        // const SizedBox(height: 8),
+                        StreamBuilder<Department?>(
+                          stream: departmentStream,
+                          builder: (context, snapshot) {
+                            final Department? dep = snapshot.data;
+                            return Text(
+                              'Department: ${dep?.name}',
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            );
+                          }
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          'Teaching Assistant: ${course.taName}',
-                          style: Theme.of(context).textTheme.bodyLarge,
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Department: ${course.departmentName}',
-                          style: Theme.of(context).textTheme.bodyLarge,
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Year: ${course.year}',
+                          'Year: ${course['year']}',
                           style: Theme.of(context).textTheme.bodyLarge,
                         ),
                         // IconButton(

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/user.dart';
 import 'package:uuid/uuid.dart';
@@ -19,49 +20,104 @@ class _AddUserScreenState extends State<AddUserScreen> {
   String? _selectedRole;
   String? _selectedDepartment;
 
-  final List<String> _roles = ['student', 'Doctor', 'ta', 'Admin'];
-  final List<String> _departments = [
-    'Computer Science',
-    'Business',
-    'Engineering',
-    'Architecture'
+  final List<String> _roles = [
+    'Student',
+    'Doctor',
+    'Teaching Assistant',
+    'Admin'
   ];
-  
+
+  bool _validName = true;
+  bool _validEmail = true;
+  bool _validPassword = true;
+  bool _validRole = true;
+  bool _validDepartment = true;
+
+  void _clearFields() {
+    _nameController.clear();
+    _emailController.clear();
+    _passwordController.clear();
+    setState(() {
+      _selectedRole = null;
+      _selectedDepartment = null;
+    });
+  }
+
+  bool _validateForm() {
+    bool isValid = true;
+
+    setState(() {
+      _validName = _nameController.text.trim().isNotEmpty;
+      _validEmail = RegExp(r"^[a-zA-Z0-9]+@[a-zA-Z]+\.[a-zA-Z]+$")
+            .hasMatch(_emailController.text.trim());
+      _validPassword = _passwordController.text.trim().length >= 8;
+      _validRole = _selectedRole != null;
+      _validDepartment = (_selectedRole == "Admin") || _selectedDepartment != null;
+
+      isValid = _validName &&
+          _validEmail &&
+          _validPassword &&
+          _validRole &&
+          _validDepartment;
+    });
+    return isValid;
+  }
 
   Future<void> _addUser() async {
+    if(!_validateForm()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Please fill all fields correctly!'
+          ),
+        ),
+      );
+      return;
+    }
+
     String userId = _uuid.v4();
+    late User newUser;
+    // print(_selectedRole);
 
+    if (_selectedRole == "Student") {
+      final firstAdded = DateTime.utc(2023, DateTime.november, 9);
+      final currentYear = DateTime.now();
+      final educationYear = currentYear.year - firstAdded.year;
 
-
-
-
-
-
-
-
-
-
-
-
-
-    final _firstAdded = DateTime.utc(2021, DateTime.november, 9);
-    final _currentYear = DateTime.now();
-    final educationYear = _currentYear.year - _firstAdded.year;
-  
-    User newUser = User(
-      id: userId,
-      name: _nameController.text.trim(),
-      email: _emailController.text.trim(),
-      password: _passwordController.text.trim(),
-      role: _selectedRole ?? 'Unknown',
-      department: _selectedDepartment ?? 'Unknown',
-      takenCourses: [],
-      enrolledCourses: [],
-      addedDate: _firstAdded,
-      year: (educationYear + 1).toString(),
-    
-      
-    );
+      newUser = User(
+        id: userId,
+        name: _nameController.text.trim(),
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+        role: _selectedRole ?? 'Unknown',
+        departmentId: _selectedDepartment ?? 'Unknown',
+        takenCourses: [],
+        enrolledCourses: [],
+        addedDate: firstAdded,
+        year: (educationYear + 1).toString(),
+      );
+    } else if (_selectedRole == "Teaching Assistant" ||
+        _selectedRole == "Doctor") {
+          // print ("yess");
+      newUser = User(
+        id: userId,
+        name: _nameController.text.trim(),
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+        role: _selectedRole ?? 'Unknown',
+        departmentId: _selectedDepartment ?? 'Unknown',
+        enrolledCourses: [],
+      );
+    } else if (_selectedRole == "Admin") {
+      newUser = User(
+        id: userId,
+        name: _nameController.text.trim(),
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+        role: _selectedRole ?? 'Unknown',
+      );
+    }
+    // print(newUser.name);
 
     try {
       await newUser.saveToFirestore();
@@ -76,16 +132,6 @@ class _AddUserScreenState extends State<AddUserScreen> {
         SnackBar(content: Text('Failed to add user: $e')),
       );
     }
-  }
-
-  void _clearFields() {
-    _nameController.clear();
-    _emailController.clear();
-    _passwordController.clear();
-    setState(() {
-      _selectedRole = null;
-      _selectedDepartment = null;
-    });
   }
 
   @override
@@ -111,6 +157,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
                     ),
                   ),
                   SizedBox(height: 16),
+
                   TextFormField(
                     controller: _emailController,
                     decoration: InputDecoration(
@@ -120,13 +167,13 @@ class _AddUserScreenState extends State<AddUserScreen> {
                     keyboardType: TextInputType.emailAddress,
                   ),
                   SizedBox(height: 16),
+
                   // Password Field
                   TextFormField(
                     controller: _passwordController,
                     decoration: InputDecoration(
                       labelText: "Password",
                       border: OutlineInputBorder(),
-                      
                     ),
                     obscureText: true,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -157,6 +204,10 @@ class _AddUserScreenState extends State<AddUserScreen> {
                     onChanged: (value) {
                       setState(() {
                         _selectedRole = value;
+                        // Clear the department selection if role change to "Admin"
+                        if (_selectedRole == "Admin") {
+                          _selectedDepartment = null;
+                        }
                       });
                     },
                     decoration: InputDecoration(
@@ -165,28 +216,52 @@ class _AddUserScreenState extends State<AddUserScreen> {
                     ),
                   ),
                   SizedBox(height: 16),
-                  DropdownButtonFormField<String>(
-                    value: _selectedDepartment,
-                    items: _departments.map((department) {
-                      return DropdownMenuItem(
-                        value: department,
-                        child: Text(
-                          department,
-                          style: Theme.of(context).textTheme.bodyLarge,
-                        ),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedDepartment = value;
-                      });
-                    },
-                    decoration: InputDecoration(
-                      labelText: 'Department',
-                      border: OutlineInputBorder(), 
+                  
+                  // Show department dropdown only f the selected role is not Admin
+                  if (_selectedRole != "Admin")
+                    StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection('Departments')
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        List<DropdownMenuItem> taItems = [];
+                        if (!snapshot.hasData) {
+                          const CircularProgressIndicator();
+                        } else {
+                          final items = snapshot.data?.docs.reversed.toList();
+                          for (var item in items!) {
+                            taItems.add(
+                              DropdownMenuItem(
+                                value: item.id,
+                                child: Text(
+                                  item['name'],
+                                  style: Theme.of(context).textTheme.bodyLarge,
+                                ),
+                              ),
+                            );
+                          }
+                        }
+                        return DropdownButtonFormField(
+                            validator: (value) {
+                              if (value == null) {
+                                return "please select a Department";
+                              }
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                              labelText: 'Department Name',
+                              border: OutlineInputBorder(),
+                            ),
+                            items: taItems,
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedDepartment = value!;
+                              });
+                            });
+                      },
                     ),
-                  ),
-                  SizedBox(height: 20),
+                    SizedBox(height: 20),
+
                   Center(
                     child: ElevatedButton(
                       onPressed: _addUser,

@@ -69,8 +69,7 @@ class _QuizAttemptScreenState extends State<QuizAttemptScreen> {
   }
 
   void _submitQuiz() {
- 
-  //  final int timeSpent = _quiz.duration - _remainingTime;
+    //  final int timeSpent = _quiz.duration - _remainingTime;
 
     int correctAnswers = 0;
     for (var index = 0; index < _quiz.questions.length; index++) {
@@ -85,13 +84,14 @@ class _QuizAttemptScreenState extends State<QuizAttemptScreen> {
     //   totalQuestions: _quiz.questions.length,
     // );
 
-   // Navigator.push(
-     // context,
+    // Navigator.push(
+    // context,
     //  MaterialPageRoute(
-     //   builder: (context) => QuizResultScreen(result: result),
-     // ),
-   // );
- // }
+    //   builder: (context) => QuizResultScreen(result: result),
+    // ),
+    // );
+    // }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +112,12 @@ class _QuizAttemptScreenState extends State<QuizAttemptScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(question.text, style: const TextStyle(fontWeight: FontWeight.bold)),
+                        Text(
+                          question.text, 
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold
+                          )
+                        ),
                         if (question.type == 'multiple choice') 
                           Column(
                             children: question.options!.map((option) {
@@ -150,11 +155,5 @@ class _QuizAttemptScreenState extends State<QuizAttemptScreen> {
       ),
     );
   }
-}
-
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
-  }
+  
 }
