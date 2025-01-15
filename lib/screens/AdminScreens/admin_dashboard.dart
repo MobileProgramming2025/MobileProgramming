@@ -68,13 +68,13 @@ class AdminDashboard extends StatelessWidget {
                 Navigator.pushNamed(context, '/view_courses');
               },
             ),
-            // ListTile(
-            //   leading: Icon(Icons.group_add),
-            //   title: Text('Enroll Students to Courses'),
-            //   onTap: () {
-            //     Navigator.pushNamed(context, '/enroll_students');
-            //   },
-            // ),
+            ListTile(
+              leading: Icon(Icons.book_outlined),
+              title: Text('View Departments'),
+              onTap: () {
+                Navigator.pushNamed(context, '/view_departments');
+              },
+            ),
             ListTile(
               leading: Icon(Icons.groups_2_outlined),
               title: Text('Doctors Dashboard'),
