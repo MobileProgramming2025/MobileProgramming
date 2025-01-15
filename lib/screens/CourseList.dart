@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/Course.dart';
+import 'package:mobileprogramming/screens/CourseDetailScreen.dart';
 import 'package:mobileprogramming/services/CourseService.dart';
+
 
 class CourseListPage extends StatefulWidget {
   const CourseListPage({super.key});
@@ -10,28 +14,57 @@ class CourseListPage extends StatefulWidget {
 }
 
 class _CourseListPageState extends State<CourseListPage> {
+
   final CourseService _courseService = CourseService();
   final List<Course> _courses = [];
   bool _isLoading = true;
 
   // Fetch all courses from Firestore
-  Future<void> _fetchCourses() async {
-    try {
-      final courses = await _courseService.getAllCourses();
+  // Future<void> _fetchCourses() async {
+  //   try {
+  //     final courses = await _courseService.getAllCourses();
+  //     setState(() {
+  //       // _courses = courses;
+  //       _isLoading = false;
+  //     });
+  //   } catch (error) {
+  //     if(!mounted) return;
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(content: Text('Error fetching courses: $error')),
+  //     );
+  //     setState(() {
+  //       _isLoading = false;
+  //     });
+  //   }
+  // }
+  late final StreamSubscription _courseSubscription;
+
+Future<void> _fetchCourses() async {
+  _courseSubscription = _courseService.getAllCourses().listen(
+    (courses) {
       setState(() {
-        // _courses = courses;
+        _courses.clear();
+        _courses.addAll(courses.map((data) => Course.fromMap(data)));
         _isLoading = false;
       });
-    } catch (error) {
-      if(!mounted) return;
+    },
+    onError: (error) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error fetching courses: $error')),
       );
       setState(() {
         _isLoading = false;
       });
-    }
-  }
+    },
+  );
+}
+
+@override
+void dispose() {
+  _courseSubscription.cancel();
+  super.dispose();
+}
 
   @override
   void initState() {
@@ -51,29 +84,29 @@ class _CourseListPageState extends State<CourseListPage> {
           ),
         ],
       ),
-      // body: _isLoading
-      //     ? Center(child: CircularProgressIndicator())
-      //     : _courses.isEmpty
-      //         ? Center(child: Text('No courses available'))
-      //         : ListView.builder(
-      //             itemCount: _courses.length,
-      //             itemBuilder: (context, index) {
-      //               final course = _courses[index];
-      //               return ListTile(
-      //                 title: Text(course.name),
-      //                 // subtitle: Text('Dr: ${course.drId}'),
-      //                 onTap: () {
-      //                   Navigator.push(
-      //                     context,
-      //                     MaterialPageRoute(
-      //                       builder: (context) =>
-      //                           CourseDetailScreen(courseId: course.id),
-      //                     ),
-      //                   );
-      //                 },
-      //               );
-      //             },
-      //           ),
+      body: _isLoading
+          ? Center(child: CircularProgressIndicator())
+          : _courses.isEmpty
+              ? Center(child: Text('No courses available'))
+              : ListView.builder(
+                  itemCount: _courses.length,
+                  itemBuilder: (context, index) {
+                    final course = _courses[index];
+                    return ListTile(
+                      title: Text(course.name),
+                      // subtitle: Text('Dr: ${course.drId}'),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                CourseDetailScreen(courseId: course.id),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
     );
   }
 }
