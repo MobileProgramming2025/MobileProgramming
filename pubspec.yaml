@@ -32,6 +32,7 @@ dependencies:
   google_sign_in: ^6.2.2
   firebase_app_check: ^0.3.1+7
   shared_preferences: ^2.3.3
+  animations: ^2.0.11
   # file_picker: ^8.1.5
   # file_picker: ^8.1.5
 
@@ -51,4 +52,10 @@ flutter:
     - assets/slide2.png
     - assets/slide3.png
     - assets/slide4.png
+    - assets/introduction_animation/care_image.png
+    - assets/introduction_animation/introduction_image.png
+    - assets/introduction_animation/benefits.png
+    - assets/introduction_animation/features.png
+    - assets/introduction_animation/welcome.png
+
 
