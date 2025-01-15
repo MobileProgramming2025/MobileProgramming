@@ -14,7 +14,6 @@ import 'package:mobileprogramming/screens/AssignmentScreens/student_assignment_l
 import 'package:mobileprogramming/screens/Registration/signin.dart';
 import 'package:mobileprogramming/screens/Registration/signup.dart';
 import 'package:mobileprogramming/screens/UserScreens/user_home.dart';
-import 'package:mobileprogramming/screens/onboarding_screen.dart';
 import 'package:mobileprogramming/screens/Assignment/assignment_screen.dart';
 
 import 'package:flutter_sizer/flutter_sizer.dart';
