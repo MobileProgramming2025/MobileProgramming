@@ -5,21 +5,18 @@ import 'package:mobileprogramming/screens/componantsForIntroduction/benefits.dar
 import 'package:mobileprogramming/screens/componantsForIntroduction/center_next_button.dart';
 import 'package:mobileprogramming/screens/componantsForIntroduction/moodle.dart';
 import 'package:mobileprogramming/screens/componantsForIntroduction/splash_view.dart';
-import 'package:mobileprogramming/screens/componantsForIntroduction/splash_view.dart';
 import 'package:mobileprogramming/screens/componantsForIntroduction/top_back_skip_view.dart';
 import 'package:mobileprogramming/screens/componantsForIntroduction/welcome_view.dart';
 
 
 class IntroductionAnimationScreen extends StatefulWidget {
-  const IntroductionAnimationScreen({Key? key}) : super(key: key);
+  const IntroductionAnimationScreen({super.key});
 
   @override
-  _IntroductionAnimationScreenState createState() =>
-      _IntroductionAnimationScreenState();
+  State<IntroductionAnimationScreen> createState() => _IntroductionAnimationScreenState();
 }
 
-class _IntroductionAnimationScreenState
-    extends State<IntroductionAnimationScreen> with TickerProviderStateMixin {
+class _IntroductionAnimationScreenState extends State<IntroductionAnimationScreen> with TickerProviderStateMixin {
   AnimationController? _animationController;
 
   @override

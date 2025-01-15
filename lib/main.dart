@@ -9,6 +9,7 @@ import 'package:mobileprogramming/screens/AdminScreens/add_users.dart';
 import 'package:mobileprogramming/screens/AdminScreens/admin_dashboard.dart';
 import 'package:mobileprogramming/screens/AdminScreens/list_users.dart';
 import 'package:mobileprogramming/screens/AdminScreens/view_courses_screen.dart';
+import 'package:mobileprogramming/screens/AdminScreens/view_departments_screen.dart';
 import 'package:mobileprogramming/screens/AssignmentScreens/assignment_list_screen.dart';
 import 'package:mobileprogramming/screens/AssignmentScreens/student_assignment_list.dart';
 import 'package:mobileprogramming/screens/AssignmentScreens/ui_create_assignment.dart';
@@ -16,7 +17,6 @@ import 'package:mobileprogramming/screens/CourseDetailScreen.dart';
 import 'package:mobileprogramming/screens/Registration/signin.dart';
 import 'package:mobileprogramming/screens/Registration/signup.dart';
 import 'package:mobileprogramming/screens/UserScreens/user_home.dart';
-import 'package:mobileprogramming/screens/onboarding_screen.dart';
 import 'package:mobileprogramming/screens/Assignment/assignment_screen.dart';
 
 import 'package:flutter_sizer/flutter_sizer.dart';
@@ -169,6 +169,11 @@ class MyApp extends StatelessWidget {
           '/student-assignment-list': (context) =>
               StudentAssignmentListScreen(),
           '/add_department': (context) => AddDepartmentScreen(),
+          '/view_departments':(context) => ViewDepartmentsScreen(),
+          '/department_details':(context) => ViewCoursesScreen(),
+
+
+
         },
       );
     });

@@ -14,7 +14,7 @@ class LoginScreen extends StatelessWidget {
   // Login Handler
   Future<void> _handleLogin(BuildContext context) async {
     final email = emailController.text.trim();
-    final password = passwordController.text.trim();
+    final password = passwordController.text;
 
     if (email.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -31,10 +31,11 @@ class LoginScreen extends StatelessWidget {
     }
 
     try {
-      firebase_auth.User? firebaseUser =
-          await AuthService().login(email, password);
+      firebase_auth.User? firebaseUser = await AuthService().login(email, password);
+      print("Firebase User: $firebaseUser");
 
       if (firebaseUser != null) {
+        print("UID: ${firebaseUser.uid}");
         // Fetch user details (e.g., role) from your custom User model
         // var userModel = await AuthService().getUserDetails(firebaseUser.uid);
         User? userModel = await User.getUserDetails(firebaseUser.uid);
@@ -43,6 +44,7 @@ class LoginScreen extends StatelessWidget {
         if (!context.mounted) return;
 
         if (userModel != null) {
+          print("User Role: ${userModel.role}");
           if (userModel.role == 'Doctor' ||
               userModel.role == 'Teaching Assistant') {
             Navigator.push(
@@ -63,6 +65,8 @@ class LoginScreen extends StatelessWidget {
             // );
           }
         }
+      } else {
+        print("FirebaseUser is null.");
       }
     } on firebase_auth.FirebaseAuthException catch (e) {
       // Check if the widget is still in the tree before using context
