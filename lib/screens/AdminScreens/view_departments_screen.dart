@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mobileprogramming/models/Department.dart';
 import 'package:mobileprogramming/services/DepartmentService.dart';
 
 class ViewDepartmentsScreen extends StatefulWidget {
@@ -57,14 +56,17 @@ class _ViewDepartmentsScreenState extends State<ViewDepartmentsScreen> {
               itemCount: departments.length,
               itemBuilder: (context, index) {
                 final department = departments[index]; // Current department
+                final departmentId = department['id']; // Extracting the ID
+
                 return InkWell(
                   // Makes the card clickable
                   onTap: () {
+                    debugPrint('Tapped Department ID: $departmentId');
                     // Define action on card tap, e.g., navigate to details page
                     Navigator.pushNamed(
                       context,
-                      '/department_details',
-                      arguments: department, // Pass department data
+                      '/view_department_courses',
+                      arguments: departmentId, // Pass department data
                     );
                   },
 

@@ -6,20 +6,31 @@ import 'package:mobileprogramming/screens/AdminScreens/Add_department_screen.dar
 import 'package:mobileprogramming/screens/AdminScreens/DashboardScreen.dart';
 import 'package:mobileprogramming/screens/AdminScreens/add_courses_screen.dart';
 import 'package:mobileprogramming/screens/AdminScreens/add_users.dart';
-import 'package:mobileprogramming/screens/AdminScreens/admin_dashboard.dart';
+import 'package:mobileprogramming/screens/AdminScreens/enroll_instructor_screen.dart';
 import 'package:mobileprogramming/screens/AdminScreens/list_users.dart';
 import 'package:mobileprogramming/screens/AdminScreens/view_courses_screen.dart';
+import 'package:mobileprogramming/screens/AdminScreens/view_department_courses.dart';
 import 'package:mobileprogramming/screens/AdminScreens/view_departments_screen.dart';
 import 'package:mobileprogramming/screens/AssignmentScreens/assignment_list_screen.dart';
 import 'package:mobileprogramming/screens/AssignmentScreens/student_assignment_list.dart';
-import 'package:mobileprogramming/screens/AssignmentScreens/ui_create_assignment.dart';
-import 'package:mobileprogramming/screens/CourseDetailScreen.dart';
 import 'package:mobileprogramming/screens/Registration/signin.dart';
 import 'package:mobileprogramming/screens/Registration/signup.dart';
 import 'package:mobileprogramming/screens/UserScreens/user_home.dart';
 import 'package:mobileprogramming/screens/Assignment/assignment_screen.dart';
 
 import 'package:flutter_sizer/flutter_sizer.dart';
+
+class HexColor extends Color {
+  HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
+
+  static int _getColorFromHex(String hexColor) {
+    hexColor = hexColor.toUpperCase().replaceAll('#', '');
+    if (hexColor.length == 6) {
+      hexColor = 'FF' + hexColor;
+    }
+    return int.parse(hexColor, radix: 16);
+  }
+}
 
 void main() async {
   // WidgetsFlutterBinding.ensureInitialized();
@@ -32,13 +43,11 @@ void main() async {
   await Firebase.initializeApp();
   // await Future.delayed(Duration(seconds: 2)); // Add a small delay
 
-
-    // Enable App Check
+  // Enable App Check
   // await FirebaseAppCheck.instance.activate(
   //   androidProvider: AndroidProvider.playIntegrity,
   // );
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -147,13 +156,11 @@ class MyApp extends StatelessWidget {
 
         initialRoute: '/',
         routes: {
-         // '/' : (context) =>CourseDetailScreen(key: null, courseId: course.id,),
           '/': (context) => IntroductionAnimationScreen(),
           '/login': (context) => LoginScreen(),
           '/signin': (context) => LoginScreen(),
           '/signup': (context) => SignUpScreen(),
           '/user_home': (context) => UserHome(),
-          '/admin_home': (context) => AdminDashboard(),
           '/add_users': (context) => AddUserScreen(),
           '/list_users': (context) => ListUsersScreen(),
           '/create_assignment-static': (context) =>
@@ -170,11 +177,10 @@ class MyApp extends StatelessWidget {
           '/student-assignment-list': (context) =>
               StudentAssignmentListScreen(),
           '/add_department': (context) => AddDepartmentScreen(),
-          '/view_departments':(context) => ViewDepartmentsScreen(),
-          '/department_details':(context) => ViewCoursesScreen(),
-
-
-
+          '/view_departments': (context) => ViewDepartmentsScreen(),
+          '/view_department_courses': (context) =>
+              ViewDepartmentCoursesScreen(),
+          '/enroll_instructor': (context) => EnrollInstructorScreen(),
         },
       );
     });

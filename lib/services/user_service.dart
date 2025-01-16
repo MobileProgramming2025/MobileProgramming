@@ -90,23 +90,25 @@ class UserService {
   Future<void> enrollStudent() async {
     final users = await fetchAllUsers().first;
     final courses = await _courseService.getAllCourses().first;
-    print("\x1B[33m Users: $users \x1B[0m");
-    print("\x1B[33m Courses: $courses \x1B[0m");
+    // print("\x1B[33m Users: $users \x1B[0m");
+    // print("\x1B[33m Courses: $courses \x1B[0m");
 
     for (var user in users) {
       if (user['role'] == 'Student') {
         var enrolledCourses = 0;
-        print('\x1B[37m ${user['role']}\x1B[0m');
-        print('\x1B[37m $enrolledCourses \x1B[0m');
+        // print('\x1B[37m ${user['role']}\x1B[0m');
+        // print('\x1B[37m $enrolledCourses \x1B[0m');
 
         for (var course in courses) {
-          if (user['year'] == course['year'] && user['departmentId'] == course['departmentId']) {
-            print("\x1B[32m Users: ${user['name']}  +  ${user['year']}  + ${user['departmentId']} \x1B[0m");
-            print("\x1B[35m Courses: $course \x1B[0m");
+          if (user['year'] == course['year'] &&
+              user['departmentId'] == course['departmentId']) {
+            // print(
+            //     "\x1B[32m Users: ${user['name']}  +  ${user['year']}  + ${user['departmentId']} \x1B[0m");
+            // print("\x1B[35m Courses: $course \x1B[0m");
             if (!_isEnrolled(course, user) && !_isTaken(course, user)) {
               _enroll(course, user);
               enrolledCourses++;
-              print('\x1B[31m Enrolled \x1B[0m');
+              // print('\x1B[31m Enrolled \x1B[0m');
             }
           }
           if (enrolledCourses >= 5) {
@@ -129,7 +131,6 @@ class UserService {
     // print(enrolledCourses);
 
     for (var enrolled in user['enrolled_courses']) {
-
       print(enrolled);
       if (enrolled['code'] == course['code']) {
         print("da5al");
@@ -147,5 +148,35 @@ class UserService {
       }
     }
     return false;
+  }
+
+  void enrollInstructor(dynamic userId, dynamic courseId) async {
+    try {
+      // Step 1: Retrieve the user document by ID
+      final userDocRef = _firestore
+          .collection('users')
+          .doc(userId); // Reference to the user's document
+      final userDoc = await userDocRef.get(); // Fetch the document snapshot
+      if (userDoc.exists) {
+        // Step 2: Check and update the enrolled_courses field
+        List<dynamic> enrolledCourses = userDoc.data()?['enrolled_courses'] ??
+            []; // Retrieve current courses
+        if (!enrolledCourses.contains(courseId)) {
+          // Add courseId only if it is not already enrolled
+          enrolledCourses.add(courseId);
+
+          // Step 3: Update the user's document with the new enrolled_courses list
+          await userDocRef.update({'enrolled_courses': enrolledCourses});
+          print('Instructor enrolled successfully!');
+        } else {
+          print('Instructor is already enrolled in this course.');
+        }
+      } else {
+        print('User does not exist.');
+      }
+    } catch (e) {
+      // Error handling
+      print('Failed to enroll instructor: $e');
+    }
   }
 }

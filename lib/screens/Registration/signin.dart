@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+import 'package:mobileprogramming/screens/AdminScreens/admin_dashboard.dart';
+import 'package:mobileprogramming/screens/UserScreens/user_home.dart';
 // import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mobileprogramming/screens/doctorScreens/doctor_dashboard.dart';
 import 'package:mobileprogramming/services/auth_service.dart';
@@ -54,15 +56,20 @@ class LoginScreen extends StatelessWidget {
               ),
             );
           } else if (userModel.role == 'Admin') {
-            Navigator.pushNamed(context, '/admin_home');
+            Navigator.push(
+              context, 
+              MaterialPageRoute(
+                builder: (context) => AdminDashboard(admin: userModel),
+              )
+            );
           } else {
-            Navigator.pushNamed(context, '/student-assignment-list');
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(
-            //     builder: (context) => UserHome(/*user: userModel*/),
-            //   ),
-            // );
+            // Navigator.pushNamed(context, '/student-assignment-list');
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => UserHome(/*user: userModel*/),
+              ),
+            );
           }
         }
       } else {

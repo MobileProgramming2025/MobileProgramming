@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:mobileprogramming/models/user.dart';
+import 'package:mobileprogramming/screens/partials/profile.dart';
 
 class AdminDashboard extends StatelessWidget {
-  const AdminDashboard({super.key});
+  final User admin;
+
+  const AdminDashboard({super.key, required this.admin});
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +35,18 @@ class AdminDashboard extends StatelessWidget {
               title: Text('Home'),
               onTap: () {
                 Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.person),
+              title: Text('Profile'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ProfileScreen(user: admin),
+                  ),
+                );
               },
             ),
             ListTile(

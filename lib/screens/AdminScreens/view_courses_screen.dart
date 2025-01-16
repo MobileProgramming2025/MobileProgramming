@@ -129,7 +129,7 @@ class _ViewCoursesScreenState extends State<ViewCoursesScreen> {
                         //   color: Colors.red,
                         //   iconSize: 28,
                         // ),
-                      ],
+                      ], 
                     ),
                   ),
                 );

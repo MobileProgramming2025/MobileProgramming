@@ -22,13 +22,17 @@ class DoctorService {
     }
   }
 
-//Each data item in the stream is a list of maps. Each map represents a doctor’s details.
+  //Each data item in the stream is a list of maps. Each map represents a doctor’s details.
 //list  of doctors as there maybe more than one doctor and map will include the details of the dr as name,email,..
   Stream<List<Map<String, dynamic>>> fetchDoctors() {
     //.snapshots(): creates a stream ashan lama ay update (any crud of dr in firestore) ysamaa ala tol
     //A snapshot represents a "snapshot" of the current state of the database at that moment and contains all the documents in drs collection.
     //.map() is used to transform the raw snapshot data into map that includes all dr details
-    return _firestore.collection('doctors').snapshots().map((snapshot) {
+    return _firestore
+        .collection('users')
+        .where('role', isEqualTo: "Doctor")
+        .snapshots()
+        .map((snapshot) {
       return snapshot.docs.map((doc) {
         // Extract the document's ID and fields, and create a usable map
         return {
@@ -62,5 +66,23 @@ class DoctorService {
     } catch (e) {
       throw Exception("Failed to delete doctor: $e");
     }
+  }
+
+
+  Stream<List<Map<String, dynamic>>> getDoctorByDepartmentId(String departmentId) {
+    return _firestore
+        .collection('users')
+        .where('role', isEqualTo: "Doctor")
+        .where('departmentId', isEqualTo: departmentId)
+        .snapshots() // Get real-time stream of query results
+        .map((snapshot) {
+      return snapshot.docs.map((doc) {
+        // Extract the document's ID and fields, and create a usable map
+        return {
+          'id': doc.id,
+          ...doc.data(),
+        };
+      }).toList();
+    });
   }
 }

@@ -1,6 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/services/CourseService.dart';
+import 'package:mobileprogramming/services/DepartmentService.dart';
 import 'package:uuid/uuid.dart';
 
 final uuid = Uuid();
@@ -16,6 +16,7 @@ class AddCoursesScreen extends StatefulWidget {
 
 class _AddCoursesScreenState extends State<AddCoursesScreen> {
   final CourseService _courseService = CourseService();
+  final DepartmentService _departmentService = DepartmentService();
   //Doesn't allow to re-build form widget, keeps its internal state (show validation state or not)
   //Access form
   final _form = GlobalKey<FormState>();
@@ -132,12 +133,12 @@ class _AddCoursesScreenState extends State<AddCoursesScreen> {
                       }
                       return null;
                     },
-                    onSaved: (value) {
+                    onSaved: (value) { 
                       _enteredCode = value!;
                     },
                   ),
                   // SizedBox(height: 16),
-                  // StreamBuilder<QuerySnapshot>(
+                  // StreamBuilder<QuerySnapshot>( 
                   //   stream: FirebaseFirestore.instance
                   //       .collection('users')
                   //       .snapshots(),
@@ -226,20 +227,18 @@ class _AddCoursesScreenState extends State<AddCoursesScreen> {
                   //   },
                   // ),
                   SizedBox(height: 16),
-                  StreamBuilder<QuerySnapshot>(
-                    stream: FirebaseFirestore.instance
-                        .collection('Departments')
-                        .snapshots(),
+                  StreamBuilder<List<Map<String, dynamic>>>(
+                    stream: _departmentService.getAllDepartments(),
                     builder: (context, snapshot) {
-                      List<DropdownMenuItem> taItems = [];
+                      List<DropdownMenuItem> depItems = [];
                       if (!snapshot.hasData) {
                         const CircularProgressIndicator();
                       } else {
-                        final items = snapshot.data?.docs.reversed.toList();
+                        final items = snapshot.data!;
                         for (var item in items!) {
-                          taItems.add(
+                          depItems.add(
                             DropdownMenuItem(
-                              value: item.id,
+                              value: item['id'],
                               child: Text(
                                 item['name'],
                                 style: Theme.of(context).textTheme.bodyLarge,
@@ -259,7 +258,7 @@ class _AddCoursesScreenState extends State<AddCoursesScreen> {
                             labelText: 'Department Name',
                             border: OutlineInputBorder(),
                           ),
-                          items: taItems,
+                          items: depItems,
                           onChanged: (value) {
                             setState(() {
                               _selectedDepartment = value!;

@@ -53,7 +53,7 @@ class DepartmentService {
 
   Future<void> addDepartment({
     required String id,
-    required String name,
+    required String name, 
     required String capacity,
   }) async {
     try {
@@ -66,11 +66,12 @@ class DepartmentService {
         throw Exception("Department with name '$name' already exists.");
       }
 
-      await _firestore.collection('Departments').add({
-        'id': id,
+      final docRef = await _firestore.collection('Departments').add({
         'name': name,
         'capacity': capacity,
       });
+      await docRef.update({'id': docRef.id});
+
     } catch (e) {
       throw Exception("Failed to add Department: $e");
     }
