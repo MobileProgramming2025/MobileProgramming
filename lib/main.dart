@@ -6,7 +6,6 @@ import 'package:mobileprogramming/screens/AdminScreens/Add_department_screen.dar
 import 'package:mobileprogramming/screens/AdminScreens/DashboardScreen.dart';
 import 'package:mobileprogramming/screens/AdminScreens/add_courses_screen.dart';
 import 'package:mobileprogramming/screens/AdminScreens/add_users.dart';
-import 'package:mobileprogramming/screens/AdminScreens/admin_dashboard.dart';
 import 'package:mobileprogramming/screens/AdminScreens/enroll_instructor_screen.dart';
 import 'package:mobileprogramming/screens/AdminScreens/list_users.dart';
 import 'package:mobileprogramming/screens/AdminScreens/view_courses_screen.dart';
@@ -16,7 +15,6 @@ import 'package:mobileprogramming/screens/AssignmentScreens/assignment_list_scre
 import 'package:mobileprogramming/screens/AssignmentScreens/student_assignment_list.dart';
 import 'package:mobileprogramming/screens/Registration/signin.dart';
 import 'package:mobileprogramming/screens/Registration/signup.dart';
-import 'package:mobileprogramming/screens/UserScreens/user_home.dart';
 import 'package:mobileprogramming/screens/Assignment/assignment_screen.dart';
 
 import 'package:flutter_sizer/flutter_sizer.dart';
@@ -161,8 +159,6 @@ class MyApp extends StatelessWidget {
           '/login': (context) => LoginScreen(),
           '/signin': (context) => LoginScreen(),
           '/signup': (context) => SignUpScreen(),
-          '/user_home': (context) => UserHome(),
-          '/admin_home': (context) => AdminDashboard(),
           '/add_users': (context) => AddUserScreen(),
           '/list_users': (context) => ListUsersScreen(),
           '/create_assignment-static': (context) =>

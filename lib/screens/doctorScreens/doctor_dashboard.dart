@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/screens/CourseDetailScreen.dart';
+import 'package:mobileprogramming/screens/partials/profile.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:mobileprogramming/models/user.dart';
-import 'package:mobileprogramming/screens/UserScreens/profile.dart';
 import 'package:mobileprogramming/screens/CourseList.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DoctorDashboard extends StatefulWidget {
   final User doctor;
@@ -50,6 +51,12 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
             builder: (context) => CourseListPage(doctor: widget.doctor), // Pass the doctor instance
           ),
         );
+         Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CourseListPage(),
+          )
+        );
         break;
       case 2:
         Navigator.pushNamed(context, '/calendar');
@@ -60,6 +67,11 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
             MaterialPageRoute(
               builder: (context) => ProfileScreen(user: widget.doctor),
             ));
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProfileScreen(user: widget.doctor),
+          )
+        );
         break;
       case 4:
         _logout();
@@ -107,9 +119,10 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
             Text(
               "Hello, Doctor ${widget.doctor.name}!",
               style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black),
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.black
+              ),
             ),
             CircleAvatar(
               backgroundImage: AssetImage("assets/userImage.png"),
@@ -224,29 +237,37 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                     SizedBox(height: 20),
 
                     // Progress Section
-                    Text("Your Courses",
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold)),
+                    Text(
+                      "Your Courses",
+                      style: TextStyle(
+                        fontSize: 18, 
+                        fontWeight: FontWeight.bold
+                      )
+                    ),
                     SizedBox(height: 10),
                     Row(
                       children: courses
-                          .map(
-                            (course) => Expanded(
-                              child: ProgressCard(
-                                title: course,
-                                progress: (courses.indexOf(course) + 1) * 30,
-                                color: Color(0xFFDED6FF),
-                              ),
+                        .map(
+                          (course) => Expanded(
+                            child: ProgressCard(
+                              title: course,
+                              progress: (courses.indexOf(course) + 1) * 30,
+                              color: Color(0xFFDED6FF),
                             ),
-                          )
-                          .toList(),
+                          ),
+                        )
+                        .toList(),
                     ),
                     SizedBox(height: 20),
 
                     // Courses Section
-                    Text("All Courses",
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold)),
+                    Text(
+                      "All Courses",
+                      style: TextStyle(
+                        fontSize: 18, 
+                        fontWeight: FontWeight.bold
+                        )
+                      ),
                     SizedBox(height: 10),
                     GridView.builder(
                       shrinkWrap: true,
@@ -278,8 +299,7 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                                 SizedBox(height: 8),
                                 Text(
                                   courses[index],
-                                  style:
-                                      Theme.of(context).textTheme.titleLarge,
+                                  style: Theme.of(context).textTheme.titleLarge,
                                 ),
                               ],
                             ),
@@ -348,6 +368,39 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
           ),
         ),
     );
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: _currentIndex,
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          selectedItemColor: const Color.fromARGB(255, 69, 0, 187),
+          unselectedItemColor: const Color.fromARGB(255, 223, 101, 26),
+          showSelectedLabels: true,
+          showUnselectedLabels: false,
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.house_rounded), 
+              label: "Home"
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.school), 
+              label: "Courses"
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.calendar_month_outlined),
+              label: "Calendar"
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person), 
+              label: "Profile"
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.exit_to_app_sharp), 
+              label: "Logout"
+            ),
+          ],
+          onTap: _onItemTapped, // Call the method on tap
+        ));
   }
 }
 
@@ -357,6 +410,7 @@ class ProgressCard extends StatelessWidget {
   final Color color;
 
   const ProgressCard({
+    super.key, 
     required this.title,
     required this.progress,
     required this.color,
@@ -374,7 +428,7 @@ class ProgressCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            children: [
+            children: const [
               Icon(Icons.cloud, color: Colors.black),
               Spacer(),
               Icon(Icons.more_vert, color: Colors.black),
