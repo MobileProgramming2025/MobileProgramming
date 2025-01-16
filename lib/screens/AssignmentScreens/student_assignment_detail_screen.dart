@@ -27,16 +27,19 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
   @override
   void initState() {
     super.initState();
-    _checkSubmissionStatus();
+    _initializeSubmission();
   }
 
-  void _checkSubmissionStatus() async {
+  /// Initializes the submission status and checks if the user has already submitted.
+  void _initializeSubmission() async {
     final userId = FirebaseAuth.instance.currentUser!.uid;
     final dueDate = widget.assignmentData['dueDateTime'].toDate();
+
     setState(() {
       _isOverdue = DateTime.now().isAfter(dueDate);
     });
 
+    // Check if submission exists
     final submissionSnapshot = await FirebaseFirestore.instance
         .collection('submissions')
         .doc(widget.assignmentId)
@@ -49,60 +52,79 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
         _isSubmitted = true;
         _submissionUrl = submissionSnapshot.data()?['fileUrl'];
       });
-    }
-  }
-
-  void _submitAssignment() async {
-    final userId = FirebaseAuth.instance.currentUser!.uid;
-
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['pdf', 'docx', 'jpg', 'png'],
-    );
-
-    if (result == null) return;
-
-    final file = result.files.first;
-    setState(() {
-      _isSubmitting = true;
-    });
-
-    try {
-      final ref = FirebaseStorage.instance
-          .ref('submissions/${widget.assignmentId}/$userId/${file.name}');
-      await ref.putData(file.bytes!);
-      final fileUrl = await ref.getDownloadURL();
-
+    } else {
+      // Automatically create the submission document
       await FirebaseFirestore.instance
           .collection('submissions')
           .doc(widget.assignmentId)
-          .collection('studentSubmissions')
-          .doc(userId)
           .set({
-        'fileUrl': fileUrl,
-        'submittedAt': DateTime.now(),
-      });
-
-      setState(() {
-        _isSubmitted = true;
-        _submissionUrl = fileUrl;
-      });
-
-      if(!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Assignment submitted successfully!')),
-      );
-    } catch (e) {
-      if(!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to submit assignment: $e')),
-      );
-    } finally {
-      setState(() {
-        _isSubmitting = false;
-      });
+        'assignmentId': widget.assignmentId,
+        'title': widget.assignmentData['title'],
+        'createdAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true)); // Merge if already exists
     }
   }
+
+  /// Handles the submission of the assignment file.
+ void _submitAssignment() async {
+  final userId = FirebaseAuth.instance.currentUser!.uid;
+
+  final result = await FilePicker.platform.pickFiles(
+    type: FileType.custom,
+    allowedExtensions: ['pdf', 'docx', 'jpg', 'png'],
+  );
+
+  if (result == null || result.files.isEmpty || result.files.first.bytes == null) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('No valid file selected!')),
+    );
+    return;
+  }
+
+  final file = result.files.first;
+
+  setState(() {
+    _isSubmitting = true;
+  });
+
+  try {
+    final ref = FirebaseStorage.instance
+        .ref('submissions/${widget.assignmentId}/$userId/${file.name}');
+    await ref.putData(file.bytes!);
+    final fileUrl = await ref.getDownloadURL();
+
+    await FirebaseFirestore.instance
+        .collection('submissions')
+        .doc(widget.assignmentId)
+        .collection('studentSubmissions')
+        .doc(userId)
+        .set({
+      'fileUrl': fileUrl,
+      'submittedAt': DateTime.now(),
+      'assignmentId': widget.assignmentId,
+      'studentId': userId,
+    });
+
+    setState(() {
+      _isSubmitted = true;
+      _submissionUrl = fileUrl;
+    });
+
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Assignment submitted successfully!')),
+    );
+  } catch (e) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Failed to submit assignment: $e')),
+    );
+  } finally {
+    setState(() {
+      _isSubmitting = false;
+  } );
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -117,28 +139,35 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Description:', style: TextStyle(color: Colors.black)),
-            Text(widget.assignmentData['description'] , style: TextStyle(color: Colors.black),),
-            SizedBox(height: 20),
-            Text('Due Date:', style: TextStyle(color: Colors.black), ),
-            Text(dueDate.toString(),style: TextStyle(color: Colors.black)),
-            SizedBox(height: 20),
-            Text('Status:', style: TextStyle(color: Colors.black)),
-            Text(_isOverdue ? 'Overdue' : 'On Time', style: TextStyle(color: Colors.black)),
-            Text(_isSubmitted ? 'Submitted' : 'Not Submitted', style: TextStyle(color: Colors.black)),
-            SizedBox(height: 20),
+            const Text('Description:', style: TextStyle(color: Colors.black)),
+            Text(widget.assignmentData['description'],
+                style: const TextStyle(color: Colors.black)),
+            const SizedBox(height: 20),
+            const Text('Due Date:', style: TextStyle(color: Colors.black)),
+            Text(dueDate.toString(), style: const TextStyle(color: Colors.black)),
+            const SizedBox(height: 20),
+            const Text('Status:', style: TextStyle(color: Colors.black)),
+            Text(_isOverdue ? 'Overdue' : 'On Time',
+                style: const TextStyle(color: Colors.black)),
+            Text(_isSubmitted ? 'Submitted' : 'Not Submitted',
+                style: const TextStyle(color: Colors.black)),
+            const SizedBox(height: 20),
             _isSubmitted
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Submission:',style: TextStyle(color: Colors.black)),
+                      const Text('Submission:',
+                          style: TextStyle(color: Colors.black)),
                       InkWell(
                         onTap: () {
                           // Open the file in a browser or external app
                         },
                         child: Text(
                           'View File',
-                          style: TextStyle(color: const Color.fromARGB(255, 0, 3, 5), decoration: TextDecoration.underline),
+                          style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            decoration: TextDecoration.underline,
+                          ),
                         ),
                       ),
                     ],
@@ -146,8 +175,8 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
                 : ElevatedButton(
                     onPressed: _isSubmitting ? null : _submitAssignment,
                     child: _isSubmitting
-                        ? CircularProgressIndicator(color: const Color.fromARGB(255, 8, 8, 8))
-                        : Text('Submit Assignment'),
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : const Text('Submit Assignment'),
                   ),
           ],
         ),
