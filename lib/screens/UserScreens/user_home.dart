@@ -26,77 +26,62 @@ class _UserHomeState extends State<UserHome> {
     _coursesStream = _courseService.getAllCourses();
   }
 
-  void _navigateToProfile() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ProfileScreen(user: user),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("All Courses"),
+        title: const Text("User Home"),
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: Icon(Icons.menu),
+            onPressed: () => Scaffold.of(context).openDrawer(),
+          ),
+        ),
       ),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
-          children: [
+          children: <Widget>[
             DrawerHeader(
-              decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // CircleAvatar(
-                  //   radius: 40,
-                  //   backgroundImage: AssetImage('assets/user_avatar.png'), // Replace with user profile image if available
-                  // ),
-                  // const SizedBox(height: 8),
-                  Text(
-                    user.name,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headlineSmall
-                        ?.copyWith(color: Colors.white),
-                  ),
-                  Text(
-                    user.email,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(color: Colors.white),
-                  ),
-                ],
+              child: Text(
+                'Menu',
+                style: Theme.of(context).textTheme.headlineLarge,
+                textAlign: TextAlign.center,
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.home),
-              title: const Text('Home'),
+              leading: Icon(Icons.home),
+              title: Text('Home'),
               onTap: () {
                 Navigator.pop(context);
               },
             ),
             ListTile(
-              leading: const Icon(Icons.person),
-              title: const Text('Profile'),
+              leading: Icon(Icons.person),
+              title: Text('Profile'),
               onTap: () {
-                Navigator.pop(context);
-                _navigateToProfile();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ProfileScreen(user: user),
+                  ),
+                );
               },
             ),
             ListTile(
-              leading: const Icon(Icons.logout),
-              title: const Text('Logout'),
+              leading: Icon(Icons.logout),
+              title: Text('Logout'),
               onTap: () {
-                // Implement logout functionality here
-                Navigator.pop(context);
+                // Handle Logout
               },
             ),
+            // ListTile(
+            //   leading: Icon(Icons.menu_book_rounded),
+            //   title: Text('View Courses'),
+            //   onTap: () {
+            //     Navigator.pushNamed(context, '/view_courses');
+            //   },
+            // ),
           ],
         ),
       ),
