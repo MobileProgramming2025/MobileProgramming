@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/main.dart';
 import 'package:mobileprogramming/screens/CourseDesign/design_course_app_theme.dart';
-import 'package:mobileprogramming/screens/CourseDesign/models/category.dart';
+import 'package:mobileprogramming/models/category.dart';
 
 class PopularCourseListView extends StatefulWidget {
   const PopularCourseListView({Key? key, this.callBack}) : super(key: key);

@@ -297,7 +297,7 @@ class _DesignCourseHomeScreenState extends State<DesignCourseHomeScreen> {
           Container(
             width: 60,
             height: 60,
-            child: Image.asset('assets/images/userImage.png'),
+            child: Image.asset('assets/CourseDesign/userImage.png'),
           )
         ],
       ),

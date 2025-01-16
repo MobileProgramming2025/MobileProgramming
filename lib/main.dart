@@ -15,6 +15,7 @@ import 'package:mobileprogramming/screens/AdminScreens/view_departments_screen.d
 import 'package:mobileprogramming/screens/AssignmentScreens/assignment_list_screen.dart';
 import 'package:mobileprogramming/screens/AssignmentScreens/student_assignment_list.dart';
 import 'package:mobileprogramming/screens/AssignmentScreens/ui_create_assignment.dart';
+import 'package:mobileprogramming/screens/CourseDesign/home_design_course.dart';
 import 'package:mobileprogramming/screens/CourseDetailScreen.dart';
 import 'package:mobileprogramming/screens/Registration/signin.dart';
 import 'package:mobileprogramming/screens/Registration/signup.dart';
@@ -22,6 +23,7 @@ import 'package:mobileprogramming/screens/UserScreens/user_home.dart';
 import 'package:mobileprogramming/screens/Assignment/assignment_screen.dart';
 
 import 'package:flutter_sizer/flutter_sizer.dart';
+
 class HexColor extends Color {
   HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
 
@@ -45,13 +47,11 @@ void main() async {
   await Firebase.initializeApp();
   // await Future.delayed(Duration(seconds: 2)); // Add a small delay
 
-
-    // Enable App Check
+  // Enable App Check
   // await FirebaseAppCheck.instance.activate(
   //   androidProvider: AndroidProvider.playIntegrity,
   // );
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -160,7 +160,8 @@ class MyApp extends StatelessWidget {
 
         initialRoute: '/',
         routes: {
-         // '/' : (context) =>CourseDetailScreen(key: null, courseId: course.id,),
+          // '/' : (context) =>CourseDetailScreen(key: null, courseId: course.id,),
+          // '/': (context) => DesignCourseHomeScreen(),
           '/': (context) => IntroductionAnimationScreen(),
           '/login': (context) => LoginScreen(),
           '/signin': (context) => LoginScreen(),
@@ -183,12 +184,10 @@ class MyApp extends StatelessWidget {
           '/student-assignment-list': (context) =>
               StudentAssignmentListScreen(),
           '/add_department': (context) => AddDepartmentScreen(),
-          '/view_departments':(context) => ViewDepartmentsScreen(),
-          '/view_department_courses':(context) => ViewDepartmentCoursesScreen(),
-          '/enroll_instructor':(context) => EnrollInstructorScreen(),
-
-
-
+          '/view_departments': (context) => ViewDepartmentsScreen(),
+          '/view_department_courses': (context) =>
+              ViewDepartmentCoursesScreen(),
+          '/enroll_instructor': (context) => EnrollInstructorScreen(),
         },
       );
     });
