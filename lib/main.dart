@@ -7,6 +7,7 @@ import 'package:mobileprogramming/screens/AdminScreens/DashboardScreen.dart';
 import 'package:mobileprogramming/screens/AdminScreens/add_courses_screen.dart';
 import 'package:mobileprogramming/screens/AdminScreens/add_users.dart';
 import 'package:mobileprogramming/screens/AdminScreens/admin_dashboard.dart';
+import 'package:mobileprogramming/screens/AdminScreens/enroll_instructor_screen.dart';
 import 'package:mobileprogramming/screens/AdminScreens/list_users.dart';
 import 'package:mobileprogramming/screens/AdminScreens/view_courses_screen.dart';
 import 'package:mobileprogramming/screens/AdminScreens/view_department_courses.dart';
@@ -173,6 +174,7 @@ class MyApp extends StatelessWidget {
           '/add_department': (context) => AddDepartmentScreen(),
           '/view_departments':(context) => ViewDepartmentsScreen(),
           '/view_department_courses':(context) => ViewDepartmentCoursesScreen(),
+          '/enroll_instructor':(context) => EnrollInstructorScreen(),
 
 
 

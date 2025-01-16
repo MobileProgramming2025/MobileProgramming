@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/services/CourseService.dart';
 import 'package:mobileprogramming/services/DepartmentService.dart';
@@ -139,7 +138,7 @@ class _AddCoursesScreenState extends State<AddCoursesScreen> {
                     },
                   ),
                   // SizedBox(height: 16),
-                  // StreamBuilder<QuerySnapshot>(
+                  // StreamBuilder<QuerySnapshot>( 
                   //   stream: FirebaseFirestore.instance
                   //       .collection('users')
                   //       .snapshots(),

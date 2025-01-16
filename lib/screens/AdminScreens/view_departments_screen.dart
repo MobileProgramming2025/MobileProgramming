@@ -99,12 +99,12 @@ class _ViewDepartmentsScreenState extends State<ViewDepartmentsScreen> {
           },
         ),
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     Navigator.pushNamed(context, '/add_department');
-      //   },
-      //   child: const Icon(Icons.add),
-      // ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, '/add_department');
+        },
+        child: const Icon(Icons.add),
+      ),
     );
   }
 }

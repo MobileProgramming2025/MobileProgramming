@@ -6,8 +6,7 @@ class ViewDepartmentCoursesScreen extends StatefulWidget {
   const ViewDepartmentCoursesScreen({super.key});
 
   @override
-  State<ViewDepartmentCoursesScreen> createState() =>
-      _ViewDepartmentCoursesScreenState();
+  State<ViewDepartmentCoursesScreen> createState() => _ViewDepartmentCoursesScreenState();
 }
 
 class _ViewDepartmentCoursesScreenState extends State<ViewDepartmentCoursesScreen> {
@@ -15,15 +14,18 @@ class _ViewDepartmentCoursesScreenState extends State<ViewDepartmentCoursesScree
   late Stream<List<Course>> _coursesStream;
   late String departmentId;
 
-  @override
-  void initState() {
-
-  //  _coursesStream = _courseService.getCoursesByDepartmentId(departmentId);
+  void _enroll() {
+    _courseService.enrollInstructor();
+    Navigator.pushNamed(
+      context,
+      '/enroll_instructor',
+      arguments: departmentId,
+    ); // Pass the same departmentId);
   }
 
   @override
   Widget build(BuildContext context) {
-        // Retrieve arguments passed via Navigator
+    // Retrieve arguments passed via Navigator
     departmentId = ModalRoute.of(context)!.settings.arguments as String;
     return Scaffold(
       appBar: AppBar(
@@ -81,8 +83,8 @@ class _ViewDepartmentCoursesScreenState extends State<ViewDepartmentCoursesScree
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          'Description: ',
-                          style: Theme.of(context).textTheme.bodySmall,
+                          'Year: ${course.year}',
+                          style: Theme.of(context).textTheme.bodyLarge,
                         ),
                       ],
                     ),
@@ -93,12 +95,12 @@ class _ViewDepartmentCoursesScreenState extends State<ViewDepartmentCoursesScree
           },
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, '/add_courses');
-        },
-        tooltip: "Add Courses",
-        child: const Icon(Icons.add),
+      floatingActionButton: ElevatedButton(
+        onPressed: _enroll,
+        child: Text(
+          'Enroll Instructors To Courses',
+          style: TextStyle(fontSize: 20),
+        ),
       ),
     );
   }

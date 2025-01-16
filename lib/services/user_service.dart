@@ -46,6 +46,27 @@ class UserService {
     });
   }
 
+  //Each data item in the stream is a list of maps. Each map represents a doctor’s details.
+//list  of doctors as there maybe more than one doctor and map will include the details of the dr as name,email,..
+  Stream<List<Map<String, dynamic>>> fetchDoctors() {
+    //.snapshots(): creates a stream ashan lama ay update (any crud of dr in firestore) ysamaa ala tol
+    //A snapshot represents a "snapshot" of the current state of the database at that moment and contains all the documents in drs collection.
+    //.map() is used to transform the raw snapshot data into map that includes all dr details
+    return _firestore
+        .collection('users')
+        .where('role', isEqualTo: "Doctor")
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs.map((doc) {
+        // Extract the document's ID and fields, and create a usable map
+        return {
+          'id': doc.id,
+          ...doc.data(),
+        };
+      }).toList();
+    });
+  }
+
   // Retrieve a user by ID from Firestore
   Stream<User?> getUserByID(String id) {
     try {
@@ -100,8 +121,10 @@ class UserService {
         print('\x1B[37m $enrolledCourses \x1B[0m');
 
         for (var course in courses) {
-          if (user['year'] == course['year'] && user['departmentId'] == course['departmentId']) {
-            print("\x1B[32m Users: ${user['name']}  +  ${user['year']}  + ${user['departmentId']} \x1B[0m");
+          if (user['year'] == course['year'] &&
+              user['departmentId'] == course['departmentId']) {
+            print(
+                "\x1B[32m Users: ${user['name']}  +  ${user['year']}  + ${user['departmentId']} \x1B[0m");
             print("\x1B[35m Courses: $course \x1B[0m");
             if (!_isEnrolled(course, user) && !_isTaken(course, user)) {
               _enroll(course, user);
@@ -129,7 +152,6 @@ class UserService {
     // print(enrolledCourses);
 
     for (var enrolled in user['enrolled_courses']) {
-
       print(enrolled);
       if (enrolled['code'] == course['code']) {
         print("da5al");

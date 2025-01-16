@@ -21,10 +21,10 @@ class CourseService {
   }
 
   Stream<List<Course>> getCoursesByDepartmentId(String departmentId) {
-    try {
+    try { 
       return _firestore
           .collection('Courses')
-          .where('departmentId', isEqualTo: departmentId)
+          .where('departmentId', isEqualTo: departmentId) 
           .snapshots() // Get real-time stream of query results
           .map((querySnapshot) {
         // Transform each QuerySnapshot into a List of Course objects
@@ -85,5 +85,11 @@ class CourseService {
     } catch (e) {
       throw Exception("Failed to add Course: $e");
     }
+  }
+
+
+
+  void enrollInstructor(){
+
   }
 }
