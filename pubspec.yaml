@@ -57,11 +57,9 @@ flutter:
     - assets/introduction_animation/benefits.png
     - assets/introduction_animation/features.png
     - assets/introduction_animation/welcome.png
-    - assets/CourseDesign/interface1.png
-    - assets/CourseDesign/interface2.png
-    - assets/CourseDesign/interface3.png
-    - assets/CourseDesign/interface4.png
-    - assets/CourseDesign/userImage.png  
-    - assets/CourseDesign/webInterface.png
-
-
+    - assets/CourseDesign/interFace1.png
+    - assets/CourseDesign/interFace2.png
+    - assets/CourseDesign/interFace3.png
+    - assets/CourseDesign/interFace4.png
+    - assets/CourseDesign/userImage.png
+    - assets/CourseDesign/webInterFace.png
