@@ -4,7 +4,7 @@ import 'package:mobileprogramming/models/course.dart';
 import 'package:mobileprogramming/screens/CourseDetailScreen.dart';
 import 'package:mobileprogramming/screens/doctorScreens/doctor_dashboard.dart';
 import 'package:mobileprogramming/services/CourseService.dart';
-import 'package:mobileprogramming/BaseScreen.dart'; // Import BaseScreen
+import 'package:mobileprogramming/screens/doctorScreens/BaseScreen.dart'; // Import BaseScreen
 import 'package:mobileprogramming/models/user.dart'; // Make sure to import the User model
 
 class CourseListPage extends StatefulWidget {
