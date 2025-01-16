@@ -14,59 +14,119 @@ class _ProfileScreenState extends State<ProfileScreen> {
   late User user;
 
   @override
+  void initState() {
+    super.initState();
+    user = widget.user;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My profile'),
+        title: const Text('My Profile'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: () {
+              // Navigate to the edit form
+            },
+            tooltip: 'Edit Profile',
+          ),
+        ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: CircleAvatar(
-                radius: 50,
-                child: Text(
-                  user.name.isNotEmpty ? user.name[0].toUpperCase() : '?',
-                  style: const TextStyle(
-                    fontSize: 40,
-                  ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              Center(
+                child: Column(
+                  children: [
+                    Stack(
+                      alignment: Alignment.bottomRight,
+                      children: [
+                        CircleAvatar(
+                          radius: 50,
+                          backgroundColor: Colors.blueAccent,
+                          child: Text(
+                            user.name.isNotEmpty
+                                ? user.name[0].toUpperCase()
+                                : '?',
+                            style: const TextStyle(
+                              fontSize: 40,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      user.name,
+                      style: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ),
-            const SizedBox(height: 16),
-            _buildProfileItem(title: 'Name', value: user.name),
-            _buildProfileItem(title: 'Email', value: user.email),
-            _buildProfileItem(title: 'Role', value: user.role),
-            // _buildProfileItem(title: 'Department', value: user.department),
-          ],
+              const SizedBox(height: 24),
+              _buildProfileCard(title: 'Name', value: user.name),
+              const SizedBox(height: 12),
+              _buildProfileCard(title: 'Email', value: user.email),
+              const SizedBox(height: 12),
+              _buildProfileCard(title: 'Role', value: user.role),
+              const SizedBox(height: 12),
+              // _buildProfileCard(title: 'Department', value: user.departmentId),
+              // const SizedBox(height: 12),
+            ],
+          ),
         ),
       ),
+
+      floatingActionButton: FloatingActionButton(
+        onPressed: null,
+        tooltip: 'Edit Profile',
+        child: const Icon(Icons.edit),
+      ),
+
     );
   }
 
-  Widget _buildProfileItem({required String title, required String value}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        children: [
-          Text(
-            '$title: ',
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          Expanded(
-            child: Text(
-              value,
-              style: const TextStyle(
-                fontSize: 16,
+  Widget _buildProfileCard({required String title, required String value}) {
+    return SizedBox(
+      height: 80, // Fixed height for consistency
+      child: Card(
+        elevation: 3,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            children: [
+              Text(
+                '$title: ',
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey,
+                ),
               ),
-              overflow: TextOverflow.ellipsis,
-            ),
+              Expanded(
+                child: Text(
+                  value,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    color: Colors.black,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
