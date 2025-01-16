@@ -67,4 +67,22 @@ class DoctorService {
       throw Exception("Failed to delete doctor: $e");
     }
   }
+
+
+  Stream<List<Map<String, dynamic>>> getDoctorByDepartmentId(String departmentId) {
+    return _firestore
+        .collection('users')
+        .where('role', isEqualTo: "Doctor")
+        .where('departmentId', isEqualTo: departmentId)
+        .snapshots() // Get real-time stream of query results
+        .map((snapshot) {
+      return snapshot.docs.map((doc) {
+        // Extract the document's ID and fields, and create a usable map
+        return {
+          'id': doc.id,
+          ...doc.data(),
+        };
+      }).toList();
+    });
+  }
 }

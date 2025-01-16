@@ -127,15 +127,15 @@ class _EnrollInstructorScreenState extends State<EnrollInstructorScreen> {
                   SizedBox(height: 16),
                   if (selectedInstructor == "Doctor")
                     StreamBuilder<List<Map<String, dynamic>>>(
-                      stream: _doctorService.fetchDoctors(),
+                      stream: _doctorService.getDoctorByDepartmentId(departmentId),
                       builder: (context, snapshot) {
-                        List<DropdownMenuItem> depitems = [];
+                        List<DropdownMenuItem> dritems = [];
                         if (!snapshot.hasData) {
                           const CircularProgressIndicator();
                         } else {
                           final items = snapshot.data!;
                           for (var item in items) {
-                            depitems.add(
+                            dritems.add(
                               DropdownMenuItem(
                                 value: item['id'],
                                 child: Text(
@@ -157,10 +157,50 @@ class _EnrollInstructorScreenState extends State<EnrollInstructorScreen> {
                               labelText: 'Instructor Name',
                               border: OutlineInputBorder(),
                             ),
-                            items: depitems,
+                            items: dritems,
                             onChanged: (value) {
                               setState(() {
                                 selectedDoctorName = value!;
+                              });
+                            });
+                      },
+                    ),
+                  if (selectedInstructor == "Teaching Assistant")
+                    StreamBuilder<List<Map<String, dynamic>>>(
+                      stream: _taService.getTaByDepartmentId(departmentId),
+                      builder: (context, snapshot) {
+                        List<DropdownMenuItem> taitems = [];
+                        if (!snapshot.hasData) {
+                          const CircularProgressIndicator();
+                        } else {
+                          final items = snapshot.data!;
+                          for (var item in items) {
+                            taitems.add(
+                              DropdownMenuItem(
+                                value: item['id'],
+                                child: Text(
+                                  item['name'],
+                                  style: Theme.of(context).textTheme.bodyLarge,
+                                ),
+                              ),
+                            );
+                          }
+                        }
+                        return DropdownButtonFormField(
+                            validator: (value) {
+                              if (value == null) {
+                                return "please select a Teaching Assitant Name";
+                              }
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                              labelText: 'Instructor Name',
+                              border: OutlineInputBorder(),
+                            ),
+                            items: taitems,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedTaName = value!;
                               });
                             });
                       },
