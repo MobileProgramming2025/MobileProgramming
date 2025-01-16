@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/user.dart';
 import 'package:mobileprogramming/screens/CourseList.dart';
@@ -64,14 +65,7 @@ class _DoctorDrawerState extends State<DoctorDrawer> {
           ListTile(
             leading: Icon(Icons.group_add_outlined),
             title: Text('View Courses'),
-            onTap: () {
-               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => CourseListPage(),
-                  )
-                );
-            },
+            
           ),
           ListTile(
             leading: Icon(Icons.assignment_add),

@@ -3,8 +3,8 @@ import 'package:mobileprogramming/screens/CourseDetailScreen.dart';
 import 'package:mobileprogramming/screens/partials/profile.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:mobileprogramming/models/user.dart';
+
 import 'package:mobileprogramming/screens/CourseList.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class DoctorDashboard extends StatefulWidget {
   final User doctor;
@@ -20,7 +20,7 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
   List<String> courses = [];
   DateTime _selectedDate = DateTime.now();
   DateTime _focusedDate = DateTime.now();
-  int _currentIndex = 0; // Track the selected tab
+  int _currentIndex = 0;
 
   @override
   void initState() {
@@ -43,14 +43,13 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
 
     switch (index) {
       case 0:
-        Navigator.pushNamed(context, '/Doctor-dashboard');
         break;
       case 1:
-         Navigator.push(
+        Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => CourseListPage(),
-          )
+            builder: (context) => CourseListPage(doctor: widget.doctor), // Pass the doctor instance
+          ),
         );
         break;
       case 2:
@@ -58,11 +57,10 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
         break;
       case 3:
         Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ProfileScreen(user: widget.doctor),
-          )
-        );
+            context,
+            MaterialPageRoute(
+              builder: (context) => ProfileScreen(user: widget.doctor),
+            ));
         break;
       case 4:
         _logout();
@@ -110,10 +108,9 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
             Text(
               "Hello, Doctor ${widget.doctor.name}!",
               style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.black
-              ),
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black),
             ),
             CircleAvatar(
               backgroundImage: AssetImage("assets/userImage.png"),
@@ -228,37 +225,29 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                     SizedBox(height: 20),
 
                     // Progress Section
-                    Text(
-                      "Your Courses",
-                      style: TextStyle(
-                        fontSize: 18, 
-                        fontWeight: FontWeight.bold
-                      )
-                    ),
+                    Text("Your Courses",
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold)),
                     SizedBox(height: 10),
                     Row(
                       children: courses
-                        .map(
-                          (course) => Expanded(
-                            child: ProgressCard(
-                              title: course,
-                              progress: (courses.indexOf(course) + 1) * 30,
-                              color: Color(0xFFDED6FF),
+                          .map(
+                            (course) => Expanded(
+                              child: ProgressCard(
+                                title: course,
+                                progress: (courses.indexOf(course) + 1) * 30,
+                                color: Color(0xFFDED6FF),
+                              ),
                             ),
-                          ),
-                        )
-                        .toList(),
+                          )
+                          .toList(),
                     ),
                     SizedBox(height: 20),
 
                     // Courses Section
-                    Text(
-                      "All Courses",
-                      style: TextStyle(
-                        fontSize: 18, 
-                        fontWeight: FontWeight.bold
-                        )
-                      ),
+                    Text("All Courses",
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold)),
                     SizedBox(height: 10),
                     GridView.builder(
                       shrinkWrap: true,
@@ -290,7 +279,8 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                                 SizedBox(height: 8),
                                 Text(
                                   courses[index],
-                                  style: Theme.of(context).textTheme.titleLarge,
+                                  style:
+                                      Theme.of(context).textTheme.titleLarge,
                                 ),
                               ],
                             ),
@@ -302,39 +292,63 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                 ),
               ),
             ),
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: _currentIndex,
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          selectedItemColor: const Color.fromARGB(255, 69, 0, 187),
-          unselectedItemColor: const Color.fromARGB(255, 223, 101, 26),
-          showSelectedLabels: true,
-          showUnselectedLabels: false,
-          items: [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.house_rounded), 
-              label: "Home"
+        bottomNavigationBar: Container(
+          decoration: BoxDecoration(
+            color: Colors.grey[100],
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(30),
+              topRight: Radius.circular(30),
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.school), 
-              label: "Courses"
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.3),
+                blurRadius: 20,
+              ),
+            ],
+          ),
+          child: Container(
+            margin: EdgeInsets.only(bottom: 5),
+            height: 60,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30),
+                  topRight: Radius.circular(30),
+                  bottomRight: Radius.circular(30),
+                  bottomLeft: Radius.circular(30)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 5,
+                  offset: Offset(0, 3),
+                ),
+              ],
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.calendar_month_outlined),
-              label: "Calendar"
+            child: BottomNavigationBar(
+              currentIndex: _currentIndex,
+              type: BottomNavigationBarType.fixed,
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              selectedItemColor: const Color.fromARGB(255, 69, 0, 187),
+              unselectedItemColor: const Color.fromARGB(255, 223, 101, 26),
+              showSelectedLabels: true,
+              showUnselectedLabels: false,
+              items: [
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.house_rounded), label: "Home"),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.school), label: "Courses"),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.calendar_month_outlined), label: "Calendar"),
+                BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.exit_to_app_sharp), label: "Logout"),
+              ],
+              onTap: _onItemTapped, // Call the method on tap
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person), 
-              label: "Profile"
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.exit_to_app_sharp), 
-              label: "Logout"
-            ),
-          ],
-          onTap: _onItemTapped, // Call the method on tap
-        ));
+          ),
+        ),
+    );
   }
 }
 
@@ -344,7 +358,6 @@ class ProgressCard extends StatelessWidget {
   final Color color;
 
   const ProgressCard({
-    super.key, 
     required this.title,
     required this.progress,
     required this.color,
@@ -362,7 +375,7 @@ class ProgressCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            children: const [
+            children: [
               Icon(Icons.cloud, color: Colors.black),
               Spacer(),
               Icon(Icons.more_vert, color: Colors.black),
