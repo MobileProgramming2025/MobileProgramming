@@ -3,7 +3,6 @@ import 'package:mobileprogramming/screens/CourseDetailScreen.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:mobileprogramming/models/user.dart';
 import 'package:mobileprogramming/screens/CourseList.dart';
-import 'package:mobileprogramming/screens/UserScreens/profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DoctorDashboard extends StatefulWidget {
