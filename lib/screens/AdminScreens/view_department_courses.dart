@@ -15,7 +15,6 @@ class _ViewDepartmentCoursesScreenState extends State<ViewDepartmentCoursesScree
   late String departmentId;
 
   void _enroll() {
-    _courseService.enrollInstructor();
     Navigator.pushNamed(
       context,
       '/enroll_instructor',
