@@ -117,21 +117,21 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Description:', style: TextStyle(fontWeight: FontWeight.bold)),
-            Text(widget.assignmentData['description']),
+            Text('Description:', style: TextStyle(color: Colors.black)),
+            Text(widget.assignmentData['description'] , style: TextStyle(color: Colors.black),),
             SizedBox(height: 20),
-            Text('Due Date:', style: TextStyle(fontWeight: FontWeight.bold)),
-            Text(dueDate.toString()),
+            Text('Due Date:', style: TextStyle(color: Colors.black), ),
+            Text(dueDate.toString(),style: TextStyle(color: Colors.black)),
             SizedBox(height: 20),
-            Text('Status:', style: TextStyle(fontWeight: FontWeight.bold)),
-            Text(_isOverdue ? 'Overdue' : 'On Time'),
-            Text(_isSubmitted ? 'Submitted' : 'Not Submitted'),
+            Text('Status:', style: TextStyle(color: Colors.black)),
+            Text(_isOverdue ? 'Overdue' : 'On Time', style: TextStyle(color: Colors.black)),
+            Text(_isSubmitted ? 'Submitted' : 'Not Submitted', style: TextStyle(color: Colors.black)),
             SizedBox(height: 20),
             _isSubmitted
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Submission:', style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text('Submission:',style: TextStyle(color: Colors.black)),
                       InkWell(
                         onTap: () {
                           // Open the file in a browser or external app
@@ -146,7 +146,7 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
                 : ElevatedButton(
                     onPressed: _isSubmitting ? null : _submitAssignment,
                     child: _isSubmitting
-                        ? CircularProgressIndicator(color: Colors.white)
+                        ? CircularProgressIndicator(color: const Color.fromARGB(255, 8, 8, 8))
                         : Text('Submit Assignment'),
                   ),
           ],

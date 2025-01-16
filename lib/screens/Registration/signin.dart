@@ -56,7 +56,7 @@ class LoginScreen extends StatelessWidget {
           } else if (userModel.role == 'Admin') {
             Navigator.pushNamed(context, '/admin_home');
           } else {
-            Navigator.pushNamed(context, '/user_home');
+            Navigator.pushNamed(context, '/student-assignment-list');
             // Navigator.push(
             //   context,
             //   MaterialPageRoute(

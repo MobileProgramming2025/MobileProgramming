@@ -23,7 +23,7 @@ class AuthService {
     }
   }
 
-  Future<firebase_auth.User?> signUp(String email, String password, String role) async {
+  Future<firebase_auth.User?> signUp(String email, String password, String role, String departmentId) async {
     final firstAdded = DateTime.utc(2023, DateTime.november, 9);
     final currentYear = DateTime.now();
     final educationYear = currentYear.year - firstAdded.year;
@@ -47,6 +47,7 @@ class AuthService {
           'enrolled_courses': [],
           'added_date': firstAdded,
           'year': (educationYear).toString(),
+          'departmentId': departmentId,
         });
       }
       return user;

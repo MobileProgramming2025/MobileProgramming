@@ -7,12 +7,15 @@ class StudentAssignmentListScreen extends StatefulWidget {
   const StudentAssignmentListScreen({super.key});
 
   @override
-  State<StudentAssignmentListScreen> createState() => _StudentAssignmentListScreenState();
+  State<StudentAssignmentListScreen> createState() =>
+      _StudentAssignmentListScreenState();
 }
 
-class _StudentAssignmentListScreenState extends State<StudentAssignmentListScreen> {
-  List<String> _enrolledCourseIds = [];
+class _StudentAssignmentListScreenState
+    extends State<StudentAssignmentListScreen> {
   bool _isLoading = true;
+  List<Map<String, dynamic>> _enrolledCourses = [];
+  List<String> _enrolledCourseIds = [];
 
   @override
   void initState() {
@@ -21,42 +24,58 @@ class _StudentAssignmentListScreenState extends State<StudentAssignmentListScree
   }
 
   Future<void> _fetchEnrolledCourses() async {
-  try {
-    final userId = FirebaseAuth.instance.currentUser!.uid;
+    try {
+      final userId = FirebaseAuth.instance.currentUser!.uid;
 
-    final userDoc = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(userId)
-        .get();
+      // Fetch the user document from Firestore
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get();
 
-    if (userDoc.exists) {
-      final userData = userDoc.data();
-      if (userData != null && userData.containsKey('enrolledCourses')) {
-        final enrolledCourses = userData['enrolledCourses'] as List<dynamic>;
+      if (userDoc.exists) {
+        final userData = userDoc.data();
 
-        setState(() {
-          _enrolledCourseIds = enrolledCourses
-              .map((course) => course['id'] as String)
-              .toList();
-          _isLoading = false;
-        });
+        // Check if the user is a student and has enrolled_courses
+        if (userData != null && userData.containsKey('enrolled_courses')) {
+          // Extract the enrolled_courses array
+          final enrolledCourses = userData['enrolled_courses'] as List<dynamic>;
+
+          // Convert to a list of maps and extract course IDs
+          setState(() {
+            _enrolledCourses = enrolledCourses
+                .map((course) => Map<String, dynamic>.from(course))
+                .toList();
+            _enrolledCourseIds = _enrolledCourses
+                .map((course) => course['id'] as String)
+                .toList();
+            _isLoading = false;
+          });
+        } else {
+          // No enrolled courses
+          setState(() {
+            _enrolledCourses = [];
+            _enrolledCourseIds = [];
+            _isLoading = false;
+          });
+        }
       } else {
+        // User document does not exist
         setState(() {
+          _enrolledCourses = [];
+          _enrolledCourseIds = [];
           _isLoading = false;
         });
       }
-    } else {
+    } catch (e) {
+      print('Error fetching enrolled courses: $e');
       setState(() {
+        _enrolledCourses = [];
+        _enrolledCourseIds = [];
         _isLoading = false;
       });
     }
-  } catch (e) {
-    // print('Error fetching enrolled courses: $e');
-    setState(() {
-      _isLoading = false;
-    });
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +98,11 @@ class _StudentAssignmentListScreenState extends State<StudentAssignmentListScree
                     }
 
                     if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                      return Center(child: Text('No assignments found.' , style: TextStyle(color: const Color.fromARGB(255, 10, 1, 0))));
+                      return Center(
+                          child: Text(
+                        'No assignments found.',
+                        style: TextStyle(color: Colors.black),
+                      ));
                     }
 
                     final assignments = snapshot.data!.docs;
@@ -100,7 +123,8 @@ class _StudentAssignmentListScreenState extends State<StudentAssignmentListScree
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => AssignmentDetailScreen(
+                                  builder: (context) =>
+                                      AssignmentDetailScreen(
                                     assignmentId: assignment.id,
                                     assignmentData: assignment.data()
                                         as Map<String, dynamic>,
