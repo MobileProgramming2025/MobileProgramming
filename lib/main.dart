@@ -15,7 +15,6 @@ import 'package:mobileprogramming/screens/AssignmentScreens/assignment_list_scre
 import 'package:mobileprogramming/screens/AssignmentScreens/student_assignment_list.dart';
 import 'package:mobileprogramming/screens/Registration/signin.dart';
 import 'package:mobileprogramming/screens/Registration/signup.dart';
-import 'package:mobileprogramming/screens/UserScreens/user_home.dart';
 import 'package:mobileprogramming/screens/Assignment/assignment_screen.dart';
 
 import 'package:flutter_sizer/flutter_sizer.dart';
@@ -160,7 +159,6 @@ class MyApp extends StatelessWidget {
           '/login': (context) => LoginScreen(),
           '/signin': (context) => LoginScreen(),
           '/signup': (context) => SignUpScreen(),
-          '/user_home': (context) => UserHome(),
           '/add_users': (context) => AddUserScreen(),
           '/list_users': (context) => ListUsersScreen(),
           '/create_assignment-static': (context) =>

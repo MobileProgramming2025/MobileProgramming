@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:mobileprogramming/models/user.dart';
 import 'package:mobileprogramming/services/CourseService.dart';
 import 'package:mobileprogramming/services/user_service.dart';
 
 class UserHome extends StatefulWidget {
-  const UserHome({super.key});
+  final User user;
+
+  const UserHome({super.key, required this.user});
 
   @override
   State<UserHome> createState() => _UserHomeState();
 }
 
 class _UserHomeState extends State<UserHome> {
+  late User user;
   final CourseService _courseService = CourseService();
   UserService userService = UserService();
   late Stream<List<Map<String, dynamic>>> _coursesStream;
@@ -17,6 +21,7 @@ class _UserHomeState extends State<UserHome> {
   @override
   void initState() {
     super.initState();
+    user = widget.user;
     _coursesStream = _courseService.getAllCourses();
   }
 
