@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/user.dart';
+import 'package:mobileprogramming/services/DepartmentService.dart';
 import 'package:uuid/uuid.dart';
 
 class AddUserScreen extends StatefulWidget {
@@ -14,6 +15,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final DepartmentService _departmentService = DepartmentService();
 
   final Uuid _uuid = Uuid();
 
@@ -219,20 +221,18 @@ class _AddUserScreenState extends State<AddUserScreen> {
                   
                   // Show department dropdown only f the selected role is not Admin
                   if (_selectedRole != "Admin")
-                    StreamBuilder<QuerySnapshot>(
-                      stream: FirebaseFirestore.instance
-                          .collection('Departments')
-                          .snapshots(),
+                    StreamBuilder<List<Map<String, dynamic>>>(
+                    stream: _departmentService.getAllDepartments(),
                       builder: (context, snapshot) {
-                        List<DropdownMenuItem> taItems = [];
+                        List<DropdownMenuItem> depitems = [];
                         if (!snapshot.hasData) {
                           const CircularProgressIndicator();
                         } else {
-                          final items = snapshot.data?.docs.reversed.toList();
+                          final items = snapshot.data!;
                           for (var item in items!) {
-                            taItems.add(
+                            depitems.add(
                               DropdownMenuItem(
-                                value: item.id,
+                                value: item['id'],
                                 child: Text(
                                   item['name'],
                                   style: Theme.of(context).textTheme.bodyLarge,
@@ -252,7 +252,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
                               labelText: 'Department Name',
                               border: OutlineInputBorder(),
                             ),
-                            items: taItems,
+                            items: depitems,
                             onChanged: (value) {
                               setState(() {
                                 _selectedDepartment = value!;
