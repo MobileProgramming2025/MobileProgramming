@@ -231,13 +231,13 @@ class _AddCoursesScreenState extends State<AddCoursesScreen> {
                         .collection('Departments')
                         .snapshots(),
                     builder: (context, snapshot) {
-                      List<DropdownMenuItem> taItems = [];
+                      List<DropdownMenuItem> depItems = [];
                       if (!snapshot.hasData) {
                         const CircularProgressIndicator();
                       } else {
                         final items = snapshot.data?.docs.reversed.toList();
                         for (var item in items!) {
-                          taItems.add(
+                          depItems.add(
                             DropdownMenuItem(
                               value: item.id,
                               child: Text(
@@ -259,7 +259,7 @@ class _AddCoursesScreenState extends State<AddCoursesScreen> {
                             labelText: 'Department Name',
                             border: OutlineInputBorder(),
                           ),
-                          items: taItems,
+                          items: depItems,
                           onChanged: (value) {
                             setState(() {
                               _selectedDepartment = value!;

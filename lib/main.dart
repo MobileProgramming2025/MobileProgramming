@@ -9,6 +9,7 @@ import 'package:mobileprogramming/screens/AdminScreens/add_users.dart';
 import 'package:mobileprogramming/screens/AdminScreens/admin_dashboard.dart';
 import 'package:mobileprogramming/screens/AdminScreens/list_users.dart';
 import 'package:mobileprogramming/screens/AdminScreens/view_courses_screen.dart';
+import 'package:mobileprogramming/screens/AdminScreens/view_department_courses.dart';
 import 'package:mobileprogramming/screens/AdminScreens/view_departments_screen.dart';
 import 'package:mobileprogramming/screens/AssignmentScreens/assignment_list_screen.dart';
 import 'package:mobileprogramming/screens/AssignmentScreens/student_assignment_list.dart';
@@ -167,7 +168,7 @@ class MyApp extends StatelessWidget {
               StudentAssignmentListScreen(),
           '/add_department': (context) => AddDepartmentScreen(),
           '/view_departments':(context) => ViewDepartmentsScreen(),
-          '/department_details':(context) => ViewCoursesScreen(),
+          '/view_department_courses':(context) => ViewDepartmentCoursesScreen(),
 
 
 
