@@ -1,70 +1,54 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:mobileprogramming/models/Course.dart';
+import 'package:mobileprogramming/models/course.dart';
 import 'package:mobileprogramming/screens/CourseDetailScreen.dart';
+import 'package:mobileprogramming/screens/doctorScreens/doctor_dashboard.dart';
 import 'package:mobileprogramming/services/CourseService.dart';
-
+import 'package:mobileprogramming/BaseScreen.dart'; // Import BaseScreen
+import 'package:mobileprogramming/models/user.dart'; // Make sure to import the User model
 
 class CourseListPage extends StatefulWidget {
-  const CourseListPage({super.key});
+  final User doctor;
+
+  const CourseListPage({super.key, required this.doctor}); // Accept the doctor parameter
 
   @override
   State<CourseListPage> createState() => _CourseListPageState();
 }
 
 class _CourseListPageState extends State<CourseListPage> {
-
   final CourseService _courseService = CourseService();
   final List<Course> _courses = [];
   bool _isLoading = true;
 
-  // Fetch all courses from Firestore
-  // Future<void> _fetchCourses() async {
-  //   try {
-  //     final courses = await _courseService.getAllCourses();
-  //     setState(() {
-  //       // _courses = courses;
-  //       _isLoading = false;
-  //     });
-  //   } catch (error) {
-  //     if(!mounted) return;
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(content: Text('Error fetching courses: $error')),
-  //     );
-  //     setState(() {
-  //       _isLoading = false;
-  //     });
-  //   }
-  // }
   late final StreamSubscription _courseSubscription;
 
-Future<void> _fetchCourses() async {
-  _courseSubscription = _courseService.getAllCourses().listen(
-    (courses) {
-      setState(() {
-        _courses.clear();
-        _courses.addAll(courses.map((data) => Course.fromMap(data)));
-        _isLoading = false;
-      });
-    },
-    onError: (error) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error fetching courses: $error')),
-      );
-      setState(() {
-        _isLoading = false;
-      });
-    },
-  );
-}
+  Future<void> _fetchCourses() async {
+    _courseSubscription = _courseService.getAllCourses().listen(
+      (courses) {
+        setState(() {
+          _courses.clear();
+          _courses.addAll(courses.map((data) => Course.fromMap(data)));
+          _isLoading = false;
+        });
+      },
+      onError: (error) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error fetching courses: $error')),
+        );
+        setState(() {
+          _isLoading = false;
+        });
+      },
+    );
+  }
 
-@override
-void dispose() {
-  _courseSubscription.cancel();
-  super.dispose();
-}
+  @override
+  void dispose() {
+    _courseSubscription.cancel();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -74,16 +58,8 @@ void dispose() {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Courses'),
-        actions: const [
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: null,
-          ),
-        ],
-      ),
+    return BaseScreen(
+      currentIndex: 1,
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
           : _courses.isEmpty
@@ -94,19 +70,49 @@ void dispose() {
                     final course = _courses[index];
                     return ListTile(
                       title: Text(course.name),
-                      // subtitle: Text('Dr: ${course.drId}'),
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                CourseDetailScreen(courseId: course.id),
+                            builder: (context) => CourseDetailScreen(courseId: course.id),
                           ),
                         );
                       },
                     );
                   },
                 ),
+      onTabTapped: (index) {
+        switch (index) {
+          case 0:
+            // Navigate to DoctorDashboard and pass the doctor parameter
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => DoctorDashboard(doctor: widget.doctor), // Pass user information
+              ),
+            );
+            break;
+          case 1:
+            // Already on Courses page, no action needed
+            break;
+          case 2:
+            // Navigate to Calendar page
+            Navigator.pushNamed(context, '/calendar');
+            break;
+          case 3:
+            // Navigate to Profile page without doctor argument
+            Navigator.pushNamed(context, '/profile');
+            break;
+          case 4:
+            // Perform Logout logic
+            _logout();
+            break;
+        }
+      },
     );
+  }
+
+  void _logout() {
+    // Implement your logout logic here
   }
 }

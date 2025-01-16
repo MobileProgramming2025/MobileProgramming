@@ -183,6 +183,7 @@ class MyApp extends StatelessWidget {
           '/view_department_courses': (context) =>
               ViewDepartmentCoursesScreen(),
           '/enroll_instructor': (context) => EnrollInstructorScreen(),
+          
         },
       );
     });

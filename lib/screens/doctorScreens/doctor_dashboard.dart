@@ -19,7 +19,7 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
   List<String> courses = [];
   DateTime _selectedDate = DateTime.now();
   DateTime _focusedDate = DateTime.now();
-  int _currentIndex = 0; // Track the selected tab
+  int _currentIndex = 0;
 
   @override
   void initState() {
@@ -42,25 +42,24 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
 
     switch (index) {
       case 0:
-        Navigator.pushNamed(context, '/Doctor-dashboard');
         break;
       case 1:
-         Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CourseListPage(),
-                    ));
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CourseListPage(doctor: widget.doctor), // Pass the doctor instance
+          ),
+        );
         break;
       case 2:
         Navigator.pushNamed(context, '/calendar');
         break;
       case 3:
         Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            ProfileScreen(user: widget.doctor),
-                      ));
+            context,
+            MaterialPageRoute(
+              builder: (context) => ProfileScreen(user: widget.doctor),
+            ));
         break;
       case 4:
         _logout();
@@ -292,30 +291,63 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                 ),
               ),
             ),
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: _currentIndex,
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          selectedItemColor: const Color.fromARGB(255, 69, 0, 187),
-          unselectedItemColor: const Color.fromARGB(255, 223, 101, 26),
-          showSelectedLabels: true,
-          showUnselectedLabels: false,
-          items: [
-            BottomNavigationBarItem(
-                icon: Icon(Icons.house_rounded), label: "Home"),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.school), label: "Courses"),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.calendar_month_outlined),
-                label: "Calendar"),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.person), label: "Profile"),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.exit_to_app_sharp), label: "Logout"),
-          ],
-          onTap: _onItemTapped, // Call the method on tap
-        ));
+        bottomNavigationBar: Container(
+          decoration: BoxDecoration(
+            color: Colors.grey[100],
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(30),
+              topRight: Radius.circular(30),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.3),
+                blurRadius: 20,
+              ),
+            ],
+          ),
+          child: Container(
+            margin: EdgeInsets.only(bottom: 5),
+            height: 60,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30),
+                  topRight: Radius.circular(30),
+                  bottomRight: Radius.circular(30),
+                  bottomLeft: Radius.circular(30)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 5,
+                  offset: Offset(0, 3),
+                ),
+              ],
+            ),
+            child: BottomNavigationBar(
+              currentIndex: _currentIndex,
+              type: BottomNavigationBarType.fixed,
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              selectedItemColor: const Color.fromARGB(255, 69, 0, 187),
+              unselectedItemColor: const Color.fromARGB(255, 223, 101, 26),
+              showSelectedLabels: true,
+              showUnselectedLabels: false,
+              items: [
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.house_rounded), label: "Home"),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.school), label: "Courses"),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.calendar_month_outlined), label: "Calendar"),
+                BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.exit_to_app_sharp), label: "Logout"),
+              ],
+              onTap: _onItemTapped, // Call the method on tap
+            ),
+          ),
+        ),
+    );
   }
 }
 
