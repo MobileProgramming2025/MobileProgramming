@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mobileprogramming/models/Course.dart';
 
 class CourseService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -17,6 +18,30 @@ class CourseService {
         };
       }).toList();
     });
+  }
+
+  Stream<List<Course>> getCoursesByDepartmentId(String departmentId) {
+    try {
+      return _firestore
+          .collection('Courses')
+          .where('departmentId', isEqualTo: departmentId)
+          .snapshots() // Get real-time stream of query results
+          .map((querySnapshot) {
+        // Transform each QuerySnapshot into a List of Course objects
+        return querySnapshot.docs.map((doc) {
+          final data = doc.data(); // Extract Firestore document data
+          return Course(
+            id: data['id'],
+            name: data['name'],
+            departmentId: data['departmentId'],
+            code: data['code'],
+            year: data['year'],
+          );
+        }).toList(); // Convert the Iterable to a List
+      });
+    } catch (e) {
+      throw Exception('Failed to retrieve Course');
+    }
   }
 
   // add course to Firestore
@@ -46,8 +71,8 @@ class CourseService {
         throw Exception("Course Code '$code' already exists.");
       }
 
-      await _firestore.collection('Courses').add({
-        'id': id,
+      final docRef = await _firestore.collection('Courses').add({
+        // 'id': id,
         'name': name,
         'code': code,
         // 'drId': drId,
@@ -55,6 +80,8 @@ class CourseService {
         'departmentId': departmentId,
         'year': year,
       });
+      // Update the document to set the 'id' field to match doc.id
+      await docRef.update({'id': docRef.id});
     } catch (e) {
       throw Exception("Failed to add Course: $e");
     }
