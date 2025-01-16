@@ -21,7 +21,6 @@ import 'package:mobileprogramming/screens/Assignment/assignment_screen.dart';
 
 import 'package:flutter_sizer/flutter_sizer.dart';
 
-
 class HexColor extends Color {
   HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
 
@@ -158,8 +157,6 @@ class MyApp extends StatelessWidget {
 
         initialRoute: '/',
         routes: {
-          // '/' : (context) =>CourseDetailScreen(key: null, courseId: course.id,),
-          // '/': (context) => DesignCourseHomeScreen(),
           '/': (context) => IntroductionAnimationScreen(),
           '/login': (context) => LoginScreen(),
           '/signin': (context) => LoginScreen(),
