@@ -7,7 +7,7 @@ class CourseDetailScreen extends StatelessWidget {
   final String courseId;
   //final AppUser doctor;
 
-  const CourseDetailScreen({required super.key, required this.courseId });
+  const CourseDetailScreen({  super.key, required this.courseId });
 
   @override
   Widget build(BuildContext context) {

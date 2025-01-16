@@ -13,6 +13,8 @@ import 'package:mobileprogramming/screens/AdminScreens/view_department_courses.d
 import 'package:mobileprogramming/screens/AdminScreens/view_departments_screen.dart';
 import 'package:mobileprogramming/screens/AssignmentScreens/assignment_list_screen.dart';
 import 'package:mobileprogramming/screens/AssignmentScreens/student_assignment_list.dart';
+import 'package:mobileprogramming/screens/AssignmentScreens/ui_create_assignment.dart';
+import 'package:mobileprogramming/screens/CourseDetailScreen.dart';
 import 'package:mobileprogramming/screens/Registration/signin.dart';
 import 'package:mobileprogramming/screens/Registration/signup.dart';
 import 'package:mobileprogramming/screens/UserScreens/user_home.dart';
@@ -37,6 +39,7 @@ void main() async {
   //   androidProvider: AndroidProvider.playIntegrity,
   // );
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -145,6 +148,7 @@ class MyApp extends StatelessWidget {
 
         initialRoute: '/',
         routes: {
+         // '/' : (context) =>CourseDetailScreen(key: null, courseId: course.id,),
           '/': (context) => IntroductionAnimationScreen(),
           '/login': (context) => LoginScreen(),
           '/signin': (context) => LoginScreen(),
