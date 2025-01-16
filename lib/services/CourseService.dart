@@ -72,11 +72,8 @@ class CourseService {
       }
 
       final docRef = await _firestore.collection('Courses').add({
-        // 'id': id,
         'name': name,
         'code': code,
-        // 'drId': drId,
-        // 'taId': taId,
         'departmentId': departmentId,
         'year': year,
       });
@@ -85,11 +82,5 @@ class CourseService {
     } catch (e) {
       throw Exception("Failed to add Course: $e");
     }
-  }
-
-
-
-  void enrollInstructor(){
-
   }
 }

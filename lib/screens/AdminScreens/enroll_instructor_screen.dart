@@ -3,6 +3,7 @@ import 'package:mobileprogramming/models/Course.dart';
 import 'package:mobileprogramming/services/CourseService.dart';
 import 'package:mobileprogramming/services/DoctorService.dart';
 import 'package:mobileprogramming/services/TaService.dart';
+import 'package:mobileprogramming/services/user_service.dart';
 import 'package:uuid/uuid.dart';
 
 final uuid = Uuid();
@@ -19,6 +20,7 @@ class EnrollInstructorScreen extends StatefulWidget {
 class _EnrollInstructorScreenState extends State<EnrollInstructorScreen> {
   final CourseService _courseService = CourseService();
   final DoctorService _doctorService = DoctorService();
+  final UserService _userService = UserService();
   final TaService _taService = TaService();
   //Doesn't allow to re-build form widget, keeps its internal state (show validation state or not)
   //Access form
@@ -37,7 +39,7 @@ class _EnrollInstructorScreenState extends State<EnrollInstructorScreen> {
     //! -> will not be null, filled later, validate()-> bool
     if (isValid) {
       _form.currentState!.save();
-      _saveCourse();
+      _EnrollInstructor();
     }
   }
 
@@ -45,40 +47,38 @@ class _EnrollInstructorScreenState extends State<EnrollInstructorScreen> {
     setState(() {
       selectedCourse = '';
       selectedInstructor;
-      selectedDoctorName;
-      selectedTaName;
+      selectedDoctorName = '';
+      selectedTaName = '';
     });
   }
 
-  void _saveCourse() async {
-    // String _uuid = uuid.v4();
-    // try {
-    //   await _courseService.addCourse(
-    //     id: _uuid,
-    //     code: _enteredCode,
-    //     // drId: _selectedDr,
-    //     // taId: _selectedTa,
-    //     departmentId: _selectedDepartment,
-    //     year: _selectedYear,
-    //   );
-    //   // Check if the widget is still in the tree before using context
-    //   if (!mounted) return;
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     SnackBar(content: Text('Course added successfully!')),
-    //   );
-    //   _clearFields();
-    // } catch (e) {
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     SnackBar(content: Text('Failed to add course: $e')),
-    //   );
-    // }
+  void _EnrollInstructor() {
+    String _uuid = uuid.v4();
+    try {
+      if (selectedInstructor == 'Doctor') {
+        _userService.enrollInstructor(selectedDoctorName, selectedCourse);
+      } else if (selectedInstructor == 'Teaching Assistant') {
+        _userService.enrollInstructor(selectedTaName, selectedCourse);
+      }
+
+      // Check if the widget is still in the tree before using context
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Instructor enrolled successfully!')),
+      );
+      _clearFields();
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to enroll instructor: $e')),
+      );
+    }
   }
 
   /// initialization is here:
   @override
   void initState() {
     super.initState();
-    selectedInstructor = "Doctor";
+    // selectedInstructor = "Doctor";
   }
 
   @override
@@ -127,7 +127,8 @@ class _EnrollInstructorScreenState extends State<EnrollInstructorScreen> {
                   SizedBox(height: 16),
                   if (selectedInstructor == "Doctor")
                     StreamBuilder<List<Map<String, dynamic>>>(
-                      stream: _doctorService.getDoctorByDepartmentId(departmentId),
+                      stream:
+                          _doctorService.getDoctorByDepartmentId(departmentId),
                       builder: (context, snapshot) {
                         List<DropdownMenuItem> dritems = [];
                         if (!snapshot.hasData) {
