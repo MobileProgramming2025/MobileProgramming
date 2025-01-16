@@ -24,6 +24,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Profile'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: () {
+              // Navigate to the edit form
+            },
+            tooltip: 'Edit Profile',
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -33,17 +42,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Center(
                 child: Column(
                   children: [
-                    CircleAvatar(
-                      radius: 50,
-                      backgroundColor: Colors.blueAccent,
-                      child: Text(
-                        user.name.isNotEmpty ? user.name[0].toUpperCase() : '?',
-                        style: const TextStyle(
-                          fontSize: 40,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                    Stack(
+                      alignment: Alignment.bottomRight,
+                      children: [
+                        CircleAvatar(
+                          radius: 50,
+                          backgroundColor: Colors.blueAccent,
+                          child: Text(
+                            user.name.isNotEmpty
+                                ? user.name[0].toUpperCase()
+                                : '?',
+                            style: const TextStyle(
+                              fontSize: 40,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
                     const SizedBox(height: 10),
                     Text(
@@ -65,17 +81,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
               _buildProfileCard(title: 'Role', value: user.role),
               const SizedBox(height: 12),
               // _buildProfileCard(title: 'Department', value: user.departmentId),
-              const SizedBox(height: 12),
+              // const SizedBox(height: 12),
             ],
           ),
         ),
       ),
+
+      floatingActionButton: FloatingActionButton(
+        onPressed: null,
+        tooltip: 'Edit Profile',
+        child: const Icon(Icons.edit),
+      ),
+
     );
   }
 
   Widget _buildProfileCard({required String title, required String value}) {
     return SizedBox(
-      height: 80, // Set a fixed height for all cards
+      height: 80, // Fixed height for consistency
       child: Card(
         elevation: 3,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
