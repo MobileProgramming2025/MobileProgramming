@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/user.dart';
 import 'package:mobileprogramming/screens/CourseList.dart';
-import 'package:mobileprogramming/screens/UserScreens/profile.dart';
+import 'package:mobileprogramming/screens/partials/profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DoctorDashboard extends StatefulWidget {
