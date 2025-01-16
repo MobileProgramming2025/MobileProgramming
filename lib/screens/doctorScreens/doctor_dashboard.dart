@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/screens/CourseDetailScreen.dart';
+import 'package:mobileprogramming/screens/partials/profile.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:mobileprogramming/models/user.dart';
-import 'package:mobileprogramming/screens/UserScreens/profile.dart';
+
 import 'package:mobileprogramming/screens/CourseList.dart';
 
 class DoctorDashboard extends StatefulWidget {
