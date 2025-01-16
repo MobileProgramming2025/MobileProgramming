@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/Course.dart';
 import 'package:mobileprogramming/services/CourseService.dart';
 import 'package:mobileprogramming/services/DoctorService.dart';
+import 'package:mobileprogramming/services/TaService.dart';
 import 'package:uuid/uuid.dart';
 
 final uuid = Uuid();
@@ -18,6 +19,7 @@ class EnrollInstructorScreen extends StatefulWidget {
 class _EnrollInstructorScreenState extends State<EnrollInstructorScreen> {
   final CourseService _courseService = CourseService();
   final DoctorService _doctorService = DoctorService();
+  final TaService _taService = TaService();
   //Doesn't allow to re-build form widget, keeps its internal state (show validation state or not)
   //Access form
   final _form = GlobalKey<FormState>();
