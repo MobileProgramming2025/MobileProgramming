@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AssignmentDetailScreen extends StatefulWidget {
   final String assignmentId;
@@ -23,108 +26,190 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
   String? _submissionUrl;
   bool _isOverdue = false;
   bool _isSubmitted = false;
-
+PlatformFile? pickedFile;
+UploadTask? uploadTask;
   @override
   void initState() {
     super.initState();
-    _initializeSubmission();
+   // _initializeSubmission();
   }
+// void _selectFile() async {
+//   final result = await FilePicker.platform.pickFiles();
+//   if (result== null) return ;
+//   setState(() {
+//     pickedFile = result.files.first ; 
+//   });
+// }
+// Future _submitAssignment()async{
+//     final user = FirebaseAuth.instance.currentUser;
+//   if (user == null) {
+//     print('Error: User is not authenticated');
+//     return;
+//   }
 
+//   final userId = user.uid;
+//   final result = await FilePicker.platform.pickFiles(
+//     type: FileType.custom,
+//     allowedExtensions: ['pdf', 'docx', 'jpg', 'png'],
+//     withData: true,
+//   );
+
+//   if (result == null || result.files.isEmpty || result.files.first.bytes == null) {
+//     print('Error: No valid file selected');
+//     return;
+//   }
+   
+//     pickedFile = result.files.first ; 
+//     final path= 'Submissions/assignmentId/fileUrl';
+//  //final path= 'Submissions/${widget.assignmentId}/$userId/${pickedFile!.name}' ;
+//  final file = File(pickedFile!.path!);
+//   final ref = FirebaseStorage.instance.ref().child(path);
+//  uploadTask =  ref.putFile(file);
+//  final snapshot = await uploadTask!.whenComplete((){});
+//  final urlDownload = await snapshot.ref.getDownloadURL();
+//  print ('Downloas Link : $urlDownload');
+// }
   /// Initializes the submission status and checks if the user has already submitted.
-  void _initializeSubmission() async {
-    final userId = FirebaseAuth.instance.currentUser!.uid;
-    final dueDate = widget.assignmentData['dueDateTime'].toDate();
+//  void _initializeSubmission() async {
+//   final userId = FirebaseAuth.instance.currentUser!.uid;
+//   final dueDate = widget.assignmentData['dueDateTime'].toDate();
 
-    setState(() {
-      _isOverdue = DateTime.now().isAfter(dueDate);
-    });
+//   setState(() {
+//     _isOverdue = DateTime.now().isAfter(dueDate);
+//   });
 
-    // Check if submission exists
-    final submissionSnapshot = await FirebaseFirestore.instance
-        .collection('submissions')
-        .doc(widget.assignmentId)
-        .collection('studentSubmissions')
-        .doc(userId)
-        .get();
+//   // Reference to the student's submission document
+//   final studentSubmissionDoc = FirebaseFirestore.instance
+//       .collection('submissions')
+//       .doc(widget.assignmentId)
+//       .collection('studentSubmissions')
+//       .doc(userId);
 
-    if (submissionSnapshot.exists) {
-      setState(() {
-        _isSubmitted = true;
-        _submissionUrl = submissionSnapshot.data()?['fileUrl'];
-      });
-    } else {
-      // Automatically create the submission document
-      await FirebaseFirestore.instance
-          .collection('submissions')
-          .doc(widget.assignmentId)
-          .set({
-        'assignmentId': widget.assignmentId,
-        'title': widget.assignmentData['title'],
-        'createdAt': FieldValue.serverTimestamp(),
-      }, SetOptions(merge: true)); // Merge if already exists
-    }
-  }
+//   // Check if submission document exists
+//   final submissionSnapshot = await studentSubmissionDoc.get();
 
-  /// Handles the submission of the assignment file.
- void _submitAssignment() async {
-  final userId = FirebaseAuth.instance.currentUser!.uid;
+//   if (submissionSnapshot.exists) {
+//     // Load existing data
+//     setState(() {
+//       _isSubmitted = true;
+//       _submissionUrl = submissionSnapshot.data()?['fileUrl'];
+//     });
+//   } else {
+//     // Create the submission document with placeholder values
+//     await studentSubmissionDoc.set({
+//       'fileUrl': null,
+//       'submittedAt': null,
+//       'assignmentId': widget.assignmentId,
+//       'studentId': userId,
+//     });
+//   }
+// }
 
-  final result = await FilePicker.platform.pickFiles(
-    type: FileType.custom,
-    allowedExtensions: ['pdf', 'docx', 'jpg', 'png'],
-  );
 
-  if (result == null || result.files.isEmpty || result.files.first.bytes == null) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('No valid file selected!')),
-    );
+//   /// Handles the submission of the assignment file.
+//  void _submitAssignment() async {
+//   final user = FirebaseAuth.instance.currentUser;
+//   if (user == null) {
+//     print('Error: User is not authenticated');
+//     return;
+//   }
+
+//   final userId = user.uid;
+//   final result = await FilePicker.platform.pickFiles(
+//     type: FileType.custom,
+//     allowedExtensions: ['pdf', 'docx', 'jpg', 'png'],
+//     withData: true,
+//   );
+
+//   if (result == null || result.files.isEmpty || result.files.first.bytes == null) {
+//     print('Error: No valid file selected');
+//     return;
+//   }
+
+//   final file = result.files.first;
+//   final filePath = 'submissions/${widget.assignmentId}/$userId/${file.name}';
+
+//   try {
+//     final ref = FirebaseStorage.instance.ref(filePath);
+//     await ref.putData(file.bytes!); // Upload the file
+//     final fileUrl = await ref.getDownloadURL();
+
+//     // Reference to the student's submission document
+//     final studentSubmissionDoc = FirebaseFirestore.instance
+//         .collection('submissions')
+//         .doc(widget.assignmentId)
+//         .collection('studentSubmissions')
+//         .doc(userId);
+
+//     // Update the Firestore document
+//     await studentSubmissionDoc.update({
+//       'fileUrl': fileUrl,
+//       'submittedAt': FieldValue.serverTimestamp(),
+//     });
+
+//     print('Assignment submitted successfully with URL: $fileUrl');
+//   } catch (e) {
+//     print('Error during upload: $e');
+//   }
+// }
+
+Future<void> _submitAssignment() async {
+  // Simulate getting userId, assignmentId, and file selection
+  final userId = 'exampleUserId'; // Replace with actual user ID (from auth)
+  final assignmentId = widget.assignmentId; // From the widget data
+  final result = await FilePicker.platform.pickFiles();
+
+  if (result == null || result.files.single.path == null) {
+    debugPrint('No file selected');
     return;
   }
 
-  final file = result.files.first;
+  final filePath = result.files.single.path!;
+  final fileName = result.files.single.name;
+  final file = File(filePath);
 
-  setState(() {
-    _isSubmitting = true;
-  });
+  debugPrint('Selected file path: $filePath');
+  debugPrint('File name: $fileName');
+
+  // Firebase Storage Reference
+  final storageRef = FirebaseStorage.instance
+      .ref()
+      .child('submissions/$userId/$assignmentId/$fileName');
 
   try {
-    final ref = FirebaseStorage.instance
-        .ref('submissions/${widget.assignmentId}/$userId/${file.name}');
-    await ref.putData(file.bytes!);
-    final fileUrl = await ref.getDownloadURL();
+    // Upload file to Firebase Storage
+    final uploadTask = storageRef.putFile(file);
+    final snapshot = await uploadTask.whenComplete(() => null);
+    final fileUrl = await snapshot.ref.getDownloadURL();
 
-    await FirebaseFirestore.instance
-        .collection('submissions')
-        .doc(widget.assignmentId)
-        .collection('studentSubmissions')
-        .doc(userId)
-        .set({
+    debugPrint('File uploaded successfully: $fileUrl');
+
+    // Save submission data to Firestore
+    final firestoreRef = FirebaseFirestore.instance
+        .collection('submissions') // Main submissions collection
+        .doc(assignmentId) // Document for the specific assignment
+        .collection('users') // Sub-collection for users
+        .doc(userId); // User-specific submission
+
+    await firestoreRef.set({
+      'fileName': fileName,
       'fileUrl': fileUrl,
-      'submittedAt': DateTime.now(),
-      'assignmentId': widget.assignmentId,
-      'studentId': userId,
+      'submittedAt': FieldValue.serverTimestamp(),
     });
 
-    setState(() {
-      _isSubmitted = true;
-      _submissionUrl = fileUrl;
-    });
-
-    if (!mounted) return;
+    debugPrint('Submission saved to Firestore successfully.');
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Assignment submitted successfully!')),
     );
   } catch (e) {
-    if (!mounted) return;
+    debugPrint('Error during submission: $e');
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Failed to submit assignment: $e')),
     );
-  } finally {
-    setState(() {
-      _isSubmitting = false;
-  } );
   }
 }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -163,10 +248,11 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
                           // Open the file in a browser or external app
                         },
                         child: Text(
-                          'View File',
+                          'View File :', 
                           style: TextStyle(
                             color: Theme.of(context).primaryColor,
                             decoration: TextDecoration.underline,
+
                           ),
                         ),
                       ),
@@ -182,5 +268,36 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
         ),
       ),
     );
+
+
+
+//     Widget buildProgress()=> StreamBuilder<TaskSnapshot>
+//     (
+//       stream : uploadTask?.snapshotEvents,
+//     builder: (context, snapshot)
+//   {
+//     if (snapshot.hasData)
+//     {
+//       final data = snapshot.data!;
+//       double progress = data.bytesTransferred / data.totalBytes ;
+//    return const SizedBox(height : 50,
+//       child: Stack(
+//         fit: StackFit.expand ,
+// children: [
+//   LinearProgressIndicator(
+//     value:  progress ,
+//     backgroundColor: Colors.grey,
+//     color: Colors.green,
+//   ),
+// ],
+//       ),
+//       );
+//     }
+//     else {
+//       return const SizedBox(height : 50);
+//     }
+//   });
   }
 }
+
+

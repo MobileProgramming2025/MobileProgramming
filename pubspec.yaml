@@ -56,6 +56,7 @@ flutter:
     - assets/slide3.png
     - assets/slide4.png
     - assets/userImage.png
+    - assets/webInterFace.png
     - assets/introduction_animation/care_image.png
     - assets/introduction_animation/introduction_image.png
     - assets/introduction_animation/benefits.png

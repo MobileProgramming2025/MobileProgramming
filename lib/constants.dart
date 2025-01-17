@@ -31,9 +31,12 @@ const kHalfWidthSizedBox = SizedBox(
 );
 
 // Dynamically determine border radius based on screen size
-BorderRadius getDynamicBorderRadius(BuildContext context) {
+BorderRadius kTopBorderRadius(BuildContext context) {
   final bool isTablet = MediaQuery.of(context).size.shortestSide >= 600;
-  return BorderRadius.circular(isTablet ? 40 : 20);
+  return BorderRadius.only(
+    topLeft: Radius.circular(isTablet ? 40 : 20),
+    topRight: Radius.circular(isTablet ? 40 : 20),
+  );
 }
 
 final kInputTextStyle = GoogleFonts.poppins(
