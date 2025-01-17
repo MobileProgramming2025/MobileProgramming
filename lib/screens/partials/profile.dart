@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/user.dart';
 import 'package:mobileprogramming/screens/partials/edit_profile.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
+import 'package:mobileprogramming/models/databaseHelper.dart';
 
 class ProfileScreen extends StatefulWidget {
   final User user;
@@ -13,13 +16,31 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   late User user;
-
+  late User doctor;
+File? _profileImage;
   @override
   void initState() {
     super.initState();
     user = widget.user;
+     if (doctor.profileImagePath != null) {
+      _profileImage = File(doctor.profileImagePath!);
+    }
   }
-
+Future<void> _pickImage() async {
+    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _profileImage = File(pickedFile.path);
+        doctor = doctor.copyWith(profileImagePath: pickedFile.path);
+        // Save the updated profile image path to SQFLite
+        _saveProfileImagePath(pickedFile.path);
+      });
+    }
+  }
+   Future<void> _saveProfileImagePath(String path) async {
+    final dbHelper = DatabaseHelper();
+    await dbHelper.updateProfileImagePath(doctor.id, path);
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,20 +73,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Stack(
                       alignment: Alignment.bottomRight,
                       children: [
-                        CircleAvatar(
-                          radius: 50,
-                          backgroundColor: Colors.blueAccent,
-                          child: Text(
-                            user.name.isNotEmpty
-                                ? user.name[0].toUpperCase()
-                                : '?',
-                            style: const TextStyle(
-                              fontSize: 40,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
+                        // CircleAvatar(
+                        //   radius: 50,
+                        //   backgroundColor: Colors.blueAccent,
+                        //   child: Text(
+                        //     user.name.isNotEmpty
+                        //         ? user.name[0].toUpperCase()
+                        //         : '?',
+                        //     style: const TextStyle(
+                        //       fontSize: 40,
+                        //       fontWeight: FontWeight.bold,
+                        //       color: Colors.white,
+                        //     ),
+                        //   ),
+                        // ),
                       ],
                     ),
                     const SizedBox(height: 10),
@@ -80,6 +101,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ],
                 ),
               ),
+              _profileImage != null
+                ? CircleAvatar(
+                    backgroundImage: FileImage(_profileImage!),
+                    radius: 50,
+                  )
+                : CircleAvatar(
+                    child: Icon(Icons.person),
+                    radius: 50,
+                  ),
+            SizedBox(height: 16),
               const SizedBox(height: 24),
               _buildProfileCard(title: 'Name', value: user.name),
               const SizedBox(height: 12),
@@ -89,12 +120,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
               const SizedBox(height: 12),
               // _buildProfileCard(title: 'Department', value: user.departmentId),
               // const SizedBox(height: 12),
+           
             ],
           ),
         ),
       ),
-
-      floatingActionButton: FloatingActionButton(
+   floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
             context,
@@ -105,7 +136,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         },
         tooltip: 'Edit Profile',
         child: const Icon(Icons.edit),
-      ),
+      )
+    
 
     );
   }

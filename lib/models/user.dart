@@ -11,6 +11,7 @@ class User {
   final List<Map<String, dynamic>>? takenCourses;
   final DateTime? addedDate;
   final String? year;
+  final String? profileImagePath;
   User({
     required this.id,
     required this.name,
@@ -22,6 +23,7 @@ class User {
     this.takenCourses,
     this.addedDate,
     this.year,
+    this.profileImagePath,
   });
 
   // Convert a User object to a Map for Firestore
@@ -63,7 +65,8 @@ class User {
         'password': password,
         'role': role,
         'departmentId': departmentId,
-        'enrolled_courses': enrolledCourses!, // Serialize Course objects
+        'enrolled_courses': enrolledCourses!, 
+        'profile_image_path': profileImagePath,// Serialize Course objects
       };
     }
   }
@@ -94,6 +97,35 @@ class User {
                   map['added_date'] as String) // Parse String to DateTime
               : DateTime.now()), // Default to current date
       year: map['year'] as String? ?? '',
+      profileImagePath: map['profile_image_path'],
+    );
+  }
+// CopyWith method to create a copy of the User with updated fields
+  User copyWith({
+    String? id,
+    String? name,
+    String? email,
+    String? password,
+    String? role,
+    String? departmentId,
+    List<Map<String, dynamic>>? enrolledCourses,
+    List<Map<String, dynamic>>? takenCourses,
+    DateTime? addedDate,
+    String? year,
+    String? profileImagePath,
+  }) {
+    return User(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      email: email ?? this.email,
+      password: password ?? this.password,
+      role: role ?? this.role,
+      departmentId: departmentId ?? this.departmentId,
+      enrolledCourses: enrolledCourses ?? this.enrolledCourses,
+      takenCourses: takenCourses ?? this.takenCourses,
+      addedDate: addedDate ?? this.addedDate,
+      year: year ?? this.year,
+      profileImagePath: profileImagePath ?? this.profileImagePath,
     );
   }
 
