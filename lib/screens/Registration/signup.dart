@@ -164,11 +164,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       return const Text("No departments available");
                     }
                     
-                    // final items = snapshot.data?.docs.toList();
-                    // if (items!.isEmpty) {
-                    //   return const Text("No departments available");
-                    // }
-                    // List<DropdownMenuItem<String>> departmentItems = [];
                     final items = snapshot.data!.docs;
                     List<DropdownMenuItem<String>> departmentItems = items.map((item) {
                       return DropdownMenuItem(
@@ -179,19 +174,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                       );
                     }).toList();
-
-                    // for (var item in items) {
-                    //   departmentItems.add(
-                    //     DropdownMenuItem(
-                    //       value: item.id,
-                    //       child: Text(
-                    //         item['name'],
-                    //         style: Theme.of(context).textTheme.bodyLarge,
-                    //       ),
-                    //     ),
-                    //   );
-                    // }
-
                     
                     return DropdownButtonFormField(
                       decoration: const InputDecoration(
