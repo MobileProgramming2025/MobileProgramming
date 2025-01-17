@@ -13,6 +13,8 @@ import 'package:mobileprogramming/screens/AdminScreens/view_department_courses.d
 import 'package:mobileprogramming/screens/AdminScreens/view_departments_screen.dart';
 import 'package:mobileprogramming/screens/AssignmentScreens/assignment_list_screen.dart';
 import 'package:mobileprogramming/screens/AssignmentScreens/student_assignment_list.dart';
+import 'package:mobileprogramming/screens/AssignmentScreens/ui-assignment-details.dart';
+import 'package:mobileprogramming/screens/CourseDetailScreen.dart';
 import 'package:mobileprogramming/screens/Registration/signin.dart';
 import 'package:mobileprogramming/screens/Registration/signup.dart';
 import 'package:mobileprogramming/screens/Assignment/assignment_screen.dart';
@@ -165,7 +167,7 @@ class MyApp extends StatelessWidget {
           '/create_assignment-static': (context) =>
               AssignmentListScreen(courseId: "course123"),
           '/assignment_screen': (context) => AssignmentScreen(),
-          // '/createQuiz': (context) => CourseListPage(),
+          //  '/createQuiz': (context) => CourseListPage(),
           '/add-doctor': (context) => AddDoctorScreen(),
           '/Doctors Dashboard': (context) => DashboardScreen(),
           '/add_courses': (context) => AddCoursesScreen(),
@@ -180,6 +182,8 @@ class MyApp extends StatelessWidget {
           '/view_department_courses':(context) => ViewDepartmentCoursesScreen(),
           '/enroll_instructor':(context) => EnrollInstructorScreen(),
           '/view_Instructor_courses':(context) => ViewInstructorCoursesScreen(),
+         '/view_courses_details': (context) => CourseDetailScreen(),
+        
 
 
         },

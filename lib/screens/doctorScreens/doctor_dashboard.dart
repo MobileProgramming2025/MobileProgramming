@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:table_calendar/table_calendar.dart';
 import 'package:mobileprogramming/models/Course.dart';
 import 'package:mobileprogramming/screens/partials/profile.dart';
 import 'package:mobileprogramming/services/CourseService.dart';
@@ -99,10 +100,7 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFEDECF8),
       appBar: AppBar(
-        backgroundColor: Color(0xFFEDECF8),
-        elevation: 0,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -111,7 +109,7 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
               style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black),
+                  color: Colors.white,),
             ),
             CircleAvatar(
               backgroundImage: AssetImage("assets/userImage.png"),
@@ -121,22 +119,18 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
         ),
       ),
       body: isLoading
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
+          ? Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Real Calendar Section
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16.0, vertical: 8.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: Theme.of(context).canvasColor,
                           borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
@@ -150,8 +144,7 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                           firstDay: DateTime.utc(2000, 1, 1),
                           lastDay: DateTime.utc(2100, 12, 31),
                           focusedDay: _focusedDate,
-                          selectedDayPredicate: (day) =>
-                              isSameDay(_selectedDate, day),
+                          selectedDayPredicate: (day) => isSameDay(_selectedDate, day),
                           onDaySelected: (selectedDay, focusedDay) {
                             setState(() {
                               _selectedDate = selectedDay;
@@ -162,29 +155,25 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                             formatButtonVisible: false,
                             titleCentered: true,
                             decoration: BoxDecoration(
-                              color: Color(0xFF8E77FF),
-                              borderRadius: BorderRadius.vertical(
-                                  top: Radius.circular(16)),
+                              color: Theme.of(context).colorScheme.primary,
+                              borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
                             ),
                             titleTextStyle: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                               fontSize: 20,
                             ),
-                            leftChevronIcon:
-                                Icon(Icons.chevron_left, color: Colors.white),
-                            rightChevronIcon:
-                                Icon(Icons.chevron_right, color: Colors.white),
+                            leftChevronIcon: Icon(Icons.chevron_left, color: Colors.white),
+                            rightChevronIcon: Icon(Icons.chevron_right, color: Colors.white),
                           ),
                           calendarStyle: CalendarStyle(
                             todayDecoration: BoxDecoration(
-                              color: Colors.transparent,
-                              border: Border.all(
-                                  color: Color(0xFF8E77FF), width: 2),
+                              color: const Color.fromARGB(255, 255, 255, 255),
+                              border: Border.all(color: Theme.of(context).colorScheme.primary, width: 2),
                               shape: BoxShape.circle,
                             ),
                             selectedDecoration: BoxDecoration(
-                              color: Color(0xFF8E77FF),
+                              color: Theme.of(context).colorScheme.primary,
                               shape: BoxShape.circle,
                             ),
                             defaultDecoration: BoxDecoration(
@@ -197,10 +186,10 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                             outsideDecoration: BoxDecoration(
                               shape: BoxShape.circle,
                             ),
-                            defaultTextStyle: TextStyle(color: Colors.black),
+                            defaultTextStyle: TextStyle(color: Theme.of(context).colorScheme.onBackground),
                             weekendTextStyle: TextStyle(color: Colors.red),
                             todayTextStyle: TextStyle(
-                              color: Colors.white,
+                              color: const Color.fromARGB(255, 56, 3, 3),
                               fontWeight: FontWeight.bold,
                             ),
                             selectedTextStyle: TextStyle(
@@ -209,20 +198,9 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                             ),
                             outsideDaysVisible: false,
                           ),
-                          daysOfWeekStyle: DaysOfWeekStyle(
-                            weekdayStyle: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.grey,
-                            ),
-                            weekendStyle: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.red,
-                            ),
-                          ),
                         ),
                       ),
                     ),
-
                     SizedBox(height: 20),
 
                     // Progress Section
@@ -424,10 +402,11 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(30),
-                topRight: Radius.circular(30),
-                bottomRight: Radius.circular(30),
-                bottomLeft: Radius.circular(30)),
+              topLeft: Radius.circular(30),
+              topRight: Radius.circular(30),
+              bottomRight: Radius.circular(30),
+              bottomLeft: Radius.circular(30),
+            ),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.1),
@@ -441,23 +420,18 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
             type: BottomNavigationBarType.fixed,
             backgroundColor: Colors.transparent,
             elevation: 0,
-            selectedItemColor: const Color.fromARGB(255, 69, 0, 187),
-            unselectedItemColor: const Color.fromARGB(255, 223, 101, 26),
+            selectedItemColor: Colors.indigo,
+            unselectedItemColor: Colors.orange,
             showSelectedLabels: true,
             showUnselectedLabels: false,
             items: const [
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.house_rounded), label: "Home"),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.school), label: "Courses"),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.calendar_month_outlined), label: "Calendar"),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.person), label: "Profile"),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.exit_to_app_sharp), label: "Logout"),
+              BottomNavigationBarItem(icon: Icon(Icons.house_rounded), label: "Home"),
+              BottomNavigationBarItem(icon: Icon(Icons.school), label: "Courses"),
+              BottomNavigationBarItem(icon: Icon(Icons.calendar_month_outlined), label: "Calendar"),
+              BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
+              BottomNavigationBarItem(icon: Icon(Icons.exit_to_app_sharp), label: "Logout"),
             ],
-            onTap: _onItemTapped, // Call the method on tap
+            onTap: _onItemTapped,
           ),
         ),
       ),
@@ -467,7 +441,7 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
 
 class ProgressCard extends StatelessWidget {
   final String title;
-  final int progress;
+  final double progress;
   final Color color;
 
   const ProgressCard({
@@ -478,33 +452,19 @@ class ProgressCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.cloud, color: Colors.black),
-              Spacer(),
-              Icon(Icons.more_vert, color: Colors.black),
-            ],
-          ),
-          SizedBox(height: 10),
-          Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
-          SizedBox(height: 10),
-          LinearProgressIndicator(
-            value: progress / 100,
-            backgroundColor: Colors.grey[300],
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
-          ),
-          SizedBox(height: 10),
-          Text("Progress: $progress%"),
-        ],
+    return Card(
+      color: color,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Text(title, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            SizedBox(height: 8),
+            LinearProgressIndicator(value: progress / 100),
+            SizedBox(height: 8),
+            Text('${(progress).toStringAsFixed(0)}% Completed'),
+          ],
+        ),
       ),
     );
   }
