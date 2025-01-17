@@ -10,12 +10,12 @@ import 'package:mobileprogramming/widgets/Quiz/options_editor.dart';
 
 class QuizCreationScreen extends StatefulWidget {
   final String courseId;
-  final String? quizId; 
+  final String? quizId;
 
   const QuizCreationScreen({
     super.key,
     required this.courseId,
-    this.quizId, 
+    this.quizId,
   });
 
   @override
@@ -36,14 +36,14 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
   void initState() {
     super.initState();
     if (widget.quizId != null) {
-      _fetchQuizData(); 
+      _fetchQuizData();
     }
   }
 
   @override
   void didUpdateWidget(covariant QuizCreationScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
-   
+
     if (widget.quizId != oldWidget.quizId) {
       _fetchQuizData();
     }
@@ -51,7 +51,7 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
 
   Future<void> _fetchQuizData() async {
     try {
-      if (widget.quizId == null) return; 
+      if (widget.quizId == null) return;
 
       DocumentSnapshot doc = await FirebaseFirestore.instance
           .collection('quizzes')
@@ -68,66 +68,68 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
         });
       }
     } catch (error) {
-      if(!mounted) return;
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error loading quiz: $error')),
       );
     }
   }
 
-  String _generateId() {
-    return DateTime.now().millisecondsSinceEpoch.toString();
-  }
-
- void _submitQuiz() async {
-  if (_quizTitle.isEmpty || _questions.isEmpty || _startDate.isAfter(_endDate)) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Please provide a title, at least one question, and a valid date range.')),
-    );
-    return;
-  }
-
-  setState(() => _isSubmitting = true);
-
-  try {
-    final user = FirebaseAuth.instance.currentUser; // Fetch the logged-in user
-    if (user == null) {
+  void _submitQuiz() async {
+    if (_quizTitle.isEmpty || _questions.isEmpty || _startDate.isAfter(_endDate)) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('User not logged in.')),
+        const SnackBar(content: Text('Please provide a title, at least one question, and a valid date range.')),
       );
       return;
     }
 
-    Quiz quiz = Quiz(
-      id: widget.quizId ?? _generateId(),
-      title: _quizTitle,
-      startDate: _startDate,
-      endDate: _endDate,
-      questions: _questions,
-      courseId: widget.courseId,
-      createdBy: user.uid, // Add the logged-in user's ID
-    );
+    setState(() => _isSubmitting = true);
 
-    if (widget.quizId == null) {
-      await FirebaseFirestore.instance.collection('quizzes').doc(quiz.id).set(quiz.toJson());
-    } else {
-      await FirebaseFirestore.instance.collection('quizzes').doc(widget.quizId).update(quiz.toJson());
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('User not logged in.')),
+        );
+        return;
+      }
+
+      String quizId = widget.quizId ?? FirebaseFirestore.instance.collection('quizzes').doc().id;
+
+      Quiz quiz = Quiz(
+        id: quizId,
+        title: _quizTitle,
+        startDate: _startDate,
+        endDate: _endDate,
+        questions: _questions.map((q) {
+          return q.id.isEmpty
+              ? q.copyWith(id: FirebaseFirestore.instance.collection('quizzes/$quizId/questions').doc().id)
+              : q;
+        }).toList(),
+        courseId: widget.courseId,
+        createdBy: user.uid,
+      );
+
+      if (widget.quizId == null) {
+        await FirebaseFirestore.instance.collection('quizzes').doc(quizId).set(quiz.toJson());
+      } else {
+        await FirebaseFirestore.instance.collection('quizzes').doc(widget.quizId).update(quiz.toJson());
+      }
+
+      if (!mounted) return;
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => QuizDetailsScreen(quiz: quiz)),
+      );
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error saving quiz: $error')),
+      );
+    } finally {
+      setState(() => _isSubmitting = false);
     }
-
-    if (!mounted) return;
-
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => QuizDetailsScreen(quiz: quiz)),
-    );
-  } catch (error) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Error saving quiz: $error')),
-    );
-  } finally {
-    setState(() => _isSubmitting = false);
   }
-}
 
   void _deleteQuiz() async {
     if (widget.quizId == null) return;
@@ -145,20 +147,28 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
     }
   }
 
-  void _addQuestion() {
-    setState(() {
-      _questions.add(
-        Question(
-          id: _generateId(),
-          text: '',
-          type: 'multiple choice',
-          options: ['Option 1', 'Option 2'],
-          correctAnswer: '',
-        ),
-      );
-    });
-    _navigateToPage(_questions.length);
-  }
+void _addQuestion() {
+  String quizId = widget.quizId ?? FirebaseFirestore.instance.collection('quizzes').doc().id;
+
+  String newQuestionId = FirebaseFirestore.instance
+      .collection('quizzes/$quizId/questions')
+      .doc()
+      .id;
+
+  setState(() {
+    _questions.add(
+      Question(
+        id: newQuestionId,
+        text: '',
+        type: 'multiple choice',
+        options: ['Option 1', 'Option 2'],
+        correctAnswer: '',
+      ),
+    );
+  });
+  _navigateToPage(_questions.length);
+}
+
 
   void _navigateToPage(int pageIndex) {
     _pageController.animateToPage(
@@ -172,7 +182,7 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
     if (_quizTitle.isEmpty && _questions.isEmpty) {
       return true;
     }
-   
+
     return (await showDialog(
           context: context,
           builder: (context) => AlertDialog(
@@ -273,7 +283,7 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
                     ),
                   ),
                 );
-              }),   //.toList(),
+              }).toList(),
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Center(

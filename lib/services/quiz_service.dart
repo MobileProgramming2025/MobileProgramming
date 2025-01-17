@@ -5,7 +5,6 @@ import 'package:mobileprogramming/models/Quiz.dart';
 class QuizService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Fetch all quizzes created by a specific user
   Future<List<Quiz>> getQuizzesByUser(String userId) async {
     try {
       QuerySnapshot snapshot = await _firestore
@@ -21,7 +20,6 @@ class QuizService {
     }
   }
 
-  // Create a new quiz
   Future<void> createQuiz(Quiz quiz) async {
     try {
       await _firestore.collection('quizzes').doc(quiz.id).set({
@@ -37,7 +35,6 @@ class QuizService {
     }
   }
 
-  // Fetch all quizzes
   Future<List<Quiz>> getQuizzes() async {
     try {
       QuerySnapshot quizSnapshot = await _firestore.collection('quizzes').get();
@@ -57,7 +54,6 @@ class QuizService {
     }
   }
 
-  // Fetch a specific quiz by ID
   Future<Quiz> getQuiz(String quizId) async {
     try {
       DocumentSnapshot quizDoc = await _firestore.collection('quizzes').doc(quizId).get();
@@ -94,7 +90,6 @@ class QuizService {
   }
 }
 
-  // Update an existing quiz
   Future<void> updateQuiz(Quiz quiz) async {
     try {
       final quizData = {
@@ -112,7 +107,7 @@ class QuizService {
     }
   }
 
-  // Delete a quiz
+
   Future<void> deleteQuiz(String quizId) async {
     try {
       await _firestore.collection('quizzes').doc(quizId).delete();
@@ -121,7 +116,6 @@ class QuizService {
     }
   }
 
-  // Parse questions from Firestore data
   List<Question> _parseQuestions(dynamic questionsData) {
     if (questionsData is List) {
       return questionsData.map((q) {
