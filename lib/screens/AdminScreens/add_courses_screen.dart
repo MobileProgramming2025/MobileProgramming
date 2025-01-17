@@ -81,6 +81,111 @@ class _AddCoursesScreenState extends State<AddCoursesScreen> {
     }
   }
 
+  Widget getCourseNameField() {
+    return TextFormField(
+      decoration: InputDecoration(
+        labelText: 'Course Name',
+        border: OutlineInputBorder(),
+      ),
+      controller: _nameController,
+      validator: (value) {
+        if (value == null || value.trim().isEmpty) {
+          return "please enter a valid Course Name";
+        }
+        return null;
+      },
+      //gets entered  automatically
+      onSaved: (value) {
+        _enteredName = value!;
+      },
+    );
+  }
+
+  Widget getCourseCodeField() {
+    return TextFormField(
+      decoration: InputDecoration(
+        labelText: 'Course Code',
+        border: OutlineInputBorder(),
+      ),
+      controller: _codeController,
+      validator: (value) {
+        if (value == null || value.trim().isEmpty) {
+          return "please enter a valid Course Code";
+        }
+        return null;
+      },
+      onSaved: (value) {
+        _enteredCode = value!;
+      },
+    );
+  }
+
+  Widget getDepartmentsDropdown() {
+    return StreamBuilder<List<Map<String, dynamic>>>(
+      stream: _departmentService.getAllDepartments(),
+      builder: (context, snapshot) {
+        List<DropdownMenuItem> depItems = [];
+        if (!snapshot.hasData) {
+          const CircularProgressIndicator();
+        } else {
+          final items = snapshot.data!;
+          for (var item in items!) {
+            depItems.add(
+              DropdownMenuItem(
+                value: item['id'],
+                child: Text(
+                  item['name'],
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+              ),
+            );
+          }
+        }
+        return DropdownButtonFormField(
+            validator: (value) {
+              if (value == null) {
+                return "please select a Department";
+              }
+              return null;
+            },
+            decoration: InputDecoration(
+              labelText: 'Department Name',
+              border: OutlineInputBorder(),
+            ),
+            items: depItems,
+            onChanged: (value) {
+              setState(() {
+                _selectedDepartment = value!;
+              });
+            });
+      },
+    );
+  }
+
+  Widget getYearsDropdown() {
+    return DropdownButtonFormField<String>(
+      value: _selectedYear,
+      items: years.map((year) {
+        return DropdownMenuItem(
+          value: year,
+          child: Text(
+            year,
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+        );
+      }).toList(),
+      onChanged: (value) {
+        setState(() {
+          _selectedYear = value!;
+        });
+      },
+      decoration: InputDecoration(
+        labelText: 'Education Year',
+        border: OutlineInputBorder(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -98,103 +203,13 @@ class _AddCoursesScreenState extends State<AddCoursesScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: 'Course Name',
-                      border: OutlineInputBorder(),
-                    ),
-                    controller: _nameController,
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return "please enter a valid Course Name";
-                      }
-                      return null;
-                    },
-                    //gets entered  automatically
-                    onSaved: (value) {
-                      _enteredName = value!;
-                    },
-                  ),
+                  getCourseNameField(),
                   SizedBox(height: 16),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: 'Course Code',
-                      border: OutlineInputBorder(),
-                    ),
-                    controller: _codeController,
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return "please enter a valid Course Code";
-                      }
-                      return null;
-                    },
-                    onSaved: (value) { 
-                      _enteredCode = value!;
-                    },
-                  ),
-                  
+                  getCourseCodeField(),
                   SizedBox(height: 16),
-                  StreamBuilder<List<Map<String, dynamic>>>(
-                    stream: _departmentService.getAllDepartments(),
-                    builder: (context, snapshot) {
-                      List<DropdownMenuItem> depItems = [];
-                      if (!snapshot.hasData) {
-                        const CircularProgressIndicator();
-                      } else {
-                        final items = snapshot.data!;
-                        for (var item in items!) {
-                          depItems.add(
-                            DropdownMenuItem(
-                              value: item['id'],
-                              child: Text(
-                                item['name'],
-                                style: Theme.of(context).textTheme.bodyLarge,
-                              ),
-                            ),
-                          );
-                        }
-                      }
-                      return DropdownButtonFormField(
-                          validator: (value) {
-                            if (value == null) {
-                              return "please select a Department";
-                            }
-                            return null;
-                          },
-                          decoration: InputDecoration(
-                            labelText: 'Department Name',
-                            border: OutlineInputBorder(),
-                          ),
-                          items: depItems,
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedDepartment = value!;
-                            });
-                          });
-                    },
-                  ),
+                  getDepartmentsDropdown(),
                   SizedBox(height: 16),
-                  DropdownButtonFormField<String>(
-                    value: _selectedYear,
-                    items: years.map((year) {
-                      return DropdownMenuItem(
-                        value: year,
-                        child: Text(
-                          year,
-                          style: Theme.of(context).textTheme.bodyLarge,
-                        ),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedYear = value!;
-                      });
-                    },
-                    decoration: InputDecoration(
-                      labelText: 'Education Year',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
+                  getYearsDropdown(),
                   SizedBox(height: 20),
                   Center(
                     child: ElevatedButton(

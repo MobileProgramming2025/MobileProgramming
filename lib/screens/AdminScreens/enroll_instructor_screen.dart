@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobileprogramming/constants.dart';
 import 'package:mobileprogramming/models/Course.dart';
 import 'package:mobileprogramming/services/CourseService.dart';
 import 'package:mobileprogramming/services/DoctorService.dart';
@@ -74,6 +75,116 @@ class _EnrollInstructorScreenState extends State<EnrollInstructorScreen> {
     // selectedInstructor = "Doctor";
   }
 
+  Widget getInstructorDropdown() {
+    return DropdownButtonFormField<String>(
+      value: selectedInstructor, // currently selected value
+      // List of dropdown items
+      items: instructors.map((instructor) {
+        return DropdownMenuItem(
+          value: instructor,
+          child: Text(
+            instructor,
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+        );
+      }).toList(),
+      onChanged: (value) {
+        // Updates the selected instructor with the new value
+        setState(() {
+          selectedInstructor = value;
+        });
+      },
+      decoration: InputDecoration(
+        labelText: 'Instructor',
+        border: OutlineInputBorder(),
+      ),
+    );
+  }
+
+  Widget getInstructorNameDropdown(Stream<List<Map<String, dynamic>>> s) {
+    return StreamBuilder<List<Map<String, dynamic>>>(
+      stream: s,
+      builder: (context, snapshot) {
+        List<DropdownMenuItem> dritems = [];
+        if (!snapshot.hasData) {
+          const CircularProgressIndicator();
+        } else {
+          final items = snapshot.data!;
+          for (var item in items) {
+            dritems.add(
+              DropdownMenuItem(
+                value: item['id'],
+                child: Text(
+                  item['name'],
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+              ),
+            );
+          }
+        }
+        return DropdownButtonFormField(
+            validator: (value) {
+              if (value == null) {
+                return "please select an Instructor Name";
+              }
+              return null;
+            },
+            decoration: InputDecoration(
+              labelText: 'Instructor Name',
+              border: OutlineInputBorder(),
+            ),
+            items: dritems,
+            onChanged: (value) {
+              setState(() {
+                selectedDoctorName = value!;
+              });
+            });
+      },
+    );
+  }
+
+  Widget getCourseNameField() {
+    return StreamBuilder<List<Course>>(
+      stream: _courseService.getCoursesByDepartmentId(departmentId),
+      builder: (context, snapshot) {
+        List<DropdownMenuItem> courseItems = [];
+        if (!snapshot.hasData) {
+          const CircularProgressIndicator();
+        } else {
+          final items = snapshot.data!;
+          for (var item in items!) {
+            courseItems.add(
+              DropdownMenuItem(
+                value: item.id,
+                child: Text(
+                  item.name,
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+              ),
+            );
+          }
+        }
+        return DropdownButtonFormField(
+            validator: (value) {
+              if (value == null) {
+                return "Please select a Course";
+              }
+              return null;
+            },
+            decoration: InputDecoration(
+              labelText: 'Course Name',
+              border: OutlineInputBorder(),
+            ),
+            items: courseItems,
+            onChanged: (value) {
+              setState(() {
+                selectedCourse = value!;
+              });
+            });
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // Retrieve arguments passed via Navigator
@@ -94,152 +205,16 @@ class _EnrollInstructorScreenState extends State<EnrollInstructorScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  DropdownButtonFormField<String>(
-                    value: selectedInstructor, // currently selected value
-                    // List of dropdown items
-                    items: instructors.map((instructor) {
-                      return DropdownMenuItem(
-                        value: instructor,
-                        child: Text(
-                          instructor,
-                          style: Theme.of(context).textTheme.bodyLarge,
-                        ),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      // Updates the selected instructor with the new value
-                      setState(() {
-                        selectedInstructor = value;
-                      });
-                    },
-                    decoration: InputDecoration(
-                      labelText: 'Instructor',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
+                  getInstructorDropdown(),
+                  if (selectedInstructor == "Doctor") ...[
+                    SizedBox(height: 16),
+                    getInstructorNameDropdown(_doctorService.getDoctorByDepartmentId(departmentId)),
+                  ] else if (selectedInstructor == "Teaching Assistant") ...[
+                    SizedBox(height: 16),
+                    getInstructorNameDropdown(_taService.getTaByDepartmentId(departmentId)),
+                  ],
                   SizedBox(height: 16),
-                  if (selectedInstructor == "Doctor")
-                    StreamBuilder<List<Map<String, dynamic>>>(
-                      stream:
-                          _doctorService.getDoctorByDepartmentId(departmentId),
-                      builder: (context, snapshot) {
-                        List<DropdownMenuItem> dritems = [];
-                        if (!snapshot.hasData) {
-                          const CircularProgressIndicator();
-                        } else {
-                          final items = snapshot.data!;
-                          for (var item in items) {
-                            dritems.add(
-                              DropdownMenuItem(
-                                value: item['id'],
-                                child: Text(
-                                  item['name'],
-                                  style: Theme.of(context).textTheme.bodyLarge,
-                                ),
-                              ),
-                            );
-                          }
-                        }
-                        return DropdownButtonFormField(
-                            validator: (value) {
-                              if (value == null) {
-                                return "please select a Doctor Name";
-                              }
-                              return null;
-                            },
-                            decoration: InputDecoration(
-                              labelText: 'Instructor Name',
-                              border: OutlineInputBorder(),
-                            ),
-                            items: dritems,
-                            onChanged: (value) {
-                              setState(() {
-                                selectedDoctorName = value!;
-                              });
-                            });
-                      },
-                    ),
-                  if (selectedInstructor == "Teaching Assistant")
-                    StreamBuilder<List<Map<String, dynamic>>>(
-                      stream: _taService.getTaByDepartmentId(departmentId),
-                      builder: (context, snapshot) {
-                        List<DropdownMenuItem> taitems = [];
-                        if (!snapshot.hasData) {
-                          const CircularProgressIndicator();
-                        } else {
-                          final items = snapshot.data!;
-                          for (var item in items) {
-                            taitems.add(
-                              DropdownMenuItem(
-                                value: item['id'],
-                                child: Text(
-                                  item['name'],
-                                  style: Theme.of(context).textTheme.bodyLarge,
-                                ),
-                              ),
-                            );
-                          }
-                        }
-                        return DropdownButtonFormField(
-                            validator: (value) {
-                              if (value == null) {
-                                return "please select a Teaching Assitant Name";
-                              }
-                              return null;
-                            },
-                            decoration: InputDecoration(
-                              labelText: 'Instructor Name',
-                              border: OutlineInputBorder(),
-                            ),
-                            items: taitems,
-                            onChanged: (value) {
-                              setState(() {
-                                selectedTaName = value!;
-                              });
-                            });
-                      },
-                    ),
-                  SizedBox(height: 16),
-                  StreamBuilder<List<Course>>(
-                    stream:
-                        _courseService.getCoursesByDepartmentId(departmentId),
-                    builder: (context, snapshot) {
-                      List<DropdownMenuItem> courseItems = [];
-                      if (!snapshot.hasData) {
-                        const CircularProgressIndicator();
-                      } else {
-                        final items = snapshot.data!;
-                        for (var item in items!) {
-                          courseItems.add(
-                            DropdownMenuItem(
-                              value: item.id,
-                              child: Text(
-                                item.name,
-                                style: Theme.of(context).textTheme.bodyLarge,
-                              ),
-                            ),
-                          );
-                        }
-                      }
-                      return DropdownButtonFormField(
-                          validator: (value) {
-                            if (value == null) {
-                              return "Please select a Course";
-                            }
-                            return null;
-                          },
-                          decoration: InputDecoration(
-                            labelText: 'Course Name',
-                            border: OutlineInputBorder(),
-                          ),
-                          items: courseItems,
-                          onChanged: (value) {
-                            setState(() {
-                              selectedCourse = value!;
-                            });
-                          });
-                    },
-                  ),
+                  getCourseNameField(),
                   SizedBox(height: 20),
                   Center(
                     child: ElevatedButton(

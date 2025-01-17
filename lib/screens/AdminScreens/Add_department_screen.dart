@@ -22,11 +22,8 @@ class _AddDepartmentScreenState extends State<AddDepartmentScreen> {
   final _nameController = TextEditingController();
   final _capacityController = TextEditingController();
 
-
   var _enteredName = '';
   var _enteredCapacity = '';
-
-
 
   //clean memory, To avoid memory leak
   @override
@@ -58,7 +55,6 @@ class _AddDepartmentScreenState extends State<AddDepartmentScreen> {
         id: _uuid,
         name: _enteredName,
         capacity: _enteredCapacity,
-        
       );
       // Check if the widget is still in the tree before using context
       if (!mounted) return;
@@ -71,6 +67,45 @@ class _AddDepartmentScreenState extends State<AddDepartmentScreen> {
         SnackBar(content: Text('Failed to add department: $e')),
       );
     }
+  }
+
+  Widget getDepartmentNameField() {
+    return TextFormField(
+      decoration: InputDecoration(
+        labelText: 'Department Name',
+        border: OutlineInputBorder(),
+      ),
+      controller: _nameController,
+      validator: (value) {
+        if (value == null || value.trim().isEmpty) {
+          return "please enter a valid Department Name";
+        }
+        return null;
+      },
+      //gets entered  automatically
+      onSaved: (value) {
+        _enteredName = value!;
+      },
+    );
+  }
+
+  Widget getDepartmentCapacityField() {
+    return TextFormField(
+      decoration: InputDecoration(
+        labelText: 'Department Capacity',
+        border: OutlineInputBorder(),
+      ),
+      controller: _capacityController,
+      validator: (value) {
+        if (value == null || value.trim().isEmpty) {
+          return "please enter a valid Department Capacity";
+        }
+        return null;
+      },
+      onSaved: (value) {
+        _enteredCapacity = value!;
+      },
+    );
   }
 
   @override
@@ -90,42 +125,9 @@ class _AddDepartmentScreenState extends State<AddDepartmentScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: 'Department Name',
-                      border: OutlineInputBorder(),
-                    ),
-                    controller: _nameController,
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return "please enter a valid Department Name";
-                      }
-                      return null;
-                    },
-                    //gets entered  automatically
-                    onSaved: (value) {
-                      _enteredName = value!;
-                    },
-                  ),
+                  getDepartmentNameField(),
                   SizedBox(height: 16),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: 'Department Capacity',
-                      border: OutlineInputBorder(),
-                    ),
-                    controller: _capacityController,
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return "please enter a valid Department Capacity";
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      _enteredCapacity = value!;
-                    },
-                  ),
-                  SizedBox(height: 16),
-                 
+                  getDepartmentCapacityField(),
                   SizedBox(height: 20),
                   Center(
                     child: ElevatedButton(
