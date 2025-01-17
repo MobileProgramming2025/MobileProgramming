@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mobileprogramming/models/user.dart';
 
 class TaService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;

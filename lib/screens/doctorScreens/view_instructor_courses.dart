@@ -27,10 +27,8 @@ class _ViewInstructorCoursesScreenState
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: StreamBuilder<List<Map<String, dynamic>>>(
-          // Using Stream to get real-time updates
           stream: _userService.fetchEnrolledCoursesByUserId(doctorId),
           builder: (context, snapshot) {
-            // Handling different connection states
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
                 child: CircularProgressIndicator(),
@@ -54,22 +52,24 @@ class _ViewInstructorCoursesScreenState
               itemCount: courses.length,
               itemBuilder: (context, index) {
                 final user = courses[index];
-                final enrolledCourses = user['enrolled_courses'] ?? [];
+                final enrolledCourses = user['enrolled_courses'];
 
                 return ListView.builder(
-                  shrinkWrap: true, // Ensures it does not take up unnecessary space
-                  physics: NeverScrollableScrollPhysics(), // Prevents scrolling conflict
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: enrolledCourses.length,
-                  itemBuilder: (context, subIndex) {
-                    final course = enrolledCourses[subIndex];
+                  itemBuilder: (context, index) {
+                    final course = enrolledCourses[index];
 
                     return InkWell(
-                      // Makes the card clickable
                       onTap: () {
                         Navigator.pushNamed(
                           context,
-                          '/view_courses',
-                          // arguments: departmentId, // Pass department data if needed
+                          '/view_courses_details',
+                          arguments: {
+                            'id': course['id'], // Pass course ID
+                            'name': course['name'], // Pass course name
+                          },
                         );
                       },
                       child: Card(
@@ -84,7 +84,8 @@ class _ViewInstructorCoursesScreenState
                             children: [
                               Text(
                                 course['name'],
-                                style: Theme.of(context).textTheme.headlineMedium,
+                                style:
+                                    Theme.of(context).textTheme.headlineMedium,
                               ),
                               const SizedBox(height: 8),
                               Text(

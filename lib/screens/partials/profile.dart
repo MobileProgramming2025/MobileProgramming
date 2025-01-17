@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/user.dart';
+import 'package:mobileprogramming/screens/partials/edit_profile.dart';
 
 class ProfileScreen extends StatefulWidget {
   final User user;
@@ -29,6 +30,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
             icon: Icon(Icons.edit),
             onPressed: () {
               // Navigate to the edit form
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EditProfileScreen(),
+                ),
+              );
             },
             tooltip: 'Edit Profile',
           ),
@@ -88,7 +95,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
 
       floatingActionButton: FloatingActionButton(
-        onPressed: null,
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => EditProfileScreen(),
+            ),
+          );
+        },
         tooltip: 'Edit Profile',
         child: const Icon(Icons.edit),
       ),

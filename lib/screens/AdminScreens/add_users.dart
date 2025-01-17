@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/user.dart';
 import 'package:mobileprogramming/services/DepartmentService.dart';
@@ -66,7 +66,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
   }
 
   Future<void> _addUser() async {
-    if(!_validateForm()) {
+    if (!_validateForm()) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -79,7 +79,6 @@ class _AddUserScreenState extends State<AddUserScreen> {
 
     String userId = _uuid.v4();
     late User newUser;
-    // print(_selectedRole);
 
     if (_selectedRole == "Student") {
       final firstAdded = DateTime.utc(2023, DateTime.november, 9);
@@ -122,9 +121,19 @@ class _AddUserScreenState extends State<AddUserScreen> {
     // print(newUser.name);
 
     try {
+      // // Register user in Firebase Authentication
+      // final auth = firebase_auth.FirebaseAuth.instance;
+      // await auth.createUserWithEmailAndPassword(
+      //   email: newUser.email,
+      //   password: newUser.password,
+      // );
+
+      // Save user details in Firestore
       await newUser.saveToFirestore();
+
       // Check if the widget is still in the tree before using context
       if (!mounted) return;
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('User added successfully!')),
       );
@@ -229,7 +238,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
                           const CircularProgressIndicator();
                         } else {
                           final items = snapshot.data!;
-                          for (var item in items!) {
+                          for (var item in items) {
                             depitems.add(
                               DropdownMenuItem(
                                 value: item['id'],

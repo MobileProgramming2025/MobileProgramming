@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:mobileprogramming/models/Course.dart';
-import 'package:mobileprogramming/services/CourseService.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:mobileprogramming/models/Course.dart';
 import 'package:mobileprogramming/screens/partials/profile.dart';
-import 'package:mobileprogramming/services/user_service.dart'; // Import UserService
+import 'package:mobileprogramming/services/CourseService.dart';
+import 'package:mobileprogramming/services/user_service.dart';
 import 'package:mobileprogramming/models/user.dart';
 
 class DoctorDashboard extends StatefulWidget {
@@ -16,14 +16,13 @@ class DoctorDashboard extends StatefulWidget {
 }
 
 class _DoctorDashboardState extends State<DoctorDashboard> {
-  final UserService _userService = UserService();
-  final CourseService _courseService = CourseService();
-
   bool isLoading = true;
-  List<String> courses = [];
+
   DateTime _selectedDate = DateTime.now();
   DateTime _focusedDate = DateTime.now();
   int _currentIndex = 0;
+  final CourseService _courseService = CourseService();
+  final UserService _userService = UserService();
 
   @override
   void initState() {
@@ -34,6 +33,7 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
   Future<void> _fetchData() async {
     await Future.delayed(Duration(seconds: 2));
     setState(() {
+
       isLoading = false;
     });
   }
@@ -58,11 +58,10 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
         break;
       case 3:
         Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ProfileScreen(user: widget.doctor),
-          ),
-        );
+            context,
+            MaterialPageRoute(
+              builder: (context) => ProfileScreen(user: widget.doctor),
+            ));
         break;
       case 4:
         _logout();
@@ -107,10 +106,9 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
             Text(
               "Hello, Doctor ${widget.doctor.name}!",
               style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,),
             ),
             CircleAvatar(
               backgroundImage: AssetImage("assets/userImage.png"),
@@ -128,8 +126,7 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16.0, vertical: 8.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                       child: Container(
                         decoration: BoxDecoration(
                           color: Theme.of(context).canvasColor,
@@ -146,8 +143,7 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                           firstDay: DateTime.utc(2000, 1, 1),
                           lastDay: DateTime.utc(2100, 12, 31),
                           focusedDay: _focusedDate,
-                          selectedDayPredicate: (day) =>
-                              isSameDay(_selectedDate, day),
+                          selectedDayPredicate: (day) => isSameDay(_selectedDate, day),
                           onDaySelected: (selectedDay, focusedDay) {
                             setState(() {
                               _selectedDate = selectedDay;
@@ -159,25 +155,20 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                             titleCentered: true,
                             decoration: BoxDecoration(
                               color: Theme.of(context).colorScheme.primary,
-                              borderRadius: BorderRadius.vertical(
-                                  top: Radius.circular(16)),
+                              borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
                             ),
                             titleTextStyle: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                               fontSize: 20,
                             ),
-                            leftChevronIcon:
-                                Icon(Icons.chevron_left, color: Colors.white),
-                            rightChevronIcon:
-                                Icon(Icons.chevron_right, color: Colors.white),
+                            leftChevronIcon: Icon(Icons.chevron_left, color: Colors.white),
+                            rightChevronIcon: Icon(Icons.chevron_right, color: Colors.white),
                           ),
                           calendarStyle: CalendarStyle(
                             todayDecoration: BoxDecoration(
                               color: const Color.fromARGB(255, 255, 255, 255),
-                              border: Border.all(
-                                  color: Theme.of(context).colorScheme.primary,
-                                  width: 2),
+                              border: Border.all(color: Theme.of(context).colorScheme.primary, width: 2),
                               shape: BoxShape.circle,
                             ),
                             selectedDecoration: BoxDecoration(
@@ -194,9 +185,7 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                             outsideDecoration: BoxDecoration(
                               shape: BoxShape.circle,
                             ),
-                            defaultTextStyle: TextStyle(
-                                color:
-                                    Theme.of(context).colorScheme.onBackground),
+                            defaultTextStyle: TextStyle(color: Theme.of(context).colorScheme.onBackground),
                             weekendTextStyle: TextStyle(color: Colors.red),
                             todayTextStyle: TextStyle(
                               color: const Color.fromARGB(255, 56, 3, 3),
@@ -212,21 +201,35 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                       ),
                     ),
                     SizedBox(height: 20),
-                    
+
+                    // Progress Section
                     Text(
                       "Your Courses",
                       style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: Colors.indigo),
+                          color: Colors.black),
                     ),
                     SizedBox(height: 10),
+                    // Row(
+                    //   children: courses
+                    //       .map(
+                    //         (course) => Expanded(
+                    //           child: ProgressCard(
+                    //             title: course,
+                    //             progress: (courses.indexOf(course) + 1) * 30,
+                    //             color: Color(0xFFDED6FF),
+                    //           ),
+                    //         ),
+                    //       )
+                    //       .toList(),
+                    // ),
+
                     StreamBuilder<List<Map<String, dynamic>>>(
-                      stream: _userService
-                          .fetchEnrolledCoursesByUserId(widget.doctor.id),
+                      stream: _userService.fetchEnrolledCoursesByUserId(widget.doctor.id),
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
+                        // Handling different connection states
+                        if (snapshot.connectionState == ConnectionState.waiting) {
                           return const Center(
                             child: CircularProgressIndicator(),
                           );
@@ -266,61 +269,45 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                             final course = allInstructorCourses[index];
 
                             return Card(
-  elevation: 4,
-  shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(16),
-  ),
-  child: Padding(
-    padding: const EdgeInsets.all(8.0), // Add padding for better spacing
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Expanded(
-          flex: 3, // Set flex to control relative space
-          child: Icon(
-            Icons.book,
-            size: 50, // Adjust the size of the icon
-          ),
-        ),
-        SizedBox(height: 8), // Add space between elements
-        Expanded(
-          flex: 2,
-          child: Text(
-            course['name'],
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-        ),
-        Expanded(
-          flex: 1,
-          child: Text(
-            'Course Code: ${course['code']}',
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.black,
-                ),
-          ),
-        ),
-      ],
-    ),
-  ),
-);
-
+                              elevation: 4,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    course['name'],
+                                    style:
+                                        Theme.of(context).textTheme.titleLarge,
+                                  ),
+                                  Text(
+                                    course['code'],
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(
+                                          color: Colors.black,
+                                        ),
+                                  ),
+                                ],
+                              ),
+                            );
                           },
                         );
                       },
                     ),
+
                     SizedBox(height: 20),
+
+                    // Courses Section
                     Text(
                       "All Courses",
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Colors.indigo,
+                        color: Colors.black,
                       ),
                     ),
                     SizedBox(height: 10),
+
                     StreamBuilder<List<Course>>(
                       stream: _courseService.getCoursesByDepartmentId(
                           widget.doctor.departmentId!),
@@ -437,16 +424,11 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
             showSelectedLabels: true,
             showUnselectedLabels: false,
             items: const [
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.house_rounded), label: "Home"),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.school), label: "Courses"),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.calendar_month_outlined), label: "Calendar"),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.account_circle_outlined), label: "Profile"),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.exit_to_app), label: "Logout"),
+              BottomNavigationBarItem(icon: Icon(Icons.house_rounded), label: "Home"),
+              BottomNavigationBarItem(icon: Icon(Icons.school), label: "Courses"),
+              BottomNavigationBarItem(icon: Icon(Icons.calendar_month_outlined), label: "Calendar"),
+              BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
+              BottomNavigationBarItem(icon: Icon(Icons.exit_to_app_sharp), label: "Logout"),
             ],
             onTap: _onItemTapped,
           ),
@@ -462,7 +444,6 @@ class ProgressCard extends StatelessWidget {
   final Color color;
 
   const ProgressCard({
-    super.key,
     required this.title,
     required this.progress,
     required this.color,
@@ -472,30 +453,17 @@ class ProgressCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       color: color,
-      elevation: 6,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 10),
-          LinearProgressIndicator(
-            value: progress / 100,
-            color: Colors.blueAccent,
-            backgroundColor: Colors.grey[300],
-          ),
-          SizedBox(height: 10),
-          Text(
-            "${progress.toInt()}%",
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Text(title, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            SizedBox(height: 8),
+            LinearProgressIndicator(value: progress / 100),
+            SizedBox(height: 8),
+            Text('${(progress).toStringAsFixed(0)}% Completed'),
+          ],
+        ),
       ),
     );
   }
