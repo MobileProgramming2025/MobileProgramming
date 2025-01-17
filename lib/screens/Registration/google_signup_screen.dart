@@ -80,19 +80,19 @@ class _GoogleSignUpScreenState extends State<GoogleSignUpScreen> {
         enrolledCourses: [],
       );
 
-      try {
-        await newUser.saveToFirestore();
-        // Check if the widget is still in the tree before using context
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('User added successfully!'),),
-        );
-        _clearFields();
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to add user: $e')),
-        );
-      }
+      // try {
+      //   await newUser.saveToFirestore();
+      //   // Check if the widget is still in the tree before using context
+      //   if (!mounted) return;
+      //   ScaffoldMessenger.of(context).showSnackBar(
+      //     SnackBar(content: Text('User added successfully!'),),
+      //   );
+      //   _clearFields();
+      // } catch (e) {
+      //   ScaffoldMessenger.of(context).showSnackBar(
+      //     SnackBar(content: Text('Failed to add user: $e')),
+      //   );
+      // }
     }
   }
 
