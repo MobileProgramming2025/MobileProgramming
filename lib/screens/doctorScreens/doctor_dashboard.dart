@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
-// Assuming 'ProfileScreen' and 'User' are defined in your project
 import 'package:mobileprogramming/screens/partials/profile.dart';
 import 'package:mobileprogramming/models/user.dart';
 
@@ -104,7 +103,7 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
               style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.inverseSurface), // Adaptive color
+                  color: Colors.white,),
             ),
             CircleAvatar(
               backgroundImage: AssetImage("assets/userImage.png"),
@@ -197,7 +196,7 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                       ),
                     ),
                     SizedBox(height: 20),
-                    Text("Your Courses", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                    Text("Your Courses", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold,color:Colors.indigo)),
                     SizedBox(height: 10),
                     Row(
                       children: courses
@@ -213,7 +212,7 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                           .toList(),
                     ),
                     SizedBox(height: 20),
-                    Text("All Courses", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                    Text("All Courses", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold,color:Colors.indigo)),
                     SizedBox(height: 10),
                     GridView.builder(
                       shrinkWrap: true,
@@ -296,8 +295,8 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
             type: BottomNavigationBarType.fixed,
             backgroundColor: Colors.transparent,
             elevation: 0,
-            selectedItemColor: Theme.of(context).colorScheme.primary,
-            unselectedItemColor: Theme.of(context).colorScheme.secondary,
+            selectedItemColor: Colors.indigo,
+            unselectedItemColor: Colors.orange,
             showSelectedLabels: true,
             showUnselectedLabels: false,
             items: const [
