@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:mobileprogramming/screens/AssignmentScreens/student_assignment_detail_screen.dart';
+import 'package:mobileprogramming/screens/AssignmentScreens/ui-assignment-details.dart';
+//import 'package:mobileprogramming/screens/AssignmentScreens/student_assignment_detail_screen.dart';
 
 class StudentAssignmentListScreen extends StatefulWidget {
   const StudentAssignmentListScreen({super.key});

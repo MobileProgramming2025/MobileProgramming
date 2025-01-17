@@ -63,13 +63,13 @@ class LoginScreen extends StatelessWidget {
               )
             );
           } else {
-            // Navigator.pushNamed(context, '/student-assignment-list');
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => UserHome(/*user: userModel*/),
-              ),
-            );
+             Navigator.pushNamed(context, '/student-assignment-list');
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(
+            //     builder: (context) => UserHome(/*user: userModel*/),
+            //   ),
+            // );
           }
         }
       } else {
@@ -88,7 +88,7 @@ class LoginScreen extends StatelessWidget {
 
   Future<void> _handleGoogleSignIn(BuildContext context) async {
     AuthService().signInWithGoogle();
-    Navigator.pushNamed(context, '/user_home');
+    Navigator.pushNamed(context, '/student-assignment-list');
     // try {
     //   // Sign in with Google
     //   final googleUser = await GoogleSignIn().signIn();

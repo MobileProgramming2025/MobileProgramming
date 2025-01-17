@@ -13,6 +13,7 @@ import 'package:mobileprogramming/screens/AdminScreens/view_department_courses.d
 import 'package:mobileprogramming/screens/AdminScreens/view_departments_screen.dart';
 import 'package:mobileprogramming/screens/AssignmentScreens/assignment_list_screen.dart';
 import 'package:mobileprogramming/screens/AssignmentScreens/student_assignment_list.dart';
+import 'package:mobileprogramming/screens/AssignmentScreens/ui-assignment-details.dart';
 import 'package:mobileprogramming/screens/Registration/signin.dart';
 import 'package:mobileprogramming/screens/Registration/signup.dart';
 import 'package:mobileprogramming/screens/UserScreens/user_home.dart';
@@ -181,6 +182,7 @@ class MyApp extends StatelessWidget {
           '/view_department_courses': (context) =>
               ViewDepartmentCoursesScreen(),
           '/enroll_instructor': (context) => EnrollInstructorScreen(),
+         // '/ui-assignment-details' : (context)=>AssignmentDetailScreen()
         },
       );
     });
