@@ -31,10 +31,9 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
     _fetchData();
   }
 
- Future<void> _fetchData() async {
+  Future<void> _fetchData() async {
     await Future.delayed(Duration(seconds: 2));
     setState(() {
-
       isLoading = false;
     });
   }
@@ -168,10 +167,10 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                               fontWeight: FontWeight.bold,
                               fontSize: 20,
                             ),
-                            leftChevronIcon: Icon(Icons.chevron_left,
-                                color: Colors.white),
-                            rightChevronIcon: Icon(Icons.chevron_right,
-                                color: Colors.white),
+                            leftChevronIcon:
+                                Icon(Icons.chevron_left, color: Colors.white),
+                            rightChevronIcon:
+                                Icon(Icons.chevron_right, color: Colors.white),
                           ),
                           calendarStyle: CalendarStyle(
                             todayDecoration: BoxDecoration(
@@ -196,7 +195,8 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                               shape: BoxShape.circle,
                             ),
                             defaultTextStyle: TextStyle(
-                                color: Theme.of(context).colorScheme.onBackground),
+                                color:
+                                    Theme.of(context).colorScheme.onBackground),
                             weekendTextStyle: TextStyle(color: Colors.red),
                             todayTextStyle: TextStyle(
                               color: const Color.fromARGB(255, 56, 3, 3),
@@ -212,16 +212,21 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                       ),
                     ),
                     SizedBox(height: 20),
+                    
                     Text(
                       "Your Courses",
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.indigo),
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.indigo),
                     ),
                     SizedBox(height: 10),
-                                       StreamBuilder<List<Map<String, dynamic>>>(
-                      stream: _userService.fetchEnrolledCoursesByUserId(widget.doctor.id),
+                    StreamBuilder<List<Map<String, dynamic>>>(
+                      stream: _userService
+                          .fetchEnrolledCoursesByUserId(widget.doctor.id),
                       builder: (context, snapshot) {
-                        // Handling different connection states
-                        if (snapshot.connectionState == ConnectionState.waiting) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
                           return const Center(
                             child: CircularProgressIndicator(),
                           );
@@ -265,13 +270,17 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
+                                   Icon(
+                                    Icons.book,
+                                    size: 40,
+                                  ),
                                   Text(
                                     course['name'],
                                     style:
                                         Theme.of(context).textTheme.titleLarge,
                                   ),
                                   Text(
-                                    course['code'],
+                                    'Course Code: ${course['code']}',
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodyMedium
@@ -286,9 +295,8 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                         );
                       },
                     ),
-
                     SizedBox(height: 20),
- Text(
+                    Text(
                       "All Courses",
                       style: TextStyle(
                         fontSize: 18,
@@ -297,7 +305,6 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                       ),
                     ),
                     SizedBox(height: 10),
-
                     StreamBuilder<List<Course>>(
                       stream: _courseService.getCoursesByDepartmentId(
                           widget.doctor.departmentId!),
@@ -414,11 +421,16 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
             showSelectedLabels: true,
             showUnselectedLabels: false,
             items: const [
-              BottomNavigationBarItem(icon: Icon(Icons.house_rounded), label: "Home"),
-              BottomNavigationBarItem(icon: Icon(Icons.school), label: "Courses"),
-              BottomNavigationBarItem(icon: Icon(Icons.calendar_month_outlined), label: "Calendar"),
-              BottomNavigationBarItem(icon: Icon(Icons.account_circle_outlined), label: "Profile"),
-              BottomNavigationBarItem(icon: Icon(Icons.exit_to_app), label: "Logout"),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.house_rounded), label: "Home"),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.school), label: "Courses"),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.calendar_month_outlined), label: "Calendar"),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.account_circle_outlined), label: "Profile"),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.exit_to_app), label: "Logout"),
             ],
             onTap: _onItemTapped,
           ),
@@ -471,4 +483,4 @@ class ProgressCard extends StatelessWidget {
       ),
     );
   }
-}  
+}
