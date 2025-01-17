@@ -93,13 +93,14 @@ class AuthService {
     }
   }
 
-
   Future<firebase_auth.User?> googleSignUp({
     required String role,
     required String department,
     required String year,
   }) async {
     try {
+      await GoogleSignIn().signOut();
+
       // Trigger the Google Sign-In flow
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
@@ -165,8 +166,11 @@ class AuthService {
     }
   }
 
- Future<firebase_auth.User?> logInWithGoogle() async {
+  Future<firebase_auth.User?> logInWithGoogle() async {
     try {
+      // Sign out any previously signed-in user to allow account selection
+      await GoogleSignIn().signOut();
+
       // Trigger the Google Sign-In flow
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
