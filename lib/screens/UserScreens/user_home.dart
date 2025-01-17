@@ -75,6 +75,13 @@ class _UserHomeState extends State<UserHome> {
                 // Handle Logout
               },
             ),
+             ListTile(
+              leading: Icon(Icons.menu_book_rounded),
+              title: Text('View Assignments'),
+              onTap: () {
+                Navigator.pushNamed(context, '/student-assignment-list');
+              },
+            ),
             // ListTile(
             //   leading: Icon(Icons.menu_book_rounded),
             //   title: Text('View Courses'),

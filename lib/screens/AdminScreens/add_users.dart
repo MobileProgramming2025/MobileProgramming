@@ -78,59 +78,67 @@ class _AddUserScreenState extends State<AddUserScreen> {
     }
 
     String userId = _uuid.v4();
-    late User newUser;
-
-    if (_selectedRole == "Student") {
-      final firstAdded = DateTime.utc(2023, DateTime.november, 9);
-      final currentYear = DateTime.now();
-      final educationYear = currentYear.year - firstAdded.year;
-
-      newUser = User(
-        id: userId,
-        name: _nameController.text.trim(),
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
-        role: _selectedRole ?? 'Unknown',
-        departmentId: _selectedDepartment ?? 'Unknown',
-        takenCourses: [],
-        enrolledCourses: [],
-        addedDate: firstAdded,
-        year: (educationYear + 1).toString(),
-      );
-    } else if (_selectedRole == "Teaching Assistant" ||
-        _selectedRole == "Doctor") {
-      newUser = User(
-        id: userId,
-        name: _nameController.text.trim(),
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
-        role: _selectedRole ?? 'Unknown',
-        departmentId: _selectedDepartment ?? 'Unknown',
-        enrolledCourses: [],
-      );
-    } else if (_selectedRole == "Admin") {
-      newUser = User(
-        id: userId,
-        name: _nameController.text.trim(),
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
-        role: _selectedRole ?? 'Unknown',
-      );
-    }
-    // print(newUser.name);
 
     try {
-      // // Register user in Firebase Authentication
-      // final auth = firebase_auth.FirebaseAuth.instance;
-      // await auth.createUserWithEmailAndPassword(
-      //   email: newUser.email,
-      //   password: newUser.password,
-      // );
+      // Create user in Firebase Authentication
+      firebase_auth.UserCredential userCredential = await firebase_auth.FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
 
-      // Save user details in Firestore
+      // Get the Firebase UID
+      String firebaseUid = userCredential.user!.uid;
+
+      // Define the user object based on the selected role
+      late User newUser;
+
+      if (_selectedRole == "Student") {
+        final firstAdded = DateTime.utc(2023, DateTime.november, 9);
+        final currentYear = DateTime.now();
+        final educationYear = currentYear.year - firstAdded.year;
+
+        newUser = User(
+          id: userId,
+          // id: firebaseUid, // Use Firebase UID as the user ID
+          name: _nameController.text.trim(),
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim(),
+          role: _selectedRole ?? 'Unknown',
+          departmentId: _selectedDepartment ?? 'Unknown',
+          takenCourses: [],
+          enrolledCourses: [],
+          addedDate: firstAdded,
+          year: (educationYear + 1).toString(),
+        );
+      } else if (_selectedRole == "Teaching Assistant" || _selectedRole == "Doctor") {
+        newUser = User(
+          id: firebaseUid, // Use Firebase UID as the user ID
+          name: _nameController.text.trim(),
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim(),
+          role: _selectedRole ?? 'Unknown',
+          departmentId: _selectedDepartment ?? 'Unknown',
+          enrolledCourses: [],
+        );
+      } else if (_selectedRole == "Admin") {
+        newUser = User(
+          id: firebaseUid, // Use Firebase UID as the user ID
+          name: _nameController.text.trim(),
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim(),
+          role: _selectedRole ?? 'Unknown',
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Invalid role selected!')),
+        );
+        return;
+      }
+
+      // Save user details to Firestore
       await newUser.saveToFirestore();
 
-      // Check if the widget is still in the tree before using context
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -143,6 +151,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
       );
     }
   }
+
 
   @override
   Widget build(BuildContext context) {

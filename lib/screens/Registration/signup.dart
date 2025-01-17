@@ -1,5 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
+import 'package:mobileprogramming/models/user.dart';
+import 'package:mobileprogramming/screens/UserScreens/user_home.dart';
 import 'package:mobileprogramming/services/auth_service.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -13,6 +16,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+
+  final Uuid _uuid = Uuid();
 
   String? _selectedDepartment;
 
@@ -83,17 +88,32 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     try {
       const role = "Student";
+      String userId = _uuid.v4();
 
-      await service.signUp2(
-        name, 
-        email, 
-        password, 
-        role, 
-        department!
+      // Create the user in the backend or Firebase
+      await service.signUp2(name, email, password, role, department!);
+
+      // Create a User object
+      final newUser = User(
+        id: userId, 
+        name: name,
+        email: email,
+        password: password,
+        role: role,
+        departmentId: department,
+        addedDate: DateTime.now(),
+        enrolledCourses: [], // Initialize as per your requirements
       );
-      
+
       if (!mounted) return;
-      Navigator.pushNamed(context, '/user_home');
+
+      // Navigate to UserHome, passing the User object
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => UserHome(user: newUser),
+        ),
+      );
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -103,6 +123,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       );
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -164,11 +185,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       return const Text("No departments available");
                     }
                     
-                    // final items = snapshot.data?.docs.toList();
-                    // if (items!.isEmpty) {
-                    //   return const Text("No departments available");
-                    // }
-                    // List<DropdownMenuItem<String>> departmentItems = [];
                     final items = snapshot.data!.docs;
                     List<DropdownMenuItem<String>> departmentItems = items.map((item) {
                       return DropdownMenuItem(
@@ -179,19 +195,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                       );
                     }).toList();
-
-                    // for (var item in items) {
-                    //   departmentItems.add(
-                    //     DropdownMenuItem(
-                    //       value: item.id,
-                    //       child: Text(
-                    //         item['name'],
-                    //         style: Theme.of(context).textTheme.bodyLarge,
-                    //       ),
-                    //     ),
-                    //   );
-                    // }
-
                     
                     return DropdownButtonFormField(
                       decoration: const InputDecoration(
