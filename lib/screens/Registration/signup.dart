@@ -191,6 +191,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     //     ),
                     //   );
                     // }
+
                     
                     return DropdownButtonFormField(
                       decoration: const InputDecoration(
@@ -216,6 +217,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   onPressed: _handleSignUp,
                   child: const Text(
                     "Sign Up",
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed:(){ Navigator.pushNamed(context, '/google_sign_up');},
+                  child: const Text(
+                    "Sign Up By Google",
                     style: TextStyle(fontSize: 20),
                   ),
                 ),

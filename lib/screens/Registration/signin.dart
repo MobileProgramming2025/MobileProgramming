@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:mobileprogramming/screens/AdminScreens/admin_dashboard.dart';
 import 'package:mobileprogramming/screens/UserScreens/user_home.dart';
+// import 'package:mobileprogramming/screens/UserScreens/user_home.dart';
 // import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mobileprogramming/screens/doctorScreens/doctor_dashboard.dart';
 import 'package:mobileprogramming/services/auth_service.dart';
@@ -33,7 +34,8 @@ class LoginScreen extends StatelessWidget {
     }
 
     try {
-      firebase_auth.User? firebaseUser = await AuthService().login(email, password);
+      firebase_auth.User? firebaseUser =
+          await AuthService().login(email, password);
       print("Firebase User: $firebaseUser");
 
       if (firebaseUser != null) {
@@ -55,11 +57,10 @@ class LoginScreen extends StatelessWidget {
                 builder: (context) => DoctorDashboard(doctor: userModel),
               ),
 
-                            // '/Doctors Dashboard',
+              // '/Doctors Dashboard',
               // arguments: userModel.id,
             );
-          } 
-          else if (userModel.role == 'Admin') {
+          } else if (userModel.role == 'Admin') {
             Navigator.push(
               context, 
               MaterialPageRoute(
@@ -96,52 +97,34 @@ class LoginScreen extends StatelessWidget {
   }
 
   Future<void> _handleGoogleSignIn(BuildContext context) async {
-    AuthService().signInWithGoogle();
-    Navigator.pushNamed(context, '/student-assignment-list');
-    // try {
-    //   // Sign in with Google
-    //   final googleUser = await GoogleSignIn().signIn();
+    firebase_auth.User? googleUser = await AuthService().logInWithGoogle();
+    if (googleUser != null) {
+      // Fetch user details from  User model
+      User? userModel = await User.getUserDetails(googleUser.uid);
 
-    //   if (googleUser != null) {
-    //     final googleAuth = await googleUser.authentication;
-    //     final credential = firebase_auth.GoogleAuthProvider.credential(
-    //       accessToken: googleAuth.accessToken,
-    //       idToken: googleAuth.idToken,
-    //     );
+      // Check if the widget is still in the tree before using context
+      if (!context.mounted) return;
 
-    //     // Authenticate with Firebase
-    //     firebase_auth.User? firebaseUser = 
-    //         (await firebase_auth.FirebaseAuth.instance.signInWithCredential(credential))
-    //         .user;
-        
-    //     if (firebaseUser != null) {
-    //       // Save user data to Firestore
-    //       final userExists = await AuthService().checkIfUserExists(firebaseUser.uid);
-
-    //       if (!userExists) {
-    //         // Create a User model with Google user data 
-    //         final userModel = User(
-    //           id: firebaseUser.uid,
-    //           name: googleUser.displayName ?? "unknown",
-    //           email: googleUser.email,
-    //           role: "User",
-    //           password: "",   // To be removed
-    //         );
-
-    //         // Save to Firebase 
-    //         await AuthService().saveUserDetails(userModel);
-    //       }
-
-    //       // Navigate to user home 
-    //       Navigator.pushNamed(context, '/user_home');
-    //     }
-    //   }
-    //   else {
-    //     _showError(context, "Google sign-in was canceled.");
-    //   }      
-    // } catch (e) {
-    //   _showError(context, "Google sign-in failed: $e");
-    // }
+      if (userModel != null) {
+        if (userModel.role == 'Doctor' ||
+            userModel.role == 'Teaching Assistant') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => DoctorDashboard(doctor: userModel),
+            ),
+          );
+        } else if (userModel.role == 'Student') {
+          // Navigator.pushNamed(context, '/student-assignment-list');
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => UserHome(user: userModel),
+            ),
+          );
+        }
+      }
+    }
   }
 
   // Error Display Helper
@@ -225,7 +208,7 @@ class LoginScreen extends StatelessWidget {
                 // Login Button
                 ElevatedButton(
                   child: Text(
-                    "Google Sign In",
+                    "Login By Google",
                     style: TextStyle(fontSize: 20),
                   ),
                   onPressed: () => _handleGoogleSignIn(context),

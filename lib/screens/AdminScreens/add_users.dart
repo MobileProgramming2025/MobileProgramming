@@ -78,21 +78,30 @@ class _AddUserScreenState extends State<AddUserScreen> {
     }
 
     String userId = _uuid.v4();
+    late User newUser;
 
-    try {
-      // Create user in Firebase Authentication
-      firebase_auth.UserCredential userCredential = await firebase_auth.FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
+    if (_selectedRole == "Student") {
+      final firstAdded = DateTime.utc(2023, DateTime.november, 9);
+      final currentYear = DateTime.now();
+      final educationYear = currentYear.year - firstAdded.year;
+
+      newUser = User(
+        id: userId,
+        name: _nameController.text.trim(),
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
+        role: _selectedRole ?? 'Unknown',
+        departmentId: _selectedDepartment ?? 'Unknown',
+        takenCourses: [],
+        enrolledCourses: [],
+        addedDate: firstAdded,
+        year: (educationYear + 1).toString(),
       );
-
-      // Get the Firebase UID
-      String firebaseUid = userCredential.user!.uid;
-
-      // Create a user model object
-      User newUser = User(
-        id: firebaseUid, // Use Firebase UID as the user ID
+    } else if (_selectedRole == "Teaching Assistant" ||
+        _selectedRole == "Doctor") {
+          // print ("yess");
+      newUser = User(
+        id: userId,
         name: _nameController.text.trim(),
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
