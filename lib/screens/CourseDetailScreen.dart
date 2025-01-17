@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:mobileprogramming/screens/QuizTrail/QuizListScreen.dart';
+import 'package:mobileprogramming/screens/QuizTrail/quiz_creation_screen.dart';
 
 class CourseDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Retrieve the arguments (courseId and courseName)
-    final arguments = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    final arguments =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     final String courseId = arguments['id'];
     final String courseName = arguments['name'];
 
@@ -24,8 +27,15 @@ class CourseDetailScreen extends StatelessWidget {
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
-              
-                Navigator.pushNamed(context, '/createQuiz', arguments: courseId);
+               Navigator.push(
+  context,
+  MaterialPageRoute(
+    builder: (context) => QuizCreationScreen(
+      courseId: courseId, 
+    ),
+  ),
+);
+
               },
               child: const Text('Add Quiz'),
             ),
@@ -33,7 +43,8 @@ class CourseDetailScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 // Navigate to add assignment screen with courseId
-                Navigator.pushNamed(context, '/add_assignment', arguments: courseId);
+                Navigator.pushNamed(context, '/add_assignment',
+                    arguments: courseId);
               },
               child: const Text('Add Assignment'),
             ),
@@ -41,7 +52,14 @@ class CourseDetailScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 // Navigate to view quizzes screen with courseId
-                Navigator.pushNamed(context, '/view_quizzes', arguments: courseId);
+                Navigator.push(
+  context,
+  MaterialPageRoute(
+    builder: (context) => QuizListScreen(
+      courseId: courseId, 
+    ),
+  ),
+);
               },
               child: const Text('View All Quizzes'),
             ),
