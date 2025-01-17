@@ -18,6 +18,7 @@ import 'package:mobileprogramming/screens/Registration/signup.dart';
 import 'package:mobileprogramming/screens/Assignment/assignment_screen.dart';
 
 import 'package:flutter_sizer/flutter_sizer.dart';
+import 'package:mobileprogramming/screens/doctorScreens/view_instructor_courses.dart';
 
 class HexColor extends Color {
   HexColor(final String hexColor) : super(_getColorFromHex(hexColor));

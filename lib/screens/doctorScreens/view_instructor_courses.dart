@@ -54,7 +54,7 @@ class _ViewInstructorCoursesScreenState
               itemCount: courses.length,
               itemBuilder: (context, index) {
                 final user = courses[index];
-                final enrolledCourses = user['enrolled_courses'] ?? [];
+                final enrolledCourses = user['enrolled_courses'];
 
                 return ListView.builder(
                   shrinkWrap: true, // Ensures it does not take up unnecessary space
@@ -68,8 +68,8 @@ class _ViewInstructorCoursesScreenState
                       onTap: () {
                         Navigator.pushNamed(
                           context,
-                          '/view_courses',
-                          // arguments: departmentId, // Pass department data if needed
+                          '/view_courses_details',
+                          arguments: course['id'], // Pass course
                         );
                       },
                       child: Card(

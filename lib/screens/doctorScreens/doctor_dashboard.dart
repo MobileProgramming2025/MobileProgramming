@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:mobileprogramming/screens/CourseDetailScreen.dart';
 import 'package:mobileprogramming/screens/partials/profile.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:mobileprogramming/models/user.dart';
 
-import 'package:mobileprogramming/screens/CourseList.dart';
 
 class DoctorDashboard extends StatefulWidget {
   final User doctor;
@@ -45,11 +43,11 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
       case 0:
         break;
       case 1:
-        Navigator.push(
+        Navigator.pushNamed(
           context,
-          MaterialPageRoute(
-            builder: (context) => CourseListPage(doctor: widget.doctor), // Pass the doctor instance
-          ),
+          '/view_Instructor_courses',
+          arguments: widget.doctor.id,
+          
         );
         break;
       case 2:
@@ -172,8 +170,8 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                             ),
                             leftChevronIcon:
                                 Icon(Icons.chevron_left, color: Colors.white),
-                            rightChevronIcon: Icon(Icons.chevron_right,
-                                color: Colors.white),
+                            rightChevronIcon:
+                                Icon(Icons.chevron_right, color: Colors.white),
                           ),
                           calendarStyle: CalendarStyle(
                             todayDecoration: BoxDecoration(
@@ -264,7 +262,8 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                             Navigator.pushNamed(
                               context,
                               '/course-detail', // Specify your course detail route here
-                              arguments: courses[index], // Pass course data if needed
+                              arguments:
+                                  courses[index], // Pass course data if needed
                             );
                           },
                           child: Card(
@@ -279,8 +278,7 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                                 SizedBox(height: 8),
                                 Text(
                                   courses[index],
-                                  style:
-                                      Theme.of(context).textTheme.titleLarge,
+                                  style: Theme.of(context).textTheme.titleLarge,
                                 ),
                               ],
                             ),
@@ -292,62 +290,63 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                 ),
               ),
             ),
-        bottomNavigationBar: Container(
-          decoration: BoxDecoration(
-            color: Colors.grey[100],
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(30),
-              topRight: Radius.circular(30),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: Colors.grey[100],
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(30),
+            topRight: Radius.circular(30),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              blurRadius: 20,
             ),
+          ],
+        ),
+        child: Container(
+          margin: EdgeInsets.only(bottom: 5),
+          height: 60,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(30),
+                topRight: Radius.circular(30),
+                bottomRight: Radius.circular(30),
+                bottomLeft: Radius.circular(30)),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.3),
-                blurRadius: 20,
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 5,
+                offset: Offset(0, 3),
               ),
             ],
           ),
-          child: Container(
-            margin: EdgeInsets.only(bottom: 5),
-            height: 60,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(30),
-                  topRight: Radius.circular(30),
-                  bottomRight: Radius.circular(30),
-                  bottomLeft: Radius.circular(30)),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 5,
-                  offset: Offset(0, 3),
-                ),
-              ],
-            ),
-            child: BottomNavigationBar(
-              currentIndex: _currentIndex,
-              type: BottomNavigationBarType.fixed,
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              selectedItemColor: const Color.fromARGB(255, 69, 0, 187),
-              unselectedItemColor: const Color.fromARGB(255, 223, 101, 26),
-              showSelectedLabels: true,
-              showUnselectedLabels: false,
-              items: [
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.house_rounded), label: "Home"),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.school), label: "Courses"),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.calendar_month_outlined), label: "Calendar"),
-                BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.exit_to_app_sharp), label: "Logout"),
-              ],
-              onTap: _onItemTapped, // Call the method on tap
-            ),
+          child: BottomNavigationBar(
+            currentIndex: _currentIndex,
+            type: BottomNavigationBarType.fixed,
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            selectedItemColor: const Color.fromARGB(255, 69, 0, 187),
+            unselectedItemColor: const Color.fromARGB(255, 223, 101, 26),
+            showSelectedLabels: true,
+            showUnselectedLabels: false,
+            items: const [
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.house_rounded), label: "Home"),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.school), label: "Courses"),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.calendar_month_outlined), label: "Calendar"),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.person), label: "Profile"),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.exit_to_app_sharp), label: "Logout"),
+            ],
+            onTap: _onItemTapped, // Call the method on tap
           ),
         ),
+      ),
     );
   }
 }
