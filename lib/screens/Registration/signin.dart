@@ -68,13 +68,12 @@ class LoginScreen extends StatelessWidget {
             );
           } 
           else if (userModel.role == 'Student') {
-              Navigator.pushNamed(context, '/student-assignment-list');
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(
-            //     builder: (context) => UserHome(user: userModel),
-            //   ),
-            // );
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => UserHome(user: userModel),
+              ),
+            );
           }
           else {
             ScaffoldMessenger.of(context).showSnackBar(
