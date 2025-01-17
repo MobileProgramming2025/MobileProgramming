@@ -7,8 +7,8 @@ class User {
   final String password;
   final String role;
   final String? departmentId;
-  final List<String>? enrolledCourses;
-  final List<String>? takenCourses;
+  final List<Map<String, dynamic>>? enrolledCourses;
+  final List<Map<String, dynamic>>? takenCourses;
   final DateTime? addedDate;
   final String? year;
   User({
@@ -34,8 +34,16 @@ class User {
         'password': password,
         'role': role,
         'departmentId': departmentId,
-        if (enrolledCourses != null) 'enrolled_courses': enrolledCourses,
-        if (takenCourses != null) 'taken_courses': takenCourses,
+        'enrolled_courses': enrolledCourses != null
+            ? enrolledCourses!
+                .map((course) => Map<String, dynamic>.from(course))
+                .toList()
+            : [], // Serialize Course objects
+        'taken_courses': takenCourses != null
+            ? takenCourses!
+                .map((course) => Map<String, dynamic>.from(course))
+                .toList()
+            : [],
         'added_date': addedDate,
         'year': year,
       };
@@ -55,7 +63,7 @@ class User {
         'password': password,
         'role': role,
         'departmentId': departmentId,
-        if (enrolledCourses != null) 'enrolled_courses': enrolledCourses,
+        'enrolled_courses': enrolledCourses!, // Serialize Course objects
       };
     }
   }
@@ -71,11 +79,13 @@ class User {
       role: map['role'] as String? ?? 'Unknown',
       departmentId: map['departmentId'] as String? ?? 'Unknown',
       enrolledCourses: map['enrolled_courses'] != null
-          ? List<String>.from(map['enrolled_courses'])
-          : null,
+          ? List<Map<String, dynamic>>.from(
+              map['enrolled_courses'] as List<dynamic>)
+          : [],
       takenCourses: map['taken_courses'] != null
-          ? List<String>.from(map['taken_courses'])
-          : null,
+          ? List<Map<String, dynamic>>.from(
+              map['taken_courses'] as List<dynamic>)
+          : [],
       addedDate: map['added_date'] is Timestamp
           ? (map['added_date'] as Timestamp)
               .toDate() // Convert Timestamp to DateTime

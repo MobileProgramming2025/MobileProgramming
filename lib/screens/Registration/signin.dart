@@ -52,6 +52,9 @@ class LoginScreen extends StatelessWidget {
               MaterialPageRoute(
                 builder: (context) => DoctorDashboard(doctor: userModel),
               ),
+
+                            // '/Doctors Dashboard',
+              // arguments: userModel.id,
             );
           } else if (userModel.role == 'Admin') {
             Navigator.pushNamed(context, '/admin_home');

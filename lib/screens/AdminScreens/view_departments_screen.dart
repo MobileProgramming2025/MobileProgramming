@@ -61,8 +61,6 @@ class _ViewDepartmentsScreenState extends State<ViewDepartmentsScreen> {
                 return InkWell(
                   // Makes the card clickable
                   onTap: () {
-                    debugPrint('Tapped Department ID: $departmentId');
-                    // Define action on card tap, e.g., navigate to details page
                     Navigator.pushNamed(
                       context,
                       '/view_department_courses',

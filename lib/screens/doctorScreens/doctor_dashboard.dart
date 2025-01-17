@@ -63,10 +63,14 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
               ),
             ),
             ListTile(
-              leading: Icon(Icons.person),
-              title: Text('Dashboard'),
+              leading: Icon(Icons.book_rounded),
+              title: Text('My courses'),
               onTap: () {
-                Navigator.pushNamed(context, '/Doctor-dashboard');
+                Navigator.pushNamed(
+                  context,
+                  '/view_Instructor_courses',
+                  arguments: widget.doctor.id,
+                );
               },
             ),
             ListTile(
@@ -80,6 +84,24 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                             ProfileScreen(user: widget.doctor),
                       ));
                 }),
+            ListTile(
+              leading: Icon(Icons.group_add_outlined),
+              title: Text('View Courses'),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CourseListPage(),
+                    ));
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.assignment_add),
+              title: Text('Create Quiz'),
+              onTap: () {
+                Navigator.pushNamed(context, '/createQuiz');
+              },
+            ),
             ListTile(
               leading: Icon(Icons.logout),
               title: Text('Logout'),
@@ -112,32 +134,6 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                   Navigator.pushNamedAndRemoveUntil(
                       context, '/login', (route) => false);
                 }
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.group_add_outlined),
-              title: Text('View Courses'),
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CourseListPage(),
-                    ));
-              },
-            ),
-            // ListTile(
-            //   leading: Icon(Icons.assignment_add),
-            //   title: Text('Create Assignment'),
-            //   onTap: () {
-            //     Navigator.pushNamed(context, '/list-assignments-for-dr');
-            //   },
-            // ),
-
-            ListTile(
-              leading: Icon(Icons.assignment_add),
-              title: Text('Create Quiz'),
-              onTap: () {
-                Navigator.pushNamed(context, '/createQuiz');
               },
             ),
           ],
