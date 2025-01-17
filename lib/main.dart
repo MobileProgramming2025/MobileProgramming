@@ -13,8 +13,8 @@ import 'package:mobileprogramming/screens/AdminScreens/view_department_courses.d
 import 'package:mobileprogramming/screens/AdminScreens/view_departments_screen.dart';
 import 'package:mobileprogramming/screens/AssignmentScreens/assignment_list_screen.dart';
 import 'package:mobileprogramming/screens/AssignmentScreens/student_assignment_list.dart';
-import 'package:mobileprogramming/screens/AssignmentScreens/ui-assignment-details.dart';
 import 'package:mobileprogramming/screens/CourseDetailScreen.dart';
+import 'package:mobileprogramming/screens/Registration/google_signup_screen.dart';
 import 'package:mobileprogramming/screens/Registration/signin.dart';
 import 'package:mobileprogramming/screens/Registration/signup.dart';
 import 'package:mobileprogramming/screens/Assignment/assignment_screen.dart';
@@ -164,8 +164,7 @@ class MyApp extends StatelessWidget {
           '/signup': (context) => SignUpScreen(),
           '/add_users': (context) => AddUserScreen(),
           '/list_users': (context) => ListUsersScreen(),
-          '/create_assignment-static': (context) =>
-              AssignmentListScreen(courseId: "course123"),
+          '/create_assignment-static': (context) => AssignmentListScreen(courseId: "course123"),
           '/assignment_screen': (context) => AssignmentScreen(),
           //  '/createQuiz': (context) => CourseListPage(),
           '/add-doctor': (context) => AddDoctorScreen(),
@@ -175,14 +174,14 @@ class MyApp extends StatelessWidget {
           // '/create-assignment': (context) => CourseListPage(),
           // '/enroll_students': (context) => EnrollStudentsScreen(),
           //  '/list-assignments-for-dr' : (context) => CourseListPage(),
-          '/student-assignment-list': (context) =>
-              StudentAssignmentListScreen(),
+          '/student-assignment-list': (context) => StudentAssignmentListScreen(),
           '/add_department': (context) => AddDepartmentScreen(),
           '/view_departments':(context) => ViewDepartmentsScreen(),
           '/view_department_courses':(context) => ViewDepartmentCoursesScreen(),
           '/enroll_instructor':(context) => EnrollInstructorScreen(),
           '/view_Instructor_courses':(context) => ViewInstructorCoursesScreen(),
          '/view_courses_details': (context) => CourseDetailScreen(),
+         '/google_sign_up':(context) => GoogleSignUpScreen(),
         
 
 

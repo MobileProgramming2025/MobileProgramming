@@ -64,13 +64,13 @@ class _ViewInstructorCoursesScreenState
                     return InkWell(
                       onTap: () {
                         Navigator.pushNamed(
-    context,
-    '/view_courses_details',
-    arguments: {
-      'id': course['id'], // Pass course ID
-      'name': course['name'], // Pass course name
-    },
-  );
+                          context,
+                          '/view_courses_details',
+                          arguments: {
+                            'id': course['id'], // Pass course ID
+                            'name': course['name'], // Pass course name
+                          },
+                        );
                       },
                       child: Card(
                         elevation: 4,
@@ -84,7 +84,8 @@ class _ViewInstructorCoursesScreenState
                             children: [
                               Text(
                                 course['name'],
-                                style: Theme.of(context).textTheme.headlineMedium,
+                                style:
+                                    Theme.of(context).textTheme.headlineMedium,
                               ),
                               const SizedBox(height: 8),
                               Text(
