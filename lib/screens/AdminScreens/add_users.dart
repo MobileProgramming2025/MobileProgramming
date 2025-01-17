@@ -99,7 +99,8 @@ class _AddUserScreenState extends State<AddUserScreen> {
         final educationYear = currentYear.year - firstAdded.year;
 
         newUser = User(
-          id: firebaseUid, // Use Firebase UID as the user ID
+          id: userId,
+          // id: firebaseUid, // Use Firebase UID as the user ID
           name: _nameController.text.trim(),
           email: _emailController.text.trim(),
           password: _passwordController.text.trim(),
