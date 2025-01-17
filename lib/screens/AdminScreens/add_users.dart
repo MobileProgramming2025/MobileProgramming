@@ -79,7 +79,6 @@ class _AddUserScreenState extends State<AddUserScreen> {
 
     String userId = _uuid.v4();
     late User newUser;
-    // print(_selectedRole);
 
     if (_selectedRole == "Student") {
       final firstAdded = DateTime.utc(2023, DateTime.november, 9);
@@ -100,7 +99,6 @@ class _AddUserScreenState extends State<AddUserScreen> {
       );
     } else if (_selectedRole == "Teaching Assistant" ||
         _selectedRole == "Doctor") {
-          // print ("yess");
       newUser = User(
         id: userId,
         name: _nameController.text.trim(),
