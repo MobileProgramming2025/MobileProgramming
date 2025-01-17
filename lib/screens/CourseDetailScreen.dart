@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:mobileprogramming/screens/Assignment/assignment_list_screen.dart';
 import 'package:mobileprogramming/screens/QuizTrail/QuizListScreen.dart';
 import 'package:mobileprogramming/screens/QuizTrail/quiz_creation_screen.dart';
 
 class CourseDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // Retrieve the arguments (courseId and courseName)
     final arguments =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     final String courseId = arguments['id'];
@@ -21,45 +21,46 @@ class CourseDetailScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Manage Course: $courseName', // Display course name instead of ID
+              'Manage Course: $courseName',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
-               Navigator.push(
-  context,
-  MaterialPageRoute(
-    builder: (context) => QuizCreationScreen(
-      courseId: courseId, 
-    ),
-  ),
-);
-
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => QuizCreationScreen(
+                      courseId: courseId,
+                    ),
+                  ),
+                );
               },
               child: const Text('Add Quiz'),
             ),
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
-                // Navigate to add assignment screen with courseId
-                Navigator.pushNamed(context, '/add_assignment',
-                    arguments: courseId);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          AssignmentListScreen(courseId: courseId)),
+                );
               },
               child: const Text('Add Assignment'),
             ),
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
-                // Navigate to view quizzes screen with courseId
                 Navigator.push(
-  context,
-  MaterialPageRoute(
-    builder: (context) => QuizListScreen(
-      courseId: courseId, 
-    ),
-  ),
-);
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => QuizListScreen(
+                      courseId: courseId,
+                    ),
+                  ),
+                );
               },
               child: const Text('View All Quizzes'),
             ),
