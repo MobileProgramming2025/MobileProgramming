@@ -16,31 +16,35 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   late User user;
-  late User doctor;
+
 File? _profileImage;
   @override
   void initState() {
     super.initState();
     user = widget.user;
-     if (doctor.profileImagePath != null) {
-      _profileImage = File(doctor.profileImagePath!);
+  
+        if (user?.profileImagePath != null) {
+      _profileImage = File(user.profileImagePath!);
     }
+
   }
-Future<void> _pickImage() async {
+
+   Future<void> _saveProfileImagePath(String path) async {
+    final dbHelper = DatabaseHelper();
+    await dbHelper.updateProfileImagePath(user .id, path);
+  }
+   Future<void> _pickImage() async {
     final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
         _profileImage = File(pickedFile.path);
-        doctor = doctor.copyWith(profileImagePath: pickedFile.path);
-        // Save the updated profile image path to SQFLite
-        _saveProfileImagePath(pickedFile.path);
+      //  if (doctor != null) {
+          user = user.copyWith(profileImagePath: pickedFile.path);
+          _saveProfileImagePath(pickedFile.path);
+       // }
       });
     }
-  }
-   Future<void> _saveProfileImagePath(String path) async {
-    final dbHelper = DatabaseHelper();
-    await dbHelper.updateProfileImagePath(doctor.id, path);
-  }
+ }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

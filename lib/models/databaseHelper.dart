@@ -45,14 +45,13 @@ class DatabaseHelper {
     ''');
   }
   
-  Future<void> updateProfileImagePath(String userId, String imagePath) async {
-    final db = await database;
-    
-    await db.update(
-      'users',
-      {'profile_image_path': imagePath},
-      where: 'id = ?',
-      whereArgs: [userId],
-    );
-  }
+ Future<void> updateProfileImagePath(String userId, String imagePath) async {
+  final db = await database;
+  await db.update(
+    'users', // Ensure this matches the actual table name
+    {'profile_image_path': imagePath},
+    where: 'id = ?',
+    whereArgs: [userId],
+  );
+}
 }
