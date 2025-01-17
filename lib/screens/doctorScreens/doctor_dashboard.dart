@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:mobileprogramming/models/Course.dart';
 import 'package:mobileprogramming/screens/partials/profile.dart';
+import 'package:mobileprogramming/services/CourseService.dart';
+import 'package:mobileprogramming/services/user_service.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:mobileprogramming/models/user.dart';
-
 
 class DoctorDashboard extends StatefulWidget {
   final User doctor;
@@ -15,10 +17,12 @@ class DoctorDashboard extends StatefulWidget {
 
 class _DoctorDashboardState extends State<DoctorDashboard> {
   bool isLoading = true;
-  List<String> courses = [];
+
   DateTime _selectedDate = DateTime.now();
   DateTime _focusedDate = DateTime.now();
   int _currentIndex = 0;
+  final CourseService _courseService = CourseService();
+  final UserService _userService = UserService();
 
   @override
   void initState() {
@@ -29,7 +33,7 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
   Future<void> _fetchData() async {
     await Future.delayed(Duration(seconds: 2));
     setState(() {
-      courses = ['Course 1', 'Course 2', 'Course 3'];
+
       isLoading = false;
     });
   }
@@ -47,7 +51,6 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
           context,
           '/view_Instructor_courses',
           arguments: widget.doctor.id,
-          
         );
         break;
       case 2:
@@ -223,66 +226,177 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                     SizedBox(height: 20),
 
                     // Progress Section
-                    Text("Your Courses",
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold)),
-                    SizedBox(height: 10),
-                    Row(
-                      children: courses
-                          .map(
-                            (course) => Expanded(
-                              child: ProgressCard(
-                                title: course,
-                                progress: (courses.indexOf(course) + 1) * 30,
-                                color: Color(0xFFDED6FF),
-                              ),
-                            ),
-                          )
-                          .toList(),
+                    Text(
+                      "Your Courses",
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black),
                     ),
+                    SizedBox(height: 10),
+                    // Row(
+                    //   children: courses
+                    //       .map(
+                    //         (course) => Expanded(
+                    //           child: ProgressCard(
+                    //             title: course,
+                    //             progress: (courses.indexOf(course) + 1) * 30,
+                    //             color: Color(0xFFDED6FF),
+                    //           ),
+                    //         ),
+                    //       )
+                    //       .toList(),
+                    // ),
+
+                    StreamBuilder<List<Map<String, dynamic>>>(
+                      stream: _userService.fetchEnrolledCoursesByUserId(widget.doctor.id),
+                      builder: (context, snapshot) {
+                        // Handling different connection states
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        } else if (snapshot.hasError) {
+                          return Center(
+                            child: Text('Error: ${snapshot.error}'),
+                          );
+                        } else if (!snapshot.hasData ||
+                            snapshot.data!.isEmpty) {
+                          return Center(
+                            child: Text(
+                              'No Courses Found',
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                          );
+                        }
+
+                        final instructorCourses = snapshot.data!;
+
+                        // Flatten the list of courses for all users
+                        final allInstructorCourses = instructorCourses
+                            .expand((user) =>
+                                user['enrolled_courses'] as List<dynamic>)
+                            .toList();
+
+                        return GridView.builder(
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 16,
+                            mainAxisSpacing: 16,
+                          ),
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: allInstructorCourses.length,
+                          itemBuilder: (context, index) {
+                            final course = allInstructorCourses[index];
+
+                            return Card(
+                              elevation: 4,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    course['name'],
+                                    style:
+                                        Theme.of(context).textTheme.titleLarge,
+                                  ),
+                                  Text(
+                                    course['code'],
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(
+                                          color: Colors.black,
+                                        ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
+
                     SizedBox(height: 20),
 
                     // Courses Section
-                    Text("All Courses",
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold)),
-                    SizedBox(height: 10),
-                    GridView.builder(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 16,
-                        mainAxisSpacing: 16,
+                    Text(
+                      "All Courses",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
                       ),
-                      itemCount: courses.length,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.pushNamed(
-                              context,
-                              '/course-detail', // Specify your course detail route here
-                              arguments:
-                                  courses[index], // Pass course data if needed
+                    ),
+                    SizedBox(height: 10),
+
+                    StreamBuilder<List<Course>>(
+                      stream: _courseService.getCoursesByDepartmentId(
+                          widget.doctor.departmentId!),
+                      builder: (context, snapshot) {
+                        // Handling different connection states
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        } else if (snapshot.hasError) {
+                          return Center(
+                            child: Text('Error: ${snapshot.error}'),
+                          );
+                        } else if (!snapshot.hasData ||
+                            snapshot.data!.isEmpty) {
+                          return Center(
+                            child: Text(
+                              'No Courses Found in this Department',
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                          );
+                        }
+                        final courses = snapshot.data!;
+
+                        return GridView.builder(
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 16,
+                            mainAxisSpacing: 16,
+                          ),
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: courses.length,
+                          itemBuilder: (context, index) {
+                            final course = courses[index];
+
+                            return Card(
+                              elevation: 4,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.book,
+                                    size: 40,
+                                  ),
+                                  SizedBox(height: 8),
+                                  Text(
+                                    course.name,
+                                    style:
+                                        Theme.of(context).textTheme.titleLarge,
+                                  ),
+                                  Text(
+                                    'Course Code: ${course.code}',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(
+                                          color: Colors.black,
+                                        ),
+                                  ),
+                                ],
+                              ),
                             );
                           },
-                          child: Card(
-                            elevation: 4,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.book,
-                                  size: 40,
-                                ),
-                                SizedBox(height: 8),
-                                Text(
-                                  courses[index],
-                                  style: Theme.of(context).textTheme.titleLarge,
-                                ),
-                              ],
-                            ),
-                          ),
                         );
                       },
                     ),

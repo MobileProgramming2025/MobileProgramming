@@ -60,8 +60,8 @@ class _ViewInstructorCoursesScreenState
                   shrinkWrap: true, // Ensures it does not take up unnecessary space
                   physics: NeverScrollableScrollPhysics(), // Prevents scrolling conflict
                   itemCount: enrolledCourses.length,
-                  itemBuilder: (context, subIndex) {
-                    final course = enrolledCourses[subIndex];
+                  itemBuilder: (context, index) {
+                    final course = enrolledCourses[index];
 
                     return InkWell(
                       // Makes the card clickable
