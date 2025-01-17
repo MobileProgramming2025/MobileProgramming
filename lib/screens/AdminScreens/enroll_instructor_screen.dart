@@ -39,7 +39,7 @@ class _EnrollInstructorScreenState extends State<EnrollInstructorScreen> {
     //! -> will not be null, filled later, validate()-> bool
     if (isValid) {
       _form.currentState!.save();
-      _EnrollInstructor();
+      _enrollInstructor();
     }
   }
 
@@ -52,16 +52,9 @@ class _EnrollInstructorScreenState extends State<EnrollInstructorScreen> {
     });
   }
 
-  void _EnrollInstructor() {
-    String _uuid = uuid.v4();
+  void _enrollInstructor() async {
     try {
-      if (selectedInstructor == 'Doctor') {
-        _userService.enrollInstructor(selectedDoctorName, selectedCourse);
-      } else if (selectedInstructor == 'Teaching Assistant') {
-        _userService.enrollInstructor(selectedTaName, selectedCourse);
-      }
-
-      // Check if the widget is still in the tree before using context
+      await _userService.enrollInstructor(selectedDoctorName, selectedCourse);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Instructor enrolled successfully!')),

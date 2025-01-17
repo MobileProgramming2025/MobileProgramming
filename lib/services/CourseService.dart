@@ -21,10 +21,10 @@ class CourseService {
   }
 
   Stream<List<Course>> getCoursesByDepartmentId(String departmentId) {
-    try { 
+    try {
       return _firestore
           .collection('Courses')
-          .where('departmentId', isEqualTo: departmentId) 
+          .where('departmentId', isEqualTo: departmentId)
           .snapshots() // Get real-time stream of query results
           .map((querySnapshot) {
         // Transform each QuerySnapshot into a List of Course objects
@@ -49,25 +49,29 @@ class CourseService {
     required String id,
     required String name,
     required String code,
-    // required String drId,
-    // required String taId,
     required String departmentId,
     required String year,
   }) async {
     try {
-      final nameQuerySnapshot = await _firestore
+      final departmentQuerySnapshot = await _firestore
           .collection('Courses')
-          .where('name', isEqualTo: name)
+          .where('departmentId', isEqualTo: departmentId)
           .get();
-      if (nameQuerySnapshot.docs.isNotEmpty) {
+      // Check for duplicate course name within the same department
+      final nameQuerySnapshot = departmentQuerySnapshot.docs
+          .where((doc) => doc['name'] == name)
+          .toList();
+
+      // Check for duplicate course code within the same department
+      final codeQuerySnapshot = departmentQuerySnapshot.docs
+          .where((doc) => doc['code'] == code)
+          .toList();
+
+      if (nameQuerySnapshot.isNotEmpty) {
         throw Exception("Course with name '$name' already exists.");
       }
 
-      final codeQuerySnapshot = await _firestore
-          .collection('Courses')
-          .where('code', isEqualTo: code)
-          .get();
-      if (codeQuerySnapshot.docs.isNotEmpty) {
+      if (codeQuerySnapshot.isNotEmpty) {
         throw Exception("Course Code '$code' already exists.");
       }
 

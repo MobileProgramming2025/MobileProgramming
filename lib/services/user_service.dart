@@ -150,7 +150,7 @@ class UserService {
     return false;
   }
 
-  void enrollInstructor(dynamic userId, dynamic courseId) async {
+  Future<void> enrollInstructor(dynamic userId, dynamic courseId) async {
     try {
       // Retrieve the user by ID
       final userDocRef = _firestore
@@ -164,17 +164,19 @@ class UserService {
 
         if (courseDoc.exists) {
           // Check and update the enrolled_courses field
-          List<dynamic> enrolledCourses =
-              userDoc.data()?['enrolled_courses'] ?? [];
+          List<dynamic> enrolledCourses = userDoc.data()?['enrolled_courses'];
 
           // Fetch course data
           final courseData = courseDoc.data();
+          if (courseData == null) {
+            throw Exception('Course data is invalid.');
+          }
           final courseObject = {
             'id': courseDoc.id,
-            'name': courseData?['name'],
-            'code': courseData?['code'],
-            'year': courseData?['year'],
-            'departmentId': courseData?['departmentId'],
+            'name': courseData['name'],
+            'code': courseData['code'],
+            'year': courseData['year'],
+            'departmentId': courseData['departmentId'],
           };
 
           // Check if the course is already enrolled
@@ -187,23 +189,23 @@ class UserService {
 
             // Update the user's document with the new enrolled_courses list
             await userDocRef.update({'enrolled_courses': enrolledCourses});
-            print('Instructor enrolled successfully!');
           } else {
-            print('Instructor is already enrolled in this course.');
+            throw Exception('Instructor is already enrolled in this course.');
           }
         } else {
-          print('Course not found.');
+          throw Exception('Course not found.');
         }
       } else {
-        print('User does not exist.');
+        throw Exception('User does not exist.');
       }
     } catch (e) {
       // Error handling
-      print('Failed to enroll instructor: $e');
+      throw Exception('Failed to enroll instructor: $e');
     }
   }
 
-  Stream<List<Map<String, dynamic>>> fetchEnrolledCoursesByUserId(String userId) {
+  Stream<List<Map<String, dynamic>>> fetchEnrolledCoursesByUserId(
+      String userId) {
     return FirebaseFirestore.instance
         .collection('users')
         .doc(userId)
