@@ -107,7 +107,26 @@ class _AddUserScreenState extends State<AddUserScreen> {
         password: _passwordController.text.trim(),
         role: _selectedRole ?? 'Unknown',
         departmentId: _selectedDepartment ?? 'Unknown',
+        enrolledCourses: [],
       );
+    } else if (_selectedRole == "Admin") {
+      newUser = User(
+        id: userId,
+        name: _nameController.text.trim(),
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+        role: _selectedRole ?? 'Unknown',
+      );
+    }
+    // print(newUser.name);
+
+    try {
+      // // Register user in Firebase Authentication
+      // final auth = firebase_auth.FirebaseAuth.instance;
+      // await auth.createUserWithEmailAndPassword(
+      //   email: newUser.email,
+      //   password: newUser.password,
+      // );
 
       // Save user details in Firestore
       await newUser.saveToFirestore();
@@ -125,7 +144,6 @@ class _AddUserScreenState extends State<AddUserScreen> {
       );
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
