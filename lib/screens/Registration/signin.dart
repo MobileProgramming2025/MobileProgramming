@@ -61,19 +61,21 @@ class LoginScreen extends StatelessWidget {
             );
           } else if (userModel.role == 'Admin') {
             Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AdminDashboard(admin: userModel),
-                ));
-          } else if (userModel.role == 'Student') {
-            Navigator.pushNamed(context, '/student-assignment-list');
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(
-            //     builder: (context) => UserHome(user: userModel),
-            //   ),
-            // );
-          } else {
+              context, 
+              MaterialPageRoute(
+                builder: (context) => AdminDashboard(admin: userModel),
+              )
+            );
+          } 
+          else if (userModel.role == 'Student') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => UserHome(user: userModel),
+              ),
+            );
+          }
+          else {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text("Role not recognized.")),
             );

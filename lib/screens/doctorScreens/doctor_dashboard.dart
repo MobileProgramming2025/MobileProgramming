@@ -266,31 +266,47 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                             final course = allInstructorCourses[index];
 
                             return Card(
-                              elevation: 4,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                   Icon(
-                                    Icons.book,
-                                    size: 40,
-                                  ),
-                                  Text(
-                                    course['name'],
-                                    style:
-                                        Theme.of(context).textTheme.titleLarge,
-                                  ),
-                                  Text(
-                                    'Course Code: ${course['code']}',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium
-                                        ?.copyWith(
-                                          color: Colors.black,
-                                        ),
-                                  ),
-                                ],
-                              ),
-                            );
+  elevation: 4,
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(16),
+  ),
+  child: Padding(
+    padding: const EdgeInsets.all(8.0), // Add padding for better spacing
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Expanded(
+          flex: 3, // Set flex to control relative space
+          child: Icon(
+            Icons.book,
+            size: 50, // Adjust the size of the icon
+          ),
+        ),
+        SizedBox(height: 8), // Add space between elements
+        Expanded(
+          flex: 2,
+          child: Text(
+            course['name'],
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+        ),
+        Expanded(
+          flex: 1,
+          child: Text(
+            'Course Code: ${course['code']}',
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Colors.black,
+                ),
+          ),
+        ),
+      ],
+    ),
+  ),
+);
+
                           },
                         );
                       },

@@ -4,7 +4,6 @@ import 'package:mobileprogramming/models/Course.dart';
 import 'package:mobileprogramming/screens/partials/profile.dart';
 import 'package:mobileprogramming/services/CourseService.dart';
 import 'package:mobileprogramming/services/user_service.dart';
-import 'package:table_calendar/table_calendar.dart';
 import 'package:mobileprogramming/models/user.dart';
 
 class DoctorDashboard extends StatefulWidget {

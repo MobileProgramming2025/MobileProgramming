@@ -10,16 +10,15 @@ class AddEditAssignmentScreen extends StatefulWidget {
   final Future<void> Function() onAssignmentUpdated;
 
   const AddEditAssignmentScreen({
-    Key? key,
+    super.key,
     required this.courseId,
     this.assignmentId,
     required this.onAssignmentAdded,
     required this.onAssignmentUpdated,
-  }) : super(key: key);
+  });
 
   @override
-  _AddEditAssignmentScreenState createState() =>
-      _AddEditAssignmentScreenState();
+  State<AddEditAssignmentScreen> createState() => _AddEditAssignmentScreenState();
 }
 
 class _AddEditAssignmentScreenState extends State<AddEditAssignmentScreen>
