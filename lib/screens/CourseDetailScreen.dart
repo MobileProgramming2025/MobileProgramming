@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:mobileprogramming/screens/AssignmentScreens/assignment_list_screen.dart';
-import 'package:mobileprogramming/screens/QuizTrail/QuizListScreen.dart';
-import 'package:mobileprogramming/screens/QuizTrail/quiz_creation_screen.dart'; 
 
 class CourseDetailScreen extends StatelessWidget {
-  final String courseId;
-  //final AppUser doctor;
-
-  const CourseDetailScreen({  super.key, required this.courseId });
-
   @override
   Widget build(BuildContext context) {
+    // Retrieve the arguments (courseId and courseName)
+    final arguments = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    final String courseId = arguments['id'];
+    final String courseName = arguments['name'];
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Course Details'),
@@ -20,53 +17,34 @@ class CourseDetailScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextButton(
-              onPressed: () {
-             
-                showModalBottomSheet(
-                  context: context,
-                  isScrollControlled: true,
-                  useSafeArea: true,
-                  builder: (BuildContext context) {
-                    return Wrap(
-                      children: [
-                        Container(
-                          height: MediaQuery.of(context).size.height /1.2 ,
-                          child: QuizCreationScreen(courseId: courseId),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
-              child: Text('Create Quiz'),
-              
+            Text(
+              'Manage Course: $courseName', // Display course name instead of ID
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
-            SizedBox(height: 20),
-           TextButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AssignmentListScreen(courseId: courseId )
-                //  , doctor: doctor,),
-                ),
-              );
-            },
-            child: Text('View Assignments'),
-          ),
-           TextButton(
-  onPressed: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => QuizListScreen(courseId: courseId),
-      ),
-    );
-  },
-  child: Text('Quizzes'),
-),
-
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+              
+                Navigator.pushNamed(context, '/createQuiz', arguments: courseId);
+              },
+              child: const Text('Add Quiz'),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                // Navigate to add assignment screen with courseId
+                Navigator.pushNamed(context, '/add_assignment', arguments: courseId);
+              },
+              child: const Text('Add Assignment'),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                // Navigate to view quizzes screen with courseId
+                Navigator.pushNamed(context, '/view_quizzes', arguments: courseId);
+              },
+              child: const Text('View All Quizzes'),
+            ),
           ],
         ),
       ),
