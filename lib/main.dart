@@ -16,10 +16,10 @@ import 'package:mobileprogramming/screens/AssignmentScreens/student_assignment_l
 import 'package:mobileprogramming/screens/AssignmentScreens/ui-assignment-details.dart';
 import 'package:mobileprogramming/screens/Registration/signin.dart';
 import 'package:mobileprogramming/screens/Registration/signup.dart';
-import 'package:mobileprogramming/screens/UserScreens/user_home.dart';
 import 'package:mobileprogramming/screens/Assignment/assignment_screen.dart';
 
 import 'package:flutter_sizer/flutter_sizer.dart';
+import 'package:mobileprogramming/screens/doctorScreens/view_instructor_courses.dart';
 
 class HexColor extends Color {
   HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
@@ -161,7 +161,6 @@ class MyApp extends StatelessWidget {
           '/login': (context) => LoginScreen(),
           '/signin': (context) => LoginScreen(),
           '/signup': (context) => SignUpScreen(),
-          '/user_home': (context) => UserHome(),
           '/add_users': (context) => AddUserScreen(),
           '/list_users': (context) => ListUsersScreen(),
           '/create_assignment-static': (context) =>
@@ -178,11 +177,12 @@ class MyApp extends StatelessWidget {
           '/student-assignment-list': (context) =>
               StudentAssignmentListScreen(),
           '/add_department': (context) => AddDepartmentScreen(),
-          '/view_departments': (context) => ViewDepartmentsScreen(),
-          '/view_department_courses': (context) =>
-              ViewDepartmentCoursesScreen(),
-          '/enroll_instructor': (context) => EnrollInstructorScreen(),
-         // '/ui-assignment-details' : (context)=>AssignmentDetailScreen()
+          '/view_departments':(context) => ViewDepartmentsScreen(),
+          '/view_department_courses':(context) => ViewDepartmentCoursesScreen(),
+          '/enroll_instructor':(context) => EnrollInstructorScreen(),
+          '/view_Instructor_courses':(context) => ViewInstructorCoursesScreen(),
+
+
         },
       );
     });

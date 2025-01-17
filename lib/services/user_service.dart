@@ -152,24 +152,47 @@ class UserService {
 
   void enrollInstructor(dynamic userId, dynamic courseId) async {
     try {
-      // Step 1: Retrieve the user document by ID
+      // Retrieve the user by ID
       final userDocRef = _firestore
           .collection('users')
           .doc(userId); // Reference to the user's document
       final userDoc = await userDocRef.get(); // Fetch the document snapshot
-      if (userDoc.exists) {
-        // Step 2: Check and update the enrolled_courses field
-        List<dynamic> enrolledCourses = userDoc.data()?['enrolled_courses'] ??
-            []; // Retrieve current courses
-        if (!enrolledCourses.contains(courseId)) {
-          // Add courseId only if it is not already enrolled
-          enrolledCourses.add(courseId);
 
-          // Step 3: Update the user's document with the new enrolled_courses list
-          await userDocRef.update({'enrolled_courses': enrolledCourses});
-          print('Instructor enrolled successfully!');
+      if (userDoc.exists) {
+        final courseDoc =
+            await _firestore.collection('Courses').doc(courseId).get();
+
+        if (courseDoc.exists) {
+          // Check and update the enrolled_courses field
+          List<dynamic> enrolledCourses =
+              userDoc.data()?['enrolled_courses'] ?? [];
+
+          // Fetch course data
+          final courseData = courseDoc.data();
+          final courseObject = {
+            'id': courseDoc.id,
+            'name': courseData?['name'],
+            'code': courseData?['code'],
+            'year': courseData?['year'],
+            'departmentId': courseData?['departmentId'],
+          };
+
+          // Check if the course is already enrolled
+          bool isEnrolled = enrolledCourses
+              .any((course) => course['id'] == courseObject['id']);
+
+          if (!isEnrolled) {
+            // Add the course object if it is not already enrolled
+            enrolledCourses.add(courseObject);
+
+            // Update the user's document with the new enrolled_courses list
+            await userDocRef.update({'enrolled_courses': enrolledCourses});
+            print('Instructor enrolled successfully!');
+          } else {
+            print('Instructor is already enrolled in this course.');
+          }
         } else {
-          print('Instructor is already enrolled in this course.');
+          print('Course not found.');
         }
       } else {
         print('User does not exist.');
@@ -178,5 +201,21 @@ class UserService {
       // Error handling
       print('Failed to enroll instructor: $e');
     }
+  }
+
+  Stream<List<Map<String, dynamic>>> fetchEnrolledCoursesByUserId(String userId) {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .snapshots()
+        .map((snapshot) {
+      // Extract the list document's ID and fields, and create a usable map
+      return [
+        {
+          'id': snapshot.id,
+          'enrolled_courses': snapshot.data()?['enrolled_courses'],
+        }
+      ];
+    });
   }
 }

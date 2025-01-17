@@ -34,12 +34,16 @@ class User {
         'password': password,
         'role': role,
         'departmentId': departmentId,
-        'enrolled_courses': enrolledCourses!= null
-        ? enrolledCourses!.map((course) => Map<String, dynamic>.from(course)).toList()
-        : [], // Serialize Course objects
-        'taken_courses': takenCourses!= null
-        ? takenCourses!.map((course) => Map<String, dynamic>.from(course)).toList()
-        : [],
+        'enrolled_courses': enrolledCourses != null
+            ? enrolledCourses!
+                .map((course) => Map<String, dynamic>.from(course))
+                .toList()
+            : [], // Serialize Course objects
+        'taken_courses': takenCourses != null
+            ? takenCourses!
+                .map((course) => Map<String, dynamic>.from(course))
+                .toList()
+            : [],
         'added_date': addedDate,
         'year': year,
       };
@@ -75,13 +79,13 @@ class User {
       role: map['role'] as String? ?? 'Unknown',
       departmentId: map['departmentId'] as String? ?? 'Unknown',
       enrolledCourses: map['enrolled_courses'] != null
-        ? List<Map<String, dynamic>>.from(
-            map['enrolled_courses'] as List<dynamic>)
-        : [],
-      takenCourses:  map['taken_courses'] != null
-        ? List<Map<String, dynamic>>.from(
-            map['taken_courses'] as List<dynamic>)
-        : [],
+          ? List<Map<String, dynamic>>.from(
+              map['enrolled_courses'] as List<dynamic>)
+          : [],
+      takenCourses: map['taken_courses'] != null
+          ? List<Map<String, dynamic>>.from(
+              map['taken_courses'] as List<dynamic>)
+          : [],
       addedDate: map['added_date'] is Timestamp
           ? (map['added_date'] as Timestamp)
               .toDate() // Convert Timestamp to DateTime
@@ -112,7 +116,8 @@ class User {
   // Retrieve a user by ID from Firestore
   static Future<User?> getUserDetails(String id) async {
     try {
-      var userDoc = await FirebaseFirestore.instance.collection('users').doc(id).get();
+      var userDoc =
+          await FirebaseFirestore.instance.collection('users').doc(id).get();
       if (userDoc.exists) {
         print("User doc exists $userDoc");
       }

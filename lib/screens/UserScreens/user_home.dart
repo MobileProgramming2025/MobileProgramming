@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:mobileprogramming/models/user.dart';
+import 'package:mobileprogramming/screens/partials/profile.dart';
 import 'package:mobileprogramming/services/CourseService.dart';
 import 'package:mobileprogramming/services/user_service.dart';
 
 class UserHome extends StatefulWidget {
-  const UserHome({super.key});
+  final User user;
+
+  const UserHome({super.key, required this.user});
 
   @override
   State<UserHome> createState() => _UserHomeState();
 }
 
 class _UserHomeState extends State<UserHome> {
+  late User user;
   final CourseService _courseService = CourseService();
   UserService userService = UserService();
   late Stream<List<Map<String, dynamic>>> _coursesStream;
@@ -17,6 +22,7 @@ class _UserHomeState extends State<UserHome> {
   @override
   void initState() {
     super.initState();
+    user = widget.user;
     _coursesStream = _courseService.getAllCourses();
   }
 
@@ -24,7 +30,60 @@ class _UserHomeState extends State<UserHome> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("All Courses"),
+        title: const Text("User Home"),
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: Icon(Icons.menu),
+            onPressed: () => Scaffold.of(context).openDrawer(),
+          ),
+        ),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              child: Text(
+                'Menu',
+                style: Theme.of(context).textTheme.headlineLarge,
+                textAlign: TextAlign.center,
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.home),
+              title: Text('Home'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.person),
+              title: Text('Profile'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ProfileScreen(user: user),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.logout),
+              title: Text('Logout'),
+              onTap: () {
+                // Handle Logout
+              },
+            ),
+            // ListTile(
+            //   leading: Icon(Icons.menu_book_rounded),
+            //   title: Text('View Courses'),
+            //   onTap: () {
+            //     Navigator.pushNamed(context, '/view_courses');
+            //   },
+            // ),
+          ],
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

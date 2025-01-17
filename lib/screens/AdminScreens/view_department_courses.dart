@@ -11,7 +11,6 @@ class ViewDepartmentCoursesScreen extends StatefulWidget {
 
 class _ViewDepartmentCoursesScreenState extends State<ViewDepartmentCoursesScreen> {
   final CourseService _courseService = CourseService();
-  late Stream<List<Course>> _coursesStream;
   late String departmentId;
 
   void _enroll() {
@@ -55,6 +54,7 @@ class _ViewDepartmentCoursesScreenState extends State<ViewDepartmentCoursesScree
             }
 
             final courses = snapshot.data!;
+            
 
             return ListView.builder(
               itemCount: courses.length,
