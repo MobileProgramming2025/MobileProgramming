@@ -120,7 +120,11 @@ Future<void> _pickImage() async {
               const SizedBox(height: 12),
               // _buildProfileCard(title: 'Department', value: user.departmentId),
               // const SizedBox(height: 12),
-           
+              SizedBox(height: 8),
+              ElevatedButton(
+              onPressed: _pickImage,
+              child: Text('Edit Profile Image'),
+            ),
             ],
           ),
         ),
