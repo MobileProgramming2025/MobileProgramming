@@ -161,53 +161,7 @@ class _StudentProfileState extends State<StudentProfile> {
             _buildProfileCard("Email", user.email),
             _buildProfileCard("Role", user.role),
             SizedBox(height: 20.0),
-            Text(
-              "Enrolled Courses",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 10.0),
-            StreamBuilder<List<Map<String, dynamic>>>(
-              stream: _enrolledCoursesStream,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
-                } else if (snapshot.hasError) {
-                  return Text("Error: ${snapshot.error}");
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Text("No Enrolled Courses");
-                }
-
-                final courses = snapshot.data!;
-                return ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: courses.length,
-                  itemBuilder: (context, index) {
-                    final course = courses[index];
-                    return Card(
-                      child: ListTile(
-                        title: Text(course['name']),
-                        subtitle: Text("Code: ${course['code']}"),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => QuizAttemptScreen(
-                                courseId: course['id'],
-                                userId: user.id,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
-          ],
-        ),
-      ),
+          ]))
     );
   }
 }
