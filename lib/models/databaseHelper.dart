@@ -39,11 +39,16 @@ class DatabaseHelper {
 
   Future<void> saveProfileImagePath(String path) async {
     final db = await database;
-    await db.insert(
-      'user',
-      {'profile_image_path': path},
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+
+    // Check if a record already exists
+    var result = await db.query('user');
+    if (result.isEmpty) {
+      // Insert new user record with profile image path
+      await db.insert('user', {'profile_image_path': path});
+    } else {
+      // Update existing record with the new profile image path
+      await db.update('user', {'profile_image_path': path}, where: 'id = ?', whereArgs: [1]);
+    }
   }
 
   Future<String?> getProfileImagePath() async {

@@ -141,15 +141,24 @@ Future<void> _pickImage() async {
                   ],
                 ),
               ),
-              _profileImagePath == null
-                ? CircleAvatar(
-                    radius: 50,
-                    child: Icon(Icons.person, size: 50),
-                  )
-                : CircleAvatar(
-                    radius: 50,
-                    backgroundImage: FileImage(File(_profileImagePath!)),
-                  ),
+            
+            GestureDetector(
+              onTap: _pickImage, // Make the CircleAvatar tappable
+              child: Stack(
+                children: [
+                  // Profile Image
+                  _profileImagePath == null
+                      ? CircleAvatar(
+                          radius: 50,
+                          child: Icon(Icons.account_circle, size: 50),
+                        )
+                      : CircleAvatar(
+                          radius: 50,
+                          backgroundImage: FileImage(File(_profileImagePath!)),
+                        ),
+                ],
+                 ),
+            ),
             SizedBox(height: 16),
               const SizedBox(height: 24),
               _buildProfileCard(title: 'Name', value: user.name),
@@ -161,10 +170,7 @@ Future<void> _pickImage() async {
               // _buildProfileCard(title: 'Department', value: user.departmentId),
               // const SizedBox(height: 12),
               SizedBox(height: 8),
-              ElevatedButton(
-              onPressed: _pickImage,
-              child: Text('Add Profile Image'),
-            ),
+          
             ],
           ),
         ),

@@ -54,6 +54,25 @@ Future<void> fetchUserDetails() async {
       print('Error fetching user details: $error');
     }
   }
+  Future<void> _pickImage() async {
+    try {
+      // Allow the user to pick an image from the gallery
+      final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+
+      if (pickedFile != null) {
+        // Save the image path in the database
+        await DatabaseHelper().saveProfileImagePath(pickedFile.path);
+
+        // Update the UI
+        setState(() {
+          _profileImagePath = pickedFile.path;
+        });
+      }
+    } catch (error) {
+      print('Error picking image: $error');
+    }
+  }
+
   Future<void> _fetchData() async {
     await Future.delayed(Duration(seconds: 2));
     setState(() {
@@ -135,15 +154,23 @@ Future<void> fetchUserDetails() async {
                 color: Colors.white,
               ),
             ),
-             _profileImagePath == null
-                ? CircleAvatar(
-                    radius: 20,
-                    child: Icon(Icons.person, size: 20),
-                  )
-                : CircleAvatar(
-                    radius: 20,
-                    backgroundImage: FileImage(File(_profileImagePath!)),
-                  ),
+            GestureDetector(
+              onTap: _pickImage, // Make the CircleAvatar tappable
+              child: Stack(
+                children: [
+                  // Profile Image
+                  _profileImagePath == null
+                      ? CircleAvatar(
+                          radius: 20,
+                          child: Icon(Icons.account_circle, size: 50),
+                        )
+                      : CircleAvatar(
+                          radius: 20,
+                          backgroundImage: FileImage(File(_profileImagePath!)),
+                        ),
+                ],
+                 ),
+            ),
           ],
         ),
       ),
