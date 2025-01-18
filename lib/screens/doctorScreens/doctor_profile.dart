@@ -20,25 +20,9 @@ File? _profileImage;
     super.initState();
     // Initialize the doctor instance from the widget's doctor property
     doctor = widget.doctor;
-     if (doctor.profileImagePath != null) {
-      _profileImage = File(doctor.profileImagePath!);
-    }
+   
   }
-Future<void> _pickImage() async {
-    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() {
-        _profileImage = File(pickedFile.path);
-        doctor = doctor.copyWith(profileImagePath: pickedFile.path);
-        // Save the updated profile image path to SQFLite
-        _saveProfileImagePath(pickedFile.path);
-      });
-    }
-  }
-   Future<void> _saveProfileImagePath(String path) async {
-    final dbHelper = DatabaseHelper();
-    await dbHelper.updateProfileImagePath(doctor.id, path);
-  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -99,11 +83,7 @@ Future<void> _pickImage() async {
                 fontWeight: FontWeight.bold
               ),
             ),
-             SizedBox(height: 8),
-            ElevatedButton(
-              onPressed: _pickImage,
-              child: Text('Edit Profile Image'),
-            ),
+            
             ElevatedButton(
               onPressed: () {
                 // Handle edit profile

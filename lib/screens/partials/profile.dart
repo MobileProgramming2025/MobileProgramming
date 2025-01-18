@@ -163,7 +163,7 @@ Future<void> _pickImage() async {
               SizedBox(height: 8),
               ElevatedButton(
               onPressed: _pickImage,
-              child: Text('Edit Profile Image'),
+              child: Text('Add Profile Image'),
             ),
             ],
           ),
