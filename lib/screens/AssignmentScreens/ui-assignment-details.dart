@@ -2,9 +2,11 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/design_course_app_theme.dart';
+import 'package:mobileprogramming/screens/AssignmentScreens/student_submission_form_screen.dart';
 
 class AssignmentDetailScreen extends StatefulWidget {
   final String assignmentId;
@@ -44,60 +46,73 @@ UploadTask? uploadTask;
     super.initState();
   }
 Future<void> _submitAssignment() async {
-  // Simulate getting userId, assignmentId, and file selection
-  final userId = 'exampleUserId'; // Replace with actual user ID (from auth)
-  final assignmentId = widget.assignmentId; // From the widget data
-  final result = await FilePicker.platform.pickFiles();
+  // try {
+  //   final user = FirebaseAuth.instance.currentUser;
+  //   if (user == null) {
+  //     print('Error: User is not authenticated');
+  //     return;
+  //   }
 
-  if (result == null || result.files.single.path == null) {
-    debugPrint('No file selected');
-    return;
-  }
+  //   final userId = user.uid;
+  //   final assignmentId = widget.assignmentId; // From the widget data
+  //   final result = await FilePicker.platform.pickFiles();
 
-  final filePath = result.files.single.path!;
-  final fileName = result.files.single.name;
-  final file = File(filePath);
+  //   if (result == null || result.files.single.path == null) {
+  //     debugPrint('No file selected');
+  //     return;
+  //   }
 
-  debugPrint('Selected file path: $filePath');
-  debugPrint('File name: $fileName');
+  //   final filePath = result.files.single.path!;
+  //   final fileName = result.files.single.name;
+  //   final file = File(filePath);
 
-  // Firebase Storage Reference
-  final storageRef = FirebaseStorage.instance
-      .ref()
-      .child('submissions/$userId/$assignmentId/$fileName');
+  //   debugPrint('Selected file path: $filePath');
+  //   debugPrint('File name: $fileName');
 
-  try {
-    // Upload file to Firebase Storage
-    final uploadTask = storageRef.putFile(file);
-    final snapshot = await uploadTask.whenComplete(() => null);
-    final fileUrl = await snapshot.ref.getDownloadURL();
+  //   // Sanitize file name if necessary
+  //   final sanitizedFileName = Uri.encodeComponent(fileName);
 
-    debugPrint('File uploaded successfully: $fileUrl');
+  //   // Firebase Storage Reference
+  //   final storageRef = FirebaseStorage.instance
+  //       .ref()
+  //       .child('submissions/$userId/$assignmentId/$sanitizedFileName');
+  //   debugPrint('Storage Ref Path: submissions/$userId/$assignmentId/$sanitizedFileName');
 
-    // Save submission data to Firestore
-    final firestoreRef = FirebaseFirestore.instance
-        .collection('submissions') // Main submissions collection
-        .doc(assignmentId) // Document for the specific assignment
-        .collection('users') // Sub-collection for users
-        .doc(userId); // User-specific submission
+  //   // Upload the file to Firebase Storage
+  //   final uploadTask = storageRef.putFile(file);
+  //   final snapshot = await uploadTask;
 
-    await firestoreRef.set({
-      'fileName': fileName,
-      'fileUrl': fileUrl,
-      'submittedAt': FieldValue.serverTimestamp(),
-    });
+  //   // Retrieve the download URL
+  //   final fileUrl = await snapshot.ref.getDownloadURL();
 
-    debugPrint('Submission saved to Firestore successfully.');
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Assignment submitted successfully!')),
-    );
-  } catch (e) {
-    debugPrint('Error during submission: $e');
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Failed to submit assignment: $e')),
-    );
-  }
+  //   debugPrint('File uploaded successfully: $fileUrl');
+
+  //   // Save submission data to Firestore
+  //   final firestoreRef = FirebaseFirestore.instance
+  //       .collection('submissions')
+  //       .doc(); // Auto-generate a document ID for each submission
+
+  //   await firestoreRef.set({
+  //     'userId': userId,
+  //     'assignmentId': assignmentId,
+  //     'fileName': fileName,
+  //     'fileUrl': fileUrl,  // Store the file URL in Firestore
+  //     'submittedAt': FieldValue.serverTimestamp(),
+  //   });
+
+  //   debugPrint('Submission saved to Firestore successfully.');
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     const SnackBar(content: Text('Assignment submitted successfully!')),
+  //   );
+  // } catch (e) {
+  //   debugPrint('Error during submission: $e');
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     SnackBar(content: Text('Failed to submit assignment: $e')),
+  //   );
+  // }
 }
+
+
   Future<void> setData() async {
     animationController?.forward();
     await Future<dynamic>.delayed(const Duration(milliseconds: 200));
@@ -131,7 +146,7 @@ Future<void> _submitAssignment() async {
               children: <Widget>[
                 AspectRatio(
                   aspectRatio: 1.2,
-                  child: Image.asset('assets/webInterFace.png'),
+                  child: Image.asset('assets/submit-assignment.jpg'),
                 ),
               ],
             ),
@@ -142,7 +157,7 @@ Future<void> _submitAssignment() async {
               right: 0,
               child: Container(
                 decoration: BoxDecoration(
-                  color: DesignCourseAppTheme.nearlyWhite,
+                  color:  Color.fromARGB(255, 243, 164, 99),
                   borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(32.0),
                       topRight: Radius.circular(32.0)),
@@ -195,7 +210,8 @@ Future<void> _submitAssignment() async {
                                     fontWeight: FontWeight.w200,
                                     fontSize: 22,
                                     letterSpacing: 0.27,
-                                    color: DesignCourseAppTheme.nearlyBlue,
+                                    color: DesignCourseAppTheme
+                                                .nearlyWhite,
                                   ),
                                 ),
                                 Container(
@@ -275,7 +291,7 @@ Future<void> _submitAssignment() async {
                                     height: 48,
                                     child: Container(
                                       decoration: BoxDecoration(
-                                        color: DesignCourseAppTheme.nearlyWhite,
+                                        color: Color(0xff132137),
                                         borderRadius: const BorderRadius.all(
                                           Radius.circular(16.0),
                                         ),
@@ -285,7 +301,8 @@ Future<void> _submitAssignment() async {
                                       ),
                                       child: Icon(
                                         Icons.add,
-                                        color: DesignCourseAppTheme.nearlyBlue,
+                                        color: DesignCourseAppTheme
+                                                .nearlyWhite,
                                         size: 28,
                                       ),
                                     ),
@@ -297,37 +314,46 @@ Future<void> _submitAssignment() async {
                                     child: Container(
                                       height: 48,
                                       decoration: BoxDecoration(
-                                        color: DesignCourseAppTheme.nearlyBlue,
+                                        color: Color(0xff132137),
                                         borderRadius: const BorderRadius.all(
                                           Radius.circular(16.0),
                                         ),
                                         boxShadow: <BoxShadow>[
                                           BoxShadow(
-                                              color: DesignCourseAppTheme
-                                                  .nearlyBlue
+                                              color: Color(0xff132137)
                                                   .withOpacity(0.5),
                                               offset: const Offset(1.1, 1.1),
                                               blurRadius: 10.0),
                                         ],
                                       ),
                                        child: ElevatedButton(
-                onPressed:  _isSubmitting ? null : _submitAssignment,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: DesignCourseAppTheme.nearlyBlue..withOpacity(0.5),
-                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  textStyle: TextStyle(fontSize: 16),
-                ),
-                child: Text('Submit Assignment',
+                                       
+                                              onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                          
+                                        MaterialPageRoute(
+                                          
+                                          builder: (context) => SubmissionFormScreen(
+                                            assignmentId: widget.assignmentId,
+                                          ),
+                                        ),
+                                      );
+                                    },    style: ElevatedButton.styleFrom( backgroundColor: Color(0xff132137)
+                                                  .withOpacity(0.5),),   
+                                     child: Text('Submit Assignment',
                                           textAlign: TextAlign.left,
                                           style: TextStyle(
                                             fontWeight: FontWeight.w600,
                                             fontSize: 18,
                                             letterSpacing: 0.0,
                                             color: DesignCourseAppTheme
-                                                .nearlyWhite,)),
-              ),
-                                      ),
-                                    ),
+                                                .nearlyWhite,
+                                               )),),
+                
+           
+                                    )  ),
+                                    
                                   
                                 ],
                               ),
@@ -351,7 +377,7 @@ Future<void> _submitAssignment() async {
                 scale: CurvedAnimation(
                     parent: animationController!, curve: Curves.fastOutSlowIn),
                 child: Card(
-                  color: DesignCourseAppTheme.nearlyBlue,
+                  color: Color(0xff132137),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(50.0)),
                   elevation: 10.0,
@@ -404,11 +430,11 @@ Future<void> _submitAssignment() async {
       padding: const EdgeInsets.all(8.0),
       child: Container(
         decoration: BoxDecoration(
-          color: DesignCourseAppTheme.nearlyWhite,
+          color: Color(0xff132137),
           borderRadius: const BorderRadius.all(Radius.circular(16.0)),
           boxShadow: <BoxShadow>[
             BoxShadow(
-                color: DesignCourseAppTheme.grey.withOpacity(0.2),
+                color: const Color.fromARGB(255, 174, 187, 196).withOpacity(0.2),
                 offset: const Offset(1.1, 1.1),
                 blurRadius: 8.0),
           ],
@@ -425,7 +451,7 @@ Future<void> _submitAssignment() async {
                   fontWeight: FontWeight.w600,
                   fontSize: 14,
                   letterSpacing: 0.27,
-                  color: DesignCourseAppTheme.nearlyBlue,
+                  color: DesignCourseAppTheme.nearlyWhite,
                 ),
               ),
               Text(
@@ -435,7 +461,7 @@ Future<void> _submitAssignment() async {
                   fontWeight: FontWeight.w200,
                   fontSize: 14,
                   letterSpacing: 0.27,
-                  color: DesignCourseAppTheme.grey,
+                  color: const Color.fromARGB(255, 159, 171, 179),
                 ),
               ),
             ],

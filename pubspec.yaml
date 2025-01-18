@@ -61,6 +61,7 @@ flutter:
     - assets/slide4.png
     - assets/userImage.png
     - assets/webInterFace.png
+    - assets/submit-assignment.jpg
     - assets/introduction_animation/care_image.png
     - assets/introduction_animation/introduction_image.png
     - assets/introduction_animation/benefits.png
@@ -71,3 +72,4 @@ flutter:
     - assets/CourseDesign/interFace3.png
     - assets/CourseDesign/interFace4.png
     - assets/CourseDesign/webInterFace.png
+   
