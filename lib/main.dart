@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_sizer/flutter_sizer.dart';
 import 'package:mobileprogramming/introduction_animation_screen.dart';
+
 import 'package:mobileprogramming/screens/AdminScreens/AddDoctorScreen.dart';
 import 'package:mobileprogramming/screens/AdminScreens/Add_department_screen.dart';
 import 'package:mobileprogramming/screens/AdminScreens/DashboardScreen.dart';
@@ -18,8 +21,6 @@ import 'package:mobileprogramming/screens/Registration/google_signup_screen.dart
 import 'package:mobileprogramming/screens/Registration/signin.dart';
 import 'package:mobileprogramming/screens/Registration/signup.dart';
 import 'package:mobileprogramming/screens/Assignment/assignment_screen.dart';
-
-import 'package:flutter_sizer/flutter_sizer.dart';
 import 'package:mobileprogramming/screens/doctorScreens/view_instructor_courses.dart';
 
 class HexColor extends Color {
@@ -35,20 +36,8 @@ class HexColor extends Color {
 }
 
 void main() async {
-  // WidgetsFlutterBinding.ensureInitialized();
-
-  // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp,DeviceOrientation.landscapeLeft,DeviceOrientation.landscapeRight])
-  // .then((fn) {
-  runApp(const MyApp());
-  // });
-
+  runApp(const ProviderScope(child: MyApp()));
   await Firebase.initializeApp();
-  // await Future.delayed(Duration(seconds: 2)); // Add a small delay
-
-  // Enable App Check
-  // await FirebaseAppCheck.instance.activate(
-  //   androidProvider: AndroidProvider.playIntegrity,
-  // );
 }
 
 class MyApp extends StatelessWidget {
@@ -56,14 +45,46 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var darkColorScheme = ColorScheme.fromSeed(
+    // Define dark color scheme optimized for dark mode
+    var darkColorScheme = ColorScheme(
       //optimize our color scheme to shades for dark mode
       brightness: Brightness.dark,
-      seedColor: const Color.fromARGB(255, 228, 151, 78),
+      primary: Colors.indigo[300]!,
+      onPrimary: Colors.black,
+      primaryContainer: Colors.indigo[700]!,
+      onPrimaryContainer: Colors.white,
+      secondary: Colors.teal[300]!,
+      onSecondary: Colors.black,
+      secondaryContainer: Colors.teal[700]!,
+      onSecondaryContainer: Colors.white,
+      tertiary: Colors.orange[300]!,
+      onTertiary: Colors.black,
+      tertiaryContainer: Colors.orange[700]!,
+      onTertiaryContainer: Colors.white,
+      surface: const Color.fromARGB(255, 40, 40, 40),
+      onSurface: Colors.white,
+      error: Colors.red[300]!,
+      onError: Colors.black,
     );
 
-    var colorScheme = ColorScheme.fromSeed(
-      seedColor: const Color.fromARGB(255, 248, 128, 18),
+    var colorScheme = ColorScheme(
+      brightness: Brightness.light,
+      primary: Colors.indigo,
+      onPrimary: Colors.white,
+      primaryContainer: Colors.indigo[100]!,
+      onPrimaryContainer: Colors.indigo[800]!,
+      secondary: Colors.teal,
+      onSecondary: Colors.white,
+      secondaryContainer: Colors.teal[100]!,
+      onSecondaryContainer: Colors.orange,
+      tertiary: Colors.orange,
+      onTertiary: const Color.fromARGB(255, 70, 70, 70),
+      tertiaryContainer: Colors.orange[100]!,
+      onTertiaryContainer: Colors.orange[800]!,
+      surface: Colors.white,
+      onSurface: Colors.black,
+      error: Colors.red,
+      onError: Colors.white,
     );
 
     return FlutterSizer(builder: (context, orientation, device) {
@@ -75,8 +96,8 @@ class MyApp extends StatelessWidget {
           colorScheme: colorScheme,
           appBarTheme: AppBarTheme(
             centerTitle: true,
-            backgroundColor: colorScheme.onPrimaryFixed,
-            foregroundColor: colorScheme.onSecondary,
+            backgroundColor: colorScheme.onPrimaryContainer,
+            foregroundColor: colorScheme.onPrimary,
             titleTextStyle: TextStyle(
               fontSize: 25,
               fontWeight: FontWeight.bold,
@@ -88,10 +109,6 @@ class MyApp extends StatelessWidget {
                 horizontal: 40,
                 vertical: 10,
               ),
-              // textStyle: TextStyle(
-              //   fontSize: 15,
-              //   //fontWeight: FontWeight.bold,
-              // ),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(40),
               ),
@@ -107,6 +124,9 @@ class MyApp extends StatelessWidget {
           textTheme: TextTheme(
             bodyLarge: TextStyle(
               color: colorScheme.onPrimaryContainer,
+            ),
+            bodyMedium: TextStyle(
+              color: colorScheme.onTertiary,
             ),
             headlineLarge: TextStyle(
               color: colorScheme.onPrimaryContainer,
@@ -156,6 +176,10 @@ class MyApp extends StatelessWidget {
           colorScheme: darkColorScheme,
         ),
 
+
+
+        
+
         initialRoute: '/',
         routes: {
           '/': (context) => IntroductionAnimationScreen(),
@@ -164,7 +188,8 @@ class MyApp extends StatelessWidget {
           '/signup': (context) => SignUpScreen(),
           '/add_users': (context) => AddUserScreen(),
           '/list_users': (context) => ListUsersScreen(),
-          '/create_assignment-static': (context) => AssignmentListScreen(courseId: "course123"),
+          '/create_assignment-static': (context) =>
+              AssignmentListScreen(courseId: "course123"),
           '/assignment_screen': (context) => AssignmentScreen(),
           //  '/createQuiz': (context) => CourseListPage(),
           '/add-doctor': (context) => AddDoctorScreen(),
@@ -174,17 +199,17 @@ class MyApp extends StatelessWidget {
           // '/create-assignment': (context) => CourseListPage(),
           // '/enroll_students': (context) => EnrollStudentsScreen(),
           //  '/list-assignments-for-dr' : (context) => CourseListPage(),
-          '/student-assignment-list': (context) => StudentAssignmentListScreen(),
+          '/student-assignment-list': (context) =>
+              StudentAssignmentListScreen(),
           '/add_department': (context) => AddDepartmentScreen(),
-          '/view_departments':(context) => ViewDepartmentsScreen(),
-          '/view_department_courses':(context) => ViewDepartmentCoursesScreen(),
-          '/enroll_instructor':(context) => EnrollInstructorScreen(),
-          '/view_Instructor_courses':(context) => ViewInstructorCoursesScreen(),
-         '/view_courses_details': (context) => CourseDetailScreen(),
-         '/google_sign_up':(context) => GoogleSignUpScreen(),
-        
-
-
+          '/view_departments': (context) => ViewDepartmentsScreen(),
+          '/view_department_courses': (context) =>
+              ViewDepartmentCoursesScreen(),
+          '/enroll_instructor': (context) => EnrollInstructorScreen(),
+          '/view_Instructor_courses': (context) =>
+              ViewInstructorCoursesScreen(),
+          '/view_courses_details': (context) => CourseDetailScreen(),
+          '/google_sign_up': (context) => GoogleSignUpScreen(),
         },
       );
     });
