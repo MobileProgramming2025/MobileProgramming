@@ -5,6 +5,10 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:mobileprogramming/screens/partials/profile.dart';
 import 'package:mobileprogramming/services/user_service.dart'; // Import UserService
 import 'package:mobileprogramming/models/user.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
+import 'package:mobileprogramming/models/databaseHelper.dart';
+
 
 class DoctorDashboard extends StatefulWidget {
   final User doctor;
@@ -24,13 +28,32 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
   DateTime _selectedDate = DateTime.now();
   DateTime _focusedDate = DateTime.now();
   int _currentIndex = 0;
-
+late User doctor;
+  final DatabaseHelper dbHelper = DatabaseHelper();
+File? _profileImage;
+  String? _profileImagePath;
+  final ImagePicker _picker = ImagePicker();
   @override
   void initState() {
     super.initState();
     _fetchData();
+     doctor = widget.doctor;
+   fetchUserDetails();
   }
 
+Future<void> fetchUserDetails() async {
+    try {
+      String? imagePath = await DatabaseHelper().getProfileImagePath();
+      if (mounted) {
+        setState(() {
+          _profileImagePath = imagePath;
+        });
+      }
+    } catch (error) {
+      // Handle the error or log it for debugging
+      print('Error fetching user details: $error');
+    }
+  }
   Future<void> _fetchData() async {
     await Future.delayed(Duration(seconds: 2));
     setState(() {
@@ -112,10 +135,15 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                 color: Colors.white,
               ),
             ),
-            CircleAvatar(
-              backgroundImage: AssetImage("assets/userImage.png"),
-              radius: 20,
-            ),
+             _profileImagePath == null
+                ? CircleAvatar(
+                    radius: 20,
+                    child: Icon(Icons.person, size: 20),
+                  )
+                : CircleAvatar(
+                    radius: 20,
+                    backgroundImage: FileImage(File(_profileImagePath!)),
+                  ),
           ],
         ),
       ),
