@@ -113,21 +113,80 @@ void _logout() async {
 
             final courses = snapshot.data!;
 
-            return ListView.builder(
-              itemCount: courses.length,
-              itemBuilder: (context, index) {
-                final user = courses[index];
-                final enrolledCourses = user['enrolled_courses'];
+           return ListView.builder(
+  itemCount: courses.length,
+  itemBuilder: (context, index) {
+    final user = courses[index];
+    final enrolledCourses = user['enrolled_courses'];
 
-                return ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: enrolledCourses.length,
-                  itemBuilder: (context, index) {
-                    final course = enrolledCourses[index];
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: enrolledCourses.length,
+      itemBuilder: (context, index) {
+        final course = enrolledCourses[index];
 
-                    return InkWell(
-                      onTap: () {
+        return InkWell(
+          onTap: () {
+            Navigator.pushNamed(
+              context,
+              '/view_courses_details',
+              arguments: {
+                'id': course['id'], // Pass course ID
+                'name': course['name'], // Pass course name
+              },
+            );
+          },
+          child: Card(
+            elevation: 5, // Increased elevation for depth effect
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12), // Rounded corners
+            ),
+            margin: const EdgeInsets.symmetric(vertical: 10), // Distance between cards
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      // Placeholder for optional course image or icon
+                      Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: Theme.of(context).colorScheme.primary.withOpacity(0.3), // Color scheme for dark/light mode
+                        ),
+                        child: Center(
+                          child: Icon(Icons.book, color: Theme.of(context).colorScheme.primary), // Course icon
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          course['name'],
+                          style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold), // Making the title bold
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Course Code: ${course['code']}',
+                    style: Theme.of(context).textTheme.bodyLarge, 
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Year: ${course['year']}',
+                    style: Theme.of(context).textTheme.bodyLarge, 
+                  ),
+                  const SizedBox(height: 8),
+                  
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: () {
                         Navigator.pushNamed(
                           context,
                           '/view_courses_details',
@@ -137,39 +196,22 @@ void _logout() async {
                           },
                         );
                       },
-                      child: Card(
-                        elevation: 4,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                course['name'],
-                                style: Theme.of(context).textTheme.headlineMedium,
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                'Course Code: ${course['code']}',
-                                style: Theme.of(context).textTheme.bodyLarge,
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                'Year: ${course['year']}',
-                                style: Theme.of(context).textTheme.bodyLarge,
-                              ),
-                            ],
-                          ),
-                        ),
+                      child: Text(
+                        'View Details',
+                        style: TextStyle(color: Theme.of(context).colorScheme.primary),
                       ),
-                    );
-                  },
-                );
-              },
-            );
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  },
+);
+
           },
         ),
       ),
