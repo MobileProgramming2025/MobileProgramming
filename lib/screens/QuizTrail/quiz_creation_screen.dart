@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/Question.dart';
 import 'package:mobileprogramming/models/Quiz.dart';
 import 'package:mobileprogramming/screens/Quiz/QuizDetailsScreen.dart';
+import 'package:mobileprogramming/screens/QuizTrail/QuizEditScreen.dart';
 import 'package:mobileprogramming/services/quiz_service.dart';
 import 'package:mobileprogramming/widgets/Quiz/date_picker_field.dart';
 import 'package:mobileprogramming/widgets/Quiz/options_editor.dart';
@@ -43,16 +44,14 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
   @override
   void didUpdateWidget(covariant QuizCreationScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
-
     if (widget.quizId != oldWidget.quizId) {
       _fetchQuizData();
     }
   }
 
   Future<void> _fetchQuizData() async {
+    if (widget.quizId == null) return;
     try {
-      if (widget.quizId == null) return;
-
       DocumentSnapshot doc = await FirebaseFirestore.instance
           .collection('quizzes')
           .doc(widget.quizId)
@@ -63,23 +62,20 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
         setState(() {
           _quizTitle = quiz.title;
           _startDate = quiz.startDate;
-          _endDate = quiz.endDate;
-          _questions.addAll(quiz.questions);
+          _endDate = quiz.startDate.add(quiz.duration);
+          _questions
+            ..clear()
+            ..addAll(quiz.questions);
         });
       }
     } catch (error) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error loading quiz: $error')),
-      );
+      _showError('Error loading quiz: $error');
     }
   }
 
   void _submitQuiz() async {
     if (_quizTitle.isEmpty || _questions.isEmpty || _startDate.isAfter(_endDate)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please provide a title, at least one question, and a valid date range.')),
-      );
+      _showError('Please provide a title, at least one question, and a valid date range.');
       return;
     }
 
@@ -88,19 +84,16 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
     try {
       final user = FirebaseAuth.instance.currentUser;
       if (user == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('User not logged in.')),
-        );
+        _showError('User not logged in.');
         return;
       }
 
-      String quizId = widget.quizId ?? FirebaseFirestore.instance.collection('quizzes').doc().id;
-
-      Quiz quiz = Quiz(
+      final quizId = widget.quizId ?? FirebaseFirestore.instance.collection('quizzes').doc().id;
+      final quiz = Quiz(
         id: quizId,
         title: _quizTitle,
         startDate: _startDate,
-        endDate: _endDate,
+        duration: _endDate.difference(_startDate),
         questions: _questions.map((q) {
           return q.id.isEmpty
               ? q.copyWith(id: FirebaseFirestore.instance.collection('quizzes/$quizId/questions').doc().id)
@@ -117,15 +110,12 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
       }
 
       if (!mounted) return;
-
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => QuizDetailsScreen(quiz: quiz)),
+        MaterialPageRoute(builder: (context) => QuizEditScreen(quizId: quizId)),
       );
     } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error saving quiz: $error')),
-      );
+      _showError('Error saving quiz: $error');
     } finally {
       setState(() => _isSubmitting = false);
     }
@@ -136,39 +126,33 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
 
     try {
       await FirebaseFirestore.instance.collection('quizzes').doc(widget.quizId).delete();
-
       if (!mounted) return;
-
       Navigator.pop(context);
     } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error deleting quiz: $error')),
-      );
+      _showError('Error deleting quiz: $error');
     }
   }
 
-void _addQuestion() {
-  String quizId = widget.quizId ?? FirebaseFirestore.instance.collection('quizzes').doc().id;
+  void _addQuestion() {
+    final quizId = widget.quizId ?? FirebaseFirestore.instance.collection('quizzes').doc().id;
+    final newQuestionId = FirebaseFirestore.instance
+        .collection('quizzes/$quizId/questions')
+        .doc()
+        .id;
 
-  String newQuestionId = FirebaseFirestore.instance
-      .collection('quizzes/$quizId/questions')
-      .doc()
-      .id;
-
-  setState(() {
-    _questions.add(
-      Question(
-        id: newQuestionId,
-        text: '',
-        type: 'multiple choice',
-        options: ['Option 1', 'Option 2'],
-        correctAnswer: '',
-      ),
-    );
-  });
-  _navigateToPage(_questions.length);
-}
-
+    setState(() {
+      _questions.add(
+        Question(
+          id: newQuestionId,
+          text: '',
+          type: 'multiple choice',
+          options: ['Option 1', 'Option 2'],
+          correctAnswer: '',
+        ),
+      );
+    });
+    _navigateToPage(_questions.length);
+  }
 
   void _navigateToPage(int pageIndex) {
     _pageController.animateToPage(
@@ -178,17 +162,20 @@ void _addQuestion() {
     );
   }
 
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+  }
+
   Future<bool> _onWillPop() async {
     if (_quizTitle.isEmpty && _questions.isEmpty) {
       return true;
     }
-
     return (await showDialog(
           context: context,
           builder: (context) => AlertDialog(
             title: const Text('Are you sure?'),
             content: const Text('Are you sure you want to cancel the quiz creation? All changes will be lost.'),
-            actions: <Widget>[
+            actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(true),
                 child: const Text('Yes'),
@@ -256,7 +243,7 @@ void _addQuestion() {
                 ),
               ),
               ..._questions.map((question) {
-                int index = _questions.indexOf(question);
+                final index = _questions.indexOf(question);
                 return SingleChildScrollView(
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),

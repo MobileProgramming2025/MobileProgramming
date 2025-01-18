@@ -17,18 +17,18 @@ class QuizListScreen extends StatelessWidget {
     final user = FirebaseAuth.instance.currentUser;
 
     if (user == null) {
-      return Center(child: Text('Please log in to view quizzes.'));
+      return const Center(child: Text('Please log in to view quizzes.'));
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Quizzes'),
+        title: const Text('Quizzes'),
       ),
       body: FutureBuilder<List<Quiz>>(
         future: _quizService.getQuizzesByUser(user.uid), // Fetch quizzes for the logged-in user
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (snapshot.hasError) {
@@ -36,7 +36,12 @@ class QuizListScreen extends StatelessWidget {
           }
 
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No quizzes found.' ,style: TextStyle(color: const Color.fromARGB(255, 10, 1, 0)) ));
+            return const Center(
+              child: Text(
+                'No quizzes found.',
+                style: TextStyle(color: Color.fromARGB(255, 10, 1, 0)),
+              ),
+            );
           }
 
           List<Quiz> quizzes = snapshot.data!;
@@ -65,15 +70,15 @@ class QuizListScreen extends StatelessWidget {
                             },
                           ),
                           IconButton(
-                            icon: Icon(Icons.delete),
+                            icon: const Icon(Icons.delete),
                             onPressed: () {
                               _quizService.deleteQuiz(quiz.id).then((_) {
-                                if(!context.mounted) return;
+                                if (!context.mounted) return;
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text('Quiz deleted')),
+                                  const SnackBar(content: Text('Quiz deleted')),
                                 );
                               }).catchError((error) {
-                                if(!context.mounted) return;
+                                if (!context.mounted) return;
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(content: Text('Error deleting quiz: $error')),
                                 );
@@ -95,7 +100,7 @@ class QuizListScreen extends StatelessWidget {
                     ),
                   );
                 },
-                child: Text('Add New Quiz'),
+                child: const Text('Add New Quiz'),
               ),
             ],
           );

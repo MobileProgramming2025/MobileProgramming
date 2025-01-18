@@ -1,8 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/Question.dart';
 import 'package:mobileprogramming/models/Quiz.dart';
+import 'package:mobileprogramming/screens/Quiz/QuizDetailsScreen.dart';
 import 'package:mobileprogramming/services/quiz_service.dart';
-import 'package:intl/intl.dart'; 
+import 'package:mobileprogramming/widgets/Quiz/date_picker_field.dart';
+import 'package:mobileprogramming/widgets/Quiz/options_editor.dart';
 
 class QuizEditScreen extends StatefulWidget {
   final String quizId;
@@ -15,11 +19,12 @@ class QuizEditScreen extends StatefulWidget {
 
 class _QuizEditScreenState extends State<QuizEditScreen> {
   final QuizService _quizService = QuizService();
-  late Quiz _quiz; 
-  bool _isLoading = true; 
+  String _quizTitle = '';
+  DateTime _startDate = DateTime.now();
+  DateTime _endDate = DateTime.now();
+  final List<Question> _questions = [];
   bool _isSubmitting = false;
-
-  final _formKey = GlobalKey<FormState>(); 
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -29,21 +34,29 @@ class _QuizEditScreenState extends State<QuizEditScreen> {
 
   Future<void> _fetchQuizData() async {
     try {
-      Quiz? quiz = await _quizService.getQuizById(widget.quizId);
-      if (quiz != null) {
+      DocumentSnapshot doc = await FirebaseFirestore.instance
+          .collection('quizzes')
+          .doc(widget.quizId)
+          .get();
+
+      if (doc.exists) {
+        Quiz quiz = Quiz.fromJson(doc.data() as Map<String, dynamic>);
         setState(() {
-          _quiz = quiz;
+          _quizTitle = quiz.title;
+          _startDate = quiz.startDate;
+          _endDate = quiz.startDate.add(quiz.duration);
+          _questions.addAll(quiz.questions);
           _isLoading = false;
         });
       } else {
-        if(!mounted) return;
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Quiz not found!')),
         );
         Navigator.pop(context);
       }
     } catch (error) {
-      if(!mounted) return;
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error fetching quiz: $error')),
       );
@@ -51,33 +64,74 @@ class _QuizEditScreenState extends State<QuizEditScreen> {
   }
 
   void _submitQuiz() async {
-    if (!_formKey.currentState!.validate()) return;
+    if (_quizTitle.isEmpty || _questions.isEmpty || _startDate.isAfter(_endDate)) {
+      _showError('Please provide a title, at least one question, and a valid date range.');
+      return;
+    }
 
     setState(() => _isSubmitting = true);
 
     try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        _showError('User not logged in.');
+        return;
+      }
 
-      await _quizService.updateQuiz(_quiz);
+      final quiz = Quiz(
+        id: widget.quizId,
+        title: _quizTitle,
+        startDate: _startDate,
+        duration: _endDate.difference(_startDate),
+        questions: _questions.map((q) {
+          return q.id.isEmpty
+              ? q.copyWith(id: FirebaseFirestore.instance.collection('quizzes/$widget.quizId/questions').doc().id)
+              : q;
+        }).toList(),
+        courseId: 'some_course_id',  // replace with actual courseId
+        createdBy: user.uid,
+      );
+
+      await FirebaseFirestore.instance.collection('quizzes').doc(widget.quizId).update(quiz.toJson());
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Quiz updated successfully')),
       );
-      Navigator.pop(context); 
-    } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error updating quiz: $error')),
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => QuizDetailsScreen(quiz: quiz)),
       );
+    } catch (error) {
+      _showError('Error updating quiz: $error');
     } finally {
       setState(() => _isSubmitting = false);
     }
   }
 
-  void _addNewQuestion() {
+  void _deleteQuiz() async {
+    try {
+      await FirebaseFirestore.instance.collection('quizzes').doc(widget.quizId).delete();
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Quiz deleted successfully')),
+      );
+      Navigator.pop(context);
+    } catch (error) {
+      _showError('Error deleting quiz: $error');
+    }
+  }
+
+  void _addQuestion() {
+    final newQuestionId = FirebaseFirestore.instance
+        .collection('quizzes/$widget.quizId/questions')
+        .doc()
+        .id;
+
     setState(() {
-      _quiz.questions.add(
+      _questions.add(
         Question(
-          id: DateTime.now().toIso8601String(),
+          id: newQuestionId,
           text: '',
           type: 'multiple choice',
           options: ['Option 1', 'Option 2'],
@@ -89,46 +143,12 @@ class _QuizEditScreenState extends State<QuizEditScreen> {
 
   void _removeQuestion(int index) {
     setState(() {
-      _quiz.questions.removeAt(index);
+      _questions.removeAt(index);
     });
   }
 
-
-  Future<void> _selectStartTime(BuildContext context) async {
-    final TimeOfDay? picked = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.fromDateTime(_quiz.startDate),
-    );
-    if (picked != null) {
-      setState(() {
-        _quiz.startDate = DateTime(
-          _quiz.startDate.year,
-          _quiz.startDate.month,
-          _quiz.startDate.day,
-          picked.hour,
-          picked.minute,
-        );
-      });
-    }
-  }
-
-
-  Future<void> _selectEndTime(BuildContext context) async {
-    final TimeOfDay? picked = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.fromDateTime(_quiz.endDate),
-    );
-    if (picked != null) {
-      setState(() {
-        _quiz.endDate = DateTime(
-          _quiz.endDate.year,
-          _quiz.endDate.month,
-          _quiz.endDate.day,
-          picked.hour,
-          picked.minute,
-        );
-      });
-    }
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -141,161 +161,90 @@ class _QuizEditScreenState extends State<QuizEditScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Edit Quiz')),
+      appBar: AppBar(
+        title: const Text('Edit Quiz'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.delete),
+            onPressed: _deleteQuiz,
+          ),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-             
-              TextFormField(
-                decoration: const InputDecoration(labelText: 'Quiz Title'),
-                initialValue: _quiz.title,
-                validator: (value) => value == null || value.isEmpty
-                    ? 'Quiz title cannot be empty'
-                    : null,
-                onChanged: (value) => _quiz.title = value,
-              ),
-              const SizedBox(height: 16),
-
-           
-              ListTile(
-                title: const Text('Start Date'),
-                subtitle: Text(DateFormat('yyyy-MM-dd').format(_quiz.startDate)),
-                trailing: const Icon(Icons.calendar_today),
-                onTap: () async {
-                  DateTime? pickedDate = await showDatePicker(
-                    context: context,
-                    initialDate: _quiz.startDate,
-                    firstDate: DateTime(2000),
-                    lastDate: DateTime(2100),
-                  );
-                  if (pickedDate != null) {
-                    setState(() {
-                      _quiz.startDate = pickedDate;
-                    });
-                  }
-                },
-              ),
-              const SizedBox(height: 8),
-
-              
-              ListTile(
-                title: const Text('Start Time'),
-                subtitle: Text(DateFormat('HH:mm').format(_quiz.startDate)),
-                trailing: const Icon(Icons.access_time),
-                onTap: () => _selectStartTime(context),
-              ),
-              const SizedBox(height: 16),
-
-              ListTile(
-                title: const Text('End Date'),
-                subtitle: Text(DateFormat('yyyy-MM-dd').format(_quiz.endDate)),
-                trailing: const Icon(Icons.calendar_today),
-                onTap: () async {
-                  DateTime? pickedDate = await showDatePicker(
-                    context: context,
-                    initialDate: _quiz.endDate,
-                    firstDate: DateTime(2000),
-                    lastDate: DateTime(2100),
-                  );
-                  if (pickedDate != null) {
-                    setState(() {
-                      _quiz.endDate = pickedDate;
-                    });
-                  }
-                },
-              ),
-              const SizedBox(height: 8),
-
-             
-              ListTile(
-                title: const Text('End Time'),
-                subtitle: Text(DateFormat('HH:mm').format(_quiz.endDate)),
-                trailing: const Icon(Icons.access_time),
-                onTap: () => _selectEndTime(context),
-              ),
-              const SizedBox(height: 16),
-
-             
-              const Text('Questions', style: TextStyle(fontSize: 16)),
-              const SizedBox(height: 8),
-              ..._quiz.questions.asMap().entries.map((entry) {
-                int index = entry.key;
-                Question question = entry.value;
-
-                return Column(
+        child: Column(
+          children: [
+            TextField(
+              onChanged: (value) => setState(() => _quizTitle = value),
+              decoration: const InputDecoration(labelText: 'Quiz Title'),
+              controller: TextEditingController(text: _quizTitle),
+            ),
+            DateTimePickerField(
+              label: 'Start Date & Time',
+              initialDateTime: _startDate,
+              onDateTimeChanged: (dateTime) => setState(() => _startDate = dateTime),
+            ),
+            DateTimePickerField(
+              label: 'End Date & Time',
+              initialDateTime: _endDate,
+              onDateTimeChanged: (dateTime) => setState(() => _endDate = dateTime),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: _addQuestion,
+              child: const Text('Add Question'),
+            ),
+            const SizedBox(height: 24),
+            ..._questions.map((question) {
+              final index = _questions.indexOf(question);
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    TextFormField(
-                      decoration: InputDecoration(
-                        labelText: 'Question ${index + 1}',
-                      ),
-                      initialValue: question.text,
-                      onChanged: (value) {
-                        setState(() {
-                          question.text = value;
-                        });
-                      },
+                    TextField(
+                      onChanged: (value) => setState(() {
+                        question.text = value;
+                      }),
+                      decoration: const InputDecoration(labelText: 'Question'),
                     ),
-                    const SizedBox(height: 8),
-                   
-                    Column(
-                      children: question.options!.map((option) {
-                        int optionIndex = question.options!.indexOf(option);
-                        return TextFormField(
-                          decoration: InputDecoration(
-                            labelText: 'Option ${optionIndex + 1}',
-                          ),
-                          initialValue: option,
-                          onChanged: (value) {
-                            setState(() {
-                              question.options?[optionIndex] = value;
-                            });
-                          },
-                        );
-                      }).toList(),
-                    ),
-                    const SizedBox(height: 8),
-                    
-                    TextFormField(
-                      decoration: const InputDecoration(labelText: 'Correct Answer'),
-                      initialValue: question.correctAnswer,
+                    ...question.options!.map((option) {
+                      int optionIndex = question.options!.indexOf(option);
+                      return TextField(
+                        onChanged: (value) {
+                          setState(() {
+                            question.options![optionIndex] = value;
+                          });
+                        },
+                        decoration: InputDecoration(labelText: 'Option ${optionIndex + 1}'),
+                      );
+                    }).toList(),
+                    TextField(
                       onChanged: (value) {
                         setState(() {
                           question.correctAnswer = value;
                         });
                       },
+                      decoration: const InputDecoration(labelText: 'Correct Answer'),
                     ),
-                    const SizedBox(height: 16),
-                   
                     ElevatedButton(
                       onPressed: () => _removeQuestion(index),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                      ),
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
                       child: const Text('Remove Question'),
                     ),
                     const SizedBox(height: 16),
                   ],
-                );
-              }),    //.toList(),
-
-              ElevatedButton(
-                onPressed: _addNewQuestion,
-                child: const Text('Add Question'),
-              ),
-              const SizedBox(height: 24),
-
-          
-              ElevatedButton(
-                onPressed: _isSubmitting ? null : _submitQuiz,
-                child: _isSubmitting
-                    ? const CircularProgressIndicator()
-                    : const Text('Save Changes'),
-              ),
-            ],
-          ),
+                ),
+              );
+            }).toList(),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: _isSubmitting ? null : _submitQuiz,
+              child: _isSubmitting
+                  ? const CircularProgressIndicator()
+                  : const Text('Save Changes'),
+            ),
+          ],
         ),
       ),
     );
