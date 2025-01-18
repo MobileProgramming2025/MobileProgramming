@@ -1,24 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:mobileprogramming/services/user_service.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mobileprogramming/providers/courses_provider.dart';
 
-class ViewInstructorCoursesScreen extends StatefulWidget {
+class ViewInstructorCoursesScreen extends ConsumerStatefulWidget {
   const ViewInstructorCoursesScreen({super.key});
 
   @override
-  State<ViewInstructorCoursesScreen> createState() {
+  ConsumerState<ViewInstructorCoursesScreen> createState() {
     return _ViewInstructorCoursesScreenState();
   }
 }
 
-class _ViewInstructorCoursesScreenState
-    extends State<ViewInstructorCoursesScreen> {
-  final UserService _userService = UserService();
-  late String doctorId;
+class _ViewInstructorCoursesScreenState extends ConsumerState<ViewInstructorCoursesScreen> {
+  late String doctorId; // ID of the doctor (instructor)
 
   @override
   Widget build(BuildContext context) {
     // Retrieve arguments passed via Navigator
     doctorId = ModalRoute.of(context)!.settings.arguments as String;
+
+    // Fetch the stream of courses using Riverpod
+    final courseStream = ref.watch(coursesProvider(doctorId));
 
     return Scaffold(
       appBar: AppBar(
@@ -26,40 +28,27 @@ class _ViewInstructorCoursesScreenState
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: StreamBuilder<List<Map<String, dynamic>>>(
-          stream: _userService.fetchEnrolledCoursesByUserId(doctorId),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
+        child: courseStream.when(
+          // Loading state
+          data: (courses) {
+            if (courses.isEmpty) {
               return const Center(
-                child: CircularProgressIndicator(),
-              );
-            } else if (snapshot.hasError) {
-              return Center(
-                child: Text('Error: ${snapshot.error}'),
-              );
-            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return Center(
-                child: Text(
-                  'You don\'t have any Enrolled Courses',
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
+                child: Text("You don't have any enrolled courses."),
               );
             }
-
-            final courses = snapshot.data!;
-
+            // Display courses if data is not empty
             return ListView.builder(
               itemCount: courses.length,
               itemBuilder: (context, index) {
                 final user = courses[index];
-                final enrolledCourses = user['enrolled_courses'];
+                final enrolledCourses = user['enrolled_courses'] as List;
 
                 return ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: enrolledCourses.length,
-                  itemBuilder: (context, index) {
-                    final course = enrolledCourses[index];
+                  itemBuilder: (context, courseIndex) {
+                    final course = enrolledCourses[courseIndex];
 
                     return InkWell(
                       onTap: () {
@@ -84,8 +73,7 @@ class _ViewInstructorCoursesScreenState
                             children: [
                               Text(
                                 course['name'],
-                                style:
-                                    Theme.of(context).textTheme.headlineMedium,
+                                style: Theme.of(context).textTheme.headlineMedium,
                               ),
                               const SizedBox(height: 8),
                               Text(
@@ -107,6 +95,8 @@ class _ViewInstructorCoursesScreenState
               },
             );
           },
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (e, s) => Center(child: Text('Error: $e')),
         ),
       ),
     );

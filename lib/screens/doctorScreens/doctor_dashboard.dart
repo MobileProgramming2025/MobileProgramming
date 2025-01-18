@@ -3,12 +3,10 @@ import 'package:mobileprogramming/models/Course.dart';
 import 'package:mobileprogramming/services/CourseService.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:mobileprogramming/screens/partials/profile.dart';
-import 'package:mobileprogramming/services/user_service.dart'; // Import UserService
 import 'package:mobileprogramming/models/user.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:mobileprogramming/models/databaseHelper.dart';
-
 
 class DoctorDashboard extends StatefulWidget {
   final User doctor;
@@ -20,7 +18,6 @@ class DoctorDashboard extends StatefulWidget {
 }
 
 class _DoctorDashboardState extends State<DoctorDashboard> {
-  final UserService _userService = UserService();
   final CourseService _courseService = CourseService();
 
   bool isLoading = true;
@@ -28,20 +25,20 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
   DateTime _selectedDate = DateTime.now();
   DateTime _focusedDate = DateTime.now();
   int _currentIndex = 0;
-late User doctor;
+  late User doctor;
   final DatabaseHelper dbHelper = DatabaseHelper();
-File? _profileImage;
+  File? _profileImage;
   String? _profileImagePath;
   final ImagePicker _picker = ImagePicker();
   @override
   void initState() {
     super.initState();
     _fetchData();
-     doctor = widget.doctor;
-   fetchUserDetails();
+    doctor = widget.doctor;
+    fetchUserDetails();
   }
 
-Future<void> fetchUserDetails() async {
+  Future<void> fetchUserDetails() async {
     try {
       String? imagePath = await DatabaseHelper().getProfileImagePath();
       if (mounted) {
@@ -54,6 +51,7 @@ Future<void> fetchUserDetails() async {
       print('Error fetching user details: $error');
     }
   }
+
   Future<void> _pickImage() async {
     try {
       // Allow the user to pick an image from the gallery
@@ -169,7 +167,7 @@ Future<void> fetchUserDetails() async {
                           backgroundImage: FileImage(File(_profileImagePath!)),
                         ),
                 ],
-                 ),
+              ),
             ),
           ],
         ),
@@ -267,7 +265,6 @@ Future<void> fetchUserDetails() async {
                       ),
                     ),
                     SizedBox(height: 20),
-                    
                     Text(
                       "Your Courses",
                       style: TextStyle(
@@ -277,7 +274,7 @@ Future<void> fetchUserDetails() async {
                     ),
                     SizedBox(height: 10),
                     StreamBuilder<List<Map<String, dynamic>>>(
-                      stream: _userService
+                      stream: _courseService
                           .fetchEnrolledCoursesByUserId(widget.doctor.id),
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
@@ -318,50 +315,40 @@ Future<void> fetchUserDetails() async {
                           physics: NeverScrollableScrollPhysics(),
                           itemCount: allInstructorCourses.length,
                           itemBuilder: (context, index) {
-                            final course = allInstructorCourses[index];
+                            final instructorCourse = allInstructorCourses[index];
 
                             return Card(
-  elevation: 4,
-  shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(16),
-  ),
-  child: Padding(
-    padding: const EdgeInsets.all(8.0), // Add padding for better spacing
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Expanded(
-          flex: 3, // Set flex to control relative space
-          child: Icon(
-            Icons.book,
-            size: 50, // Adjust the size of the icon
-          ),
-        ),
-        SizedBox(height: 8), // Add space between elements
-        Expanded(
-          flex: 2,
-          child: Text(
-            course['name'],
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-        ),
-        Expanded(
-          flex: 1,
-          child: Text(
-            'Course Code: ${course['code']}',
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.black,
-                ),
-          ),
-        ),
-      ],
-    ),
-  ),
-);
-
+                              elevation: 4,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0), // Add padding for better spacing
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                    Icons.book,
+                                    size: 50,
+                                  ),
+                                  SizedBox(height: 8),
+                                  Text(
+                                    instructorCourse['name'],
+                                    style:
+                                        Theme.of(context).textTheme.titleLarge,
+                                  ),
+                                  Text(
+                                    'Course Code: ${instructorCourse['code']}',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        
+                                  ),
+                                  ],
+                                ),
+                              ),
+                            );
                           },
                         );
                       },
@@ -421,7 +408,7 @@ Future<void> fetchUserDetails() async {
                                 children: [
                                   Icon(
                                     Icons.book,
-                                    size: 40,
+                                    size: 50,
                                   ),
                                   SizedBox(height: 8),
                                   Text(
@@ -434,9 +421,7 @@ Future<void> fetchUserDetails() async {
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodyMedium
-                                        ?.copyWith(
-                                          color: Colors.black,
-                                        ),
+                                        
                                   ),
                                 ],
                               ),
