@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/Course.dart';
 import 'package:mobileprogramming/screens/Registration/signin.dart';
+import 'package:mobileprogramming/screens/doctorScreens/doctor_profile.dart';
 import 'package:mobileprogramming/services/CourseService.dart';
 import 'package:mobileprogramming/services/auth_service.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -110,7 +111,7 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ProfileScreen(user: widget.doctor),
+            builder: (context) => DoctorProfile(user: widget.doctor),
           ),
         );
          (Route<dynamic> route) => false;
@@ -511,10 +512,9 @@ bottomNavigationBar: Container(
     margin: const EdgeInsets.only(bottom: 5),
     height: 60,
     decoration: BoxDecoration(
-      // Adapt card color based on theme
       color: Theme.of(context).brightness == Brightness.dark 
-          ? Colors.grey[800] // Dark mode card color
-          : Colors.white, // Light mode card color
+          ? Colors.grey[800] 
+          : Colors.white, 
       borderRadius: const BorderRadius.only(
         topLeft: Radius.circular(30),
         topRight: Radius.circular(30),
@@ -534,13 +534,13 @@ bottomNavigationBar: Container(
       type: BottomNavigationBarType.fixed,
       backgroundColor: Colors.transparent,
       elevation: 0,
-      // Adapt selected and unselected item colors based on theme
+    
       selectedItemColor: Theme.of(context).brightness == Brightness.dark 
-          ? Colors.blueAccent // Dark mode selected item color
-          : Colors.indigo, // Light mode selected item color
+          ? Colors.blueAccent 
+          : Colors.indigo,
       unselectedItemColor: Theme.of(context).brightness == Brightness.dark 
-          ? Colors.grey // Dark mode unselected item color
-          : Colors.orange, // Light mode unselected item color
+          ? Colors.grey 
+          : Colors.orange, 
       showSelectedLabels: true,
       showUnselectedLabels: false,
       items: const [

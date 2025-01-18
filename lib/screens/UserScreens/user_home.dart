@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/user.dart';
+import 'package:mobileprogramming/screens/Registration/signin.dart';
 import 'package:mobileprogramming/screens/partials/profile.dart';
 import 'package:mobileprogramming/services/CourseService.dart';
+import 'package:mobileprogramming/services/auth_service.dart';
 import 'package:mobileprogramming/services/user_service.dart';
 
 class UserHome extends StatefulWidget {
@@ -24,6 +26,57 @@ class _UserHomeState extends State<UserHome> {
     super.initState();
     user = widget.user;
     _coursesStream = _courseService.getAllCourses();
+  }
+void _logout() async {
+    final AuthService authService = AuthService();
+
+    // Show confirmation dialog
+    bool? confirmLogout = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            "Confirm Logout",
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface, // Title text color
+            ),
+          ),
+          content: Text(
+            "Are you sure you want to log out?",
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface, // Content text color
+            ),
+          ),
+          backgroundColor: Theme.of(context).dialogBackgroundColor, // Dialog background color
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false), // User does not want to log out
+              child: Text("Cancel", style: TextStyle(color: Theme.of(context).colorScheme.primary)), // Button color
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true), // User wants to log out
+              child: Text("Logout", style: TextStyle(color: Theme.of(context).colorScheme.primary)), // Button color
+            ),
+          ],
+        );
+      },
+    );
+
+    // Proceed with logout if user confirmed
+    if (confirmLogout == true) {
+      try {
+        await authService.logout();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Logged out successfully")),
+        );
+        // Navigate to login screen
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Failed to log out: $e")),
+        );
+      }
+    }
   }
 
   @override
@@ -72,7 +125,7 @@ class _UserHomeState extends State<UserHome> {
               leading: Icon(Icons.logout),
               title: Text('Logout'),
               onTap: () {
-                // Handle Logout
+                _logout();
               },
             ),
              ListTile(
