@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/Course.dart';
+import 'package:mobileprogramming/screens/Registration/signin.dart';
 import 'package:mobileprogramming/services/CourseService.dart';
+import 'package:mobileprogramming/services/auth_service.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:mobileprogramming/screens/partials/profile.dart';
-import 'package:mobileprogramming/services/user_service.dart'; // Import UserService
+import 'package:mobileprogramming/services/user_service.dart'; 
 import 'package:mobileprogramming/models/user.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:mobileprogramming/models/databaseHelper.dart';
-
 
 class DoctorDashboard extends StatefulWidget {
   final User doctor;
@@ -28,20 +29,20 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
   DateTime _selectedDate = DateTime.now();
   DateTime _focusedDate = DateTime.now();
   int _currentIndex = 0;
-late User doctor;
+  late User doctor;
   final DatabaseHelper dbHelper = DatabaseHelper();
-File? _profileImage;
+  File? _profileImage;
   String? _profileImagePath;
   final ImagePicker _picker = ImagePicker();
   @override
   void initState() {
     super.initState();
     _fetchData();
-     doctor = widget.doctor;
-   fetchUserDetails();
+    doctor = widget.doctor;
+    fetchUserDetails();
   }
 
-Future<void> fetchUserDetails() async {
+  Future<void> fetchUserDetails() async {
     try {
       String? imagePath = await DatabaseHelper().getProfileImagePath();
       if (mounted) {
@@ -50,10 +51,10 @@ Future<void> fetchUserDetails() async {
         });
       }
     } catch (error) {
-      // Handle the error or log it for debugging
       print('Error fetching user details: $error');
     }
   }
+
   Future<void> _pickImage() async {
     try {
       // Allow the user to pick an image from the gallery
@@ -94,9 +95,16 @@ Future<void> fetchUserDetails() async {
           '/view_Instructor_courses',
           arguments: widget.doctor.id,
         );
+          (Route<dynamic> route) => false;
         break;
       case 2:
-        Navigator.pushNamed(context, '/calendar');
+       Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DoctorDashboard(doctor: doctor),
+          ), 
+        );
+         (Route<dynamic> route) => false;
         break;
       case 3:
         Navigator.push(
@@ -105,6 +113,7 @@ Future<void> fetchUserDetails() async {
             builder: (context) => ProfileScreen(user: widget.doctor),
           ),
         );
+         (Route<dynamic> route) => false;
         break;
       case 4:
         _logout();
@@ -112,32 +121,57 @@ Future<void> fetchUserDetails() async {
     }
   }
 
-  void _logout() async {
-    final shouldLogout = await showDialog<bool>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Logout'),
-          content: Text('Are you sure you want to logout?'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: Text('Logout'),
-            ),
-          ],
-        );
-      },
-    );
+void _logout() async {
+  final AuthService authService = AuthService();
 
-    if (shouldLogout == true) {
-      // Handle your logout logic here
-      Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+  // Show confirmation dialog
+  bool? confirmLogout = await showDialog<bool>(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text(
+          "Confirm Logout",
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onSurface, // Title text color
+          ),
+        ),
+        content: Text(
+          "Are you sure you want to log out?",
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onSurface, // Content text color
+          ),
+        ),
+        backgroundColor: Theme.of(context).dialogBackgroundColor, // Dialog background color
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false), // User does not want to log out
+            child: Text("Cancel", style: TextStyle(color: Theme.of(context).colorScheme.primary)), // Button color
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true), // User wants to log out
+            child: Text("Logout", style: TextStyle(color: Theme.of(context).colorScheme.primary)), // Button color
+          ),
+        ],
+      );
+    },
+  );
+
+  // Proceed with logout if user confirmed
+  if (confirmLogout == true) {
+    try {
+      await authService.logout();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Logged out successfully")),
+      );
+      // Navigate to login screen
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Failed to log out: $e")),
+      );
     }
   }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -169,7 +203,7 @@ Future<void> fetchUserDetails() async {
                           backgroundImage: FileImage(File(_profileImagePath!)),
                         ),
                 ],
-                 ),
+              ),
             ),
           ],
         ),
@@ -267,7 +301,6 @@ Future<void> fetchUserDetails() async {
                       ),
                     ),
                     SizedBox(height: 20),
-                    
                     Text(
                       "Your Courses",
                       style: TextStyle(
@@ -321,47 +354,55 @@ Future<void> fetchUserDetails() async {
                             final course = allInstructorCourses[index];
 
                             return Card(
-  elevation: 4,
-  shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(16),
-  ),
-  child: Padding(
-    padding: const EdgeInsets.all(8.0), // Add padding for better spacing
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Expanded(
-          flex: 3, // Set flex to control relative space
-          child: Icon(
-            Icons.book,
-            size: 50, // Adjust the size of the icon
-          ),
-        ),
-        SizedBox(height: 8), // Add space between elements
-        Expanded(
-          flex: 2,
-          child: Text(
-            course['name'],
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-        ),
-        Expanded(
-          flex: 1,
-          child: Text(
-            'Course Code: ${course['code']}',
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.black,
-                ),
-          ),
-        ),
-      ],
-    ),
-  ),
-);
-
+                              elevation: 4,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(
+                                    8.0), // Add padding for better spacing
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Expanded(
+                                      flex:
+                                          3, // Set flex to control relative space
+                                      child: Icon(
+                                        Icons.book,
+                                        size: 50, // Adjust the size of the icon
+                                      ),
+                                    ),
+                                    SizedBox(
+                                        height:
+                                            8), // Add space between elements
+                                    Expanded(
+                                      flex: 2,
+                                      child: Text(
+                                        course['name'],
+                                        textAlign: TextAlign.center,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleLarge,
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 1,
+                                      child: Text(
+                                        'Course Code: ${course['code']}',
+                                        textAlign: TextAlign.center,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium
+                                            ?.copyWith(
+                                              color: Colors.black,
+                                            ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
                           },
                         );
                       },
@@ -449,64 +490,71 @@ Future<void> fetchUserDetails() async {
                 ),
               ),
             ),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: Colors.grey[100],
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(30),
-            topRight: Radius.circular(30),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.3),
-              blurRadius: 20,
-            ),
-          ],
-        ),
-        child: Container(
-          margin: EdgeInsets.only(bottom: 5),
-          height: 60,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(30),
-              topRight: Radius.circular(30),
-              bottomRight: Radius.circular(30),
-              bottomLeft: Radius.circular(30),
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 5,
-                offset: Offset(0, 3),
-              ),
-            ],
-          ),
-          child: BottomNavigationBar(
-            currentIndex: _currentIndex,
-            type: BottomNavigationBarType.fixed,
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            selectedItemColor: Colors.indigo,
-            unselectedItemColor: Colors.orange,
-            showSelectedLabels: true,
-            showUnselectedLabels: false,
-            items: const [
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.house_rounded), label: "Home"),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.school), label: "Courses"),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.calendar_month_outlined), label: "Calendar"),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.account_circle_outlined), label: "Profile"),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.exit_to_app), label: "Logout"),
-            ],
-            onTap: _onItemTapped,
-          ),
-        ),
+bottomNavigationBar: Container(
+  decoration: BoxDecoration(
+    // Adapt background color based on theme
+    color: Theme.of(context).brightness == Brightness.dark 
+        ? Colors.grey[850] // Dark mode background
+        : Colors.grey[100], // Light mode background
+    borderRadius: BorderRadius.only(
+      topLeft: Radius.circular(30),
+      topRight: Radius.circular(30),
+    ),
+    boxShadow: [
+      BoxShadow(
+        color: Colors.black.withOpacity(0.3),
+        blurRadius: 20,
       ),
+    ],
+  ),
+  child: Container(
+    margin: const EdgeInsets.only(bottom: 5),
+    height: 60,
+    decoration: BoxDecoration(
+      // Adapt card color based on theme
+      color: Theme.of(context).brightness == Brightness.dark 
+          ? Colors.grey[800] // Dark mode card color
+          : Colors.white, // Light mode card color
+      borderRadius: const BorderRadius.only(
+        topLeft: Radius.circular(30),
+        topRight: Radius.circular(30),
+        bottomLeft: Radius.circular(30),
+        bottomRight: Radius.circular(30),
+      ),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.1),
+          blurRadius: 5,
+          offset: const Offset(0, 3),
+        ),
+      ],
+    ),
+    child: BottomNavigationBar(
+      currentIndex: _currentIndex,
+      type: BottomNavigationBarType.fixed,
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      // Adapt selected and unselected item colors based on theme
+      selectedItemColor: Theme.of(context).brightness == Brightness.dark 
+          ? Colors.blueAccent // Dark mode selected item color
+          : Colors.indigo, // Light mode selected item color
+      unselectedItemColor: Theme.of(context).brightness == Brightness.dark 
+          ? Colors.grey // Dark mode unselected item color
+          : Colors.orange, // Light mode unselected item color
+      showSelectedLabels: true,
+      showUnselectedLabels: false,
+      items: const [
+        BottomNavigationBarItem(icon: Icon(Icons.house_rounded), label: "Home"),
+        BottomNavigationBarItem(icon: Icon(Icons.school), label: "Courses"),
+        BottomNavigationBarItem(icon: Icon(Icons.calendar_month_outlined), label: "Calendar"),
+        BottomNavigationBarItem(icon: Icon(Icons.account_circle_outlined), label: "Profile"),
+        BottomNavigationBarItem(icon: Icon(Icons.exit_to_app), label: "Logout"),
+      ],
+      onTap: _onItemTapped,
+    ),
+  ),
+),
+
     );
   }
 }
