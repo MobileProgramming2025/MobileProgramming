@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/Question.dart';
 import 'package:mobileprogramming/models/Quiz.dart';
-import 'package:mobileprogramming/screens/Quiz/QuizDetailsScreen.dart';
+import 'package:mobileprogramming/screens/QuizTrail/Quiz_Detail_screen.dart';
 import 'package:mobileprogramming/services/quiz_service.dart';
 import 'package:mobileprogramming/widgets/Quiz/date_picker_field.dart';
 import 'package:mobileprogramming/widgets/Quiz/options_editor.dart';
