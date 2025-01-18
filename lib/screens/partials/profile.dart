@@ -16,35 +16,67 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   late User user;
-
+  final DatabaseHelper dbHelper = DatabaseHelper();
 File? _profileImage;
+  String? _profileImagePath;
+  final ImagePicker _picker = ImagePicker();
   @override
   void initState() {
     super.initState();
     user = widget.user;
-  
-        if (user?.profileImagePath != null) {
-      _profileImage = File(user.profileImagePath!);
-    }
+   fetchUserDetails();
+}
 
+Future<void> fetchUserDetails() async {
+    try {
+      String? imagePath = await DatabaseHelper().getProfileImagePath();
+      if (mounted) {
+        setState(() {
+          _profileImagePath = imagePath;
+        });
+      }
+    } catch (error) {
+      // Handle the error or log it for debugging
+      print('Error fetching user details: $error');
+    }
   }
 
-   Future<void> _saveProfileImagePath(String path) async {
-    final dbHelper = DatabaseHelper();
-    await dbHelper.updateProfileImagePath(user .id, path);
-  }
-   Future<void> _pickImage() async {
-    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() {
-        _profileImage = File(pickedFile.path);
-      //  if (doctor != null) {
-          user = user.copyWith(profileImagePath: pickedFile.path);
-          _saveProfileImagePath(pickedFile.path);
-       // }
-      });
+// Future<void> _saveProfileImagePath(String path) async {
+//   final dbHelper = DatabaseHelper();
+//   await dbHelper.updateProfileImagePath(user.id, path);
+// }
+//  Future<void> _loadUserData() async {
+//     final loadedUser = await dbHelper.getUserById(user.id);
+//     if (loadedUser != null) {
+//       setState(() {
+//         user = loadedUser;
+//         if (user.profileImagePath != null) {
+//           _profileImage = File(user.profileImagePath!);
+//         }
+//       });
+//     }
+//   }
+
+Future<void> _pickImage() async {
+    try {
+      // Allow the user to pick an image from the gallery
+      final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+
+      if (pickedFile != null) {
+        // Save the image path in the database
+        await DatabaseHelper().saveProfileImagePath(pickedFile.path);
+
+        // Update the UI
+        setState(() {
+          _profileImagePath = pickedFile.path;
+        });
+      }
+    } catch (error) {
+      print('Error picking image: $error');
     }
- }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,6 +104,7 @@ File? _profileImage;
           child: Column(
             children: [
               Center(
+                
                 child: Column(
                   children: [
                     Stack(
@@ -91,6 +124,9 @@ File? _profileImage;
                         //     ),
                         //   ),
                         // ),
+            //              _profileImagePath == null
+            // ? Text('No profile image selected.')
+            // : Image.file(File(_profileImagePath!)),
                       ],
                     ),
                     const SizedBox(height: 10),
@@ -105,14 +141,14 @@ File? _profileImage;
                   ],
                 ),
               ),
-              _profileImage != null
+              _profileImagePath == null
                 ? CircleAvatar(
-                    backgroundImage: FileImage(_profileImage!),
                     radius: 50,
+                    child: Icon(Icons.person, size: 50),
                   )
                 : CircleAvatar(
-                    child: Icon(Icons.person),
                     radius: 50,
+                    backgroundImage: FileImage(File(_profileImagePath!)),
                   ),
             SizedBox(height: 16),
               const SizedBox(height: 24),
