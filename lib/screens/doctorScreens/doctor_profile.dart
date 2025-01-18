@@ -91,43 +91,57 @@ class _DoctorProfileScreenState extends State<DoctorProfile> {
   }
 
   void _logout() async {
-    final AuthService authService = AuthService();
+  final AuthService authService = AuthService();
+  final colorScheme = Theme.of(context).colorScheme;
 
-    bool? confirmLogout = await showDialog<bool>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Confirm Logout"),
-          content: Text("Are you sure you want to log out?"),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: Text("Cancel"),
+  bool? confirmLogout = await showDialog<bool>(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text(
+          "Confirm Logout",
+          style: TextStyle(color: colorScheme.error),
+        ),
+        content: Text(
+          "Are you sure you want to log out?",
+          style: TextStyle(color: colorScheme.onBackground),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(
+              "Cancel",
+              style: TextStyle(color: colorScheme.primary),
             ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: Text("Logout"),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(
+              "Logout",
+              style: TextStyle(color: colorScheme.error),
             ),
-          ],
-        );
-      },
-    );
+          ),
+        ],
+        backgroundColor: colorScheme.surface,
+      );
+    },
+  );
 
-    if (confirmLogout == true) {
-      try {
-        await authService.logout();
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Logged out successfully")),
-        );
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => LoginScreen()));
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Failed to log out: $e")),
-        );
-      }
+  if (confirmLogout == true) {
+    try {
+      await authService.logout();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Logged out successfully")),
+      );
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => LoginScreen()));
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Failed to log out: $e")),
+      );
     }
   }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -140,7 +154,7 @@ class _DoctorProfileScreenState extends State<DoctorProfile> {
         backgroundColor: colorScheme.primary,
         actions: [
           IconButton(
-            icon: const Icon(Icons.edit),
+            icon: const Icon(Icons.edit,color: Colors.indigo,),
             onPressed: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => EditProfileScreen()));
@@ -194,15 +208,7 @@ class _DoctorProfileScreenState extends State<DoctorProfile> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => EditProfileScreen()));
-        },
-        tooltip: 'Edit Profile',
-        backgroundColor: colorScheme.secondary,
-        child: const Icon(Icons.edit),
-      ),
+     
       bottomNavigationBar: Container(
         margin: const EdgeInsets.only(bottom: 5),
         height: 60,

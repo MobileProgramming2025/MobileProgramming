@@ -133,24 +133,24 @@ void _logout() async {
         title: Text(
           "Confirm Logout",
           style: TextStyle(
-            color: Theme.of(context).colorScheme.onSurface, // Title text color
+            color: Theme.of(context).colorScheme.onSurface, 
           ),
         ),
         content: Text(
           "Are you sure you want to log out?",
           style: TextStyle(
-            color: Theme.of(context).colorScheme.onSurface, // Content text color
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
-        backgroundColor: Theme.of(context).dialogBackgroundColor, // Dialog background color
+        backgroundColor: Theme.of(context).dialogBackgroundColor, 
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(false), // User does not want to log out
-            child: Text("Cancel", style: TextStyle(color: Theme.of(context).colorScheme.primary)), // Button color
+            onPressed: () => Navigator.of(context).pop(false), 
+            child: Text("Cancel", style: TextStyle(color: Theme.of(context).colorScheme.primary)), 
           ),
           TextButton(
-            onPressed: () => Navigator.of(context).pop(true), // User wants to log out
-            child: Text("Logout", style: TextStyle(color: Theme.of(context).colorScheme.primary)), // Button color
+            onPressed: () => Navigator.of(context).pop(true), 
+            child: Text("Logout", style: TextStyle(color: Theme.of(context).colorScheme.primary)), 
           ),
         ],
       );
