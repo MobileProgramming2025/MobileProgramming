@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+import 'package:mobileprogramming/constants.dart';
 import 'package:mobileprogramming/screens/AdminScreens/admin_dashboard.dart';
 import 'package:mobileprogramming/screens/UserScreens/user_home.dart';
 // import 'package:mobileprogramming/screens/UserScreens/user_home.dart';
@@ -62,21 +63,18 @@ class LoginScreen extends StatelessWidget {
             );
           } else if (userModel.role == 'Admin') {
             Navigator.push(
-              context, 
-              MaterialPageRoute(
-                builder: (context) => AdminDashboard(admin: userModel),
-              )
-            );
-          } 
-          else if (userModel.role == 'Student') {
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AdminDashboard(admin: userModel),
+                ));
+          } else if (userModel.role == 'Student') {
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => UserHome(user: userModel),
               ),
             );
-          }
-          else {
+          } else {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text("Role not recognized.")),
             );
@@ -207,10 +205,23 @@ class LoginScreen extends StatelessWidget {
 
                 // Login Button
                 ElevatedButton(
-                  child: Text(
-                    "Login By Google",
-                    style: TextStyle(fontSize: 20),
-                  ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min, // Ensures the button wraps its content
+                      children: [
+                        Image.network(
+                          'http://pngimg.com/uploads/google/google_PNG19635.png',
+                          height: 24, // Adjust image size
+                          width: 24,
+                          fit: BoxFit.cover,
+                        ),
+                        SizedBox(width:12),
+                        Text(
+                          "Login By Google",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ],
+                    ),
+                  
                   onPressed: () => _handleGoogleSignIn(context),
                 ),
 
