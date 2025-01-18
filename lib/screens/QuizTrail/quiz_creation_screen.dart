@@ -3,11 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/Question.dart';
 import 'package:mobileprogramming/models/Quiz.dart';
-
 import 'package:mobileprogramming/screens/QuizTrail/QuizEditScreen.dart';
 import 'package:mobileprogramming/services/quiz_service.dart';
 import 'package:mobileprogramming/widgets/Quiz/date_picker_field.dart';
 import 'package:mobileprogramming/widgets/Quiz/options_editor.dart';
+import 'package:mobileprogramming/widgets/Quiz/question_editor.dart';
 
 class QuizCreationScreen extends StatefulWidget {
   final String courseId;
@@ -25,8 +25,8 @@ class QuizCreationScreen extends StatefulWidget {
 
 class _QuizCreationScreenState extends State<QuizCreationScreen> {
   final QuizService _quizService = QuizService();
-  final PageController _pageController = PageController();
-
+  final TextEditingController _quizTitleController = TextEditingController();
+  
   String _quizTitle = '';
   DateTime _startDate = DateTime.now();
   DateTime _endDate = DateTime.now();
@@ -61,6 +61,7 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
         Quiz quiz = Quiz.fromJson(doc.data() as Map<String, dynamic>);
         setState(() {
           _quizTitle = quiz.title;
+          _quizTitleController.text = _quizTitle;
           _startDate = quiz.startDate;
           _endDate = quiz.startDate.add(quiz.duration);
           _questions
@@ -112,7 +113,7 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
       if (!mounted) return;
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => QuizEditScreen(quizId: quizId)),
+        MaterialPageRoute(builder: (context) => QuizEditScreen(quizId: quizId, courseId: widget.courseId,)),
       );
     } catch (error) {
       _showError('Error saving quiz: $error');
@@ -151,15 +152,6 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
         ),
       );
     });
-    _navigateToPage(_questions.length);
-  }
-
-  void _navigateToPage(int pageIndex) {
-    _pageController.animateToPage(
-      pageIndex,
-      duration: const Duration(milliseconds: 500),
-      curve: Curves.easeInOut,
-    );
   }
 
   void _showError(String message) {
@@ -207,46 +199,39 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
                   ]
                 : null,
           ),
-          body: PageView(
-            controller: _pageController,
-            physics: const NeverScrollableScrollPhysics(),
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    TextField(
-                      onChanged: (value) => setState(() => _quizTitle = value),
-                      decoration: const InputDecoration(labelText: 'Quiz Title'),
-                      controller: TextEditingController(text: _quizTitle),
-                    ),
-                    DateTimePickerField(
-                      label: 'Start Date & Time',
-                      initialDateTime: _startDate,
-                      onDateTimeChanged: (dateTime) => setState(() => _startDate = dateTime),
-                    ),
-                    DateTimePickerField(
-                      label: 'End Date & Time',
-                      initialDateTime: _endDate,
-                      onDateTimeChanged: (dateTime) => setState(() => _endDate = dateTime),
-                    ),
-                    const SizedBox(height: 16),
-                    Align(
-                      alignment: Alignment.center,
-                      child: ElevatedButton(
-                        onPressed: () => _navigateToPage(1),
-                        child: const Text('Next: Add Questions'),
-                      ),
-                    ),
-                  ],
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextField(
+                  onChanged: (value) => setState(() => _quizTitle = value),
+                  controller: _quizTitleController,
+                  decoration: const InputDecoration(labelText: 'Quiz Title'),
                 ),
-              ),
-              ..._questions.map((question) {
-                final index = _questions.indexOf(question);
-                return SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
+                DateTimePickerField(
+                  label: 'Start Date & Time',
+                  initialDateTime: _startDate,
+                  onDateTimeChanged: (dateTime) => setState(() => _startDate = dateTime),
+                ),
+                DateTimePickerField(
+                  label: 'End Date & Time',
+                  initialDateTime: _endDate,
+                  onDateTimeChanged: (dateTime) => setState(() => _endDate = dateTime),
+                ),
+                const SizedBox(height: 16),
+                Align(
+                  alignment: Alignment.center,
+                  child: ElevatedButton(
+                    onPressed: _addQuestion,
+                    child: const Text('Add New Question'),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                ..._questions.map((question) {
+                  final index = _questions.indexOf(question);
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: Column(
                       children: [
                         QuestionEditor(
@@ -255,32 +240,20 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
                             setState(() => _questions[index] = updatedQuestion);
                           },
                         ),
-                        ElevatedButton(
-                          onPressed: _submitQuiz,
-                          style: ElevatedButton.styleFrom(minimumSize: const Size(double.infinity, 48)),
-                          child: _isSubmitting
-                              ? const CircularProgressIndicator()
-                              : const Text('Submit Quiz'),
-                        ),
-                        ElevatedButton(
-                          onPressed: () => _navigateToPage(0),
-                          child: const Text('Back to Edit Title & Dates'),
-                        ),
                       ],
                     ),
-                  ),
-                );
-              }).toList(),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Center(
-                  child: ElevatedButton(
-                    onPressed: _addQuestion,
-                    child: const Text('Add New Question'),
-                  ),
+                  );
+                }).toList(),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: _submitQuiz,
+                  style: ElevatedButton.styleFrom(minimumSize: const Size(double.infinity, 48)),
+                  child: _isSubmitting
+                      ? const CircularProgressIndicator()
+                      : const Text('Submit Quiz'),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

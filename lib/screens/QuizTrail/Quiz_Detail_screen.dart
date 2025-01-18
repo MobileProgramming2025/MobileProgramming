@@ -6,8 +6,9 @@ import 'package:mobileprogramming/screens/QuizTrail/QuizEditScreen.dart';
 
 class QuizDetailsScreen extends StatelessWidget {
   final Quiz quiz;
+  final String courseId;
 
-  const QuizDetailsScreen({super.key, required this.quiz});
+  const QuizDetailsScreen({super.key, required this.quiz, required this.courseId});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +22,7 @@ class QuizDetailsScreen extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => QuizEditScreen(quizId: quiz.id),
+                  builder: (context) => QuizEditScreen(quizId: quiz.id, courseId:courseId ,),
                 ),
               );
             },
