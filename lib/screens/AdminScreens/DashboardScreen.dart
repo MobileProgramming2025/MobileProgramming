@@ -101,7 +101,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          doctor['specialization'],
+                          doctor['departmentId'],
                           style: Theme.of(context).textTheme.bodyLarge,
                           textAlign: TextAlign.center,
                         ),
