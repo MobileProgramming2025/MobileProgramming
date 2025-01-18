@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/user.dart';
+import 'package:mobileprogramming/screens/partials/adminDrawer.dart';
 import 'package:mobileprogramming/screens/partials/edit_profile.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
@@ -17,17 +18,18 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   late User user;
   final DatabaseHelper dbHelper = DatabaseHelper();
-File? _profileImage;
+  File? _profileImage;
   String? _profileImagePath;
   final ImagePicker _picker = ImagePicker();
+
   @override
   void initState() {
     super.initState();
     user = widget.user;
-   fetchUserDetails();
-}
+    fetchUserDetails();
+  }
 
-Future<void> fetchUserDetails() async {
+  Future<void> fetchUserDetails() async {
     try {
       String? imagePath = await DatabaseHelper().getProfileImagePath();
       if (mounted) {
@@ -57,7 +59,7 @@ Future<void> fetchUserDetails() async {
 //     }
 //   }
 
-Future<void> _pickImage() async {
+  Future<void> _pickImage() async {
     try {
       // Allow the user to pick an image from the gallery
       final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
@@ -74,122 +76,6 @@ Future<void> _pickImage() async {
     } catch (error) {
       print('Error picking image: $error');
     }
-  }
-
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('My Profile'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.edit),
-            onPressed: () {
-              // Navigate to the edit form
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => EditProfileScreen(),
-                ),
-              );
-            },
-            tooltip: 'Edit Profile',
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              Center(
-                
-                child: Column(
-                  children: [
-                    Stack(
-                      alignment: Alignment.bottomRight,
-                      children: [
-                        // CircleAvatar(
-                        //   radius: 50,
-                        //   backgroundColor: Colors.blueAccent,
-                        //   child: Text(
-                        //     user.name.isNotEmpty
-                        //         ? user.name[0].toUpperCase()
-                        //         : '?',
-                        //     style: const TextStyle(
-                        //       fontSize: 40,
-                        //       fontWeight: FontWeight.bold,
-                        //       color: Colors.white,
-                        //     ),
-                        //   ),
-                        // ),
-            //              _profileImagePath == null
-            // ? Text('No profile image selected.')
-            // : Image.file(File(_profileImagePath!)),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      user.name,
-                      style: const TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            
-            GestureDetector(
-              onTap: _pickImage, // Make the CircleAvatar tappable
-              child: Stack(
-                children: [
-                  // Profile Image
-                  _profileImagePath == null
-                      ? CircleAvatar(
-                          radius: 50,
-                          child: Icon(Icons.account_circle, size: 50),
-                        )
-                      : CircleAvatar(
-                          radius: 50,
-                          backgroundImage: FileImage(File(_profileImagePath!)),
-                        ),
-                ],
-                 ),
-            ),
-            SizedBox(height: 16),
-              const SizedBox(height: 24),
-              _buildProfileCard(title: 'Name', value: user.name),
-              const SizedBox(height: 12),
-              _buildProfileCard(title: 'Email', value: user.email),
-              const SizedBox(height: 12),
-              _buildProfileCard(title: 'Role', value: user.role),
-              const SizedBox(height: 12),
-              // _buildProfileCard(title: 'Department', value: user.departmentId),
-              // const SizedBox(height: 12),
-              SizedBox(height: 8),
-          
-            ],
-          ),
-        ),
-      ),
-   floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => EditProfileScreen(),
-            ),
-          );
-        },
-        tooltip: 'Edit Profile',
-        child: const Icon(Icons.edit),
-      )
-    
-
-    );
   }
 
   Widget _buildProfileCard({required String title, required String value}) {
@@ -227,4 +113,115 @@ Future<void> _pickImage() async {
     );
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: const Text('My Profile'),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.edit),
+              onPressed: () {
+                // Navigate to the edit form
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EditProfileScreen(),
+                  ),
+                );
+              },
+              tooltip: 'Edit Profile',
+            ),
+          ],
+        ),
+        drawer: AdminDrawer(user: widget.user),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                Center(
+                  child: Column(
+                    children: [
+                      Stack(
+                        alignment: Alignment.bottomRight,
+                        children: [
+                          // CircleAvatar(
+                          //   radius: 50,
+                          //   backgroundColor: Colors.blueAccent,
+                          //   child: Text(
+                          //     user.name.isNotEmpty
+                          //         ? user.name[0].toUpperCase()
+                          //         : '?',
+                          //     style: const TextStyle(
+                          //       fontSize: 40,
+                          //       fontWeight: FontWeight.bold,
+                          //       color: Colors.white,
+                          //     ),
+                          //   ),
+                          // ),
+                          //              _profileImagePath == null
+                          // ? Text('No profile image selected.')
+                          // : Image.file(File(_profileImagePath!)),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        user.name,
+                        style: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                GestureDetector(
+                  onTap: _pickImage, // Make the CircleAvatar tappable
+                  child: Stack(
+                    children: [
+                      // Profile Image
+                      _profileImagePath == null
+                          ? CircleAvatar(
+                              radius: 50,
+                              child: Icon(Icons.account_circle, size: 50),
+                            )
+                          : CircleAvatar(
+                              radius: 50,
+                              backgroundImage:
+                                  FileImage(File(_profileImagePath!)),
+                            ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 16),
+                const SizedBox(height: 24),
+                _buildProfileCard(title: 'Name', value: user.name),
+                const SizedBox(height: 12),
+                _buildProfileCard(title: 'Email', value: user.email),
+                const SizedBox(height: 12),
+                _buildProfileCard(title: 'Role', value: user.role),
+                const SizedBox(height: 12),
+                // _buildProfileCard(title: 'Department', value: user.departmentId),
+                // const SizedBox(height: 12),
+                SizedBox(height: 8),
+              ],
+            ),
+          ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => EditProfileScreen(),
+              ),
+            );
+          },
+          tooltip: 'Edit Profile',
+          child: const Icon(Icons.edit),
+        ));
+  }
 }

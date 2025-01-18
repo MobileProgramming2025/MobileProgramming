@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/Department.dart';
-// import 'package:mobileprogramming/models/user.dart';
+import 'package:mobileprogramming/models/user.dart';
+import 'package:mobileprogramming/screens/AdminScreens/add_courses_screen.dart';
+import 'package:mobileprogramming/screens/partials/adminDrawer.dart';
 import 'package:mobileprogramming/services/CourseService.dart';
 import 'package:mobileprogramming/services/DepartmentService.dart';
-// import 'package:mobileprogramming/services/user_service.dart';
 
 class ViewCoursesScreen extends StatefulWidget {
-  const ViewCoursesScreen({super.key});
+  final User admin;
+  const ViewCoursesScreen({super.key, required this.admin});
 
   @override
   State<ViewCoursesScreen> createState() => _ViewCoursesScreenState();
@@ -14,8 +16,7 @@ class ViewCoursesScreen extends StatefulWidget {
 
 class _ViewCoursesScreenState extends State<ViewCoursesScreen> {
   final CourseService _courseService = CourseService();
-  // final UserService userService = UserService();
-  final DepartmentService departmentService =DepartmentService();
+  final DepartmentService departmentService = DepartmentService();
   late Stream<List<Map<String, dynamic>>> _coursesStream;
 
   @override
@@ -30,6 +31,7 @@ class _ViewCoursesScreenState extends State<ViewCoursesScreen> {
       appBar: AppBar(
         title: const Text("All Courses"),
       ),
+      drawer: AdminDrawer(user: widget.admin),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: StreamBuilder<List<Map<String, dynamic>>>(
@@ -60,9 +62,8 @@ class _ViewCoursesScreenState extends State<ViewCoursesScreen> {
               itemCount: courses.length,
               itemBuilder: (context, index) {
                 final course = courses[index];
-                // final Stream<User?> drStream = userService.getUserByID(course['drId']);
-                // final Stream<User?> taStream = userService.getUserByID(course['taId']);
-                final Stream<Department?> departmentStream = departmentService.getDepartmentByID(course['departmentId']);
+                final Stream<Department?> departmentStream =
+                    departmentService.getDepartmentByID(course['departmentId']);
 
                 return Card(
                   elevation: 4,
@@ -84,37 +85,15 @@ class _ViewCoursesScreenState extends State<ViewCoursesScreen> {
                           style: Theme.of(context).textTheme.bodyLarge,
                         ),
                         const SizedBox(height: 8),
-
-                        // StreamBuilder<User?>(
-                        //   stream: drStream,
-                        //   builder: (context, snapshot) {
-                        //     final User? user = snapshot.data;
-                        //     return Text('Doctor: ${user?.name}',
-                        //         style: Theme.of(context).textTheme.bodyLarge);
-                        //   },
-                        // ),
-                        // const SizedBox(height: 8),
-                        // StreamBuilder<User?>(
-                        //   stream: taStream,
-                        //   builder: (context, snapshot) {
-                        //     final User? user = snapshot.data;
-                        //     return Text(
-                        //       'Teaching Assistant: ${user?.name}',
-                        //       style: Theme.of(context).textTheme.bodyLarge,
-                        //     );
-                        //   }
-                        // ),
-                        // const SizedBox(height: 8),
                         StreamBuilder<Department?>(
-                          stream: departmentStream,
-                          builder: (context, snapshot) {
-                            final Department? dep = snapshot.data;
-                            return Text(
-                              'Department: ${dep?.name}',
-                              style: Theme.of(context).textTheme.bodyLarge,
-                            );
-                          }
-                        ),
+                            stream: departmentStream,
+                            builder: (context, snapshot) {
+                              final Department? dep = snapshot.data;
+                              return Text(
+                                'Department: ${dep?.name}',
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              );
+                            }),
                         const SizedBox(height: 8),
                         Text(
                           'Year: ${course['year']}',
@@ -129,7 +108,7 @@ class _ViewCoursesScreenState extends State<ViewCoursesScreen> {
                         //   color: Colors.red,
                         //   iconSize: 28,
                         // ),
-                      ], 
+                      ],
                     ),
                   ),
                 );
@@ -140,7 +119,12 @@ class _ViewCoursesScreenState extends State<ViewCoursesScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushNamed(context, '/add_courses');
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AddCoursesScreen(admin: widget.admin),
+            ),
+          );
         },
         tooltip: "add_courses",
         child: const Icon(Icons.add),

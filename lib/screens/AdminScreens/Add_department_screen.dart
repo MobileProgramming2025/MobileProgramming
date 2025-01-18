@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:mobileprogramming/models/user.dart';
+import 'package:mobileprogramming/screens/partials/adminDrawer.dart';
 import 'package:mobileprogramming/services/DepartmentService.dart';
 import 'package:uuid/uuid.dart';
 
 final uuid = Uuid();
 
 class AddDepartmentScreen extends StatefulWidget {
-  const AddDepartmentScreen({super.key});
+  final User admin;
+  const AddDepartmentScreen({super.key, required this.admin});
 
   @override
   State<AddDepartmentScreen> createState() {
@@ -116,6 +119,8 @@ class _AddDepartmentScreenState extends State<AddDepartmentScreen> {
           "Add New Department",
         ),
       ),
+      drawer: AdminDrawer(user: widget.admin),
+
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),

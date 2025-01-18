@@ -5,15 +5,8 @@ import 'package:flutter_sizer/flutter_sizer.dart';
 
 import 'package:mobileprogramming/introduction_animation_screen.dart';
 import 'package:mobileprogramming/screens/AdminScreens/AddDoctorScreen.dart';
-import 'package:mobileprogramming/screens/AdminScreens/Add_department_screen.dart';
-import 'package:mobileprogramming/screens/AdminScreens/DashboardScreen.dart';
-import 'package:mobileprogramming/screens/AdminScreens/add_courses_screen.dart';
-import 'package:mobileprogramming/screens/AdminScreens/add_users.dart';
 import 'package:mobileprogramming/screens/AdminScreens/enroll_instructor_screen.dart';
-import 'package:mobileprogramming/screens/AdminScreens/list_users.dart';
-import 'package:mobileprogramming/screens/AdminScreens/view_courses_screen.dart';
 import 'package:mobileprogramming/screens/AdminScreens/view_department_courses.dart';
-import 'package:mobileprogramming/screens/AdminScreens/view_departments_screen.dart';
 import 'package:mobileprogramming/screens/AssignmentScreens/assignment_list_screen.dart';
 import 'package:mobileprogramming/screens/AssignmentScreens/student_assignment_list.dart';
 import 'package:mobileprogramming/screens/doctorScreens/CourseDetailScreen.dart';
@@ -123,7 +116,7 @@ class MyApp extends StatelessWidget {
           //Text Style
           textTheme: TextTheme(
             bodyLarge: TextStyle(
-              color: colorScheme.onPrimaryContainer,
+              color: colorScheme.onSurface,
             ),
             bodyMedium: TextStyle(
               color: colorScheme.onTertiary,
@@ -163,10 +156,10 @@ class MyApp extends StatelessWidget {
               ),
             ),
             hintStyle: TextStyle(
-              color: colorScheme.onPrimaryContainer,
+              color: colorScheme.onSurface,
             ),
             labelStyle: TextStyle(
-              color: colorScheme.onPrimaryContainer,
+              color: colorScheme.onSurface,
             ),
           ),
         ),
@@ -176,38 +169,19 @@ class MyApp extends StatelessWidget {
           colorScheme: darkColorScheme,
         ),
 
-
-
-
-
         initialRoute: '/',
         routes: {
           '/': (context) => IntroductionAnimationScreen(),
           '/login': (context) => LoginScreen(),
           '/signin': (context) => LoginScreen(),
           '/signup': (context) => SignUpScreen(),
-          '/add_users': (context) => AddUserScreen(),
-          '/list_users': (context) => ListUsersScreen(),
-          '/create_assignment-static': (context) =>
-              AssignmentListScreen(courseId: "course123"),
+          '/create_assignment-static': (context) => AssignmentListScreen(courseId: "course123"),
           '/assignment_screen': (context) => AssignmentScreen(),
-          //  '/createQuiz': (context) => CourseListPage(),
           '/add-doctor': (context) => AddDoctorScreen(),
-          '/Doctors Dashboard': (context) => DashboardScreen(),
-          '/add_courses': (context) => AddCoursesScreen(),
-          '/view_courses': (context) => ViewCoursesScreen(),
-          // '/create-assignment': (context) => CourseListPage(),
-          // '/enroll_students': (context) => EnrollStudentsScreen(),
-          //  '/list-assignments-for-dr' : (context) => CourseListPage(),
-          '/student-assignment-list': (context) =>
-              StudentAssignmentListScreen(),
-          '/add_department': (context) => AddDepartmentScreen(),
-          '/view_departments': (context) => ViewDepartmentsScreen(),
-          '/view_department_courses': (context) =>
-              ViewDepartmentCoursesScreen(),
+          '/student-assignment-list': (context) => StudentAssignmentListScreen(),
+          '/view_department_courses': (context) => ViewDepartmentCoursesScreen(),
           '/enroll_instructor': (context) => EnrollInstructorScreen(),
-          '/view_Instructor_courses': (context) =>
-              ViewInstructorCoursesScreen(),
+          '/view_Instructor_courses': (context) => ViewInstructorCoursesScreen(),
           '/view_courses_details': (context) => CourseDetailScreen(),
           '/google_sign_up': (context) => GoogleSignUpScreen(),
         },

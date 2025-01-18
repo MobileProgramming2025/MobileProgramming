@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:mobileprogramming/models/user.dart';
+import 'package:mobileprogramming/screens/partials/adminDrawer.dart';
 import 'package:mobileprogramming/services/DoctorService.dart';
 import 'EditDoctorScreen.dart';
 
 class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({super.key});
+  final User admin;
+  const DashboardScreen({super.key, required this.admin});
+
 
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
@@ -54,6 +58,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         title: const Text("Doctors Dashboard"),
         //backgroundColor: const Color.fromARGB(255, 186, 124, 236),
       ),
+      drawer: AdminDrawer(user: widget.admin),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: StreamBuilder<List<Map<String, dynamic>>>( 

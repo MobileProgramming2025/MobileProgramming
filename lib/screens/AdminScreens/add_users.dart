@@ -1,11 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/user.dart';
+import 'package:mobileprogramming/screens/partials/adminDrawer.dart';
 import 'package:mobileprogramming/services/DepartmentService.dart';
 import 'package:uuid/uuid.dart';
 
 class AddUserScreen extends StatefulWidget {
-  const AddUserScreen({super.key});
+  final User admin;
+  const AddUserScreen({super.key, required this.admin});
 
   @override
   State<AddUserScreen> createState() => _AddUserScreenState();
@@ -51,10 +53,11 @@ class _AddUserScreenState extends State<AddUserScreen> {
     setState(() {
       _validName = _nameController.text.trim().isNotEmpty;
       _validEmail = RegExp(r"^[a-zA-Z0-9]+@[a-zA-Z]+\.[a-zA-Z]+$")
-            .hasMatch(_emailController.text.trim());
+          .hasMatch(_emailController.text.trim());
       _validPassword = _passwordController.text.trim().length >= 8;
       _validRole = _selectedRole != null;
-      _validDepartment = (_selectedRole == "Admin") || _selectedDepartment != null;
+      _validDepartment =
+          (_selectedRole == "Admin") || _selectedDepartment != null;
 
       isValid = _validName &&
           _validEmail &&
@@ -69,9 +72,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
     if (!_validateForm()) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            'Please fill all fields correctly!'
-          ),
+          content: Text('Please fill all fields correctly!'),
         ),
       );
       return;
@@ -81,7 +82,8 @@ class _AddUserScreenState extends State<AddUserScreen> {
 
     try {
       // Create user in Firebase Authentication
-      firebase_auth.UserCredential userCredential = await firebase_auth.FirebaseAuth.instance
+      firebase_auth.UserCredential userCredential = await firebase_auth
+          .FirebaseAuth.instance
           .createUserWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
@@ -111,7 +113,8 @@ class _AddUserScreenState extends State<AddUserScreen> {
           addedDate: firstAdded,
           year: (educationYear + 1).toString(),
         );
-      } else if (_selectedRole == "Teaching Assistant" || _selectedRole == "Doctor") {
+      } else if (_selectedRole == "Teaching Assistant" ||
+          _selectedRole == "Doctor") {
         newUser = User(
           id: firebaseUid, // Use Firebase UID as the user ID
           name: _nameController.text.trim(),
@@ -152,13 +155,13 @@ class _AddUserScreenState extends State<AddUserScreen> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Add a user'),
       ),
+      drawer: AdminDrawer(user: widget.admin),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -176,7 +179,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
                     ),
                   ),
                   SizedBox(height: 16),
- 
+
                   TextFormField(
                     controller: _emailController,
                     decoration: InputDecoration(
@@ -235,11 +238,11 @@ class _AddUserScreenState extends State<AddUserScreen> {
                     ),
                   ),
                   SizedBox(height: 16),
-                  
+
                   // Show department dropdown only f the selected role is not Admin
                   if (_selectedRole != "Admin")
                     StreamBuilder<List<Map<String, dynamic>>>(
-                    stream: _departmentService.getAllDepartments(),
+                      stream: _departmentService.getAllDepartments(),
                       builder: (context, snapshot) {
                         List<DropdownMenuItem> depitems = [];
                         if (!snapshot.hasData) {
@@ -277,7 +280,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
                             });
                       },
                     ),
-                    SizedBox(height: 20),
+                  SizedBox(height: 20),
 
                   Center(
                     child: ElevatedButton(

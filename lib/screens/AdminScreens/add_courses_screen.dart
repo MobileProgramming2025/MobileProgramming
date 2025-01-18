@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mobileprogramming/models/user.dart';
+import 'package:mobileprogramming/screens/partials/adminDrawer.dart';
 import 'package:mobileprogramming/services/CourseService.dart';
 import 'package:mobileprogramming/services/DepartmentService.dart';
 import 'package:uuid/uuid.dart';
@@ -6,7 +8,8 @@ import 'package:uuid/uuid.dart';
 final uuid = Uuid();
 
 class AddCoursesScreen extends StatefulWidget {
-  const AddCoursesScreen({super.key});
+  final User admin;
+  const AddCoursesScreen({super.key, required this.admin});
 
   @override
   State<AddCoursesScreen> createState() {
@@ -194,6 +197,8 @@ class _AddCoursesScreenState extends State<AddCoursesScreen> {
           "Add New Course",
         ),
       ),
+      // widget: access the properties of the parent StatefulWidget class.
+      drawer: AdminDrawer(user: widget.admin),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),

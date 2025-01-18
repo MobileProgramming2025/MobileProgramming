@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/user.dart';
+import 'package:mobileprogramming/screens/partials/adminDrawer.dart';
 import 'package:mobileprogramming/services/user_service.dart';
 
 class ListUsersScreen extends StatefulWidget {
-  const ListUsersScreen({super.key});
+  final User admin;
+  const ListUsersScreen({super.key, required this.admin});
 
   @override
   State<ListUsersScreen> createState() => _ListUsersScreenState();
@@ -39,6 +41,8 @@ class _ListUsersScreenState extends State<ListUsersScreen> {
       appBar: AppBar(
         title: const Text('User List'),
       ),
+      drawer: AdminDrawer(user: widget.admin),
+
       body: FutureBuilder(
         future: _futureUsers,
         builder: (BuildContext context, AsyncSnapshot<List<User>> snapshot) {

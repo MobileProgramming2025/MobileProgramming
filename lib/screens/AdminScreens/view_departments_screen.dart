@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:mobileprogramming/models/user.dart';
+import 'package:mobileprogramming/screens/AdminScreens/Add_department_screen.dart';
+import 'package:mobileprogramming/screens/partials/adminDrawer.dart';
 import 'package:mobileprogramming/services/DepartmentService.dart';
 
 class ViewDepartmentsScreen extends StatefulWidget {
-  const ViewDepartmentsScreen({super.key});
+  final User admin;
+  const ViewDepartmentsScreen({super.key, required this.admin});
 
   @override
   State<ViewDepartmentsScreen> createState() => _ViewDepartmentsScreenState();
@@ -25,6 +29,7 @@ class _ViewDepartmentsScreenState extends State<ViewDepartmentsScreen> {
       appBar: AppBar(
         title: const Text("All Departments"),
       ),
+      drawer: AdminDrawer(user: widget.admin),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: StreamBuilder<List<Map<String, dynamic>>>(
@@ -99,7 +104,12 @@ class _ViewDepartmentsScreenState extends State<ViewDepartmentsScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushNamed(context, '/add_department');
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AddDepartmentScreen(admin: widget.admin),
+            ),
+          );
         },
         child: const Icon(Icons.add),
       ),
