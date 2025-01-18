@@ -29,9 +29,7 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
   DateTime _focusedDate = DateTime.now();
   int _currentIndex = 0;
   late User doctor;
-  late User doctor;
   final DatabaseHelper dbHelper = DatabaseHelper();
-  File? _profileImage;
   File? _profileImage;
   String? _profileImagePath;
   final ImagePicker _picker = ImagePicker();
@@ -41,11 +39,8 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
     _fetchData();
     doctor = widget.doctor;
     fetchUserDetails();
-    doctor = widget.doctor;
-    fetchUserDetails();
   }
 
-  Future<void> fetchUserDetails() async {
   Future<void> fetchUserDetails() async {
     try {
       String? imagePath = await DatabaseHelper().getProfileImagePath();
@@ -58,7 +53,6 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
       print('Error fetching user details: $error');
     }
   }
-
 
   Future<void> _pickImage() async {
     try {
@@ -100,16 +94,16 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
           '/view_Instructor_courses',
           arguments: widget.doctor.id,
         );
-          (Route<dynamic> route) => false;
+        (Route<dynamic> route) => false;
         break;
       case 2:
-       Navigator.push(
+        Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => DoctorDashboard(doctor: doctor),
-          ), 
+          ),
         );
-         (Route<dynamic> route) => false;
+        (Route<dynamic> route) => false;
         break;
       case 3:
         Navigator.push(
@@ -118,7 +112,7 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
             builder: (context) => DoctorProfile(user: widget.doctor),
           ),
         );
-         (Route<dynamic> route) => false;
+        (Route<dynamic> route) => false;
         break;
       case 4:
         _logout();
@@ -126,57 +120,62 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
     }
   }
 
-void _logout() async {
-  final AuthService authService = AuthService();
+  void _logout() async {
+    final AuthService authService = AuthService();
 
-  // Show confirmation dialog
-  bool? confirmLogout = await showDialog<bool>(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text(
-          "Confirm Logout",
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.onSurface, 
+    // Show confirmation dialog
+    bool? confirmLogout = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            "Confirm Logout",
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
           ),
-        ),
-        content: Text(
-          "Are you sure you want to log out?",
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.onSurface,
+          content: Text(
+            "Are you sure you want to log out?",
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
           ),
-        ),
-        backgroundColor: Theme.of(context).dialogBackgroundColor, 
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false), 
-            child: Text("Cancel", style: TextStyle(color: Theme.of(context).colorScheme.primary)), 
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true), 
-            child: Text("Logout", style: TextStyle(color: Theme.of(context).colorScheme.primary)), 
-          ),
-        ],
-      );
-    },
-  );
+          backgroundColor: Theme.of(context).dialogBackgroundColor,
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text("Cancel",
+                  style:
+                      TextStyle(color: Theme.of(context).colorScheme.primary)),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text("Logout",
+                  style:
+                      TextStyle(color: Theme.of(context).colorScheme.primary)),
+            ),
+          ],
+        );
+      },
+    );
 
-  // Proceed with logout if user confirmed
-  if (confirmLogout == true) {
-    try {
-      await authService.logout();
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Logged out successfully")),
-      );
-      // Navigate to login screen
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen()));
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Failed to log out: $e")),
-      );
+    // Proceed with logout if user confirmed
+    if (confirmLogout == true) {
+      try {
+        await authService.logout();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Logged out successfully")),
+        );
+        // Navigate to login screen
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => LoginScreen()));
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Failed to log out: $e")),
+        );
+      }
     }
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -208,7 +207,6 @@ void _logout() async {
                           backgroundImage: FileImage(File(_profileImagePath!)),
                         ),
                 ],
-              ),
               ),
             ),
           ],
@@ -357,7 +355,8 @@ void _logout() async {
                           physics: NeverScrollableScrollPhysics(),
                           itemCount: allInstructorCourses.length,
                           itemBuilder: (context, index) {
-                            final instructorCourse = allInstructorCourses[index];
+                            final instructorCourse =
+                                allInstructorCourses[index];
 
                             return Card(
                               elevation: 4,
@@ -365,28 +364,28 @@ void _logout() async {
                                 borderRadius: BorderRadius.circular(16),
                               ),
                               child: Padding(
-                                padding: const EdgeInsets.all(8.0), // Add padding for better spacing
+                                padding: const EdgeInsets.all(
+                                    8.0), // Add padding for better spacing
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Icon(
-                                    Icons.book,
-                                    size: 50,
-                                  ),
-                                  SizedBox(height: 8),
-                                  Text(
-                                    instructorCourse['name'],
-                                    style:
-                                        Theme.of(context).textTheme.titleLarge,
-                                  ),
-                                  Text(
-                                    'Course Code: ${instructorCourse['code']}',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium
-                                        
-                                  ),
+                                      Icons.book,
+                                      size: 50,
+                                    ),
+                                    SizedBox(height: 8),
+                                    Text(
+                                      instructorCourse['name'],
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleLarge,
+                                    ),
+                                    Text(
+                                        'Course Code: ${instructorCourse['code']}',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium),
                                   ],
                                 ),
                               ),
@@ -458,13 +457,10 @@ void _logout() async {
                                     style:
                                         Theme.of(context).textTheme.titleLarge,
                                   ),
-                                  Text(
-                                    'Course Code: ${course.code}',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium
-                                        
-                                  ),
+                                  Text('Course Code: ${course.code}',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium),
                                 ],
                               ),
                             );
@@ -476,70 +472,73 @@ void _logout() async {
                 ),
               ),
             ),
-bottomNavigationBar: Container(
-  decoration: BoxDecoration(
-    // Adapt background color based on theme
-    color: Theme.of(context).brightness == Brightness.dark 
-        ? Colors.grey[850] // Dark mode background
-        : Colors.grey[100], // Light mode background
-    borderRadius: BorderRadius.only(
-      topLeft: Radius.circular(30),
-      topRight: Radius.circular(30),
-    ),
-    boxShadow: [
-      BoxShadow(
-        color: Colors.black.withOpacity(0.3),
-        blurRadius: 20,
-      ),
-    ],
-  ),
-  child: Container(
-    margin: const EdgeInsets.only(bottom: 5),
-    height: 60,
-    decoration: BoxDecoration(
-      color: Theme.of(context).brightness == Brightness.dark 
-          ? Colors.grey[800] 
-          : Colors.white, 
-      borderRadius: const BorderRadius.only(
-        topLeft: Radius.circular(30),
-        topRight: Radius.circular(30),
-        bottomLeft: Radius.circular(30),
-        bottomRight: Radius.circular(30),
-      ),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withOpacity(0.1),
-          blurRadius: 5,
-          offset: const Offset(0, 3),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          // Adapt background color based on theme
+          color: Theme.of(context).brightness == Brightness.dark
+              ? Colors.grey[850] // Dark mode background
+              : Colors.grey[100], // Light mode background
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(30),
+            topRight: Radius.circular(30),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              blurRadius: 20,
+            ),
+          ],
         ),
-      ],
-    ),
-    child: BottomNavigationBar(
-      currentIndex: _currentIndex,
-      type: BottomNavigationBarType.fixed,
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-    
-      selectedItemColor: Theme.of(context).brightness == Brightness.dark 
-          ? Colors.blueAccent 
-          : Colors.indigo,
-      unselectedItemColor: Theme.of(context).brightness == Brightness.dark 
-          ? Colors.grey 
-          : Colors.orange, 
-      showSelectedLabels: true,
-      showUnselectedLabels: false,
-      items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.house_rounded), label: "Home"),
-        BottomNavigationBarItem(icon: Icon(Icons.school), label: "Courses"),
-        BottomNavigationBarItem(icon: Icon(Icons.calendar_month_outlined), label: "Calendar"),
-        BottomNavigationBarItem(icon: Icon(Icons.account_circle_outlined), label: "Profile"),
-        BottomNavigationBarItem(icon: Icon(Icons.exit_to_app), label: "Logout"),
-      ],
-      onTap: _onItemTapped,
-    ),
-  ),
-),
-
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 5),
+          height: 60,
+          decoration: BoxDecoration(
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Colors.grey[800]
+                : Colors.white,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(30),
+              topRight: Radius.circular(30),
+              bottomLeft: Radius.circular(30),
+              bottomRight: Radius.circular(30),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 5,
+                offset: const Offset(0, 3),
+              ),
+            ],
+          ),
+          child: BottomNavigationBar(
+            currentIndex: _currentIndex,
+            type: BottomNavigationBarType.fixed,
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            selectedItemColor: Theme.of(context).brightness == Brightness.dark
+                ? Colors.blueAccent
+                : Colors.indigo,
+            unselectedItemColor: Theme.of(context).brightness == Brightness.dark
+                ? Colors.grey
+                : Colors.orange,
+            showSelectedLabels: true,
+            showUnselectedLabels: false,
+            items: const [
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.house_rounded), label: "Home"),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.school), label: "Courses"),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.calendar_month_outlined), label: "Calendar"),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.account_circle_outlined), label: "Profile"),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.exit_to_app), label: "Logout"),
+            ],
+            onTap: _onItemTapped,
+          ),
+        ),
+      ),
     );
   }
 }
