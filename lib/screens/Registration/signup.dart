@@ -41,7 +41,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   String? _validatePassword(String password) {
-    if (password.isEmpty) { 
+    if (password.isEmpty) {
       return "Password cannot be empty";
     } else if (password.length < 8) {
       return "Password must be at least 8 characters";
@@ -74,12 +74,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            [
-              nameError,
-              emailError,
-              passwordError,
-              departmentError
-            ].where((error) => error != null).join("\n"),
+            [nameError, emailError, passwordError, departmentError]
+                .where((error) => error != null)
+                .join("\n"),
           ),
         ),
       );
@@ -95,7 +92,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
       // Create a User object
       final newUser = User(
-        id: userId, 
+        id: userId,
         name: name,
         email: email,
         password: password,
@@ -124,7 +121,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -141,7 +137,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 16),
-                
                 TextFormField(
                   decoration: const InputDecoration(
                     labelText: "Name",
@@ -150,7 +145,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   controller: nameController,
                 ),
                 const SizedBox(height: 16),
-
                 TextFormField(
                   decoration: const InputDecoration(
                     labelText: "Email",
@@ -159,7 +153,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   controller: emailController,
                 ),
                 const SizedBox(height: 16),
-
                 TextFormField(
                   decoration: const InputDecoration(
                     labelText: "Password",
@@ -169,24 +162,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   obscureText: true,
                 ),
                 const SizedBox(height: 16),
-
                 StreamBuilder<QuerySnapshot>(
                   stream: FirebaseFirestore.instance
-                        .collection('Departments')
-                        .snapshots(),
+                      .collection('Departments')
+                      .snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const CircularProgressIndicator();
                     }
                     if (snapshot.hasError) {
-                      return Text("Error loading departments: ${snapshot.error}");
+                      return Text(
+                          "Error loading departments: ${snapshot.error}");
                     }
                     if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                       return const Text("No departments available");
                     }
-                    
+
                     final items = snapshot.data!.docs;
-                    List<DropdownMenuItem<String>> departmentItems = items.map((item) {
+                    List<DropdownMenuItem<String>> departmentItems =
+                        items.map((item) {
                       return DropdownMenuItem(
                         value: item.id,
                         child: Text(
@@ -195,7 +189,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                       );
                     }).toList();
-                    
+
                     return DropdownButtonFormField(
                       decoration: const InputDecoration(
                         labelText: 'Department',
@@ -215,7 +209,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   },
                 ),
                 const SizedBox(height: 20),
-
                 ElevatedButton(
                   onPressed: _handleSignUp,
                   child: const Text(
@@ -225,11 +218,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
                 const SizedBox(height: 16),
                 ElevatedButton(
-                  onPressed:(){ Navigator.pushNamed(context, '/google_sign_up');},
-                  child: const Text(
-                    "Sign Up By Google",
-                    style: TextStyle(fontSize: 20),
+                  child: Row(
+                    mainAxisSize: MainAxisSize
+                        .min, // Ensures the button wraps its content
+                    children: [
+                      Image.network(
+                        'http://pngimg.com/uploads/google/google_PNG19635.png',
+                        height: 24, // Adjust image size
+                        width: 24,
+                        fit: BoxFit.cover,
+                      ),
+                      SizedBox(width: 12),
+                      Text(
+                        "Sign Up By Google",
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    ],
                   ),
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/google_sign_up');
+                  },
                 ),
                 TextButton(
                   onPressed: () {

@@ -79,25 +79,14 @@ class _GoogleSignUpScreenState extends State<GoogleSignUpScreen> {
         departmentId: _selectedDepartment,
         enrolledCourses: [],
       );
-
-      // try {
-      //   await newUser.saveToFirestore();
-      //   // Check if the widget is still in the tree before using context
-      //   if (!mounted) return;
-      //   ScaffoldMessenger.of(context).showSnackBar(
-      //     SnackBar(content: Text('User added successfully!'),),
-      //   );
-      //   _clearFields();
-      // } catch (e) {
-      //   ScaffoldMessenger.of(context).showSnackBar(
-      //     SnackBar(content: Text('Failed to add user: $e')),
-      //   );
-      // }
     }
   }
 
   Future<void> _handleGoogleSignUp(BuildContext context) async {
-    AuthService().googleSignUp(role: _selectedRole, department: _selectedDepartment, year: _selectedYear);
+    AuthService().googleSignUp(
+        role: _selectedRole,
+        department: _selectedDepartment,
+        year: _selectedYear);
     Navigator.pushNamed(context, '/login');
   }
 
@@ -229,11 +218,26 @@ class _GoogleSignUpScreenState extends State<GoogleSignUpScreen> {
                   SizedBox(height: 20),
                   Center(
                     child: ElevatedButton(
-                      onPressed: (){_submit(context);},
-                      child: Text(
-                        'Sign Up By Google',
-                        style: TextStyle(fontSize: 20),
+                      child: Row(
+                        mainAxisSize: MainAxisSize
+                            .min, // Ensures the button wraps its content
+                        children: [
+                          Image.network(
+                            'http://pngimg.com/uploads/google/google_PNG19635.png',
+                            height: 24, // Adjust image size
+                            width: 24,
+                            fit: BoxFit.cover,
+                          ),
+                          SizedBox(width: 12),
+                          Text(
+                            "Sign Up By Google",
+                            style: TextStyle(fontSize: 20),
+                          ),
+                        ],
                       ),
+                      onPressed: () {
+                        _submit(context);
+                      },
                     ),
                   ),
                 ],

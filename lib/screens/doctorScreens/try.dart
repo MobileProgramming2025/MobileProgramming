@@ -226,7 +226,7 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                     // ),
 
                     StreamBuilder<List<Map<String, dynamic>>>(
-                      stream: _userService.fetchEnrolledCoursesByUserId(widget.doctor.id),
+                      stream: _courseService.fetchEnrolledCoursesByUserId(widget.doctor.id),
                       builder: (context, snapshot) {
                         // Handling different connection states
                         if (snapshot.connectionState == ConnectionState.waiting) {

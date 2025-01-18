@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_sizer/flutter_sizer.dart';
-import 'package:mobileprogramming/introduction_animation_screen.dart';
 
+import 'package:mobileprogramming/introduction_animation_screen.dart';
 import 'package:mobileprogramming/screens/AdminScreens/AddDoctorScreen.dart';
 import 'package:mobileprogramming/screens/AdminScreens/Add_department_screen.dart';
 import 'package:mobileprogramming/screens/AdminScreens/DashboardScreen.dart';
@@ -178,7 +178,7 @@ class MyApp extends StatelessWidget {
 
 
 
-        
+
 
         initialRoute: '/',
         routes: {
