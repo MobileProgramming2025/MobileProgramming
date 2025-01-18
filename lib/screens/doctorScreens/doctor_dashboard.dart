@@ -487,64 +487,71 @@ void _logout() async {
                 ),
               ),
             ),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: Colors.grey[100],
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(30),
-            topRight: Radius.circular(30),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.3),
-              blurRadius: 20,
-            ),
-          ],
-        ),
-        child: Container(
-          margin: EdgeInsets.only(bottom: 5),
-          height: 60,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(30),
-              topRight: Radius.circular(30),
-              bottomRight: Radius.circular(30),
-              bottomLeft: Radius.circular(30),
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 5,
-                offset: Offset(0, 3),
-              ),
-            ],
-          ),
-          child: BottomNavigationBar(
-            currentIndex: _currentIndex,
-            type: BottomNavigationBarType.fixed,
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            selectedItemColor: Colors.indigo,
-            unselectedItemColor: Colors.orange,
-            showSelectedLabels: true,
-            showUnselectedLabels: false,
-            items: const [
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.house_rounded), label: "Home"),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.school), label: "Courses"),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.calendar_month_outlined), label: "Calendar"),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.account_circle_outlined), label: "Profile"),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.exit_to_app), label: "Logout"),
-            ],
-            onTap: _onItemTapped,
-          ),
-        ),
+bottomNavigationBar: Container(
+  decoration: BoxDecoration(
+    // Adapt background color based on theme
+    color: Theme.of(context).brightness == Brightness.dark 
+        ? Colors.grey[850] // Dark mode background
+        : Colors.grey[100], // Light mode background
+    borderRadius: BorderRadius.only(
+      topLeft: Radius.circular(30),
+      topRight: Radius.circular(30),
+    ),
+    boxShadow: [
+      BoxShadow(
+        color: Colors.black.withOpacity(0.3),
+        blurRadius: 20,
       ),
+    ],
+  ),
+  child: Container(
+    margin: const EdgeInsets.only(bottom: 5),
+    height: 60,
+    decoration: BoxDecoration(
+      // Adapt card color based on theme
+      color: Theme.of(context).brightness == Brightness.dark 
+          ? Colors.grey[800] // Dark mode card color
+          : Colors.white, // Light mode card color
+      borderRadius: const BorderRadius.only(
+        topLeft: Radius.circular(30),
+        topRight: Radius.circular(30),
+        bottomLeft: Radius.circular(30),
+        bottomRight: Radius.circular(30),
+      ),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.1),
+          blurRadius: 5,
+          offset: const Offset(0, 3),
+        ),
+      ],
+    ),
+    child: BottomNavigationBar(
+      currentIndex: _currentIndex,
+      type: BottomNavigationBarType.fixed,
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      // Adapt selected and unselected item colors based on theme
+      selectedItemColor: Theme.of(context).brightness == Brightness.dark 
+          ? Colors.blueAccent // Dark mode selected item color
+          : Colors.indigo, // Light mode selected item color
+      unselectedItemColor: Theme.of(context).brightness == Brightness.dark 
+          ? Colors.grey // Dark mode unselected item color
+          : Colors.orange, // Light mode unselected item color
+      showSelectedLabels: true,
+      showUnselectedLabels: false,
+      items: const [
+        BottomNavigationBarItem(icon: Icon(Icons.house_rounded), label: "Home"),
+        BottomNavigationBarItem(icon: Icon(Icons.school), label: "Courses"),
+        BottomNavigationBarItem(icon: Icon(Icons.calendar_month_outlined), label: "Calendar"),
+        BottomNavigationBarItem(icon: Icon(Icons.account_circle_outlined), label: "Profile"),
+        BottomNavigationBarItem(icon: Icon(Icons.exit_to_app), label: "Logout"),
+      ],
+      onTap: _onItemTapped,
+    ),
+  ),
+),
+
     );
   }
 }

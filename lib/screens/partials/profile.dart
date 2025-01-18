@@ -78,7 +78,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ));
         break;
       case 3:
-        
         break;
       case 4:
         _logout();

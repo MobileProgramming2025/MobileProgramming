@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mobileprogramming/screens/Registration/signin.dart';
+import 'package:mobileprogramming/services/auth_service.dart';
 import 'package:mobileprogramming/services/user_service.dart';
 
 class ViewInstructorCoursesScreen extends StatefulWidget {
@@ -13,6 +15,70 @@ class ViewInstructorCoursesScreen extends StatefulWidget {
 class _ViewInstructorCoursesScreenState extends State<ViewInstructorCoursesScreen> {
   final UserService _userService = UserService();
   late String doctorId;
+  int _currentIndex = 0;
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+
+    if (index == 0) {
+      Navigator.pop(context);
+    } else if (index == 2) {
+      _logout();
+    }
+  }
+void _logout() async {
+  final AuthService authService = AuthService();
+
+  // Show confirmation dialog
+  bool? confirmLogout = await showDialog<bool>(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text(
+          "Confirm Logout",
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onSurface, // Title text color
+          ),
+        ),
+        content: Text(
+          "Are you sure you want to log out?",
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onSurface, // Content text color
+          ),
+        ),
+        backgroundColor: Theme.of(context).dialogBackgroundColor, // Dialog background color
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false), // User does not want to log out
+            child: Text("Cancel", style: TextStyle(color: Theme.of(context).colorScheme.primary)), // Button color
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true), // User wants to log out
+            child: Text("Logout", style: TextStyle(color: Theme.of(context).colorScheme.primary)), // Button color
+          ),
+        ],
+      );
+    },
+  );
+
+  // Proceed with logout if user confirmed
+  if (confirmLogout == true) {
+    try {
+      await authService.logout();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Logged out successfully")),
+      );
+      // Navigate to login screen
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Failed to log out: $e")),
+      );
+    }
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +119,6 @@ class _ViewInstructorCoursesScreenState extends State<ViewInstructorCoursesScree
                 final user = courses[index];
                 final enrolledCourses = user['enrolled_courses'];
 
-                // Use a separate ListView.builder for enrolledCourses
                 return ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
@@ -109,44 +174,45 @@ class _ViewInstructorCoursesScreenState extends State<ViewInstructorCoursesScree
         ),
       ),
       bottomNavigationBar: Container(
+        margin: const EdgeInsets.only(bottom: 5),
+        height: 60,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).brightness == Brightness.dark
+              ? Colors.grey[800] // Dark mode card color
+              : Colors.white, // Light mode card color
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(30),
             topRight: Radius.circular(30),
+            bottomLeft: Radius.circular(30),
+            bottomRight: Radius.circular(30),
           ),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.1),
-              blurRadius: 10,
-              offset: const Offset(0, -2),
+              blurRadius: 5,
+              offset: const Offset(0, 3),
             ),
           ],
         ),
         child: BottomNavigationBar(
-          elevation: 0,
+          currentIndex: _currentIndex,
+          type: BottomNavigationBarType.fixed,
           backgroundColor: Colors.transparent,
-          currentIndex: 0, 
+          elevation: 0,
+          selectedItemColor: Theme.of(context).brightness == Brightness.dark
+              ? Colors.blueAccent // Dark mode selected item color
+              : Colors.indigo, // Light mode selected item color
+          unselectedItemColor: Theme.of(context).brightness == Brightness.dark
+              ? Colors.grey // Dark mode unselected item color
+              : Colors.orange, // Light mode unselected item color
+          showSelectedLabels: true,
+          showUnselectedLabels: false,
           items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.house_rounded),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.exit_to_app),
-              label: 'Logout',
-            ),
+            BottomNavigationBarItem(icon: Icon(Icons.house_rounded), label: "Home"),
+            BottomNavigationBarItem(icon: Icon(Icons.school), label: "Courses"),
+            BottomNavigationBarItem(icon: Icon(Icons.exit_to_app), label: "Logout"),
           ],
-          onTap: (index) {
-            if (index == 0) {
-              Navigator.pop(context); 
-            } else if (index == 1) {
-             
-            }
-          },
-          selectedItemColor: Theme.of(context).colorScheme.primary,
-          unselectedItemColor: Colors.grey,
-          showUnselectedLabels: true,
+          onTap: _onItemTapped,
         ),
       ),
     );
