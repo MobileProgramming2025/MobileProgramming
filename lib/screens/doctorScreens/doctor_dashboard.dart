@@ -95,14 +95,16 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
           '/view_Instructor_courses',
           arguments: widget.doctor.id,
         );
+          (Route<dynamic> route) => false;
         break;
       case 2:
        Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => DoctorDashboard(doctor: doctor),
-          ),
+          ), 
         );
+         (Route<dynamic> route) => false;
         break;
       case 3:
         Navigator.push(
@@ -111,6 +113,7 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
             builder: (context) => ProfileScreen(user: widget.doctor),
           ),
         );
+         (Route<dynamic> route) => false;
         break;
       case 4:
         _logout();
