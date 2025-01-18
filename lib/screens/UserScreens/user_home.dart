@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/user.dart';
 import 'package:mobileprogramming/screens/Quiz/quiz_attempt_screen.dart';
 import 'package:mobileprogramming/screens/Registration/signin.dart';
-import 'package:mobileprogramming/screens/partials/profile.dart';
+import 'package:mobileprogramming/screens/UserScreens/StudentProfile.dart';
 import 'package:mobileprogramming/services/CourseService.dart';
 import 'package:mobileprogramming/services/auth_service.dart';
-import 'package:mobileprogramming/services/user_service.dart';
 
 class UserHome extends StatefulWidget {
   final User user;
@@ -17,6 +16,7 @@ class UserHome extends StatefulWidget {
 }
 
 class _UserHomeState extends State<UserHome> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   late User user;
   final CourseService _courseService = CourseService();
   late Stream<List<Map<String, dynamic>>> _enrolledCoursesStream;
@@ -72,11 +72,12 @@ class _UserHomeState extends State<UserHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey, // Assign the GlobalKey to the Scaffold
       appBar: AppBar(
         title: const Text("User Home"),
         leading: IconButton(
           icon: Icon(Icons.menu),
-          onPressed: () => Scaffold.of(context).openDrawer(),
+          onPressed: () => _scaffoldKey.currentState?.openDrawer(),
         ),
       ),
       drawer: Drawer(
@@ -86,6 +87,13 @@ class _UserHomeState extends State<UserHome> {
             DrawerHeader(
               child: Text('Menu', textAlign: TextAlign.center),
             ),
+             ListTile(
+              leading: Icon(Icons.home),
+              title: Text('Home'),
+              onTap: () {
+                Navigator.pop(context); // Close the drawer
+              },
+            ),
             ListTile(
               leading: Icon(Icons.person),
               title: Text('Profile'),
@@ -93,11 +101,20 @@ class _UserHomeState extends State<UserHome> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ProfileScreen(user: user),
+                    builder: (context) => StudentProfile(user: user),
                   ),
                 );
               },
-            ),
+            ),       
+                 ListTile(
+              leading: Icon(Icons.menu_book_rounded),
+              title: Text('View Assignments'),
+              onTap: () {
+                Navigator.pushNamed(context, '/student-assignment-list');
+              },
+              
+            )
+            ,
             ListTile(
               leading: Icon(Icons.logout),
               title: Text('Logout'),
