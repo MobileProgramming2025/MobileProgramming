@@ -16,7 +16,6 @@ class _ViewInstructorCoursesScreenState extends ConsumerState<ViewInstructorCour
 
   @override
   Widget build(BuildContext context) {
-    // Retrieve arguments passed via Navigator
     doctorId = ModalRoute.of(context)!.settings.arguments as String;
 
     // Fetch the stream of courses using Riverpod
@@ -25,6 +24,7 @@ class _ViewInstructorCoursesScreenState extends ConsumerState<ViewInstructorCour
     return Scaffold(
       appBar: AppBar(
         title: const Text("My Courses"),
+        backgroundColor: Theme.of(context).colorScheme.primary,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

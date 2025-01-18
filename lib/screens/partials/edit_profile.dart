@@ -76,9 +76,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               // Current Password Field
               TextFormField(
                 controller: currentPasswordController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: "Current Password",
-                  border: OutlineInputBorder(),
+                  labelStyle: TextStyle(color: Theme.of(context).colorScheme.onBackground), // Color based on theme
+                  border: const OutlineInputBorder(),
                 ),
                 obscureText: true,
               ),
@@ -87,9 +88,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               // New Password Field
               TextFormField(
                 controller: newPasswordController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: "New Password",
-                  border: OutlineInputBorder(),
+                  labelStyle: TextStyle(color: Theme.of(context).colorScheme.onBackground), // Color based on theme
+                  border: const OutlineInputBorder(),
                 ),
                 obscureText: true,
               ),
@@ -98,9 +100,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               // Confirm Password Field
               TextFormField(
                 controller: confirmPasswordController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: "Confirm Password",
-                  border: OutlineInputBorder(),
+                  labelStyle: TextStyle(color: Theme.of(context).colorScheme.onBackground), // Color based on theme
+                  border: const OutlineInputBorder(),
                 ),
                 obscureText: true,
               ),

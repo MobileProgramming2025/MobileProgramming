@@ -16,7 +16,7 @@ import 'package:mobileprogramming/screens/AdminScreens/view_department_courses.d
 import 'package:mobileprogramming/screens/AdminScreens/view_departments_screen.dart';
 import 'package:mobileprogramming/screens/AssignmentScreens/assignment_list_screen.dart';
 import 'package:mobileprogramming/screens/AssignmentScreens/student_assignment_list.dart';
-import 'package:mobileprogramming/screens/CourseDetailScreen.dart';
+import 'package:mobileprogramming/screens/doctorScreens/CourseDetailScreen.dart';
 import 'package:mobileprogramming/screens/Registration/google_signup_screen.dart';
 import 'package:mobileprogramming/screens/Registration/signin.dart';
 import 'package:mobileprogramming/screens/Registration/signup.dart';

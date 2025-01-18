@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/Course.dart';
+import 'package:mobileprogramming/screens/Registration/signin.dart';
+import 'package:mobileprogramming/screens/doctorScreens/doctor_profile.dart';
 import 'package:mobileprogramming/services/CourseService.dart';
+import 'package:mobileprogramming/services/auth_service.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:mobileprogramming/screens/partials/profile.dart';
 import 'package:mobileprogramming/models/user.dart';
@@ -26,7 +29,9 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
   DateTime _focusedDate = DateTime.now();
   int _currentIndex = 0;
   late User doctor;
+  late User doctor;
   final DatabaseHelper dbHelper = DatabaseHelper();
+  File? _profileImage;
   File? _profileImage;
   String? _profileImagePath;
   final ImagePicker _picker = ImagePicker();
@@ -36,8 +41,11 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
     _fetchData();
     doctor = widget.doctor;
     fetchUserDetails();
+    doctor = widget.doctor;
+    fetchUserDetails();
   }
 
+  Future<void> fetchUserDetails() async {
   Future<void> fetchUserDetails() async {
     try {
       String? imagePath = await DatabaseHelper().getProfileImagePath();
@@ -47,10 +55,10 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
         });
       }
     } catch (error) {
-      // Handle the error or log it for debugging
       print('Error fetching user details: $error');
     }
   }
+
 
   Future<void> _pickImage() async {
     try {
@@ -92,17 +100,25 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
           '/view_Instructor_courses',
           arguments: widget.doctor.id,
         );
+          (Route<dynamic> route) => false;
         break;
       case 2:
-        Navigator.pushNamed(context, '/calendar');
+       Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DoctorDashboard(doctor: doctor),
+          ), 
+        );
+         (Route<dynamic> route) => false;
         break;
       case 3:
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ProfileScreen(user: widget.doctor),
+            builder: (context) => DoctorProfile(user: widget.doctor),
           ),
         );
+         (Route<dynamic> route) => false;
         break;
       case 4:
         _logout();
@@ -110,32 +126,57 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
     }
   }
 
-  void _logout() async {
-    final shouldLogout = await showDialog<bool>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Logout'),
-          content: Text('Are you sure you want to logout?'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: Text('Logout'),
-            ),
-          ],
-        );
-      },
-    );
+void _logout() async {
+  final AuthService authService = AuthService();
 
-    if (shouldLogout == true) {
-      // Handle your logout logic here
-      Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+  // Show confirmation dialog
+  bool? confirmLogout = await showDialog<bool>(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text(
+          "Confirm Logout",
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onSurface, 
+          ),
+        ),
+        content: Text(
+          "Are you sure you want to log out?",
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onSurface,
+          ),
+        ),
+        backgroundColor: Theme.of(context).dialogBackgroundColor, 
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false), 
+            child: Text("Cancel", style: TextStyle(color: Theme.of(context).colorScheme.primary)), 
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true), 
+            child: Text("Logout", style: TextStyle(color: Theme.of(context).colorScheme.primary)), 
+          ),
+        ],
+      );
+    },
+  );
+
+  // Proceed with logout if user confirmed
+  if (confirmLogout == true) {
+    try {
+      await authService.logout();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Logged out successfully")),
+      );
+      // Navigate to login screen
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Failed to log out: $e")),
+      );
     }
   }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -167,6 +208,7 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                           backgroundImage: FileImage(File(_profileImagePath!)),
                         ),
                 ],
+              ),
               ),
             ),
           ],
@@ -434,64 +476,70 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                 ),
               ),
             ),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: Colors.grey[100],
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(30),
-            topRight: Radius.circular(30),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.3),
-              blurRadius: 20,
-            ),
-          ],
-        ),
-        child: Container(
-          margin: EdgeInsets.only(bottom: 5),
-          height: 60,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(30),
-              topRight: Radius.circular(30),
-              bottomRight: Radius.circular(30),
-              bottomLeft: Radius.circular(30),
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 5,
-                offset: Offset(0, 3),
-              ),
-            ],
-          ),
-          child: BottomNavigationBar(
-            currentIndex: _currentIndex,
-            type: BottomNavigationBarType.fixed,
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            selectedItemColor: Colors.indigo,
-            unselectedItemColor: Colors.orange,
-            showSelectedLabels: true,
-            showUnselectedLabels: false,
-            items: const [
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.house_rounded), label: "Home"),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.school), label: "Courses"),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.calendar_month_outlined), label: "Calendar"),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.account_circle_outlined), label: "Profile"),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.exit_to_app), label: "Logout"),
-            ],
-            onTap: _onItemTapped,
-          ),
-        ),
+bottomNavigationBar: Container(
+  decoration: BoxDecoration(
+    // Adapt background color based on theme
+    color: Theme.of(context).brightness == Brightness.dark 
+        ? Colors.grey[850] // Dark mode background
+        : Colors.grey[100], // Light mode background
+    borderRadius: BorderRadius.only(
+      topLeft: Radius.circular(30),
+      topRight: Radius.circular(30),
+    ),
+    boxShadow: [
+      BoxShadow(
+        color: Colors.black.withOpacity(0.3),
+        blurRadius: 20,
       ),
+    ],
+  ),
+  child: Container(
+    margin: const EdgeInsets.only(bottom: 5),
+    height: 60,
+    decoration: BoxDecoration(
+      color: Theme.of(context).brightness == Brightness.dark 
+          ? Colors.grey[800] 
+          : Colors.white, 
+      borderRadius: const BorderRadius.only(
+        topLeft: Radius.circular(30),
+        topRight: Radius.circular(30),
+        bottomLeft: Radius.circular(30),
+        bottomRight: Radius.circular(30),
+      ),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.1),
+          blurRadius: 5,
+          offset: const Offset(0, 3),
+        ),
+      ],
+    ),
+    child: BottomNavigationBar(
+      currentIndex: _currentIndex,
+      type: BottomNavigationBarType.fixed,
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+    
+      selectedItemColor: Theme.of(context).brightness == Brightness.dark 
+          ? Colors.blueAccent 
+          : Colors.indigo,
+      unselectedItemColor: Theme.of(context).brightness == Brightness.dark 
+          ? Colors.grey 
+          : Colors.orange, 
+      showSelectedLabels: true,
+      showUnselectedLabels: false,
+      items: const [
+        BottomNavigationBarItem(icon: Icon(Icons.house_rounded), label: "Home"),
+        BottomNavigationBarItem(icon: Icon(Icons.school), label: "Courses"),
+        BottomNavigationBarItem(icon: Icon(Icons.calendar_month_outlined), label: "Calendar"),
+        BottomNavigationBarItem(icon: Icon(Icons.account_circle_outlined), label: "Profile"),
+        BottomNavigationBarItem(icon: Icon(Icons.exit_to_app), label: "Logout"),
+      ],
+      onTap: _onItemTapped,
+    ),
+  ),
+),
+
     );
   }
 }
