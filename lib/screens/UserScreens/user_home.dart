@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/user.dart';
+import 'package:mobileprogramming/screens/Quiz/quiz_attempt_screen.dart';
 import 'package:mobileprogramming/screens/Registration/signin.dart';
 import 'package:mobileprogramming/screens/partials/profile.dart';
 import 'package:mobileprogramming/services/CourseService.dart';
@@ -27,7 +28,8 @@ class _UserHomeState extends State<UserHome> {
     user = widget.user;
     _coursesStream = _courseService.getAllCourses();
   }
-void _logout() async {
+
+  void _logout() async {
     final AuthService authService = AuthService();
 
     // Show confirmation dialog
@@ -128,26 +130,19 @@ void _logout() async {
                 _logout();
               },
             ),
-             ListTile(
+            ListTile(
               leading: Icon(Icons.menu_book_rounded),
               title: Text('View Assignments'),
               onTap: () {
                 Navigator.pushNamed(context, '/student-assignment-list');
               },
             ),
-            // ListTile(
-            //   leading: Icon(Icons.menu_book_rounded),
-            //   title: Text('View Courses'),
-            //   onTap: () {
-            //     Navigator.pushNamed(context, '/view_courses');
-            //   },
-            // ),
           ],
         ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: StreamBuilder<List<Map<String, dynamic>>>(
+        child: StreamBuilder<List<Map<String, dynamic>>>( 
           // Using Stream to get real-time updates
           stream: _coursesStream,
           builder: (context, snapshot) {
@@ -175,60 +170,51 @@ void _logout() async {
               itemCount: courses.length,
               itemBuilder: (context, index) {
                 final course = courses[index];
-                // final Stream<User?> drStream = userService.getUserByID(course['drId']);
-                // final Stream<User?> taStream = userService.getUserByID(course['taId']);
 
-                return Card(
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          course['name'],
-                          style: Theme.of(context).textTheme.headlineMedium,
+                return GestureDetector(
+                  onTap: () {
+                    // Navigate to the Quiz screen, passing the course ID and user ID
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => QuizAttemptScreen(
+                          courseId: course['id'],
+                          userId: user.id, // Passing the user ID
                         ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Course Code: ${course['code']}',
-                          style: Theme.of(context).textTheme.bodyLarge,
-                        ),
-                        const SizedBox(height: 8),
-
-                        // StreamBuilder<User?>(
-                        //   stream: drStream,
-                        //   builder: (context, snapshot) {
-                        //     final User? user = snapshot.data;
-                        //     return Text('Doctor: ${user?.name}',
-                        //         style: Theme.of(context).textTheme.bodyLarge);
-                        //   },
-                        // ),
-                        // const SizedBox(height: 8),
-                        // StreamBuilder<User?>(
-                        //   stream: taStream,
-                        //   builder: (context, snapshot) {
-                        //     final User? user = snapshot.data;
-                        //     return Text(
-                        //       'Teaching Assistant: ${user?.name}',
-                        //       style: Theme.of(context).textTheme.bodyLarge,
-                        //     );
-                        //   }
-                        // ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Department: ${course['departmentName']}',
-                          style: Theme.of(context).textTheme.bodyLarge,
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Year: ${course['year']}',
-                          style: Theme.of(context).textTheme.bodyLarge,
-                        ),
-                      ],
+                      ),
+                    );
+                  },
+                  child: Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            course['name'],
+                            style: Theme.of(context).textTheme.headlineMedium,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Course Code: ${course['code']}',
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Department: ${course['departmentName']}',
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Year: ${course['year']}',
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 );
@@ -237,7 +223,7 @@ void _logout() async {
           },
         ),
       ),
-      
     );
   }
 }
+

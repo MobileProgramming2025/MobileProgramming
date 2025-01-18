@@ -25,7 +25,7 @@ class QuizService {
       await _firestore.collection('quizzes').doc(quiz.id).set({
         'title': quiz.title,
         'startDate': quiz.startDate.toIso8601String(),
-        'endDate': quiz.endDate.toIso8601String(),
+        'duration': quiz.duration.inSeconds, // Store duration in seconds
         'courseId': quiz.courseId,
         'createdBy': quiz.createdBy,
         'questions': quiz.questions.map((q) => q.toJson()).toList(),
@@ -39,15 +39,7 @@ class QuizService {
     try {
       QuerySnapshot quizSnapshot = await _firestore.collection('quizzes').get();
       return quizSnapshot.docs.map((doc) {
-        return Quiz(
-          id: doc.id,
-          title: doc['title'],
-          startDate: DateTime.parse(doc['startDate']),
-          endDate: DateTime.parse(doc['endDate']),
-          courseId: doc['courseId'] ?? '',
-          questions: _parseQuestions(doc['questions']),
-          createdBy: doc['createdBy'],
-        );
+        return Quiz.fromJson(doc.data() as Map<String, dynamic>);
       }).toList();
     } catch (e) {
       throw Exception('Failed to fetch quizzes: $e');
@@ -60,42 +52,30 @@ class QuizService {
       if (!quizDoc.exists) {
         throw Exception('Quiz not found');
       }
-      return Quiz(
-        id: quizDoc.id,
-        title: quizDoc['title'],
-        startDate: DateTime.parse(quizDoc['startDate']),
-        endDate: DateTime.parse(quizDoc['endDate']),
-        courseId: quizDoc['courseId'] ?? '',
-        questions: _parseQuestions(quizDoc['questions']),
-        createdBy: quizDoc['createdBy'],
-      );
+      return Quiz.fromJson(quizDoc.data() as Map<String, dynamic>);
     } catch (e) {
       throw Exception('Failed to fetch quiz: $e');
     }
   }
 
- Future<Quiz?> getQuizById(String quizId) async {
-  try {
-    DocumentSnapshot doc = await FirebaseFirestore.instance
-        .collection('quizzes')
-        .doc(quizId)
-        .get();
-
-    if (doc.exists) {
-      return Quiz.fromJson(doc.data() as Map<String, dynamic>);
+  Future<Quiz?> getQuizById(String quizId) async {
+    try {
+      DocumentSnapshot doc = await _firestore.collection('quizzes').doc(quizId).get();
+      if (doc.exists) {
+        return Quiz.fromJson(doc.data() as Map<String, dynamic>);
+      }
+      return null;
+    } catch (error) {
+      rethrow;
     }
-    return null; 
-  } catch (error) {
-    rethrow; 
   }
-}
 
   Future<void> updateQuiz(Quiz quiz) async {
     try {
       final quizData = {
         'title': quiz.title,
         'startDate': quiz.startDate.toIso8601String(),
-        'endDate': quiz.endDate.toIso8601String(),
+        'duration': quiz.duration.inSeconds, // Store duration in seconds
         'courseId': quiz.courseId,
         'createdBy': quiz.createdBy,
         'questions': quiz.questions.map((q) => q.toJson()).toList(),
@@ -106,7 +86,6 @@ class QuizService {
       throw Exception('Failed to update quiz: $e');
     }
   }
-
 
   Future<void> deleteQuiz(String quizId) async {
     try {
