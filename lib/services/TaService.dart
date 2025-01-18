@@ -10,7 +10,6 @@ class TaService {
         .snapshots()
         .map((snapshot) {
       return snapshot.docs.map((doc) {
-        // Extract the document's ID and fields, and create a usable map
         return {
           'id': doc.id,
           ...doc.data(),

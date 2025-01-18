@@ -90,22 +90,30 @@ class CourseService {
 
 
 
-  Stream<List<Map<String, dynamic>>> fetchEnrolledCoursesByUserId(String userId) {
-    return FirebaseFirestore.instance
+   Stream<List<Map<String, dynamic>>> fetchEnrolledCoursesByUserId(
+      String userId) {
+    return _firestore
         .collection('users')
         .doc(userId)
         .snapshots()
         .map((snapshot) {
-      // Extract the list document's ID and fields, and create a usable map
-      return [
-        {
-          'id': snapshot.id,
-          'enrolled_courses': snapshot.data()?['enrolled_courses'],
-        }
-      ];
+      final data = snapshot.data();
+      if (data == null || !data.containsKey('enrolled_courses')) {
+        return [];
+      }
+
+      final enrolledCourses = data['enrolled_courses'] as List<dynamic>;
+      return enrolledCourses.map((course) {
+        return {
+          'id': course['id'],
+          'name': course['name'],
+          'code': course['code'],
+          'departmentName': course['departmentName'],
+          'year': course['year'],
+        };
+      }).toList();
     });
   }
-  
 
 
 }
