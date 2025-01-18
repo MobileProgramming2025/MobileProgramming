@@ -17,56 +17,34 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   late User user;
   final DatabaseHelper dbHelper = DatabaseHelper();
-File? _profileImage;
   String? _profileImagePath;
   final ImagePicker _picker = ImagePicker();
+
   @override
   void initState() {
     super.initState();
     user = widget.user;
-   fetchUserDetails();
-}
+    fetchUserDetails();
+  }
 
-Future<void> fetchUserDetails() async {
+  Future<void> fetchUserDetails() async {
     try {
-      String? imagePath = await DatabaseHelper().getProfileImagePath();
+      String? imagePath = await dbHelper.getProfileImagePath();
       if (mounted) {
         setState(() {
           _profileImagePath = imagePath;
         });
       }
     } catch (error) {
-      // Handle the error or log it for debugging
       print('Error fetching user details: $error');
     }
   }
 
-// Future<void> _saveProfileImagePath(String path) async {
-//   final dbHelper = DatabaseHelper();
-//   await dbHelper.updateProfileImagePath(user.id, path);
-// }
-//  Future<void> _loadUserData() async {
-//     final loadedUser = await dbHelper.getUserById(user.id);
-//     if (loadedUser != null) {
-//       setState(() {
-//         user = loadedUser;
-//         if (user.profileImagePath != null) {
-//           _profileImage = File(user.profileImagePath!);
-//         }
-//       });
-//     }
-//   }
-
-Future<void> _pickImage() async {
+  Future<void> _pickImage() async {
     try {
-      // Allow the user to pick an image from the gallery
       final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-
       if (pickedFile != null) {
-        // Save the image path in the database
-        await DatabaseHelper().saveProfileImagePath(pickedFile.path);
-
-        // Update the UI
+        await dbHelper.saveProfileImagePath(pickedFile.path);
         setState(() {
           _profileImagePath = pickedFile.path;
         });
@@ -75,7 +53,6 @@ Future<void> _pickImage() async {
       print('Error picking image: $error');
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +63,6 @@ Future<void> _pickImage() async {
           IconButton(
             icon: Icon(Icons.edit),
             onPressed: () {
-              // Navigate to the edit form
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -103,51 +79,11 @@ Future<void> _pickImage() async {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              Center(
-                
-                child: Column(
+              GestureDetector(
+                onTap: _pickImage, // Make the CircleAvatar tappable
+                child: Stack(
                   children: [
-                    Stack(
-                      alignment: Alignment.bottomRight,
-                      children: [
-                        // CircleAvatar(
-                        //   radius: 50,
-                        //   backgroundColor: Colors.blueAccent,
-                        //   child: Text(
-                        //     user.name.isNotEmpty
-                        //         ? user.name[0].toUpperCase()
-                        //         : '?',
-                        //     style: const TextStyle(
-                        //       fontSize: 40,
-                        //       fontWeight: FontWeight.bold,
-                        //       color: Colors.white,
-                        //     ),
-                        //   ),
-                        // ),
-            //              _profileImagePath == null
-            // ? Text('No profile image selected.')
-            // : Image.file(File(_profileImagePath!)),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      user.name,
-                      style: const TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            
-            GestureDetector(
-              onTap: _pickImage, // Make the CircleAvatar tappable
-              child: Stack(
-                children: [
-                  // Profile Image
-                  _profileImagePath == null
+                    _profileImagePath == null
                       ? CircleAvatar(
                           radius: 50,
                           child: Icon(Icons.account_circle, size: 50),
@@ -156,10 +92,18 @@ Future<void> _pickImage() async {
                           radius: 50,
                           backgroundImage: FileImage(File(_profileImagePath!)),
                         ),
-                ],
-                 ),
-            ),
-            SizedBox(height: 16),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                user.name,
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.onBackground, // Use theme color
+                ),
+              ),
               const SizedBox(height: 24),
               _buildProfileCard(title: 'Name', value: user.name),
               const SizedBox(height: 12),
@@ -167,15 +111,11 @@ Future<void> _pickImage() async {
               const SizedBox(height: 12),
               _buildProfileCard(title: 'Role', value: user.role),
               const SizedBox(height: 12),
-              // _buildProfileCard(title: 'Department', value: user.departmentId),
-              // const SizedBox(height: 12),
-              SizedBox(height: 8),
-          
             ],
           ),
         ),
       ),
-   floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
             context,
@@ -186,15 +126,13 @@ Future<void> _pickImage() async {
         },
         tooltip: 'Edit Profile',
         child: const Icon(Icons.edit),
-      )
-    
-
+      ),
     );
   }
 
   Widget _buildProfileCard({required String title, required String value}) {
     return SizedBox(
-      height: 80, // Fixed height for consistency
+      height: 80,
       child: Card(
         elevation: 3,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -204,18 +142,18 @@ Future<void> _pickImage() async {
             children: [
               Text(
                 '$title: ',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
-                  color: Colors.grey,
+                  color: Theme.of(context).colorScheme.onBackground, // Use theme color
                 ),
               ),
               Expanded(
                 child: Text(
                   value,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 18,
-                    color: Colors.black,
+                    color: Theme.of(context).colorScheme.onBackground, // Use theme color
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -226,5 +164,4 @@ Future<void> _pickImage() async {
       ),
     );
   }
-
 }

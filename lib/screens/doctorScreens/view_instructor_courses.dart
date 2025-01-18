@@ -10,19 +10,18 @@ class ViewInstructorCoursesScreen extends StatefulWidget {
   }
 }
 
-class _ViewInstructorCoursesScreenState
-    extends State<ViewInstructorCoursesScreen> {
+class _ViewInstructorCoursesScreenState extends State<ViewInstructorCoursesScreen> {
   final UserService _userService = UserService();
   late String doctorId;
 
   @override
   Widget build(BuildContext context) {
-    // Retrieve arguments passed via Navigator
     doctorId = ModalRoute.of(context)!.settings.arguments as String;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text("My Courses"),
+        backgroundColor: Theme.of(context).colorScheme.primary,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -40,7 +39,7 @@ class _ViewInstructorCoursesScreenState
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
               return Center(
                 child: Text(
-                  'You don\'t have any Enrolled Courses',
+                  'You don\'t have any enrolled courses',
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
               );
@@ -54,6 +53,7 @@ class _ViewInstructorCoursesScreenState
                 final user = courses[index];
                 final enrolledCourses = user['enrolled_courses'];
 
+                // Use a separate ListView.builder for enrolledCourses
                 return ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
@@ -75,7 +75,7 @@ class _ViewInstructorCoursesScreenState
                       child: Card(
                         elevation: 4,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(16),
                         ),
                         child: Padding(
                           padding: const EdgeInsets.all(16),
@@ -84,8 +84,7 @@ class _ViewInstructorCoursesScreenState
                             children: [
                               Text(
                                 course['name'],
-                                style:
-                                    Theme.of(context).textTheme.headlineMedium,
+                                style: Theme.of(context).textTheme.headlineMedium,
                               ),
                               const SizedBox(height: 8),
                               Text(
@@ -107,6 +106,47 @@ class _ViewInstructorCoursesScreenState
               },
             );
           },
+        ),
+      ),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(30),
+            topRight: Radius.circular(30),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, -2),
+            ),
+          ],
+        ),
+        child: BottomNavigationBar(
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          currentIndex: 0, 
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.house_rounded),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.exit_to_app),
+              label: 'Logout',
+            ),
+          ],
+          onTap: (index) {
+            if (index == 0) {
+              Navigator.pop(context); 
+            } else if (index == 1) {
+             
+            }
+          },
+          selectedItemColor: Theme.of(context).colorScheme.primary,
+          unselectedItemColor: Colors.grey,
+          showUnselectedLabels: true,
         ),
       ),
     );

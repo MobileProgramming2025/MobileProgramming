@@ -5,12 +5,11 @@ import 'package:mobileprogramming/services/CourseService.dart';
 import 'package:mobileprogramming/services/auth_service.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:mobileprogramming/screens/partials/profile.dart';
-import 'package:mobileprogramming/services/user_service.dart'; // Import UserService
+import 'package:mobileprogramming/services/user_service.dart'; 
 import 'package:mobileprogramming/models/user.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:mobileprogramming/models/databaseHelper.dart';
-
 
 class DoctorDashboard extends StatefulWidget {
   final User doctor;
@@ -30,20 +29,20 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
   DateTime _selectedDate = DateTime.now();
   DateTime _focusedDate = DateTime.now();
   int _currentIndex = 0;
-late User doctor;
+  late User doctor;
   final DatabaseHelper dbHelper = DatabaseHelper();
-File? _profileImage;
+  File? _profileImage;
   String? _profileImagePath;
   final ImagePicker _picker = ImagePicker();
   @override
   void initState() {
     super.initState();
     _fetchData();
-     doctor = widget.doctor;
-   fetchUserDetails();
+    doctor = widget.doctor;
+    fetchUserDetails();
   }
 
-Future<void> fetchUserDetails() async {
+  Future<void> fetchUserDetails() async {
     try {
       String? imagePath = await DatabaseHelper().getProfileImagePath();
       if (mounted) {
@@ -55,6 +54,7 @@ Future<void> fetchUserDetails() async {
       print('Error fetching user details: $error');
     }
   }
+
   Future<void> _pickImage() async {
     try {
       // Allow the user to pick an image from the gallery
@@ -97,7 +97,12 @@ Future<void> fetchUserDetails() async {
         );
         break;
       case 2:
-        Navigator.pushNamed(context, '/calendar');
+       Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DoctorDashboard(doctor: doctor),
+          ),
+        );
         break;
       case 3:
         Navigator.push(
@@ -113,25 +118,25 @@ Future<void> fetchUserDetails() async {
     }
   }
 
-void _logout() async {
-  final AuthService authService = AuthService();
+  void _logout() async {
+    final AuthService authService = AuthService();
 
-  try {
-    await authService.logout();
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Logged out successfully")),
-    );
-    // Navigate to login screen
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => LoginScreen()),
-    );
-  } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Failed to log out: $e")),
-    );
+    try {
+      await authService.logout();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Logged out successfully")),
+      );
+      // Navigate to login screen
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginScreen()),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Failed to log out: $e")),
+      );
+    }
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -163,7 +168,7 @@ void _logout() async {
                           backgroundImage: FileImage(File(_profileImagePath!)),
                         ),
                 ],
-                 ),
+              ),
             ),
           ],
         ),
@@ -261,7 +266,6 @@ void _logout() async {
                       ),
                     ),
                     SizedBox(height: 20),
-                    
                     Text(
                       "Your Courses",
                       style: TextStyle(
@@ -315,47 +319,55 @@ void _logout() async {
                             final course = allInstructorCourses[index];
 
                             return Card(
-  elevation: 4,
-  shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(16),
-  ),
-  child: Padding(
-    padding: const EdgeInsets.all(8.0), // Add padding for better spacing
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Expanded(
-          flex: 3, // Set flex to control relative space
-          child: Icon(
-            Icons.book,
-            size: 50, // Adjust the size of the icon
-          ),
-        ),
-        SizedBox(height: 8), // Add space between elements
-        Expanded(
-          flex: 2,
-          child: Text(
-            course['name'],
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-        ),
-        Expanded(
-          flex: 1,
-          child: Text(
-            'Course Code: ${course['code']}',
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.black,
-                ),
-          ),
-        ),
-      ],
-    ),
-  ),
-);
-
+                              elevation: 4,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(
+                                    8.0), // Add padding for better spacing
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Expanded(
+                                      flex:
+                                          3, // Set flex to control relative space
+                                      child: Icon(
+                                        Icons.book,
+                                        size: 50, // Adjust the size of the icon
+                                      ),
+                                    ),
+                                    SizedBox(
+                                        height:
+                                            8), // Add space between elements
+                                    Expanded(
+                                      flex: 2,
+                                      child: Text(
+                                        course['name'],
+                                        textAlign: TextAlign.center,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleLarge,
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 1,
+                                      child: Text(
+                                        'Course Code: ${course['code']}',
+                                        textAlign: TextAlign.center,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium
+                                            ?.copyWith(
+                                              color: Colors.black,
+                                            ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
                           },
                         );
                       },
