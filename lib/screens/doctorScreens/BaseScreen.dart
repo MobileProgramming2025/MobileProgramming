@@ -23,7 +23,7 @@ class BaseScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              "Hello, Doctor!", // Simplified greeting without a specific doctor's name
+              "Hello, Doctor!", 
               style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,

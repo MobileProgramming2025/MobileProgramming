@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/Course.dart';
+import 'package:mobileprogramming/screens/Registration/signin.dart';
 import 'package:mobileprogramming/services/CourseService.dart';
+import 'package:mobileprogramming/services/auth_service.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:mobileprogramming/screens/partials/profile.dart';
 import 'package:mobileprogramming/services/user_service.dart'; // Import UserService
@@ -50,7 +52,6 @@ Future<void> fetchUserDetails() async {
         });
       }
     } catch (error) {
-      // Handle the error or log it for debugging
       print('Error fetching user details: $error');
     }
   }
@@ -112,32 +113,25 @@ Future<void> fetchUserDetails() async {
     }
   }
 
-  void _logout() async {
-    final shouldLogout = await showDialog<bool>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Logout'),
-          content: Text('Are you sure you want to logout?'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: Text('Logout'),
-            ),
-          ],
-        );
-      },
-    );
+void _logout() async {
+  final AuthService authService = AuthService();
 
-    if (shouldLogout == true) {
-      // Handle your logout logic here
-      Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
-    }
+  try {
+    await authService.logout();
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Logged out successfully")),
+    );
+    // Navigate to login screen
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => LoginScreen()),
+    );
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Failed to log out: $e")),
+    );
   }
+}
 
   @override
   Widget build(BuildContext context) {
