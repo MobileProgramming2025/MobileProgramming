@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:mobileprogramming/screens/AssignmentScreens/doctor-view-submission-screen.dart';
 import 'add_edit_assignment_screen.dart';
 // import 'package:mobileprogramming/models/user.dart' as AppUser;
 
@@ -116,6 +117,14 @@ Future<void> _onAssignmentUpdated() async {
   // print('Assignment updated!');
    _fetchAssignments();
 }
+ void _viewSubmissions(String assignmentId) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ViewSubmissionsScreen(assignmentId: assignmentId),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -180,6 +189,10 @@ Future<void> _onAssignmentUpdated() async {
                       IconButton(
                         icon: Icon(Icons.delete, color: Colors.red),
                         onPressed: () => _confirmDelete(context, assignment['id']),
+                      ),
+                       IconButton(
+                        icon: Icon(Icons.view_agenda, color: Colors.blue),
+                        onPressed: () =>  _viewSubmissions(assignment['id']),
                       ),
                     ],
                   ),
