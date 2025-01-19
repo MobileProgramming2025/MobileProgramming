@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/user.dart';
-import 'package:mobileprogramming/screens/Quiz/quiz_attempt_screen.dart';
+import 'package:mobileprogramming/screens/UserScreens/CourseSectionsScreen.dart';
 import 'package:mobileprogramming/screens/partials/UserDrawer.dart';
 
 import 'package:mobileprogramming/services/CourseService.dart';
