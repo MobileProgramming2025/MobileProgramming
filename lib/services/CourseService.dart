@@ -187,4 +187,10 @@ class CourseService {
   //   }
   //   return false;
   // }
+<<<<<<< Updated upstream
 }
+=======
+
+  
+}
+>>>>>>> Stashed changes
