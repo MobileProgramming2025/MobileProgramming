@@ -88,6 +88,19 @@ class _UserHomeState extends State<UserHome> {
               child: Text('Menu', textAlign: TextAlign.center),
             ),
             ListTile(
+              leading: Icon(Icons.home),
+              title: Text("Home"),
+               onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => UserHome(user: user),
+                  ),
+                );
+              },
+            )
+            ,
+            ListTile(
               leading: Icon(Icons.person),
               title: Text('Profile'),
               onTap: () {
