@@ -15,7 +15,7 @@ class EnrollInstructorScreen extends StatefulWidget {
   State<EnrollInstructorScreen> createState() {
     return _EnrollInstructorScreenState();
   }
-}
+} 
 
 class _EnrollInstructorScreenState extends State<EnrollInstructorScreen> {
   final CourseService _courseService = CourseService();
