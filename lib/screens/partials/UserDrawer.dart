@@ -42,6 +42,18 @@ class UserDrawer extends StatelessWidget {
             },
           ),
           ListTile(
+            leading: Icon(Icons.home),
+            title: Text('My Courses'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => UserHome(user: user),
+                ),
+              );
+            },
+          ),
+          ListTile(
             leading: Icon(Icons.collections_bookmark_outlined),
             title: Text('Advising'),
             onTap: () {
