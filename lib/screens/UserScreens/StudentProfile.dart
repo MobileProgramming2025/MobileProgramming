@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:mobileprogramming/models/databaseHelper.dart';
 import 'package:mobileprogramming/models/user.dart';
 import 'package:mobileprogramming/screens/UserScreens/user_home.dart';
+import 'package:mobileprogramming/screens/partials/UserDrawer.dart';
 import 'package:mobileprogramming/screens/partials/edit_profile.dart';
 import 'package:mobileprogramming/services/auth_service.dart';
 
@@ -119,54 +120,7 @@ class _StudentProfileState extends State<StudentProfile> {
           ),
         ],
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            const DrawerHeader(
-              child: Center(
-                child: Text(
-                  "Menu",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.home),
-              title: const Text('Home'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => UserHome(user: user),
-                  ),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.person),
-              title: const Text("Profile"),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-              ListTile(
-              leading: Icon(Icons.menu_book_rounded),
-              title: Text('View Assignments'),
-              onTap: () {
-                Navigator.pushNamed(context, '/student-assignment-list');
-              },
-              
-            )
-            ,
-            ListTile(
-              leading: const Icon(Icons.logout),
-              title: const Text("Logout"),
-              onTap: _logout,
-            ),
-          ],
-        ),
-      ),
+      drawer: UserDrawer(user: widget.user),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(

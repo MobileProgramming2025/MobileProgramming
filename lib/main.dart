@@ -173,17 +173,16 @@ class MyApp extends StatelessWidget {
         routes: {
           '/': (context) => IntroductionAnimationScreen(),
           '/login': (context) => LoginScreen(),
-          '/signin': (context) => LoginScreen(),
           '/signup': (context) => SignUpScreen(),
+          '/google_sign_up': (context) => GoogleSignUpScreen(),
           '/create_assignment-static': (context) => AssignmentListScreen(courseId: "course123"),
           '/assignment_screen': (context) => AssignmentScreen(),
           '/add-doctor': (context) => AddDoctorScreen(),
-          '/student-assignment-list': (context) => StudentAssignmentListScreen(),
+          // '/student-assignment-list': (context) => StudentAssignmentListScreen(),
           '/view_department_courses': (context) => ViewDepartmentCoursesScreen(),
           '/enroll_instructor': (context) => EnrollInstructorScreen(),
           '/view_Instructor_courses': (context) => ViewInstructorCoursesScreen(),
           '/view_courses_details': (context) => CourseDetailScreen(),
-          '/google_sign_up': (context) => GoogleSignUpScreen(),
         },
       );
     });

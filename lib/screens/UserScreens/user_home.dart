@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/user.dart';
 import 'package:mobileprogramming/screens/Quiz/quiz_attempt_screen.dart';
-import 'package:mobileprogramming/screens/Registration/signin.dart';
-import 'package:mobileprogramming/screens/UserScreens/StudentProfile.dart';
+import 'package:mobileprogramming/screens/partials/UserDrawer.dart';
+
 import 'package:mobileprogramming/services/CourseService.dart';
-import 'package:mobileprogramming/services/auth_service.dart';
 
 class UserHome extends StatefulWidget {
   final User user;
-
   const UserHome({super.key, required this.user});
 
   @override
@@ -29,46 +27,6 @@ class _UserHomeState extends State<UserHome> {
         _courseService.fetchEnrolledCoursesByUserId(user.id);
   }
 
-  void _logout() async {
-    final AuthService authService = AuthService();
-    bool? confirmLogout = await showDialog<bool>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Confirm Logout"),
-          content: Text("Are you sure you want to log out?"),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: Text("Cancel"),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: Text("Logout"),
-            ),
-          ],
-        );
-      },
-    );
-
-    if (confirmLogout == true) {
-      try {
-        await authService.logout();
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Logged out successfully")),
-        );
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => LoginScreen()),
-        );
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Failed to log out: $e")),
-        );
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,49 +38,7 @@ class _UserHomeState extends State<UserHome> {
           onPressed: () => _scaffoldKey.currentState?.openDrawer(),
         ),
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              child: Text('Menu', textAlign: TextAlign.center),
-            ),
-             ListTile(
-              leading: Icon(Icons.home),
-              title: Text('Home'),
-              onTap: () {
-                Navigator.pop(context); 
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.person),
-              title: Text('Profile'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => StudentProfile(user: user),
-                  ),
-                );
-              },
-            ),       
-                 ListTile(
-              leading: Icon(Icons.menu_book_rounded),
-              title: Text('View Assignments'),
-              onTap: () {
-                Navigator.pushNamed(context, '/student-assignment-list');
-              },
-              
-            )
-            ,
-            ListTile(
-              leading: Icon(Icons.logout),
-              title: Text('Logout'),
-              onTap: _logout,
-            ),
-          ],
-        ),
-      ),
+      drawer: UserDrawer(user: widget.user),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: StreamBuilder<List<Map<String, dynamic>>>(

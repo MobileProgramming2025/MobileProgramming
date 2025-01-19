@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:mobileprogramming/models/user.dart';
 import 'package:mobileprogramming/screens/AssignmentScreens/ui-assignment-details.dart';
-//import 'package:mobileprogramming/screens/AssignmentScreens/student_assignment_detail_screen.dart';
+import 'package:mobileprogramming/screens/partials/UserDrawer.dart';
 
 class StudentAssignmentListScreen extends StatefulWidget {
-  const StudentAssignmentListScreen({super.key});
+ final User user;
+  const StudentAssignmentListScreen({super.key, required this.user});
 
   @override
   State<StudentAssignmentListScreen> createState() =>
@@ -26,7 +28,7 @@ class _StudentAssignmentListScreenState
 
   Future<void> _fetchEnrolledCourses() async {
     try {
-      final userId = FirebaseAuth.instance.currentUser!.uid;
+      final userId = auth.FirebaseAuth.instance.currentUser!.uid;
 
       // Fetch the user document from Firestore
       final userDoc = await FirebaseFirestore.instance
@@ -84,6 +86,7 @@ class _StudentAssignmentListScreenState
       appBar: AppBar(
         title: Text('Assignments'),
       ),
+      drawer: UserDrawer(user: widget.user),
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
           : _enrolledCourseIds.isEmpty
