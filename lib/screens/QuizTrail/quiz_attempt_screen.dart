@@ -31,7 +31,6 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
   @override
   void initState() {
     super.initState();
-
     _checkIfQuizAlreadyAttempted();
 
     final quizStartDate = widget.quiz.startDate;
@@ -74,13 +73,37 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
     final querySnapshot = await quizAttemptsQuery.get();
 
     if (querySnapshot.docs.isNotEmpty) {
+      final attempt = querySnapshot.docs.first; // Get the first attempt
+      final attemptTimestamp = attempt['timestamp'].toDate();
+
+      // Check if time is up
+      final quizEndDate = widget.quiz.endDate;
+      if (quizEndDate.isBefore(DateTime.now())) {
+        setState(() {
+          _quizAlreadyAttempted = true;
+          _isTimeUp = true;
+        });
+      } else {
+        setState(() {
+          _quizAlreadyAttempted = true;
+          _isTimeUp = false;
+          // Retrieve the saved user answers when they return to the quiz
+          _userAnswers.addAll(Map<String, dynamic>.from(attempt['userAnswers']));
+        });
+      }
+    } else {
       setState(() {
-        _quizAlreadyAttempted = true;
+        _quizAlreadyAttempted = false;
+        _isTimeUp = false;
       });
     }
   }
 
   void _saveQuizAttempt() {
+    if (_quizAlreadyAttempted || _isTimeUp) {
+      return; // Prevent saving multiple attempts
+    }
+
     int score = 0;
 
     for (var question in widget.quiz.questions) {
@@ -103,31 +126,35 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
       timestamp: DateTime.now(),
     );
 
+    // Add quiz attempt to Firestore
     FirebaseFirestore.instance.collection('quizAttempts').add(quizAttempt.toJson());
 
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Quiz Result'),
-        content: Text(
-          'You scored $score out of $totalQuestions (${percentage.toStringAsFixed(2)}%).',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              Navigator.pop(context); // Go back to the previous screen
-            },
-            child: const Text('OK'),
+    // Show quiz result dialog only once
+    if (!_isTimeUp && !_quizAlreadyAttempted) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Quiz Result'),
+          content: Text(
+            'You scored $score out of $totalQuestions (${percentage.toStringAsFixed(2)}%).',
           ),
-        ],
-      ),
-    );
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.pop(context); // Go back to the previous screen
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   void _submitQuiz() {
     if (_isTimeUp || _quizAlreadyAttempted) {
-      return; // Prevent submission if time is up or quiz is already attempted
+      return; 
     }
     _saveQuizAttempt();
   }
@@ -258,18 +285,8 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: 16),
-            Text(
-              'Questions:',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            _isTimeUp
-                ? const Text('Time is up!')
-                : Text(
-                    'Time Remaining: ${_remainingTime.inHours}:${(_remainingTime.inMinutes % 60).toString().padLeft(2, '0')}:${(_remainingTime.inSeconds % 60).toString().padLeft(2, '0')}',
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-            _quizAlreadyAttempted
-                ? const Text('You have already attempted this quiz.')
+            _quizAlreadyAttempted || _isTimeUp
+                ? const Text('The quiz is up! You can\'t attempt again.')
                 : Expanded(
                     child: ListView.builder(
                       itemCount: widget.quiz.questions.length,
