@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mobileprogramming/models/user.dart';
 import 'package:mobileprogramming/providers/courses_provider.dart';
-import 'package:mobileprogramming/screens/partials/DoctorAppBar.dart';
-import 'package:mobileprogramming/screens/partials/DoctorBottomNavigationBar.dart';
 
 class ViewInstructorCoursesScreen extends ConsumerStatefulWidget {
-  final User doctor;
-  const ViewInstructorCoursesScreen({super.key,  required this.doctor});
+  const ViewInstructorCoursesScreen({super.key});
 
   @override
   ConsumerState<ViewInstructorCoursesScreen> createState() {
@@ -21,20 +17,23 @@ class _ViewInstructorCoursesScreenState
 
   @override
   Widget build(BuildContext context) {
-    doctorId = widget.doctor.id;
+    doctorId = ModalRoute.of(context)!.settings.arguments as String;
 
     // Fetch the stream of courses using Riverpod
     final courseStream = ref.watch(coursesProvider(doctorId));
 
     return Scaffold(
-      appBar: DoctorAppBar(doctor: widget.doctor, appBarText: "My Courses",),
+      appBar: AppBar(
+        title: const Text("My Courses"),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: courseStream.when(
           // Loading state
           data: (courses) {
             if (courses.isEmpty) {
-              return const Center( 
+              return const Center(
                 child: Text("You don't have any enrolled courses."),
               );
             }
@@ -91,8 +90,6 @@ class _ViewInstructorCoursesScreenState
           error: (e, s) => Center(child: Text('Error: $e')),
         ),
       ),
-      bottomNavigationBar:DoctorBottomNavigationBar(doctor: widget.doctor),
-
     );
   }
 }
