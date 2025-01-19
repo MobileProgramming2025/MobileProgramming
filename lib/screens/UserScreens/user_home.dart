@@ -23,7 +23,7 @@ class _UserHomeState extends State<UserHome> {
   void initState() {
     super.initState();
     user = widget.user;
-    _enrolledCoursesStream = _courseService.fetchEnrolledCoursesByUserId(user.id);
+    _enrolledCoursesStream = _courseService.fetchEnrolledCoursesByUserIdSt(user.id);
   }
 
   @override
