@@ -62,10 +62,10 @@ class _AddCoursesScreenState extends State<AddCoursesScreen> {
   }
 
   void _saveCourse() async {
-    String _uuid = uuid.v4();
+    String uid = uuid.v4();
     try {
       await _courseService.addCourse(
-        id: _uuid,
+        id: uid,
         name: _enteredName,
         code: _enteredCode,
         departmentId: _selectedDepartment,
@@ -132,7 +132,7 @@ class _AddCoursesScreenState extends State<AddCoursesScreen> {
           const CircularProgressIndicator();
         } else {
           final items = snapshot.data!;
-          for (var item in items!) {
+          for (var item in items) {
             depItems.add(
               DropdownMenuItem(
                 value: item['id'],

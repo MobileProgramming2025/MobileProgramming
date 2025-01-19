@@ -18,20 +18,23 @@ class _UserHomeState extends State<UserHome> {
   late User user;
   final CourseService _courseService = CourseService();
   late Stream<List<Map<String, dynamic>>> _enrolledCoursesStream;
+  late String username;
 
   @override
   void initState() {
     super.initState();
     user = widget.user;
-    _enrolledCoursesStream = _courseService.fetchEnrolledCoursesByUserIdSt(user.id);
+    _enrolledCoursesStream =
+        _courseService.fetchEnrolledCoursesByUserIdSt(user.id);
   }
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       key: _scaffoldKey, // Assign the GlobalKey to the Scaffold
       appBar: AppBar(
-        title: const Text("User Home"),
+        title: Text("Hello, ${widget.user.name}"),
         leading: IconButton(
           icon: Icon(Icons.menu),
           onPressed: () => _scaffoldKey.currentState?.openDrawer(),
@@ -40,7 +43,7 @@ class _UserHomeState extends State<UserHome> {
       drawer: UserDrawer(user: widget.user),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: StreamBuilder<List<Map<String, dynamic>>>( 
+        child: StreamBuilder<List<Map<String, dynamic>>>(
           stream: _enrolledCoursesStream,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -75,7 +78,7 @@ class _UserHomeState extends State<UserHome> {
                             courseName: course['name'],
                             courseCode: course['code'],
                             userId: user.id,
-                          user : user
+                            user: user,
                           ),
                         ),
                       );

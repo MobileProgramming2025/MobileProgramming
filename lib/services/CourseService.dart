@@ -88,26 +88,31 @@ class CourseService {
     }
   }
 
-
-
-  Stream<List<Map<String, dynamic>>> fetchEnrolledCoursesByUserId(String userId) {
+  Stream<List<Map<String, dynamic>>> fetchEnrolledCoursesByUserId(
+      String userId) {
     return FirebaseFirestore.instance
         .collection('users')
         .doc(userId)
         .snapshots()
         .map((snapshot) {
-      // Extract the list document's ID and fields, and create a usable map
-      return [
-        {
-          'id': snapshot.id,
-          'enrolled_courses': snapshot.data()?['enrolled_courses'],
-        }
-      ];
+      // Extract the list of enrolled courses
+      final enrolledCourses =
+          snapshot.data()?['enrolled_courses'] as List<dynamic>?;
+
+      // Map the enrolled courses into a list of maps with course data
+      return enrolledCourses?.map((course) {
+            return {
+              'id': course['id'],
+              'name': course['name'],
+              'code': course['code'],
+              'year': course['year'],
+              'departmentId': course['departmentId'],
+            };
+          }).toList() ?? []; // Return empty list if no taken courses
     });
   }
-  
 
-   Stream<List<Map<String, dynamic>>> fetchEnrolledCoursesByUserIdSt(
+  Stream<List<Map<String, dynamic>>> fetchEnrolledCoursesByUserIdSt(
       String userId) {
     return _firestore
         .collection('users')
@@ -130,5 +135,68 @@ class CourseService {
         };
       }).toList();
     });
+  }
+
+  Stream<List<Map<String, dynamic>>> fetchTakenCoursesByUserId(String userId) {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .snapshots() 
+        .map((snapshot) {
+      // Extract the list of taken courses
+      final takenCourses = snapshot.data()?['taken_courses'] as List<dynamic>?;
+
+      // Map the taken courses into a list of maps with course data
+      return takenCourses?.map((course) {
+            return {
+              'id': course['id'],
+              'name': course['name'],
+              'code': course['code'],
+              'year': course['year'],
+              'departmentId': course['departmentId'],
+            };
+          }).toList() ?? []; // Return empty list if no taken courses
+    });
+  }
+
+  Future<bool> isCourseTaken(String courseId, String userId) async {
+    final Stream<List<Map<String, dynamic>>> takenCoursesStream =
+        fetchTakenCoursesByUserId(userId);
+    // Wait for the data from the Stream to be available
+    final List<Map<String, dynamic>> takenCourses =
+        await takenCoursesStream.first;
+    for (var taken in takenCourses) {
+      if (taken['id'] == courseId) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+
+  //   Future<bool> isEnrolledCourse(String courseId, String userId) async {
+  //   final Stream<List<Map<String, dynamic>>> enrolledCoursesStream =
+  //       fetchEnrolledCoursesByUserId(userId);
+  //   // Wait for the data from the Stream to be available
+  //   final List<Map<String, dynamic>> enrolledCourses =
+  //       await enrolledCoursesStream.first;
+  //   for (var enrolled in enrolledCourses) {
+  //     if (enrolled['id'] == courseId) {
+  //       return true;
+  //     }
+  //   }
+  //   return false;
+  // }
+ Future<Course?> getCourseById(String courseId) async {
+    try {
+      DocumentSnapshot courseDoc = await _firestore.collection('courses').doc(courseId).get();
+      if (courseDoc.exists) {
+        return Course.fromMap(courseDoc.data() as Map<String, dynamic>);
+      }
+      return null;
+    } catch (e) {
+      print('Error getting course by ID: $e');
+      return null;
+    }
   }
 }

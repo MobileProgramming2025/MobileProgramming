@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/user.dart';
-import 'package:mobileprogramming/screens/Registration/signin.dart';
-import 'package:mobileprogramming/screens/doctorScreens/doctor_dashboard.dart';
+import 'package:mobileprogramming/screens/partials/DoctorAppBar.dart';
+import 'package:mobileprogramming/screens/partials/DoctorBottomNavigationBar.dart';
 import 'package:mobileprogramming/screens/partials/edit_profile.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:mobileprogramming/models/databaseHelper.dart';
-import 'package:mobileprogramming/services/auth_service.dart';
+import 'package:mobileprogramming/services/user_service.dart';
 
 class DoctorProfile extends StatefulWidget {
   final User user;
@@ -19,6 +19,7 @@ class DoctorProfile extends StatefulWidget {
 
 class _DoctorProfileScreenState extends State<DoctorProfile> {
   late User user;
+  final UserService _userService = UserService();
   final DatabaseHelper dbHelper = DatabaseHelper();
   String? _profileImagePath;
   final ImagePicker _picker = ImagePicker();
@@ -58,111 +59,13 @@ class _DoctorProfileScreenState extends State<DoctorProfile> {
     }
   }
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
-
-    switch (index) {
-      case 0:
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => DoctorDashboard(doctor: user),
-            ));
-        break;
-      case 1:
-        Navigator.pushNamed(context, '/view_Instructor_courses',
-            arguments: user.id);
-        break;
-      case 2:
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => DoctorDashboard(doctor: user),
-            ));
-        break;
-      case 3:
-        break;
-      case 4:
-        _logout();
-        break;
-    }
-  }
-
-  void _logout() async {
-  final AuthService authService = AuthService();
-  final colorScheme = Theme.of(context).colorScheme;
-
-  bool? confirmLogout = await showDialog<bool>(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text(
-          "Confirm Logout",
-          style: TextStyle(color: colorScheme.error),
-        ),
-        content: Text(
-          "Are you sure you want to log out?",
-          style: TextStyle(color: colorScheme.onBackground),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(
-              "Cancel",
-              style: TextStyle(color: colorScheme.primary),
-            ),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text(
-              "Logout",
-              style: TextStyle(color: colorScheme.error),
-            ),
-          ),
-        ],
-        backgroundColor: colorScheme.surface,
-      );
-    },
-  );
-
-  if (confirmLogout == true) {
-    try {
-      await authService.logout();
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Logged out successfully")),
-      );
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => LoginScreen()));
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Failed to log out: $e")),
-      );
-    }
-  }
-}
-
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('My Profile'),
-        backgroundColor: colorScheme.primary,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.edit,color: Colors.indigo,),
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => EditProfileScreen()));
-            },
-            tooltip: 'Edit Profile',
-          ),
-        ],
-      ),
+      appBar: DoctorAppBar(doctor: widget.user, appBarText: "My Profile",),
+
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -208,48 +111,7 @@ class _DoctorProfileScreenState extends State<DoctorProfile> {
           ),
         ),
       ),
-     
-      bottomNavigationBar: Container(
-        margin: const EdgeInsets.only(bottom: 5),
-        height: 60,
-        decoration: BoxDecoration(
-          color: isDarkMode ? Colors.grey[850] : Colors.grey[100],
-          borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(30),
-              topRight: Radius.circular(30),
-              bottomLeft: Radius.circular(30),
-              bottomRight: Radius.circular(30)),
-          boxShadow: [
-            BoxShadow(color: Colors.black.withOpacity(0.3), blurRadius: 20),
-          ],
-        ),
-        child: BottomNavigationBar(
-          currentIndex: _currentIndex,
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          selectedItemColor: Theme.of(context).brightness == Brightness.dark
-              ? Colors.blueAccent
-              : Colors.indigo,
-          unselectedItemColor: Theme.of(context).brightness == Brightness.dark
-              ? Colors.grey
-              : Colors.orange,
-          showSelectedLabels: true,
-          showUnselectedLabels: false,
-          items: const [
-            BottomNavigationBarItem(
-                icon: Icon(Icons.house_rounded), label: "Home"),
-            BottomNavigationBarItem(icon: Icon(Icons.school), label: "Courses"),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.calendar_month_outlined), label: "Calendar"),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.account_circle_outlined), label: "Profile"),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.exit_to_app), label: "Logout"),
-          ],
-          onTap: _onItemTapped,
-        ),
-      ),
+      bottomNavigationBar: DoctorBottomNavigationBar(doctor: widget.user),
     );
   }
 

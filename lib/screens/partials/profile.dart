@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/user.dart';
+import 'package:mobileprogramming/screens/partials/UserDrawer.dart';
 import 'package:mobileprogramming/screens/partials/adminDrawer.dart';
 import 'package:mobileprogramming/screens/partials/edit_profile.dart';
 import 'dart:io';
@@ -134,7 +135,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ],
         ),
-        drawer: AdminDrawer(user: widget.user),
+        drawer: widget.user.role == 'admin'
+            ? AdminDrawer(user: widget.user)
+            : UserDrawer(user: widget.user),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -168,11 +171,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       const SizedBox(height: 10),
                       Text(
                         user.name,
-                        style: const TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              color: Theme.of(context).colorScheme.onSurface,
+                            ),
                       ),
                     ],
                   ),
