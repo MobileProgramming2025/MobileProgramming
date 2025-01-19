@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/user.dart';
-import 'package:mobileprogramming/screens/Registration/signin.dart';
 import 'package:mobileprogramming/screens/doctorScreens/doctor_dashboard.dart';
 import 'package:mobileprogramming/screens/partials/edit_profile.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:mobileprogramming/models/databaseHelper.dart';
-import 'package:mobileprogramming/services/auth_service.dart';
+import 'package:mobileprogramming/services/user_service.dart';
 
 class DoctorProfile extends StatefulWidget {
   final User user;
@@ -19,6 +18,7 @@ class DoctorProfile extends StatefulWidget {
 
 class _DoctorProfileScreenState extends State<DoctorProfile> {
   late User user;
+  final UserService _userService = UserService();
   final DatabaseHelper dbHelper = DatabaseHelper();
   String? _profileImagePath;
   final ImagePicker _picker = ImagePicker();
@@ -58,6 +58,10 @@ class _DoctorProfileScreenState extends State<DoctorProfile> {
     }
   }
 
+  void _logout(context) async {
+    _userService.logout(context);
+  }
+
   void _onItemTapped(int index) {
     setState(() {
       _currentIndex = index;
@@ -85,63 +89,11 @@ class _DoctorProfileScreenState extends State<DoctorProfile> {
       case 3:
         break;
       case 4:
-        _logout();
+        _logout(context);
         break;
     }
-  }
+  } 
 
-  void _logout() async {
-  final AuthService authService = AuthService();
-  final colorScheme = Theme.of(context).colorScheme;
-
-  bool? confirmLogout = await showDialog<bool>(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text(
-          "Confirm Logout",
-          style: TextStyle(color: colorScheme.error),
-        ),
-        content: Text(
-          "Are you sure you want to log out?",
-          style: TextStyle(color: colorScheme.onBackground),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(
-              "Cancel",
-              style: TextStyle(color: colorScheme.primary),
-            ),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text(
-              "Logout",
-              style: TextStyle(color: colorScheme.error),
-            ),
-          ),
-        ],
-        backgroundColor: colorScheme.surface,
-      );
-    },
-  );
-
-  if (confirmLogout == true) {
-    try {
-      await authService.logout();
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Logged out successfully")),
-      );
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => LoginScreen()));
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Failed to log out: $e")),
-      );
-    }
-  }
-}
 
   @override
   Widget build(BuildContext context) {

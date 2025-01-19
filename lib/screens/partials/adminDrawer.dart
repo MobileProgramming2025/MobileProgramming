@@ -9,11 +9,17 @@ import 'package:mobileprogramming/screens/AdminScreens/list_users.dart';
 import 'package:mobileprogramming/screens/AdminScreens/view_courses_screen.dart';
 import 'package:mobileprogramming/screens/AdminScreens/view_departments_screen.dart';
 import 'package:mobileprogramming/screens/partials/profile.dart';
+import 'package:mobileprogramming/services/user_service.dart';
 
 class AdminDrawer extends StatelessWidget {
   final User user;
+  final UserService _userService = UserService();
 
-  const AdminDrawer({super.key, required this.user});
+  void _logout(context) async {
+    _userService.logout(context);
+  }
+
+  AdminDrawer({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -140,7 +146,7 @@ class AdminDrawer extends StatelessWidget {
             leading: Icon(Icons.exit_to_app),
             title: Text('Logout'),
             onTap: () {
-              Navigator.pushNamed(context, '/login');
+              _logout(context);
             },
           ),
         ],
