@@ -285,6 +285,14 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: 16),
+            // Display the remaining time if the quiz is not yet attempted and time is not up
+            !_quizAlreadyAttempted && !_isTimeUp
+                ? Text(
+                    'Time remaining: ${_remainingTime.inMinutes}:${(_remainingTime.inSeconds % 60).toString().padLeft(2, '0')}',
+                    style: Theme.of(context).textTheme.headlineMedium,
+                  )
+                : const SizedBox.shrink(), // Empty widget when quiz is attempted or time is up
+            const SizedBox(height: 16),
             _quizAlreadyAttempted || _isTimeUp
                 ? const Text('The quiz is up! You can\'t attempt again.')
                 : Expanded(
