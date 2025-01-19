@@ -26,24 +26,25 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
   late Timer _timer;
   late Duration _remainingTime;
   bool _isTimeUp = false;
+  bool _quizAlreadyAttempted = false;
 
-  // Initialize the timer and calculate remaining time
   @override
   void initState() {
     super.initState();
 
-    // Calculate the time left based on the start and end dates
+    _checkIfQuizAlreadyAttempted();
+
     final quizStartDate = widget.quiz.startDate;
     final quizEndDate = widget.quiz.endDate;
 
-    _remainingTime = quizEndDate.difference(DateTime.now());
+    _remainingTime = quizEndDate.difference(quizStartDate);
 
     if (_remainingTime.isNegative) {
       _remainingTime = Duration(seconds: 0);
       _isTimeUp = true;
+      _saveQuizAttempt(); // Automatically save when time is already up
     }
 
-    // Start the timer to update the countdown every second
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
         if (_remainingTime.inSeconds > 0) {
@@ -51,6 +52,7 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
         } else {
           _isTimeUp = true;
           _timer.cancel();
+          _saveQuizAttempt(); // Save quiz attempt when the time is up
         }
       });
     });
@@ -62,8 +64,23 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
     super.dispose();
   }
 
-  // Submit the quiz and calculate score
-  void _submitQuiz() {
+  // Check if the user has already attempted the quiz
+  Future<void> _checkIfQuizAlreadyAttempted() async {
+    final quizAttemptsQuery = FirebaseFirestore.instance
+        .collection('quizAttempts')
+        .where('userId', isEqualTo: widget.userId)
+        .where('quizId', isEqualTo: widget.quiz.id);
+
+    final querySnapshot = await quizAttemptsQuery.get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      setState(() {
+        _quizAlreadyAttempted = true;
+      });
+    }
+  }
+
+  void _saveQuizAttempt() {
     int score = 0;
 
     for (var question in widget.quiz.questions) {
@@ -76,21 +93,18 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
     final totalQuestions = widget.quiz.questions.length;
     final percentage = (score / totalQuestions) * 100;
 
-    // Create a new QuizAttempt instance
     final quizAttempt = QuizAttempt(
       userId: widget.userId,
       quizId: widget.quiz.id,
-      courseId: widget.courseId, // Add courseId to the QuizAttempt
+      courseId: widget.courseId,
       userAnswers: _userAnswers.map((key, value) => MapEntry(key, value as String)),
       score: score,
       percentage: percentage,
       timestamp: DateTime.now(),
     );
 
-    // Save the quiz attempt to Firestore
     FirebaseFirestore.instance.collection('quizAttempts').add(quizAttempt.toJson());
 
-    // Show the result to the user
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -101,7 +115,7 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.pop(context); // Close the result dialog
+              Navigator.pop(context);
               Navigator.pop(context); // Go back to the previous screen
             },
             child: const Text('OK'),
@@ -111,7 +125,13 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
     );
   }
 
-  // Build the question widget based on the type
+  void _submitQuiz() {
+    if (_isTimeUp || _quizAlreadyAttempted) {
+      return; // Prevent submission if time is up or quiz is already attempted
+    }
+    _saveQuizAttempt();
+  }
+
   Widget _buildQuestionWidget(Question question) {
     if (question.type == 'multiple choice' && question.options != null) {
       return Column(
@@ -242,42 +262,43 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
               'Questions:',
               style: Theme.of(context).textTheme.titleMedium,
             ),
-            // Display the countdown timer
             _isTimeUp
                 ? const Text('Time is up!')
                 : Text(
-                    'Time Remaining: ${_remainingTime.inMinutes}:${(_remainingTime.inSeconds % 60).toString().padLeft(2, '0')}',
+                    'Time Remaining: ${_remainingTime.inHours}:${(_remainingTime.inMinutes % 60).toString().padLeft(2, '0')}:${(_remainingTime.inSeconds % 60).toString().padLeft(2, '0')}',
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: widget.quiz.questions.length,
-                itemBuilder: (context, index) {
-                  final question = widget.quiz.questions[index];
-                  return Card(
-                    elevation: 2,
-                    margin: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${index + 1}. ${question.text}',
-                            style: Theme.of(context).textTheme.bodyLarge,
+            _quizAlreadyAttempted
+                ? const Text('You have already attempted this quiz.')
+                : Expanded(
+                    child: ListView.builder(
+                      itemCount: widget.quiz.questions.length,
+                      itemBuilder: (context, index) {
+                        final question = widget.quiz.questions[index];
+                        return Card(
+                          elevation: 2,
+                          margin: const EdgeInsets.symmetric(vertical: 8.0),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '${index + 1}. ${question.text}',
+                                  style: Theme.of(context).textTheme.bodyLarge,
+                                ),
+                                const SizedBox(height: 8),
+                                _buildQuestionWidget(question),
+                              ],
+                            ),
                           ),
-                          const SizedBox(height: 8),
-                          _buildQuestionWidget(question),
-                        ],
-                      ),
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
-            ),
+                  ),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: _isTimeUp ? null : _submitQuiz,
+              onPressed: _isTimeUp || _quizAlreadyAttempted ? null : _submitQuiz,
               child: const Text('Submit Quiz'),
             ),
           ],
