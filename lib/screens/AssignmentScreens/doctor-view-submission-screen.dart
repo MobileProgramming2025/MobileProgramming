@@ -62,10 +62,18 @@ class DoctorViewSubmissionScreen extends StatelessWidget {
   }
 }
 
-class ViewSubmissionsScreen extends StatelessWidget {
+class ViewSubmissionsScreen extends StatefulWidget {
   final String assignmentId;
 
   ViewSubmissionsScreen({required this.assignmentId});
+
+  @override
+  _ViewSubmissionsScreenState createState() => _ViewSubmissionsScreenState();
+}
+
+class _ViewSubmissionsScreenState extends State<ViewSubmissionsScreen> {
+  List<DocumentSnapshot> _submissions = [];
+  bool _isSortedByEarly = true; // Track if sorting is by early submissions (ascending date)
 
   Future<Map<String, dynamic>?> _fetchUserData(String userId) async {
     try {
@@ -81,16 +89,47 @@ class ViewSubmissionsScreen extends StatelessWidget {
     }
   }
 
+  void _sortSubmissions() {
+    setState(() {
+      _submissions.sort((a, b) {
+        final dataA = a.data() as Map<String, dynamic>;
+        final dataB = b.data() as Map<String, dynamic>;
+        
+        // Fetch the submission timestamps (submittedAt)
+        final timestampA = (dataA['submittedAt'] as Timestamp?)?.toDate();
+        final timestampB = (dataB['submittedAt'] as Timestamp?)?.toDate();
+
+        // Ensure both timestamps are valid
+        if (timestampA != null && timestampB != null) {
+          return _isSortedByEarly
+              ? timestampA.compareTo(timestampB) // Early submissions first
+              : timestampB.compareTo(timestampA); // Late submissions first
+        }
+
+        return 0; // If timestamps are not valid, return 0 (no change)
+      });
+      _isSortedByEarly = !_isSortedByEarly; // Toggle sorting order
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Submissions for Assignment'),
+        actions: [
+          IconButton(
+            icon: Icon(
+              _isSortedByEarly ? Icons.arrow_upward : Icons.arrow_downward,
+            ),
+            onPressed: _sortSubmissions, // Toggle sorting based on submittedAt date
+          ),
+        ],
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('submissions')
-            .where('assignmentId', isEqualTo: assignmentId)
+            .where('assignmentId', isEqualTo: widget.assignmentId)
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -102,13 +141,18 @@ class ViewSubmissionsScreen extends StatelessWidget {
 
           final submissions = snapshot.data!.docs;
 
+          // Store the submissions in the local list only once
+          if (_submissions.isEmpty) {
+            _submissions = List.from(submissions);
+          }
+
           return ListView.builder(
-            itemCount: submissions.length,
+            itemCount: _submissions.length,
             itemBuilder: (context, index) {
-              final submission = submissions[index].data() as Map<String, dynamic>;
+              final submission = _submissions[index].data() as Map<String, dynamic>;
               final userId = submission['userId'] ?? 'Unknown User';
 
-              return FutureBuilder<Map<String, dynamic>?>(
+              return FutureBuilder<Map<String, dynamic>?>( 
                 future: _fetchUserData(userId),
                 builder: (context, userSnapshot) {
                   if (userSnapshot.connectionState == ConnectionState.waiting) {
