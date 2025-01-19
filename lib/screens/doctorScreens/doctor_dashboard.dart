@@ -32,8 +32,6 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
     doctor = widget.doctor;
   }
 
-
-
   Future<void> _fetchData() async {
     await Future.delayed(Duration(seconds: 2));
     setState(() {
@@ -44,7 +42,10 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: DoctorAppBar(doctor: widget.doctor, appBarText: "Hello, Doctor ${widget.doctor.name}!",),
+      appBar: DoctorAppBar(
+        doctor: widget.doctor,
+        appBarText: "Hello, Doctor ${widget.doctor.name}!",
+      ),
       body: isLoading
           ? Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
@@ -298,19 +299,21 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                 ),
               ),
             ),
-   floatingActionButton: FloatingActionButton(
-  onPressed: () {
-    // Navigate to the ChatScreen
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => ChatScreen(userId: doctor.id ,)),
-    );
-  },
-  child: Icon(Icons.chat),
-  backgroundColor: Theme.of(context).colorScheme.primary,
-  tooltip: "Chat",
-),
-
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Navigate to the ChatScreen
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ChatScreen(
+                      doctorId: doctor.id,
+                    )),
+          );
+        },
+        child: Icon(Icons.chat),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        tooltip: "Chat",
+      ),
     );
   }
 }

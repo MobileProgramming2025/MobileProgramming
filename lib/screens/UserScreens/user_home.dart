@@ -46,7 +46,7 @@ class _UserHomeState extends State<UserHome> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ChatScreen(userId: user.id), // Pass the userId to the ChatScreen
+                  builder: (context) => ChatScreen(doctorId: user.id,), // Pass the userId to the ChatScreen
                 ),
               );
             },
