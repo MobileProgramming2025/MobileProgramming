@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mobileprogramming/constants.dart';
 import 'package:mobileprogramming/models/Course.dart';
 import 'package:mobileprogramming/services/CourseService.dart';
 import 'package:mobileprogramming/services/DoctorService.dart';
@@ -143,7 +142,7 @@ class _EnrollInstructorScreenState extends State<EnrollInstructorScreen> {
     );
   }
 
-  Widget getCourseNameField() {
+  Widget getCourseNameDropDown() {
     return StreamBuilder<List<Course>>(
       stream: _courseService.getCoursesByDepartmentId(departmentId),
       builder: (context, snapshot) {
@@ -214,7 +213,7 @@ class _EnrollInstructorScreenState extends State<EnrollInstructorScreen> {
                     getInstructorNameDropdown(_taService.getTaByDepartmentId(departmentId)),
                   ],
                   SizedBox(height: 16),
-                  getCourseNameField(),
+                  getCourseNameDropDown(),
                   SizedBox(height: 20),
                   Center(
                     child: ElevatedButton(

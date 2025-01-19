@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/user.dart';
 import 'package:mobileprogramming/screens/AssignmentScreens/student_assignment_list.dart';
 import 'package:mobileprogramming/screens/UserScreens/StudentProfile.dart';
+import 'package:mobileprogramming/screens/UserScreens/advising_screen.dart';
 import 'package:mobileprogramming/screens/UserScreens/user_home.dart';
 import 'package:mobileprogramming/services/user_service.dart';
 
@@ -36,6 +37,18 @@ class UserDrawer extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => UserHome(user: user),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.collections_bookmark_outlined),
+            title: Text('Advising'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AdvisingScreen(user: user),
                 ),
               );
             },

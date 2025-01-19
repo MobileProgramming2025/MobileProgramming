@@ -17,7 +17,7 @@ class _ListUsersScreenState extends State<ListUsersScreen> {
 
   void _enroll() async {
     try {
-      _userService.enrollStudent();
+      // _userService.enrollStudent();
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Students are enrolled Sucessfully!')),
@@ -89,13 +89,13 @@ class _ListUsersScreenState extends State<ListUsersScreen> {
           );
         },
       ),
-      floatingActionButton: ElevatedButton(
-        onPressed: _enroll,
-        child: Text(
-          'Enroll Students To Courses',
-          style: TextStyle(fontSize: 20),
-        ),
-      ),
+      // floatingActionButton: ElevatedButton(
+      //   onPressed: _enroll,
+      //   child: Text(
+      //     'Enroll Students To Courses',
+      //     style: TextStyle(fontSize: 20),
+      //   ),
+      // ),
     );
   }
 }
