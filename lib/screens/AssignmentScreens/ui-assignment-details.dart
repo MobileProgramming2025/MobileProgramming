@@ -6,6 +6,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/design_course_app_theme.dart';
+import 'package:mobileprogramming/screens/Assignment/SubmitAssignmentScreen.dart';
+import 'package:mobileprogramming/screens/AssignmentScreens/student-view-submission.dart';
 import 'package:mobileprogramming/screens/AssignmentScreens/student_submission_form_screen.dart';
 
 class AssignmentDetailScreen extends StatefulWidget {
@@ -29,12 +31,14 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> with Ti
   double opacity1 = 0.0;
   double opacity2 = 0.0;
   double opacity3 = 0.0;
-  bool _isSubmitting = false;
-  String? _submissionUrl;
   bool _isOverdue = false;
   bool _isSubmitted = false;
 PlatformFile? pickedFile;
 UploadTask? uploadTask;
+ bool _isLoading = true;
+  bool _hasSubmitted = false;
+    String _submissionStatus = 'Not Submitted';
+  DateTime? _dueDate;
   @override
   void initState() {
     animationController = AnimationController(
@@ -44,7 +48,85 @@ UploadTask? uploadTask;
         curve: Interval(0, 1.0, curve: Curves.fastOutSlowIn)));
     setData();
     super.initState();
+    _checkSubmission();
+     _fetchAssignmentDetails();
   }
+  Future<void> _fetchAssignmentDetails() async {
+    try {
+      final userId = FirebaseAuth.instance.currentUser?.uid;
+      if (userId == null) {
+        throw Exception('User not logged in');
+      }
+
+      // Fetch the assignment details
+      final assignmentSnapshot = await FirebaseFirestore.instance
+          .collection('assignments')
+          .doc(widget.assignmentId)
+          .get();
+
+      if (assignmentSnapshot.exists) {
+        final assignmentData = assignmentSnapshot.data();
+        _dueDate  = (assignmentData?['dueDateTime'] as Timestamp?)?.toDate();
+
+        // Check if the assignment is overdue
+        if (_dueDate != null && _dueDate!.isBefore(DateTime.now())) {
+          _isOverdue = true;
+        }
+
+        // Check if the user has submitted the assignment
+        final submissionSnapshot = await FirebaseFirestore.instance
+            .collection('submissions')
+            .where('assignmentId', isEqualTo: widget.assignmentId)
+            .where('userId', isEqualTo: userId)
+            .get();
+
+        if (submissionSnapshot.docs.isNotEmpty) {
+          _hasSubmitted = true;
+          _submissionStatus = 'Submitted';
+        } else if (_isOverdue) {
+          _submissionStatus = 'Overdue';
+        }
+      }
+
+      setState(() {
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to fetch assignment details: ${e.toString()}')),
+      );
+    }
+  }
+  Future<void> _checkSubmission() async {
+    try {
+      final userId = FirebaseAuth.instance.currentUser?.uid;
+      if (userId == null) {
+        throw Exception('User not logged in');
+      }
+
+      final query = await FirebaseFirestore.instance
+          .collection('submissions')
+          .where('assignmentId', isEqualTo: widget.assignmentId)
+          .where('userId', isEqualTo: userId)
+          .get();
+
+      setState(() {
+        _hasSubmitted = query.docs.isNotEmpty;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to check submission: ${e.toString()}')),
+      );
+    }
+  }
+
 Future<void> _submitAssignment() async {
   // try {
   //   final user = FirebaseAuth.instance.currentUser;
@@ -239,20 +321,19 @@ Future<void> _submitAssignment() async {
                               ],
                             ),
                           ),
-                          AnimatedOpacity(
-                            duration: const Duration(milliseconds: 500),
-                            opacity: opacity1,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: Row(
-                                children: <Widget>[
-                                //  getTimeBoxUI('${dueDate.toString()}', 'Due Date'),
-                                  getTimeBoxUI('${_isOverdue ? 'Overdue' : 'On Time'}', ' Deadline Status'),
-                                  getTimeBoxUI('${_isSubmitted ? 'Submitted' : 'Not Submitted'}', 'Submission Status'),
-                                ],
-                              ),
-                            ),
-                          ),
+                               AnimatedOpacity(
+                    duration: const Duration(milliseconds: 500),
+                    opacity: opacity1,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Row(
+                        children: <Widget>[
+                          getTimeBoxUI(_isOverdue ? 'Overdue' : 'On Time', 'Deadline Status'),
+                          getTimeBoxUI(_hasSubmitted ? 'Submitted' : 'Not Submitted', 'Submission Status'),
+                        ],
+                      ),
+                    ),
+                  ),
                           Expanded(
                             child: AnimatedOpacity(
                               duration: const Duration(milliseconds: 500),
@@ -276,6 +357,7 @@ Future<void> _submitAssignment() async {
                               ),
                             ),
                           ),
+                           
                           AnimatedOpacity(
                             duration: const Duration(milliseconds: 500),
                             opacity: opacity3,
@@ -300,7 +382,7 @@ Future<void> _submitAssignment() async {
                                                 .withOpacity(0.2)),
                                       ),
                                       child: Icon(
-                                        Icons.add,
+                                        Icons.book,
                                         color: DesignCourseAppTheme
                                                 .nearlyWhite,
                                         size: 28,
@@ -310,8 +392,8 @@ Future<void> _submitAssignment() async {
                                   const SizedBox(
                                     width: 16,
                                   ),
-                                  Expanded(
-                                    child: Container(
+                                  // Expanded(
+                                    Container(
                                       height: 48,
                                       decoration: BoxDecoration(
                                         color: Color(0xff132137),
@@ -334,14 +416,15 @@ Future<void> _submitAssignment() async {
                                           
                                         MaterialPageRoute(
                                           
-                                          builder: (context) => SubmissionFormScreen(
-                                            assignmentId: widget.assignmentId,
-                                          ),
+                                         builder: (context) => _hasSubmitted
+                              ? ViewSubmissionScreen(assignmentId: widget.assignmentId)
+                              : SubmissionFormScreen(assignmentId: widget.assignmentId),
                                         ),
                                       );
-                                    },    style: ElevatedButton.styleFrom( backgroundColor: Color(0xff132137)
+                                    } ,                                      
+                                     style: ElevatedButton.styleFrom( backgroundColor: Color(0xff132137)
                                                   .withOpacity(0.5),),   
-                                     child: Text('Submit Assignment',
+                                     child: Text(_hasSubmitted ? 'Edit Submission' : 'Submit Assignment',
                                           textAlign: TextAlign.left,
                                           style: TextStyle(
                                             fontWeight: FontWeight.w600,
@@ -352,8 +435,10 @@ Future<void> _submitAssignment() async {
                                                )),),
                 
            
-                                    )  ),
+                                    )  ,
                                     
+                                         
+                                
                                   
                                 ],
                               ),
@@ -364,6 +449,7 @@ Future<void> _submitAssignment() async {
                           )
                         ],
                       ),
+                      
                     ),
                   ),
                 ),

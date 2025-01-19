@@ -73,88 +73,54 @@ class _QuizCreationScreenState extends State<QuizCreationScreen> {
       _showError('Error loading quiz: $error');
     }
   }
-void _submitQuiz() async {
-  // Validate quiz title, questions, and date range
-  if (_quizTitle.isEmpty) {
-    _showError('Please provide a title for the quiz.');
-    return;
-  }
 
-  // Validate that each question has a text and options
-  for (var question in _questions) {
-    if (question.text.isEmpty) {
-      _showError('Please provide text for all questions.');
-      return;
-    }
-    if (question.options!.isEmpty || question.options!.any((option) => option.isEmpty)) {
-      _showError('Please provide options for all questions.');
-      return;
-    }
-  }
-
-  if (_questions.isEmpty) {
-    _showError('Please add at least one question.');
-    return;
-  }
-
-  if (_startDate.isAfter(_endDate)) {
-    _showError('Start date cannot be after the end date.');
-    return;
-  }
-
-  // Validate duration (it should be positive and not zero)
-  Duration quizDuration = _endDate.difference(_startDate);
-  if (quizDuration.inMinutes <= 0) {
-    _showError('Quiz duration should be greater than zero.');
-    return;
-  }
-
-  // Disable the submit button while submitting
-  setState(() => _isSubmitting = true);
-
-  try {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null) {
-      _showError('User not logged in.');
+  void _submitQuiz() async {
+    if (_quizTitle.isEmpty || _questions.isEmpty || _startDate.isAfter(_endDate)) {
+      _showError('Please provide a title, at least one question, and a valid date range.');
       return;
     }
 
-    final quizId = widget.quizId ?? FirebaseFirestore.instance.collection('quizzes').doc().id;
-    final quiz = Quiz(
-      id: quizId,
-      title: _quizTitle,
-      startDate: _startDate,
-      duration: quizDuration,
-      questions: _questions.map((q) {
-        return q.id.isEmpty
-            ? q.copyWith(id: FirebaseFirestore.instance.collection('quizzes/$quizId/questions').doc().id)
-            : q;
-      }).toList(),
-      courseId: widget.courseId,
-      createdBy: user.uid,
-    );
+    setState(() => _isSubmitting = true);
 
-    // If quiz ID is null, create a new quiz, otherwise update the existing quiz
-    if (widget.quizId == null) {
-      await FirebaseFirestore.instance.collection('quizzes').doc(quizId).set(quiz.toJson());
-    } else {
-      await FirebaseFirestore.instance.collection('quizzes').doc(widget.quizId).update(quiz.toJson());
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        _showError('User not logged in.');
+        return;
+      }
+
+      final quizId = widget.quizId ?? FirebaseFirestore.instance.collection('quizzes').doc().id;
+      final quiz = Quiz(
+        id: quizId,
+        title: _quizTitle,
+        startDate: _startDate,
+        duration: _endDate.difference(_startDate),
+        questions: _questions.map((q) {
+          return q.id.isEmpty
+              ? q.copyWith(id: FirebaseFirestore.instance.collection('quizzes/$quizId/questions').doc().id)
+              : q;
+        }).toList(),
+        courseId: widget.courseId,
+        createdBy: user.uid,
+      );
+
+      if (widget.quizId == null) {
+        await FirebaseFirestore.instance.collection('quizzes').doc(quizId).set(quiz.toJson());
+      } else {
+        await FirebaseFirestore.instance.collection('quizzes').doc(widget.quizId).update(quiz.toJson());
+      }
+
+      if (!mounted) return;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => QuizEditScreen(quizId: quizId, courseId: widget.courseId,)),
+      );
+    } catch (error) {
+      _showError('Error saving quiz: $error');
+    } finally {
+      setState(() => _isSubmitting = false);
     }
-
-    // Check if the widget is still mounted
-    if (!mounted) return;
-
-    // Navigate to the quiz edit screen
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => QuizEditScreen(quizId: quizId, courseId: widget.courseId)),
-    );
-  } catch (error) {
-    _showError('Error saving quiz: $error');
-  } finally {
-    setState(() => _isSubmitting = false);
   }
-}
 
   void _deleteQuiz() async {
     if (widget.quizId == null) return;

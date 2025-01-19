@@ -4,6 +4,7 @@ import 'package:mobileprogramming/screens/AssignmentScreens/student_assignment_l
 import 'package:mobileprogramming/screens/UserScreens/StudentProfile.dart';
 import 'package:mobileprogramming/screens/UserScreens/advising_screen.dart';
 import 'package:mobileprogramming/screens/UserScreens/user_home.dart';
+import 'package:mobileprogramming/screens/partials/profile.dart';
 import 'package:mobileprogramming/services/user_service.dart';
 
 class UserDrawer extends StatelessWidget {
@@ -60,7 +61,7 @@ class UserDrawer extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => StudentProfile(user: user),
+                  builder: (context) => ProfileScreen(user: user),
                 ),
               );
             },

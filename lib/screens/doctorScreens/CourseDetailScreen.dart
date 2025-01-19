@@ -1,5 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:mobileprogramming/screens/Assignment/assignment_list_screen.dart';
+import 'package:mobileprogramming/screens/AssignmentScreens/assignment_list_screen.dart';
+// import 'package:mobileprogramming/screens/Assignment/ViewSubmissionsScreen.dart';
+// import 'package:mobileprogramming/screens/Assignment/assignment_list_screen.dart';
+import 'package:mobileprogramming/screens/AssignmentScreens/doctor-view-submission-screen.dart';
 import 'package:mobileprogramming/screens/QuizTrail/QuizListScreen.dart';
 import 'package:mobileprogramming/screens/QuizTrail/quiz_creation_screen.dart';
 
@@ -10,7 +14,8 @@ class CourseDetailScreen extends StatelessWidget {
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     final String courseId = arguments['id'];
     final String courseName = arguments['name'];
-
+ 
+ final String doctorId = FirebaseAuth.instance.currentUser?.uid ?? '';
     return Scaffold(
       appBar: AppBar(
         title: Text('Course Details'),
@@ -50,7 +55,7 @@ class CourseDetailScreen extends StatelessWidget {
                 );
               },
             ),
-            const SizedBox(height: 16),
+            
             // **Assignments Section**
             _buildSectionHeader(context, 'Assignments'),
             _buildButton(
@@ -65,6 +70,29 @@ class CourseDetailScreen extends StatelessWidget {
                 );
               },
             ),
+            //   _buildButton(
+            //   context,
+            //   label: 'View Assignments',
+            //   onPressed: () {
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(
+            //         builder: (context) => AssignmentListScreen(courseId: courseId),
+            //       ),
+            //     );
+            //   },
+            // ),
+            //   context,
+            //   label: 'View Submissions',
+            //   onPressed: () {
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(
+            //         builder: (context) => ViewSubmissionsScreen(assignmentId: assignmentId),
+            //       ),
+            //     );
+            //   },
+            // ),
           ],
         ),
       ),
