@@ -11,7 +11,8 @@ class ViewInstructorCoursesScreen extends ConsumerStatefulWidget {
   }
 }
 
-class _ViewInstructorCoursesScreenState extends ConsumerState<ViewInstructorCoursesScreen> {
+class _ViewInstructorCoursesScreenState
+    extends ConsumerState<ViewInstructorCoursesScreen> {
   late String doctorId; // ID of the doctor (instructor)
 
   @override
@@ -40,57 +41,47 @@ class _ViewInstructorCoursesScreenState extends ConsumerState<ViewInstructorCour
             return ListView.builder(
               itemCount: courses.length,
               itemBuilder: (context, index) {
-                final user = courses[index];
-                final enrolledCourses = user['enrolled_courses'] as List;
+                final enrolledCourses = courses[index];
 
-                return ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: enrolledCourses.length,
-                  itemBuilder: (context, courseIndex) {
-                    final course = enrolledCourses[courseIndex];
-
-                    return InkWell(
-                      onTap: () {
-                        Navigator.pushNamed(
-                          context,
-                          '/view_courses_details',
-                          arguments: {
-                            'id': course['id'], // Pass course ID
-                            'name': course['name'], // Pass course name
-                          },
-                        );
+                return InkWell(
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      '/view_courses_details',
+                      arguments: {
+                        'id': enrolledCourses['id'], // Pass course ID
+                        'name': enrolledCourses['name'], // Pass course name
                       },
-                      child: Card(
-                        elevation: 4,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                course['name'],
-                                style: Theme.of(context).textTheme.headlineMedium,
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                'Course Code: ${course['code']}',
-                                style: Theme.of(context).textTheme.bodyLarge,
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                'Year: ${course['year']}',
-                                style: Theme.of(context).textTheme.bodyLarge,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
                     );
                   },
+                  child: Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            enrolledCourses['name'],
+                            style: Theme.of(context).textTheme.headlineMedium,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Course Code: ${enrolledCourses['code']}',
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Year: ${enrolledCourses['year']}',
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 );
               },
             );
