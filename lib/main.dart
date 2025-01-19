@@ -13,7 +13,6 @@ import 'package:mobileprogramming/screens/Registration/google_signup_screen.dart
 import 'package:mobileprogramming/screens/Registration/signin.dart';
 import 'package:mobileprogramming/screens/Registration/signup.dart';
 import 'package:mobileprogramming/screens/Assignment/assignment_screen.dart';
-import 'package:mobileprogramming/screens/doctorScreens/view_instructor_courses.dart';
 
 class HexColor extends Color {
   HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
@@ -179,7 +178,6 @@ class MyApp extends StatelessWidget {
           '/add-doctor': (context) => AddDoctorScreen(),
           '/view_department_courses': (context) => ViewDepartmentCoursesScreen(),
           '/enroll_instructor': (context) => EnrollInstructorScreen(),
-          '/view_Instructor_courses': (context) => ViewInstructorCoursesScreen(),
           '/view_courses_details': (context) => CourseDetailScreen(),
         },
       );
