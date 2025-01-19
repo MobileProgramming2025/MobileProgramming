@@ -187,5 +187,16 @@ class CourseService {
   //   }
   //   return false;
   // }
-
+ Future<Course?> getCourseById(String courseId) async {
+    try {
+      DocumentSnapshot courseDoc = await _firestore.collection('courses').doc(courseId).get();
+      if (courseDoc.exists) {
+        return Course.fromMap(courseDoc.data() as Map<String, dynamic>);
+      }
+      return null;
+    } catch (e) {
+      print('Error getting course by ID: $e');
+      return null;
+    }
+  }
 }
