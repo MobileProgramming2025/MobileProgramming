@@ -23,8 +23,7 @@ class _UserHomeState extends State<UserHome> {
   void initState() {
     super.initState();
     user = widget.user;
-    _enrolledCoursesStream =
-        _courseService.fetchEnrolledCoursesByUserId(user.id);
+    _enrolledCoursesStream = _courseService.fetchEnrolledCoursesByUserId(user.id);
   }
 
   @override
@@ -41,7 +40,7 @@ class _UserHomeState extends State<UserHome> {
       drawer: UserDrawer(user: widget.user),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: StreamBuilder<List<Map<String, dynamic>>>(
+        child: StreamBuilder<List<Map<String, dynamic>>>( 
           stream: _enrolledCoursesStream,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -71,8 +70,10 @@ class _UserHomeState extends State<UserHome> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => QuizAttemptScreen(
+                          builder: (context) => CourseDetailsScreen(
                             courseId: course['id'],
+                            courseName: course['name'],
+                            courseCode: course['code'],
                             userId: user.id,
                           ),
                         ),
