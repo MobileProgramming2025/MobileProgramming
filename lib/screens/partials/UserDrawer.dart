@@ -16,6 +16,7 @@ class UserDrawer extends StatelessWidget {
   void _logout(context) async {
     _userService.logout(context);
   }
+  
 
   @override
   Widget build(BuildContext context) {

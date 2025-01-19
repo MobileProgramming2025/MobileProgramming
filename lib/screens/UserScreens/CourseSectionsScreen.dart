@@ -30,37 +30,36 @@ class CourseDetailsScreen extends StatefulWidget {
 class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
   late Quiz quiz; // Declare the quiz variable
   bool isLoading = true; // To show a loading indicator while fetching quiz data
+  bool isQuizAvailable = false; // Flag to track if quiz is available
 
   @override
   void initState() {
     super.initState();
-    // Fetch the quiz dynamically using the courseId or any other relevant information
     _fetchQuizData();
   }
 
   // Method to fetch the quiz data
   void _fetchQuizData() async {
     try {
-      // Assuming you have a QuizService that fetches quizzes based on courseId
       List<Quiz> fetchedQuizzes = await QuizService().fetchQuizzesByCourseId(widget.courseId);
 
       if (fetchedQuizzes.isNotEmpty) {
         setState(() {
-          quiz = fetchedQuizzes.first; // Assuming you're taking the first quiz from the list
-          isLoading = false;  // Hide the loading indicator
+          quiz = fetchedQuizzes.first;
+          isQuizAvailable = true; // Mark quiz as available
+          isLoading = false; // Hide the loading indicator
         });
       } else {
         setState(() {
-          isLoading = false;  // Hide loading indicator if no quiz is found
+          isLoading = false; // Hide loading indicator if no quiz is found
+          isQuizAvailable = false; // Mark quiz as unavailable
         });
-        // Handle error or show message to the user if no quiz found
         print("No quizzes found for this course.");
       }
     } catch (error) {
       setState(() {
-        isLoading = false;  // Hide loading indicator in case of an error
+        isLoading = false; // Hide loading indicator in case of an error
       });
-      // Handle error (e.g., show a message to the user)
       print("Error fetching quiz: $error");
     }
   }
@@ -99,20 +98,43 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
                         // Quiz Button
                         ElevatedButton.icon(
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => AttemptQuizScreen(
-                                  courseId: widget.courseId,
-                                  userId: widget.userId,
-                                  quiz: quiz, // Pass the dynamically fetched Quiz object
+                            if (!isQuizAvailable) {
+                              // Show an alert dialog if there is no quiz
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text('No Quiz Available'),
+                                    content: const Text(
+                                        'There is no quiz available for this course.'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop(); 
+                                        },
+                                        child: const Text('OK'),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            } else {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => AttemptQuizScreen(
+                                    courseId: widget.courseId,
+                                    userId: widget.userId,
+                                    quiz: quiz,
+                                  ),
                                 ),
-                              ),
-                            );
+                              );
+                            }
                           },
                           icon: const Icon(Icons.quiz),
                           label: const Text('Take Quiz'),
                         ),
+
                         const SizedBox(height: 10),
 
                         // Assignments Button
