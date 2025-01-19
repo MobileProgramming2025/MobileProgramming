@@ -111,6 +111,11 @@ class _ViewSubmissionsScreenState extends State<ViewSubmissionsScreen> {
       _isSortedByEarly = !_isSortedByEarly; // Toggle sorting order
     });
   }
+    String _formatDate(Timestamp timestamp) {
+    final date = timestamp.toDate();
+    final formattedDate = "${date.year}-${date.month}-${date.day} ${date.hour}:${date.minute}";
+    return formattedDate;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -151,7 +156,8 @@ class _ViewSubmissionsScreenState extends State<ViewSubmissionsScreen> {
             itemBuilder: (context, index) {
               final submission = _submissions[index].data() as Map<String, dynamic>;
               final userId = submission['userId'] ?? 'Unknown User';
-
+                            
+              final submittedAt = submission['submittedAt'] as Timestamp?;
               return FutureBuilder<Map<String, dynamic>?>( 
                 future: _fetchUserData(userId),
                 builder: (context, userSnapshot) {
@@ -175,8 +181,11 @@ class _ViewSubmissionsScreenState extends State<ViewSubmissionsScreen> {
                     margin: EdgeInsets.all(8.0),
                     child: ListTile(
                       title: Text('Submission by: $studentName'),
-                      subtitle: Text('Email: $studentEmail\nNotes: ${submission['notes'] ?? 'No notes provided'}'),
-                    ),
+                      subtitle: Text(
+                        'Email: $studentEmail\n'
+                        'Notes: ${submission['notes'] ?? 'No notes provided'}\n'
+                        'Submitted at: ${submittedAt != null ? _formatDate(submittedAt) : 'Unknown time'}',
+                     ) ),
                   );
                 },
               );
