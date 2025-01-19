@@ -54,7 +54,7 @@ class _EnrollInstructorScreenState extends State<EnrollInstructorScreen> {
 
   void _enrollInstructor() async {
     try {
-      await _userService.enrollInstructor(selectedDoctorName, selectedCourse);
+      await _userService.enrollUserToCourses(selectedDoctorName, selectedCourse);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Instructor enrolled successfully!')),
