@@ -43,7 +43,7 @@ class CourseDetailsScreen extends StatelessWidget {
                   ),
                 );
               },
-              child: Text('Attempt Quiz'),
+              child: Text('Quiz'),
             ),
             SizedBox(height: 10),
             ElevatedButton(
