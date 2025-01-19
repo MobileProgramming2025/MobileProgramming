@@ -230,8 +230,48 @@ class UserService {
       }
     }
   }
+  // Search for user by email
+  Future<User?> searchUserByEmail(String email) async {
+    try {
+      final QuerySnapshot querySnapshot = await _firestore
+          .collection('users')
+          .where('email', isEqualTo: email)
+          .get();
 
+      if (querySnapshot.docs.isEmpty) {
+        return null; // No user found
+      } else {
+        final userDoc = querySnapshot.docs.first;
+        return User.fromMap(userDoc.data() as Map<String, dynamic>);
+      }
+    } catch (e) {
+      // print('Error searching for user by email: $e');
+      throw Exception('Failed to search user by email');
+    }
+  }
 
+  Future<User?> fetchUserByEmail(String email) async {
+    try {
+      // Search for the user by email in Firestore
+      final querySnapshot = await _firestore
+          .collection('users')
+          .where('email', isEqualTo: email)
+          .get();
 
+      if (querySnapshot.docs.isEmpty) {
+        // No user found with the given email
+        throw Exception("User not found");
+      }
+
+      // Assuming there's only one user with this email, you can get the first document
+      final doc = querySnapshot.docs.first;
+
+      // Convert the document into a User object
+      return User.fromMap(doc.data() as Map<String, dynamic>);
+    } catch (e) {
+      // Handle any errors that occur
+      rethrow;
+    }
+  }
 
 }

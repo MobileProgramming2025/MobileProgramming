@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/user.dart';
 import 'package:mobileprogramming/screens/UserScreens/CourseSectionsScreen.dart';
+import 'package:mobileprogramming/screens/doctorScreens/ChatScreen.dart';
 import 'package:mobileprogramming/screens/partials/UserDrawer.dart';
-
 import 'package:mobileprogramming/services/CourseService.dart';
 
 class UserHome extends StatefulWidget {
@@ -18,7 +18,6 @@ class _UserHomeState extends State<UserHome> {
   late User user;
   final CourseService _courseService = CourseService();
   late Stream<List<Map<String, dynamic>>> _enrolledCoursesStream;
-  late String username;
 
   @override
   void initState() {
@@ -30,7 +29,6 @@ class _UserHomeState extends State<UserHome> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       key: _scaffoldKey, // Assign the GlobalKey to the Scaffold
       appBar: AppBar(
@@ -39,11 +37,26 @@ class _UserHomeState extends State<UserHome> {
           icon: Icon(Icons.menu),
           onPressed: () => _scaffoldKey.currentState?.openDrawer(),
         ),
+        actions: [
+          // Chat Icon Button
+          IconButton(
+            icon: Icon(Icons.chat),
+            onPressed: () {
+              // Navigate to the ChatScreen
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ChatScreen(userId: user.id), // Pass the userId to the ChatScreen
+                ),
+              );
+            },
+          ),
+        ],
       ),
       drawer: UserDrawer(user: widget.user),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: StreamBuilder<List<Map<String, dynamic>>>(
+        child: StreamBuilder<List<Map<String, dynamic>>>( 
           stream: _enrolledCoursesStream,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {

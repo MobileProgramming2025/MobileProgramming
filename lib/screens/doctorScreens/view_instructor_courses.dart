@@ -38,7 +38,7 @@ class _ViewInstructorCoursesScreenState
                 child: Text("You don't have any enrolled courses."),
               );
             }
-            // Display courses if data is not empty
+           
             return ListView.builder(
               itemCount: courses.length,
               itemBuilder: (context, index) {
@@ -50,8 +50,8 @@ class _ViewInstructorCoursesScreenState
                       context,
                       '/view_courses_details',
                       arguments: {
-                        'id': enrolledCourses['id'], // Pass course ID
-                        'name': enrolledCourses['name'], // Pass course name
+                        'id': enrolledCourses['id'], 
+                        'name': enrolledCourses['name'], 
                       },
                     );
                   },

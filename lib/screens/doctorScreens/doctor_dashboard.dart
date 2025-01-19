@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/Course.dart';
+import 'package:mobileprogramming/screens/doctorScreens/ChatScreen.dart';
 import 'package:mobileprogramming/screens/partials/DoctorAppBar.dart';
 import 'package:mobileprogramming/screens/partials/DoctorBottomNavigationBar.dart';
 import 'package:mobileprogramming/services/CourseService.dart';
@@ -297,7 +298,19 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                 ),
               ),
             ),
-      bottomNavigationBar: DoctorBottomNavigationBar(doctor: widget.doctor),
+   floatingActionButton: FloatingActionButton(
+  onPressed: () {
+    // Navigate to the ChatScreen
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ChatScreen(userId: doctor.id ,)),
+    );
+  },
+  child: Icon(Icons.chat),
+  backgroundColor: Theme.of(context).colorScheme.primary,
+  tooltip: "Chat",
+),
+
     );
   }
 }
