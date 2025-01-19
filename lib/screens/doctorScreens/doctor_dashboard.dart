@@ -306,7 +306,7 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
             context,
             MaterialPageRoute(
                 builder: (context) => ChatScreen(
-                      doctorId: doctor.id,
+                      userId: doctor.id,
                     )),
           );
         },

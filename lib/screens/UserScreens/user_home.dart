@@ -3,6 +3,7 @@ import 'package:mobileprogramming/models/user.dart';
 import 'package:mobileprogramming/screens/UserScreens/CourseSectionsScreen.dart';
 import 'package:mobileprogramming/screens/doctorScreens/ChatScreen.dart';
 import 'package:mobileprogramming/screens/partials/UserDrawer.dart';
+
 import 'package:mobileprogramming/services/CourseService.dart';
 
 class UserHome extends StatefulWidget {
@@ -18,7 +19,6 @@ class _UserHomeState extends State<UserHome> {
   late User user;
   final CourseService _courseService = CourseService();
   late Stream<List<Map<String, dynamic>>> _enrolledCoursesStream;
-
   @override
   void initState() {
     super.initState();
@@ -29,6 +29,7 @@ class _UserHomeState extends State<UserHome> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       key: _scaffoldKey, // Assign the GlobalKey to the Scaffold
       appBar: AppBar(
@@ -46,7 +47,7 @@ class _UserHomeState extends State<UserHome> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ChatScreen(doctorId: user.id,), // Pass the userId to the ChatScreen
+                  builder: (context) => ChatScreen(userId: user.id), // Pass the userId to the ChatScreen
                 ),
               );
             },
