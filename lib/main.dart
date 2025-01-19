@@ -13,7 +13,6 @@ import 'package:mobileprogramming/screens/Registration/google_signup_screen.dart
 import 'package:mobileprogramming/screens/Registration/signin.dart';
 import 'package:mobileprogramming/screens/Registration/signup.dart';
 import 'package:mobileprogramming/screens/Assignment/assignment_screen.dart';
-import 'package:mobileprogramming/screens/doctorScreens/view_instructor_courses.dart';
 
 class HexColor extends Color {
   HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
@@ -70,8 +69,8 @@ class MyApp extends StatelessWidget {
       secondaryContainer: Colors.teal[100]!,
       onSecondaryContainer: Colors.orange,
       tertiary: Colors.orange,
-      onTertiary: const Color.fromARGB(255, 70, 70, 70),
-      tertiaryContainer: Colors.orange[100]!,
+      onTertiary: const Color.fromARGB(255, 46, 46, 46),
+      tertiaryContainer: const Color.fromARGB(255, 245, 241, 236),
       onTertiaryContainer: Colors.orange[800]!,
       surface: Colors.white,
       onSurface: Colors.black,
@@ -95,6 +94,10 @@ class MyApp extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
+
+          scaffoldBackgroundColor: colorScheme.tertiaryContainer,
+
+          //elevated button
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.symmetric(
@@ -104,6 +107,7 @@ class MyApp extends StatelessWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(40),
               ),
+              textStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold),
             ),
           ),
 
@@ -132,7 +136,12 @@ class MyApp extends StatelessWidget {
               color: colorScheme.onPrimaryContainer,
               fontWeight: FontWeight.bold,
             ),
+            titleMedium: TextStyle(
+              color: colorScheme.onSurface,
+              fontWeight: FontWeight.bold,
+            ),
           ),
+
 
           //Text Input Field
           inputDecorationTheme: InputDecorationTheme(
@@ -174,12 +183,13 @@ class MyApp extends StatelessWidget {
           '/login': (context) => LoginScreen(),
           '/signup': (context) => SignUpScreen(),
           '/google_sign_up': (context) => GoogleSignUpScreen(),
-          '/create_assignment-static': (context) => AssignmentListScreen(courseId: "course123"),
+          '/create_assignment-static': (context) =>
+              AssignmentListScreen(courseId: "course123"),
           '/assignment_screen': (context) => AssignmentScreen(),
           '/add-doctor': (context) => AddDoctorScreen(),
-          '/view_department_courses': (context) => ViewDepartmentCoursesScreen(),
+          '/view_department_courses': (context) =>
+              ViewDepartmentCoursesScreen(),
           '/enroll_instructor': (context) => EnrollInstructorScreen(),
-          '/view_Instructor_courses': (context) => ViewInstructorCoursesScreen(),
           '/view_courses_details': (context) => CourseDetailScreen(),
         },
       );
