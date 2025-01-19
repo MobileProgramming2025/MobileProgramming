@@ -95,6 +95,22 @@ class QuizService {
     }
   }
 
+  // Fetch quizzes by courseId
+  Future<List<Quiz>> fetchQuizzesByCourseId(String courseId) async {
+    try {
+      QuerySnapshot snapshot = await _firestore
+          .collection('quizzes')
+          .where('courseId', isEqualTo: courseId) // Filter by courseId
+          .get();
+
+      return snapshot.docs
+          .map((doc) => Quiz.fromJson(doc.data() as Map<String, dynamic>))
+          .toList();
+    } catch (e) {
+      throw Exception('Error fetching quizzes by courseId: $e');
+    }
+  }
+
   List<Question> _parseQuestions(dynamic questionsData) {
     if (questionsData is List) {
       return questionsData.map((q) {
