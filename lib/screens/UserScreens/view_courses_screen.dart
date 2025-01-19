@@ -2,39 +2,49 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobileprogramming/models/user.dart';
 import 'package:mobileprogramming/providers/courses_provider.dart';
-import 'package:mobileprogramming/screens/partials/DoctorAppBar.dart';
-import 'package:mobileprogramming/screens/partials/DoctorBottomNavigationBar.dart';
+import 'package:mobileprogramming/screens/UserScreens/CourseSectionsScreen.dart';
+import 'package:mobileprogramming/screens/partials/UserDrawer.dart';
+import 'package:mobileprogramming/services/DepartmentService.dart';
 
-class ViewInstructorCoursesScreen extends ConsumerStatefulWidget {
-  final User doctor;
-  const ViewInstructorCoursesScreen({super.key,  required this.doctor});
+class ViewCoursesScreen extends ConsumerStatefulWidget {
+  final User user;
+  const ViewCoursesScreen({super.key, required this.user});
 
-  @override 
-  ConsumerState<ViewInstructorCoursesScreen> createState() {
-    return _ViewInstructorCoursesScreenState();
-  }
+  @override
+  ConsumerState<ViewCoursesScreen> createState() => _ViewCoursesScreenState();
 }
 
-class _ViewInstructorCoursesScreenState
-    extends ConsumerState<ViewInstructorCoursesScreen> {
-  late String doctorId; // ID of the doctor (instructor)
+class _ViewCoursesScreenState extends ConsumerState<ViewCoursesScreen> {
+  final DepartmentService departmentService = DepartmentService();
+  late Stream<List<Map<String, dynamic>>> _departmentsStream;
+  late String userId;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initializing the stream to get department data in real time
+    _departmentsStream = departmentService.getAllDepartments();
+  }
 
   @override
   Widget build(BuildContext context) {
-    doctorId = widget.doctor.id;
+    userId = widget.user.id;
 
     // Fetch the stream of courses using Riverpod
-    final courseStream = ref.watch(coursesProvider(doctorId));
+    final courseStream = ref.watch(coursesProvider(userId));
 
     return Scaffold(
-      appBar: DoctorAppBar(doctor: widget.doctor, appBarText: "My Courses",),
+      appBar: AppBar(
+        title: Text("My Courses"),
+      ),
+      drawer: UserDrawer(user: widget.user),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: courseStream.when(
           // Loading state
           data: (courses) {
             if (courses.isEmpty) {
-              return const Center( 
+              return const Center(
                 child: Text("You don't have any enrolled courses."),
               );
             }
@@ -46,14 +56,18 @@ class _ViewInstructorCoursesScreenState
 
                 return InkWell(
                   onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      '/view_courses_details',
-                      arguments: {
-                        'id': enrolledCourses['id'], // Pass course ID
-                        'name': enrolledCourses['name'], // Pass course name
-                      },
-                    );
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CourseDetailsScreen(
+                            courseId: enrolledCourses['id'],
+                            courseName: enrolledCourses['name'],
+                            courseCode: enrolledCourses['code'],
+                            userId: widget.user.id,
+                            user: widget.user,
+                          ),
+                        ),
+                      );
                   },
                   child: Card(
                     elevation: 4,
@@ -74,11 +88,7 @@ class _ViewInstructorCoursesScreenState
                             'Course Code: ${enrolledCourses['code']}',
                             style: Theme.of(context).textTheme.bodyLarge,
                           ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Year: ${enrolledCourses['year']}',
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
+                          
                         ],
                       ),
                     ),
@@ -91,8 +101,6 @@ class _ViewInstructorCoursesScreenState
           error: (e, s) => Center(child: Text('Error: $e')),
         ),
       ),
-      bottomNavigationBar:DoctorBottomNavigationBar(doctor: widget.doctor),
-
     );
   }
 }

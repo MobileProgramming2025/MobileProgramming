@@ -18,6 +18,7 @@ class _UserHomeState extends State<UserHome> {
   late User user;
   final CourseService _courseService = CourseService();
   late Stream<List<Map<String, dynamic>>> _enrolledCoursesStream;
+  late String username;
 
   @override
   void initState() {
@@ -29,10 +30,11 @@ class _UserHomeState extends State<UserHome> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       key: _scaffoldKey, // Assign the GlobalKey to the Scaffold
       appBar: AppBar(
-        title: const Text("User Home"),
+        title: Text("Hello, ${widget.user.name}"),
         leading: IconButton(
           icon: Icon(Icons.menu),
           onPressed: () => _scaffoldKey.currentState?.openDrawer(),

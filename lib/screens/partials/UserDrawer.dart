@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/user.dart';
+import 'package:mobileprogramming/screens/UserScreens/view_courses_screen.dart';
 import 'package:mobileprogramming/screens/AssignmentScreens/student_assignment_list.dart';
 import 'package:mobileprogramming/screens/UserScreens/advising_screen.dart';
 import 'package:mobileprogramming/screens/UserScreens/user_home.dart';
@@ -42,13 +43,13 @@ class UserDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: Icon(Icons.home),
+            leading: Icon(Icons.assignment_outlined),
             title: Text('My Courses'),
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => UserHome(user: user),
+                  builder: (context) => ViewCoursesScreen(user: user),
                 ),
               );
             },

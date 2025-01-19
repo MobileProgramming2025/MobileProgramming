@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/user.dart';
+import 'package:mobileprogramming/screens/UserScreens/view_courses_screen.dart';
 import 'package:mobileprogramming/screens/partials/UserDrawer.dart';
 import 'package:mobileprogramming/services/CourseService.dart';
 import 'package:mobileprogramming/services/user_service.dart';
@@ -77,12 +78,12 @@ class _AdvisingScreenState extends State<AdvisingScreen> {
       } else {
         for (var selectedCourseId in selectedCourses) {
           await _userService.enrollInstructor(widget.user.id, selectedCourseId);
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(
-          //     builder: (context) => ViewStudentCourses(user:widget.user),
-          //   ),
-          // );
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ViewCoursesScreen(user:widget.user),
+            ),
+          );
         }
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Selections saved successfully')),
