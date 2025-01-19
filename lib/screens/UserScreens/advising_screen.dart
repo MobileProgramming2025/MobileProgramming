@@ -42,14 +42,22 @@ class _AdvisingScreenState extends State<AdvisingScreen> {
       final courses = await _courseService
           .getCoursesByDepartmentId(departmentId)
           .first; // Get the data once
+      List<Map<dynamic, dynamic>> filteredCoursesList = [];
+
+      for (var course in courses) {
+        bool isTaken =
+            await _courseService.isCourseTaken(course.id, widget.user.id);
+        if (studentYear == course.year && !isTaken) {
+          filteredCoursesList.add({
+            "title": course.name,
+            "isChecked": false,
+          }
+        );
+        }
+      }
+
       setState(() {
-        coursesList = courses
-            .where((course) => studentYear == course.year)
-            .map((course) => {
-                  "title": course.name,
-                  "isChecked": false,
-                })
-            .toList();
+        coursesList = filteredCoursesList;
         isLoading = false;
       });
     } catch (e) {

@@ -124,28 +124,7 @@ class UserService {
   //   user['enrolled_courses'].add(course);
   //   await _firestore.collection('users').doc(user['id']).update(user);
   // }
-  // bool _isEnrolled(Map<String, dynamic> course, Map<String, dynamic> user) {
-  //   // final enrolledCourses = user['enrolled_courses'] ?? [];
-  //   // print(enrolledCourses);
-  //   for (var enrolled in user['enrolled_courses']) {
-  //     print(enrolled);
-  //     if (enrolled['code'] == course['code']) {
-  //       print("da5al");
-  //       return true;
-  //     }
-  //   }
-  //   return false;
-  // }
 
-  bool _isCourseTaken(Map<String, dynamic> course, Map<String, dynamic> user) {
-    final takenCourses = user['taken_courses'] ?? [];
-    for (var taken in takenCourses) {
-      if (taken['id'] == course['id']) {
-        return true;
-      }
-    }
-    return false;
-  }
 
   Future<void> enrollInstructor(dynamic userId, dynamic courseId) async {
     try {
