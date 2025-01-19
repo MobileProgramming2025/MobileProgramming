@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/user.dart';
 import 'package:mobileprogramming/screens/AssignmentScreens/student_assignment_list.dart';
-import 'package:mobileprogramming/screens/UserScreens/StudentProfile.dart';
 import 'package:mobileprogramming/screens/UserScreens/advising_screen.dart';
 import 'package:mobileprogramming/screens/UserScreens/user_home.dart';
 import 'package:mobileprogramming/screens/partials/profile.dart';

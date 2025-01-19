@@ -19,21 +19,21 @@ class AdvisingScreen extends StatefulWidget {
 
 class _AdvisingScreenState extends State<AdvisingScreen> {
   final CourseService _courseService = CourseService();
-
   List<Map<dynamic, dynamic>> coursesList = [];
 
   //Doesn't allow to re-build form widget, keeps its internal state (show validation state or not)
   //Access form
   // final _form = GlobalKey<FormState>();
   late String departmentId;
+  late String studentYear;
   bool isChecked = false;
-
   bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
     departmentId = widget.user.departmentId!;
+    studentYear = widget.user.year!;
     _loadCourses();
   }
 
@@ -44,6 +44,7 @@ class _AdvisingScreenState extends State<AdvisingScreen> {
           .first; // Get the data once
       setState(() {
         coursesList = courses
+            .where((course) => studentYear == course.year)
             .map((course) => {
                   "title": course.name,
                   "isChecked": false,
@@ -92,8 +93,6 @@ class _AdvisingScreenState extends State<AdvisingScreen> {
                           style: Theme.of(context).textTheme.bodyLarge,
                         ),
                       );
-                    })
-        // }),
-        );
+                    }));
   }
 }
