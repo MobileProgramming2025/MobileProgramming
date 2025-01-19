@@ -60,11 +60,28 @@ class _AddEditAssignmentScreenState extends State<AddEditAssignmentScreen> {
       _dueTime!.hour,
       _dueTime!.minute,
     );
-
+ if (dueDateTime.isBefore(DateTime.now())) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Due date and time cannot be in the past.')),
+      );
+      return;
+    }
     try {
       final user = FirebaseAuth.instance.currentUser;
       if (user == null) {
         throw Exception('User not logged in');
+      }
+final duplicateCheck = await FirebaseFirestore.instance
+          .collection('assignments')
+          .where('title', isEqualTo: _title)
+          .where('courseId', isEqualTo: widget.courseId)
+          .get();
+
+      if (duplicateCheck.docs.isNotEmpty && widget.assignmentId == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('An assignment with this title already exists.')),
+        );
+        return;
       }
 
       if (widget.assignmentId == null) {
