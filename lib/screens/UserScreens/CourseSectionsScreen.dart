@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mobileprogramming/screens/Quiz/quiz_attempt_screen.dart';
+import 'package:mobileprogramming/screens/QuizTrail/quiz_attempt_screen.dart';
 import 'package:mobileprogramming/models/user.dart';
 
 class CourseDetailsScreen extends StatelessWidget {
