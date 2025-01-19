@@ -1,33 +1,35 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class ChatMessage {
+class Message {
   final String senderId;
-  final String messageContent;
-  final Timestamp timestamp;
-  final String? receiverId;
+  final String receiverId;
+  final String message;
+  final DateTime timestamp;
 
-  ChatMessage({
+  Message({
     required this.senderId,
-    required this.messageContent,
+    required this.receiverId,
+    required this.message,
     required this.timestamp,
-    this.receiverId,
   });
 
+  // Factory method to create a Message object from Firestore data
+  factory Message.fromFirestore(Map<String, dynamic> data) {
+    return Message(
+      senderId: data['senderId'],
+      receiverId: data['receiverId'],
+      message: data['message'],
+      timestamp: (data['timestamp'] as Timestamp).toDate(), // Convert Firestore timestamp to DateTime
+    );
+  }
+
+  // Convert Message object to Map for Firestore
   Map<String, dynamic> toMap() {
     return {
       'senderId': senderId,
-      'messageContent': messageContent,
-      'timestamp': timestamp,
       'receiverId': receiverId,
+      'message': message,
+      'timestamp': Timestamp.fromDate(timestamp), // Convert DateTime to Firestore timestamp
     };
-  }
-
-  static ChatMessage fromMap(Map<String, dynamic> map) {
-    return ChatMessage(
-      senderId: map['senderId'],
-      messageContent: map['messageContent'],
-      timestamp: map['timestamp'],
-      receiverId: map['receiverId'],
-    );
   }
 }
