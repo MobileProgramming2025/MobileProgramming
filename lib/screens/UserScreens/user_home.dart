@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/user.dart';
 import 'package:mobileprogramming/screens/Quiz/quiz_attempt_screen.dart';
 import 'package:mobileprogramming/screens/Registration/signin.dart';
+import 'package:mobileprogramming/screens/UserScreens/CourseSectionsScreen.dart';
 import 'package:mobileprogramming/screens/UserScreens/StudentProfile.dart';
 import 'package:mobileprogramming/services/CourseService.dart';
 import 'package:mobileprogramming/services/auth_service.dart';
@@ -25,8 +26,7 @@ class _UserHomeState extends State<UserHome> {
   void initState() {
     super.initState();
     user = widget.user;
-    _enrolledCoursesStream =
-        _courseService.fetchEnrolledCoursesByUserId(user.id);
+    _enrolledCoursesStream = _courseService.fetchEnrolledCoursesByUserId(user.id);
   }
 
   void _logout() async {
@@ -87,13 +87,6 @@ class _UserHomeState extends State<UserHome> {
             DrawerHeader(
               child: Text('Menu', textAlign: TextAlign.center),
             ),
-             ListTile(
-              leading: Icon(Icons.home),
-              title: Text('Home'),
-              onTap: () {
-                Navigator.pop(context); 
-              },
-            ),
             ListTile(
               leading: Icon(Icons.person),
               title: Text('Profile'),
@@ -105,16 +98,14 @@ class _UserHomeState extends State<UserHome> {
                   ),
                 );
               },
-            ),       
-                 ListTile(
+            ),
+            ListTile(
               leading: Icon(Icons.menu_book_rounded),
               title: Text('View Assignments'),
               onTap: () {
                 Navigator.pushNamed(context, '/student-assignment-list');
               },
-              
-            )
-            ,
+            ),
             ListTile(
               leading: Icon(Icons.logout),
               title: Text('Logout'),
@@ -125,7 +116,7 @@ class _UserHomeState extends State<UserHome> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: StreamBuilder<List<Map<String, dynamic>>>(
+        child: StreamBuilder<List<Map<String, dynamic>>>( 
           stream: _enrolledCoursesStream,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -155,8 +146,10 @@ class _UserHomeState extends State<UserHome> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => QuizAttemptScreen(
+                          builder: (context) => CourseDetailsScreen(
                             courseId: course['id'],
+                            courseName: course['name'],
+                            courseCode: course['code'],
                             userId: user.id,
                           ),
                         ),

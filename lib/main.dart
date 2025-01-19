@@ -184,6 +184,8 @@ class MyApp extends StatelessWidget {
           '/view_Instructor_courses': (context) => ViewInstructorCoursesScreen(),
           '/view_courses_details': (context) => CourseDetailScreen(),
           '/google_sign_up': (context) => GoogleSignUpScreen(),
+        //  '/lectures': (context) => LecturesScreen(),
+  
         },
       );
     });

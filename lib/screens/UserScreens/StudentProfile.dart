@@ -150,15 +150,13 @@ class _StudentProfileState extends State<StudentProfile> {
                 Navigator.pop(context);
               },
             ),
-              ListTile(
-              leading: Icon(Icons.menu_book_rounded),
-              title: Text('View Assignments'),
+            ListTile(
+              leading: const Icon(Icons.menu_book_rounded),
+              title: const Text('View Assignments'),
               onTap: () {
                 Navigator.pushNamed(context, '/student-assignment-list');
               },
-              
-            )
-            ,
+            ),
             ListTile(
               leading: const Icon(Icons.logout),
               title: const Text("Logout"),
