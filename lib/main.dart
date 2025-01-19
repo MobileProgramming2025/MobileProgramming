@@ -8,7 +8,6 @@ import 'package:mobileprogramming/screens/AdminScreens/AddDoctorScreen.dart';
 import 'package:mobileprogramming/screens/AdminScreens/enroll_instructor_screen.dart';
 import 'package:mobileprogramming/screens/AdminScreens/view_department_courses.dart';
 import 'package:mobileprogramming/screens/AssignmentScreens/assignment_list_screen.dart';
-import 'package:mobileprogramming/screens/AssignmentScreens/student_assignment_list.dart';
 import 'package:mobileprogramming/screens/doctorScreens/CourseDetailScreen.dart';
 import 'package:mobileprogramming/screens/Registration/google_signup_screen.dart';
 import 'package:mobileprogramming/screens/Registration/signin.dart';
@@ -22,7 +21,7 @@ class HexColor extends Color {
   static int _getColorFromHex(String hexColor) {
     hexColor = hexColor.toUpperCase().replaceAll('#', '');
     if (hexColor.length == 6) {
-      hexColor = 'FF' + hexColor;
+      hexColor = 'FF$hexColor';
     }
     return int.parse(hexColor, radix: 16);
   }

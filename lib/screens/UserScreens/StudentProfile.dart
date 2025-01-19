@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:mobileprogramming/models/databaseHelper.dart';
 import 'package:mobileprogramming/models/user.dart';
-import 'package:mobileprogramming/screens/UserScreens/user_home.dart';
 import 'package:mobileprogramming/screens/partials/UserDrawer.dart';
 import 'package:mobileprogramming/screens/partials/edit_profile.dart';
 import 'package:mobileprogramming/services/auth_service.dart';
