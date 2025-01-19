@@ -27,12 +27,22 @@ class _AdvisingScreenState extends State<AdvisingScreen> {
   late String studentYear;
   bool isChecked = false;
   bool isLoading = true;
+  bool isEnrolledCoursesEmpty = false;
+
+  Future<void> _checkEnrollmentStatus() async {
+    bool enrolledStatus = await _courseService
+        .isEnrolledCoursesEmpty(widget.user.id); // Use await here
+    setState(() {
+      isEnrolledCoursesEmpty = enrolledStatus;
+    });
+  }
 
   @override
   void initState() {
     super.initState();
     departmentId = widget.user.departmentId!;
     studentYear = widget.user.year!;
+    _checkEnrollmentStatus();
     _loadCourses();
   }
 
@@ -70,6 +80,9 @@ class _AdvisingScreenState extends State<AdvisingScreen> {
   }
 
   void _enroll() async {
+    setState(() {
+      isLoading = true; // Show loading indicator
+    });
     try {
       if (selectedCourses.length < 5) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -77,22 +90,30 @@ class _AdvisingScreenState extends State<AdvisingScreen> {
         );
       } else {
         for (var selectedCourseId in selectedCourses) {
-          await _userService.enrollInstructor(widget.user.id, selectedCourseId);
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ViewCoursesScreen(user:widget.user),
-            ),
-          );
+          await _userService.enrollUserToCourses(widget.user.id, selectedCourseId);
         }
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ViewCoursesScreen(user: widget.user),
+          ),
+        );
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Selections saved successfully')),
+          SnackBar(
+              content: Text('Selections saved successfully',
+                  style: Theme.of(context).textTheme.bodyLarge)),
         );
       }
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Failed to save selections.")),
+        SnackBar(
+            content: Text("Failed to save selections.",
+                style: Theme.of(context).textTheme.bodyLarge)),
       );
+    } finally {
+      setState(() {
+        isLoading = false; // Hide loading indicator
+      });
     }
   }
 
@@ -103,7 +124,9 @@ class _AdvisingScreenState extends State<AdvisingScreen> {
           selectedCourses.add(courseId);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('You can select up to 5 courses only.')),
+            SnackBar(
+                content: Text('You can select up to 5 courses only.',
+                    style: Theme.of(context).textTheme.bodyMedium)),
           );
         }
       } else {
@@ -160,21 +183,28 @@ class _AdvisingScreenState extends State<AdvisingScreen> {
               child: CircularProgressIndicator(),
             )
           : coursesList.isEmpty
-              ? const Center(
-                  child: Text("No courses available."),
+              ? Center(
+                  child: Text("No courses available",
+                      style: Theme.of(context).textTheme.bodyLarge),
                 )
-              : Column(
-                  children: [
-                    getCoursesCheckBox(),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: ElevatedButton(
-                        onPressed: _enroll, // Save selections when clicked
-                        child: const Text('Enroll to Courses'),
-                      ),
+              : !isEnrolledCoursesEmpty
+                  ? Center(
+                      child: Text(" You already have enrolled courses",
+                          style: Theme.of(context).textTheme.bodyLarge),
+                    )
+                  : Column(
+                      children: [
+                        getCoursesCheckBox(),
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: ElevatedButton(
+                            onPressed: _enroll, // Save selections when clicked
+                            child: Text('Enroll to Courses',
+                                style: Theme.of(context).textTheme.bodyLarge),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
     );
   }
 }

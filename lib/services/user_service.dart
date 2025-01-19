@@ -90,43 +90,7 @@ class UserService {
     }
   }
 
-  // Future<void> enrollStudent() async {
-  //   final users = await fetchAllUsers().first;
-  //   final courses = await _courseService.getAllCourses().first;
-  //   // print("\x1B[33m Users: $users \x1B[0m");
-  //   // print("\x1B[33m Courses: $courses \x1B[0m");
-  //   for (var user in users) {
-  //     if (user['role'] == 'Student') {
-  //       var enrolledCourses = 0;
-  //       // print('\x1B[37m ${user['role']}\x1B[0m');
-  //       // print('\x1B[37m $enrolledCourses \x1B[0m');
-  //       for (var course in courses) {
-  //         if (user['year'] == course['year'] &&
-  //             user['departmentId'] == course['departmentId']) {
-  //           // print(
-  //           //     "\x1B[32m Users: ${user['name']}  +  ${user['year']}  + ${user['departmentId']} \x1B[0m");
-  //           // print("\x1B[35m Courses: $course \x1B[0m");
-  //           if (!_isEnrolled(course, user) && !_isTaken(course, user)) {
-  //             _enroll(course, user);
-  //             enrolledCourses++;
-  //             // print('\x1B[31m Enrolled \x1B[0m');
-  //           }
-  //         }
-  //         if (enrolledCourses >= 5) {
-  //           break;
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
-  // void _enroll(Map<String, dynamic> course, Map<String, dynamic> user) async {
-  //   user['enrolled_courses'] ??= [];
-  //   user['enrolled_courses'].add(course);
-  //   await _firestore.collection('users').doc(user['id']).update(user);
-  // }
-
-
-  Future<void> enrollInstructor(dynamic userId, dynamic courseId) async {
+  Future<void> enrollUserToCourses(dynamic userId, dynamic courseId) async {
     try {
       // Retrieve the user by ID
       final userDocRef = _firestore

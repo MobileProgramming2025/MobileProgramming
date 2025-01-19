@@ -108,7 +108,8 @@ class CourseService {
               'year': course['year'],
               'departmentId': course['departmentId'],
             };
-          }).toList() ?? []; // Return empty list if no taken courses
+          }).toList() ??
+          []; // Return empty list if no taken courses
     });
   }
 
@@ -141,7 +142,7 @@ class CourseService {
     return FirebaseFirestore.instance
         .collection('users')
         .doc(userId)
-        .snapshots() 
+        .snapshots()
         .map((snapshot) {
       // Extract the list of taken courses
       final takenCourses = snapshot.data()?['taken_courses'] as List<dynamic>?;
@@ -155,7 +156,8 @@ class CourseService {
               'year': course['year'],
               'departmentId': course['departmentId'],
             };
-          }).toList() ?? []; // Return empty list if no taken courses
+          }).toList() ??
+          []; // Return empty list if no taken courses
     });
   }
 
@@ -173,23 +175,18 @@ class CourseService {
     return false;
   }
 
+  Future<bool> isEnrolledCoursesEmpty(String userId) async {
+    final Stream<List<Map<String, dynamic>>> enrolledCoursesStream = fetchEnrolledCoursesByUserId(userId);
+    // Wait for the data from the Stream to be available
+    final List<Map<String, dynamic>> enrolledCourses = await enrolledCoursesStream.first;
+    bool isEmpty = enrolledCourses.isEmpty; // Store the result in a variable
+    return isEmpty; // Return the stored value
+  }
 
-  //   Future<bool> isEnrolledCourse(String courseId, String userId) async {
-  //   final Stream<List<Map<String, dynamic>>> enrolledCoursesStream =
-  //       fetchEnrolledCoursesByUserId(userId);
-  //   // Wait for the data from the Stream to be available
-  //   final List<Map<String, dynamic>> enrolledCourses =
-  //       await enrolledCoursesStream.first;
-  //   for (var enrolled in enrolledCourses) {
-  //     if (enrolled['id'] == courseId) {
-  //       return true;
-  //     }
-  //   }
-  //   return false;
-  // }
- Future<Course?> getCourseById(String courseId) async {
+  Future<Course?> getCourseById(String courseId) async {
     try {
-      DocumentSnapshot courseDoc = await _firestore.collection('courses').doc(courseId).get();
+      DocumentSnapshot courseDoc =
+          await _firestore.collection('courses').doc(courseId).get();
       if (courseDoc.exists) {
         return Course.fromMap(courseDoc.data() as Map<String, dynamic>);
       }
