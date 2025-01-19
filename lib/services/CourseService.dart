@@ -175,6 +175,7 @@ class CourseService {
     return false;
   }
 
+<<<<<<< Updated upstream
   Future<bool> isEnrolledCoursesEmpty(String userId) async {
     final Stream<List<Map<String, dynamic>>> enrolledCoursesStream = fetchEnrolledCoursesByUserId(userId);
     // Wait for the data from the Stream to be available
@@ -196,4 +197,20 @@ class CourseService {
       return null;
     }
   }
+=======
+  // bool _isEnrolled(Map<String, dynamic> course, Map<String, dynamic> user) {
+  //   // final enrolledCourses = user['enrolled_courses'] ?? [];
+  //   // print(enrolledCourses);
+  //   for (var enrolled in user['enrolled_courses']) {
+  //     print(enrolled);
+  //     if (enrolled['code'] == course['code']) {
+  //       print("da5al");
+  //       return true;
+  //     }
+  //   }
+  //   return false;
+  // }
+
+  
+>>>>>>> Stashed changes
 }
