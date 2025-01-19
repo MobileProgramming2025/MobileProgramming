@@ -88,8 +88,6 @@ class CourseService {
     }
   }
 
-
-
   Stream<List<Map<String, dynamic>>> fetchEnrolledCoursesByUserId(String userId) {
     return FirebaseFirestore.instance
         .collection('users')
@@ -106,9 +104,7 @@ class CourseService {
     });
   }
   
-
-   Stream<List<Map<String, dynamic>>> fetchEnrolledCoursesByUserIdSt(
-      String userId) {
+   Stream<List<Map<String, dynamic>>> fetchEnrolledCoursesByUserIdSt(String userId) {
     return _firestore
         .collection('users')
         .doc(userId)
@@ -131,4 +127,52 @@ class CourseService {
       }).toList();
     });
   }
+
+
+  Stream<List<Map<String, dynamic>>> fetchTakenCoursesByUserId(String userId) {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .snapshots()
+        .map((snapshot) {
+     // Extract the list of taken courses
+    final takenCourses = snapshot.data()?['taken_courses'] as List<dynamic>?;
+    
+    // Map the taken courses into a list of maps with course data
+    return takenCourses?.map((course) {
+      return {
+        'id': course['id'], 
+        'name': course['name'],
+        'year': course['year'],
+        'departmentId': course['departmentId'],
+      };
+    }).toList() ?? []; // Return empty list if no taken courses
+  });
+  }
+
+
+    Future<bool> isCourseTaken(String courseId, String userId)async {
+    final Stream<List<Map<String, dynamic>>> takenCoursesStream = fetchTakenCoursesByUserId(userId);
+    // Wait for the data from the Stream to be available
+    final List<Map<String, dynamic>> takenCourses = await takenCoursesStream.first;
+    for (var taken in takenCourses) {    
+      if (taken['id'] == courseId) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+    // bool _isEnrolled(Map<String, dynamic> course, Map<String, dynamic> user) {
+  //   // final enrolledCourses = user['enrolled_courses'] ?? [];
+  //   // print(enrolledCourses);
+  //   for (var enrolled in user['enrolled_courses']) {
+  //     print(enrolled);
+  //     if (enrolled['code'] == course['code']) {
+  //       print("da5al");
+  //       return true;
+  //     }
+  //   }
+  //   return false;
+  // }
 }
