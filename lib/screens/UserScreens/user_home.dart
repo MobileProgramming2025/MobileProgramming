@@ -75,6 +75,7 @@ class _UserHomeState extends State<UserHome> {
                             courseName: course['name'],
                             courseCode: course['code'],
                             userId: user.id,
+                          user : user
                           ),
                         ),
                       );

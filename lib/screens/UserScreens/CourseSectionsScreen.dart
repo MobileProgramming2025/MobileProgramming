@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mobileprogramming/screens/AssignmentScreens/student_assignment_list.dart';
+import 'package:mobileprogramming/screens/AssignmentScreens/ui-assignment-details.dart';
 import 'package:mobileprogramming/screens/QuizTrail/quiz_attempt_screen.dart';
 import 'package:mobileprogramming/models/user.dart';
 
@@ -7,13 +9,14 @@ class CourseDetailsScreen extends StatelessWidget {
   final String courseName;
   final String courseCode;
   final String userId;
-
+ final User user;
   const CourseDetailsScreen({
     super.key,
     required this.courseId,
     required this.courseName,
     required this.courseCode,
     required this.userId,
+    required this.user
   });
 
   @override
@@ -48,10 +51,12 @@ class CourseDetailsScreen extends StatelessWidget {
             SizedBox(height: 10),
             ElevatedButton(
               onPressed: () {
-                Navigator.pushNamed(
+                Navigator.push(
                   context,
-                  '/student-assignment-list', // Ensure the route for the assignments screen is correct
-                  arguments: {'courseId': courseId, 'userId': userId},
+                    MaterialPageRoute(
+                     builder: (context) => StudentAssignmentListScreen(user: user),
+                    
+                  ),
                 );
               },
               child: Text('View Assignments'),
