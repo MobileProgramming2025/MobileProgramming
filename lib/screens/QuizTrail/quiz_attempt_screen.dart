@@ -1,97 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mobileprogramming/models/Question.dart';
+import 'package:mobileprogramming/models/AttemptQuiz.dart';
 import 'package:mobileprogramming/models/Quiz.dart';
-
-class QuizAttemptScreen extends StatelessWidget {
-  final String courseId;
-  final String userId;
-
-  const QuizAttemptScreen({
-    super.key,
-    required this.courseId,
-    required this.userId,
-  });
-
-  // Fetch quizzes from Firestore and map to the Quiz model
-  Future<List<Quiz>> _fetchQuizzes() async {
-    final querySnapshot = await FirebaseFirestore.instance
-        .collection('quizzes')
-        .where('courseId', isEqualTo: courseId)
-        .get();
-
-    // Map Firestore documents to Quiz objects
-    return querySnapshot.docs
-        .map((doc) => Quiz.fromJson(doc.data()))
-        .toList();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Quiz Attempt'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: FutureBuilder<List<Quiz>>(
-          future: _fetchQuizzes(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
-            }
-            if (snapshot.hasData && snapshot.data!.isEmpty) {
-              return const Center(child: Text('No quizzes available for this course.'));
-            }
-
-            // Display quizzes
-            final quizzes = snapshot.data!;
-            return ListView.builder(
-              itemCount: quizzes.length,
-              itemBuilder: (context, index) {
-                final quiz = quizzes[index];
-                return Card(
-                  elevation: 4,
-                  margin: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: ListTile(
-                    title: Text(quiz.title),
-                    subtitle: Text(
-                      'Starts: ${quiz.startDate}\nEnds: ${quiz.endDate}',
-                    ),
-                    onTap: () {
-                      // Navigate to quiz attempt screen
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => AttemptQuizScreen(
-                            quiz: quiz,
-                            userId: userId,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                );
-              },
-            );
-          },
-        ),
-      ),
-    );
-  }
-}
+import 'package:mobileprogramming/models/Question.dart';
 
 class AttemptQuizScreen extends StatefulWidget {
   final Quiz quiz;
   final String userId;
+  final String courseId; // Add courseId here
 
   const AttemptQuizScreen({
     super.key,
     required this.quiz,
     required this.userId,
+    required this.courseId, // Include it in the constructor
   });
 
   @override
@@ -101,6 +23,7 @@ class AttemptQuizScreen extends StatefulWidget {
 class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
   final Map<String, dynamic> _userAnswers = {};
 
+  // Submit the quiz and calculate score
   void _submitQuiz() {
     int score = 0;
 
@@ -114,16 +37,21 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
     final totalQuestions = widget.quiz.questions.length;
     final percentage = (score / totalQuestions) * 100;
 
-    // Save result to Firestore
-    FirebaseFirestore.instance.collection('quizAttempts').add({
-      'userId': widget.userId,
-      'quizId': widget.quiz.id,
-      'score': score,
-      'percentage': percentage,
-      'timestamp': DateTime.now().toIso8601String(),
-    });
+    // Create a new QuizAttempt instance
+    final quizAttempt = QuizAttempt(
+      userId: widget.userId,
+      quizId: widget.quiz.id,
+      courseId: widget.courseId,  // Add courseId to the QuizAttempt
+      userAnswers: _userAnswers.map((key, value) => MapEntry(key, value as String)),
+      score: score,
+      percentage: percentage,
+      timestamp: DateTime.now(),
+    );
 
-    // Show result
+    // Save the quiz attempt to Firestore
+    FirebaseFirestore.instance.collection('quizAttempts').add(quizAttempt.toJson());
+
+    // Show the result to the user
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -134,7 +62,7 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.pop(context); // Close dialog
+              Navigator.pop(context); // Close the result dialog
               Navigator.pop(context); // Go back to the previous screen
             },
             child: const Text('OK'),
@@ -144,6 +72,7 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
     );
   }
 
+  // Build the question widget based on the type
   Widget _buildQuestionWidget(Question question) {
     if (question.type == 'multiple_choice' && question.options != null) {
       return Column(
