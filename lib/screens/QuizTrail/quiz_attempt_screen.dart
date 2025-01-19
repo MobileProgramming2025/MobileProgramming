@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:async';
 import 'package:mobileprogramming/models/AttemptQuiz.dart';
 import 'package:mobileprogramming/models/Quiz.dart';
 import 'package:mobileprogramming/models/Question.dart';
@@ -7,13 +8,13 @@ import 'package:mobileprogramming/models/Question.dart';
 class AttemptQuizScreen extends StatefulWidget {
   final Quiz quiz;
   final String userId;
-  final String courseId; // Add courseId here
+  final String courseId;
 
   const AttemptQuizScreen({
     super.key,
     required this.quiz,
     required this.userId,
-    required this.courseId, // Include it in the constructor
+    required this.courseId,
   });
 
   @override
@@ -22,6 +23,44 @@ class AttemptQuizScreen extends StatefulWidget {
 
 class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
   final Map<String, dynamic> _userAnswers = {};
+  late Timer _timer;
+  late Duration _remainingTime;
+  bool _isTimeUp = false;
+
+  // Initialize the timer and calculate remaining time
+  @override
+  void initState() {
+    super.initState();
+
+    // Calculate the time left based on the start and end dates
+    final quizStartDate = widget.quiz.startDate;
+    final quizEndDate = widget.quiz.endDate;
+
+    _remainingTime = quizEndDate.difference(DateTime.now());
+
+    if (_remainingTime.isNegative) {
+      _remainingTime = Duration(seconds: 0);
+      _isTimeUp = true;
+    }
+
+    // Start the timer to update the countdown every second
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        if (_remainingTime.inSeconds > 0) {
+          _remainingTime = _remainingTime - const Duration(seconds: 1);
+        } else {
+          _isTimeUp = true;
+          _timer.cancel();
+        }
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
 
   // Submit the quiz and calculate score
   void _submitQuiz() {
@@ -41,7 +80,7 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
     final quizAttempt = QuizAttempt(
       userId: widget.userId,
       quizId: widget.quiz.id,
-      courseId: widget.courseId,  // Add courseId to the QuizAttempt
+      courseId: widget.courseId, // Add courseId to the QuizAttempt
       userAnswers: _userAnswers.map((key, value) => MapEntry(key, value as String)),
       score: score,
       percentage: percentage,
@@ -74,7 +113,7 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
 
   // Build the question widget based on the type
   Widget _buildQuestionWidget(Question question) {
-    if (question.type == 'multiple_choice' && question.options != null) {
+    if (question.type == 'multiple choice' && question.options != null) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: List.generate(
@@ -94,7 +133,45 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
           },
         ),
       );
-    } else if (question.type == 'text') {
+    } else if (question.type == 'true/false') {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text('True'),
+              ),
+              Radio<String>(
+                value: 'True',
+                groupValue: _userAnswers[question.id],
+                onChanged: (value) {
+                  setState(() {
+                    _userAnswers[question.id] = value!;
+                  });
+                },
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: Text('False'),
+              ),
+              Radio<String>(
+                value: 'False',
+                groupValue: _userAnswers[question.id],
+                onChanged: (value) {
+                  setState(() {
+                    _userAnswers[question.id] = value!;
+                  });
+                },
+              ),
+            ],
+          ),
+        ],
+      );
+    } else if (question.type == 'short answer') {
       return TextField(
         onChanged: (value) {
           setState(() {
@@ -105,6 +182,35 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
           labelText: 'Your Answer',
           border: OutlineInputBorder(),
         ),
+      );
+    } else if (question.type == 'matching') {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('Match the following:'),
+          ...question.options!.asMap().entries.map((entry) {
+            int index = entry.key;
+            String option = entry.value;
+            return Row(
+              children: [
+                Expanded(
+                  child: Text(option),
+                ),
+                DropdownButton<String>(
+                  value: _userAnswers[question.id]?[index] ?? '',
+                  items: question.options!
+                      .map((e) => DropdownMenuItem<String>(value: e, child: Text(e)))
+                      .toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _userAnswers[question.id]?[index] = value;
+                    });
+                  },
+                ),
+              ],
+            );
+          }).toList(),
+        ],
       );
     } else {
       return const Text('Unsupported question type.');
@@ -136,6 +242,13 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
               'Questions:',
               style: Theme.of(context).textTheme.titleMedium,
             ),
+            // Display the countdown timer
+            _isTimeUp
+                ? const Text('Time is up!')
+                : Text(
+                    'Time Remaining: ${_remainingTime.inMinutes}:${(_remainingTime.inSeconds % 60).toString().padLeft(2, '0')}',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
             Expanded(
               child: ListView.builder(
                 itemCount: widget.quiz.questions.length,
@@ -164,7 +277,7 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
             ),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: _submitQuiz,
+              onPressed: _isTimeUp ? null : _submitQuiz,
               child: const Text('Submit Quiz'),
             ),
           ],
