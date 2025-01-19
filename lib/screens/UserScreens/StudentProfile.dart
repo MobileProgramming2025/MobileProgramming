@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:mobileprogramming/models/databaseHelper.dart';
 import 'package:mobileprogramming/models/user.dart';
-import 'package:mobileprogramming/screens/Quiz/quiz_attempt_screen.dart';
 import 'package:mobileprogramming/screens/UserScreens/user_home.dart';
 import 'package:mobileprogramming/screens/partials/edit_profile.dart';
-import 'package:mobileprogramming/services/CourseService.dart';
 import 'package:mobileprogramming/services/auth_service.dart';
 
 class StudentProfile extends StatefulWidget {
@@ -19,42 +18,60 @@ class StudentProfile extends StatefulWidget {
 
 class _StudentProfileState extends State<StudentProfile> {
   late User user;
+  final DatabaseHelper dbHelper = DatabaseHelper();
   File? _profileImage;
+  String? _profileImagePath;
   final ImagePicker _picker = ImagePicker();
-  final CourseService _courseService = CourseService();
-  late Stream<List<Map<String, dynamic>>> _enrolledCoursesStream;
 
   @override
   void initState() {
     super.initState();
     user = widget.user;
-    _enrolledCoursesStream = _courseService.fetchEnrolledCoursesByUserId(user.id);
+    _loadProfileImagePath();
   }
 
-  Future<void> _pickImage() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() {
-        _profileImage = File(pickedFile.path);
-      });
+  Future<void> _loadProfileImagePath() async {
+    try {
+      String? imagePath = await dbHelper.getProfileImagePath();
+      if (mounted) {
+        setState(() {
+          _profileImagePath = imagePath;
+        });
+      }
+    } catch (error) {
+      print('Error loading profile image path: $error');
     }
   }
 
-  void _logout() async {
+  Future<void> _pickImage() async {
+    try {
+      final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        await dbHelper.saveProfileImagePath(pickedFile.path);
+        setState(() {
+          _profileImagePath = pickedFile.path;
+        });
+      }
+    } catch (error) {
+      print('Error picking image: $error');
+    }
+  }
+
+  Future<void> _logout() async {
     final AuthService authService = AuthService();
     bool? confirmLogout = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Confirm Logout"),
-        content: Text("Are you sure you want to log out?"),
+        title: const Text("Confirm Logout"),
+        content: const Text("Are you sure you want to log out?"),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text("Cancel"),
+            child: const Text("Cancel"),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: Text("Logout"),
+            child: const Text("Logout"),
           ),
         ],
       ),
@@ -71,11 +88,11 @@ class _StudentProfileState extends State<StudentProfile> {
 
   Widget _buildProfileCard(String title, String value) {
     return Card(
-      margin: EdgeInsets.symmetric(vertical: 8.0),
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
       child: ListTile(
         title: Text(
           title,
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         subtitle: Text(value),
       ),
@@ -86,13 +103,27 @@ class _StudentProfileState extends State<StudentProfile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Student Profile"),
+        title: const Text('My Profile'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.edit),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EditProfileScreen(),
+                ),
+              );
+            },
+            tooltip: 'Edit Profile',
+          ),
+        ],
       ),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            DrawerHeader(
+            const DrawerHeader(
               child: Center(
                 child: Text(
                   "Menu",
@@ -100,42 +131,44 @@ class _StudentProfileState extends State<StudentProfile> {
                 ),
               ),
             ),
-             ListTile(
-              leading: Icon(Icons.home),
-              title: Text('Home'),
+            ListTile(
+              leading: const Icon(Icons.home),
+              title: const Text('Home'),
               onTap: () {
                 Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => UserHome(user: user,),
-                            ),
-                          );
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => UserHome(user: user),
+                  ),
+                );
               },
             ),
             ListTile(
-              leading: Icon(Icons.person),
-              title: Text("Profile"),
+              leading: const Icon(Icons.person),
+              title: const Text("Profile"),
               onTap: () {
-                Navigator.pop(context); 
+                Navigator.pop(context);
               },
             ),
-            ListTile(
+              ListTile(
               leading: Icon(Icons.menu_book_rounded),
-              title: Text("View Assignments"),
+              title: Text('View Assignments'),
               onTap: () {
                 Navigator.pushNamed(context, '/student-assignment-list');
               },
-            ),
+              
+            )
+            ,
             ListTile(
-              leading: Icon(Icons.logout),
-              title: Text("Logout"),
+              leading: const Icon(Icons.logout),
+              title: const Text("Logout"),
               onTap: _logout,
             ),
           ],
         ),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             Center(
@@ -143,25 +176,26 @@ class _StudentProfileState extends State<StudentProfile> {
                 onTap: _pickImage,
                 child: CircleAvatar(
                   radius: 50,
-                  backgroundImage: _profileImage != null
-                      ? FileImage(_profileImage!)
+                  backgroundImage: _profileImagePath != null
+                      ? FileImage(File(_profileImagePath!))
                       : null,
-                  child: _profileImage == null
-                      ? Icon(Icons.account_circle, size: 50)
+                  child: _profileImagePath == null
+                      ? const Icon(Icons.account_circle, size: 50)
                       : null,
                 ),
               ),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             Text(
               user.name,
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             _buildProfileCard("Email", user.email),
             _buildProfileCard("Role", user.role),
-            SizedBox(height: 20.0),
-          ]))
+          ],
+        ),
+      ),
     );
   }
 }

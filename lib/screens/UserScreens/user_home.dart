@@ -91,7 +91,7 @@ class _UserHomeState extends State<UserHome> {
               leading: Icon(Icons.home),
               title: Text('Home'),
               onTap: () {
-                Navigator.pop(context); // Close the drawer
+                Navigator.pop(context); 
               },
             ),
             ListTile(
