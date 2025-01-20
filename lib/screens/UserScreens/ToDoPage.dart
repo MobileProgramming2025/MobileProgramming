@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/user.dart';
+import 'package:mobileprogramming/screens/partials/UserDrawer.dart';
 import 'package:mobileprogramming/services/TrelloApi.dart';
 import 'package:mobileprogramming/models/TrelloCard.dart';
 import 'package:mobileprogramming/screens/partials/UserBottomNavigationBar.dart';
@@ -43,7 +44,7 @@ class _ToDoPageState extends State<ToDoPage> {
 
   void _deleteCard(String cardId) async {
     try {
-      // await _api.deleteCard(cardId);
+      await _api.deleteCard(cardId);
       setState(() {
         _cardsFuture = _api.fetchCards(_listId);
       });
@@ -61,6 +62,7 @@ class _ToDoPageState extends State<ToDoPage> {
         backgroundColor: Colors.indigoAccent,
         elevation: 2,
       ),
+      drawer: UserDrawerScreen(user: widget.user),
       body: Column(
         children: [
           Padding(
@@ -150,7 +152,7 @@ class _ToDoPageState extends State<ToDoPage> {
                   );
                 } else {
                   return const Center(
-                    child: Text('No tasks found.'),
+                    child: Text('No tasks found'),
                   );
                 }
               },
