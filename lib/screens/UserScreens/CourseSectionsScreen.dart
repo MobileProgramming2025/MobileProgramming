@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/Quiz.dart';
+import 'package:mobileprogramming/screens/AssignmentScreens/student-course-assignment-list%20screen.dart';
 import 'package:mobileprogramming/screens/AssignmentScreens/student_assignment_list.dart';
 import 'package:mobileprogramming/screens/QuizTrail/quiz_attempt_screen.dart';
 import 'package:mobileprogramming/models/user.dart';
@@ -139,32 +140,35 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
 
                         // Assignments Button
                         ElevatedButton.icon(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => StudentAssignmentListScreen(user: widget.user),
-                              ),
-                            );
-                          },
-                          icon: const Icon(Icons.assignment),
-                          label: const Text('View Assignments'),
-                        ),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => StudentCourseAssignmentListScreen(
+                                    user: widget.user,
+                                    courseId: widget.courseId, // Pass the courseId here
+                                  ),
+                                ),
+                              );
+                            },
+                            icon: const Icon(Icons.assignment),
+                            label: const Text('View Assignments'),
+                          ),
                         const SizedBox(height: 10),
 
                         // UI Assignment Details (Optional)
-                        ElevatedButton.icon(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => StudentAssignmentListScreen(user: widget.user),
-                              ),
-                            );
-                          },
-                          icon: const Icon(Icons.info_outline),
-                          label: const Text('UI Assignment Details'),
-                        ),
+                        // ElevatedButton.icon(
+                        //   onPressed: () {
+                        //     Navigator.push(
+                        //       context,
+                        //       MaterialPageRoute(
+                        //         builder: (context) => StudentAssignmentListScreen(user: widget.user),
+                        //       ),
+                        //     );
+                        //   },
+                        //   icon: const Icon(Icons.info_outline),
+                        //   label: const Text('UI Assignment Details'),
+                        // ),
                       ],
                     ),
                   ),
