@@ -149,6 +149,7 @@ class _DoctorDashboardState extends ConsumerState<DoctorDashboard> {
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                     SizedBox(height: 10),
+                    
                     Container(
                       child: instructorCourseStream.when(
                         // Loading state
