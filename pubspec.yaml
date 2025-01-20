@@ -49,6 +49,8 @@ dependencies:
   permission_handler: ^11.2.0
   # file_picker: ^8.1.5
   # file_picker: ^8.1.5
+  url_launcher: ^6.1.7
+
 
 dev_dependencies:
   flutter_test:

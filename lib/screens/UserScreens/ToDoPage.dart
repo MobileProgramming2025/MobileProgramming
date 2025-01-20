@@ -4,6 +4,7 @@ import 'package:mobileprogramming/screens/partials/UserDrawer.dart';
 import 'package:mobileprogramming/services/TrelloApi.dart';
 import 'package:mobileprogramming/models/TrelloCard.dart';
 import 'package:mobileprogramming/screens/partials/UserBottomNavigationBar.dart';
+import 'package:url_launcher/url_launcher.dart'; // For opening URLs
 
 class ToDoPage extends StatefulWidget {
   final User user;
@@ -20,6 +21,8 @@ class _ToDoPageState extends State<ToDoPage> {
   late Future<List<TrelloCard>> _cardsFuture;
 
   final TextEditingController _textController = TextEditingController();
+
+  final Uri _boardUrl = Uri.parse('https://trello.com/b/O9q3Qdbz'); // Board URL
 
   @override
   void initState() {
@@ -54,6 +57,16 @@ class _ToDoPageState extends State<ToDoPage> {
     }
   }
 
+  Future<void> _openBoard() async {
+    if (await canLaunchUrl(_boardUrl)) {
+      await launchUrl(_boardUrl, mode: LaunchMode.externalApplication);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not open the Trello board URL')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,6 +74,7 @@ class _ToDoPageState extends State<ToDoPage> {
         title: const Text('Trello To-Do List'),
         backgroundColor: Colors.indigoAccent,
         elevation: 2,
+       
       ),
       drawer: UserDrawerScreen(user: widget.user),
       body: Column(
@@ -161,10 +175,9 @@ class _ToDoPageState extends State<ToDoPage> {
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: Colors.indigoAccent,
-        label: const Text('Add Task'),
-        icon: const Icon(Icons.add),
-        onPressed: () => _addCard(_textController.text),
+        label: const Text('View Board'),
+        icon: const Icon(Icons.open_in_browser),
+        onPressed: _openBoard,
       ),
       bottomNavigationBar: UserBottomNavigationBar(user: widget.user),
     );
