@@ -258,4 +258,23 @@ class UserService {
       rethrow;
     }
   }
+  Future<List<String>> fetchEmailSuggestions(String query) async {
+    try {
+      final snapshot = await _firestore
+          .collection('users')
+          .where('email', isGreaterThanOrEqualTo: query)
+          .where('email', isLessThan: query + 'z')
+          .get();
+
+      List<String> emailSuggestions = [];
+      for (var doc in snapshot.docs) {
+        emailSuggestions.add(doc['email']);
+      }
+
+      return emailSuggestions;
+    } catch (e) {
+      throw Exception('Error fetching email suggestions: $e');
+    }
+  }
+
 }

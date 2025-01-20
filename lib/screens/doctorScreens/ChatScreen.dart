@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/screens/doctorScreens/ChatRoomScreen.dart';
-import 'package:mobileprogramming/models/user.dart';
 import 'package:mobileprogramming/services/user_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ChatScreen extends StatefulWidget {
   final String userId;
@@ -15,12 +15,11 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _emailController = TextEditingController();
   bool _isSearching = false;
-  User? _chatUser;
   String? _errorMessage;
+  List<String> _emailSuggestions = [];
 
-  final UserService _userService = UserService();  // Assuming you have a service to fetch users
+  final UserService _userService = UserService();
 
-  // Method to search for a user by email
   void _searchUserByEmail() async {
     setState(() {
       _isSearching = true;
@@ -31,9 +30,18 @@ class _ChatScreenState extends State<ChatScreen> {
       final user = await _userService.fetchUserByEmail(_emailController.text);
       if (user != null) {
         setState(() {
-          _chatUser = user;
           _isSearching = false;
         });
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ChatRoomScreen(
+              currentUserId: widget.userId,
+              chatUserId: user.id,
+              chatUserName: user.name,
+            ),
+          ),
+        );
       } else {
         setState(() {
           _isSearching = false;
@@ -48,54 +56,166 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
+  void _getEmailSuggestions() async {
+    final query = _emailController.text.toLowerCase();
+    if (query.isNotEmpty) {
+      final suggestions = await _userService.fetchEmailSuggestions(query);
+      setState(() {
+        _emailSuggestions = suggestions;
+      });
+    } else {
+      setState(() {
+        _emailSuggestions = [];
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _emailController.addListener(_getEmailSuggestions);
+  }
+
+  @override
+  void dispose() {
+    _emailController.removeListener(_getEmailSuggestions);
+    _emailController.dispose();
+    super.dispose();
+  }
+
+  Stream<List<Map<String, dynamic>>> _getConversations() {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.userId)
+        .collection('conversations')
+        .orderBy('timestamp', descending: true)
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+            .map((doc) => doc.data() as Map<String, dynamic>)
+            .toList());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Chat'),
+        title: const Text('Chats'),
+        backgroundColor: Colors.teal,
+        elevation: 5,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () {},
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Search by Email
-            TextField(
-              controller: _emailController,
-              decoration: InputDecoration(
-                labelText: 'Enter Email to Chat',
-                border: OutlineInputBorder(),
-                suffixIcon: _isSearching
-                    ? const CircularProgressIndicator()
-                    : IconButton(
-                        icon: const Icon(Icons.search),
-                        onPressed: _searchUserByEmail,
-                      ),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: TextField(
+                controller: _emailController,
+                decoration: InputDecoration(
+                  hintText: 'Enter email to chat...',
+                  border: InputBorder.none,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                  suffixIcon:
+                      _isSearching ? const CircularProgressIndicator() : null,
+                ),
               ),
             ),
+            const SizedBox(height: 10),
+            // Show email suggestions
+            if (_emailSuggestions.isNotEmpty)
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: _emailSuggestions.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text(_emailSuggestions[index]),
+                      onTap: () async {
+                        _emailController.text = _emailSuggestions[index];
+                        setState(() {
+                          _emailSuggestions = [];
+                        });
+
+                        _searchUserByEmail();
+                      },
+                    );
+                  },
+                ),
+              ),
             const SizedBox(height: 20),
-            // Show user details if found
-            if (_chatUser != null) ...[
-              Text('User Found: ${_chatUser!.name}'),
-              const SizedBox(height: 10),
-              ElevatedButton(
-                onPressed: () {
-                  // Navigate to chat room
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ChatRoomScreen(
-                        currentUserId: widget.userId,
-                        chatUserId: _chatUser!.id,
-                        chatUserName: _chatUser!.name,
-                      ),
-                    ),
+            Expanded(
+              child: StreamBuilder<List<Map<String, dynamic>>>(
+                stream: _getConversations(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  final conversations = snapshot.data!;
+                  return ListView.builder(
+                    itemCount: conversations.length,
+                    itemBuilder: (context, index) {
+                      final conversation = conversations[index];
+                      final lastMessage = conversation['lastMessage'];
+                      final chatUserName = conversation['chatUserName'];
+                      final chatUserId = conversation['chatUserId'];
+
+                      return Card(
+                        margin: const EdgeInsets.symmetric(vertical: 3),
+                        elevation: 5,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.symmetric(
+                              vertical: 1, horizontal: 15),
+                          leading: CircleAvatar(
+                            backgroundColor: Colors.blueAccent,
+                            child: Text(
+                              chatUserName[0],
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                          ),
+                          title: Text(
+                            chatUserName,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          subtitle: Text(lastMessage),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ChatRoomScreen(
+                                  currentUserId: widget.userId,
+                                  chatUserId: chatUserId,
+                                  chatUserName: chatUserName,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    },
                   );
                 },
-                child: const Text('Start Chat'),
               ),
-            ],
-            // Display error if no user is found
+            ),
             if (_errorMessage != null) ...[
               const SizedBox(height: 10),
               Text(

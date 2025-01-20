@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AddLectureScreen extends StatefulWidget {
@@ -23,8 +24,13 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
       final file = result.files.first;
 
       try {
+        if(file.bytes == null) {
+          throw Exception('File data is empty');
+        }
+
         // Write bytes to a temporary file
-        final tempFile = File(file.name);
+        final tempDir = await getTemporaryDirectory();
+        final tempFile = File('${tempDir.path}/${file.name}');
         await tempFile.writeAsBytes(file.bytes!);
 
         // Upload file to Supabase
