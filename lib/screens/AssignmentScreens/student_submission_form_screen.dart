@@ -18,7 +18,7 @@ class _SubmissionFormScreenState extends State<SubmissionFormScreen> {
   Future<void> _submitForm() async {
     if (_notesController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter some notes before submitting.')),
+        const SnackBar(content: Text('Please enter some answers before submitting.')),
       );
       return;
     }
@@ -77,7 +77,7 @@ class _SubmissionFormScreenState extends State<SubmissionFormScreen> {
             TextField(
               controller: _notesController,
               decoration: const InputDecoration(
-                labelText: 'Additional Notes',
+                labelText: 'Answer',
               ),
               maxLines: 4,
             ),
