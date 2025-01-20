@@ -115,7 +115,6 @@ class _ChatScreenState extends State<ChatScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Search by Email
             Container(
               decoration: BoxDecoration(
                 color: Colors.grey[200],
@@ -139,7 +138,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 decoration: BoxDecoration(
                   color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(10),
                 ),
                 child: ListView.builder(
                   shrinkWrap: true,
@@ -148,7 +147,6 @@ class _ChatScreenState extends State<ChatScreen> {
                     return ListTile(
                       title: Text(_emailSuggestions[index]),
                       onTap: () async {
-                        // Set the email in the text field
                         _emailController.text = _emailSuggestions[index];
                         setState(() {
                           _emailSuggestions = [];
@@ -179,14 +177,14 @@ class _ChatScreenState extends State<ChatScreen> {
                       final chatUserId = conversation['chatUserId'];
 
                       return Card(
-                        margin: const EdgeInsets.symmetric(vertical: 10),
+                        margin: const EdgeInsets.symmetric(vertical: 3),
                         elevation: 5,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(10),
                         ),
                         child: ListTile(
                           contentPadding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 15),
+                              vertical: 1, horizontal: 15),
                           leading: CircleAvatar(
                             backgroundColor: Colors.blueAccent,
                             child: Text(
@@ -200,7 +198,6 @@ class _ChatScreenState extends State<ChatScreen> {
                           ),
                           subtitle: Text(lastMessage),
                           onTap: () {
-                            // Navigate to chat room
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -219,7 +216,6 @@ class _ChatScreenState extends State<ChatScreen> {
                 },
               ),
             ),
-            // Display error if no conversations found
             if (_errorMessage != null) ...[
               const SizedBox(height: 10),
               Text(
