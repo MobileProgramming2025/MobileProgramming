@@ -90,7 +90,7 @@ class UserService {
     }
   }
 
-  Future<void> enrollUserToCourses(dynamic userId, dynamic courseId) async {
+  Future<void> enrollUserToCourses(String userId, String courseId) async {
     try {
       // Retrieve the user by ID
       final userDocRef = _firestore
@@ -144,35 +144,54 @@ class UserService {
     }
   }
 
+  Future<void> startAdvising(List<Map<String, dynamic>> users) async {
+    for (var user in users) {
+      var takenCourses = user['taken_courses'] as List<dynamic>;
+      var enrolledCourses = user['enrolled_courses'] as List<dynamic>;
+      takenCourses.addAll(enrolledCourses);
+      if (user['role'] == 'Student') {
+        await _firestore.collection('users').doc(user['id']).update({
+          'enrolled_courses': [],
+          'taken_courses': takenCourses,
+        });
+      }else if (user['role'] == 'Doctor' || user['role'] == 'Teaching Assistant'){
+         await _firestore.collection('users').doc(user['id']).update({
+          'enrolled_courses': [],
+        });
+      }
+    }
+  }
+
   void logout(context) async {
     final AuthService authService = AuthService();
-  final colorScheme = Theme.of(context).colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
 
     bool? confirmLogout = await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Confirm Logout",
-          style: TextStyle(color: colorScheme.primary),
+          title: Text(
+            "Confirm Logout",
+            style: TextStyle(color: colorScheme.primary),
           ),
           content: Text("Are you sure you want to log out?"),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: Text("Cancel",
-              style: TextStyle(color: colorScheme.primary),
+              child: Text(
+                "Cancel",
+                style: TextStyle(color: colorScheme.primary),
               ),
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(true),
-              child: Text("Logout",
-              style: TextStyle(color: colorScheme.error),
-
+              child: Text(
+                "Logout",
+                style: TextStyle(color: colorScheme.error),
               ),
             ),
           ],
-        backgroundColor: colorScheme.surface,
-
+          backgroundColor: colorScheme.surface,
         );
       },
     );
@@ -194,6 +213,7 @@ class UserService {
       }
     }
   }
+
   // Search for user by email
   Future<User?> searchUserByEmail(String email) async {
     try {
@@ -237,5 +257,4 @@ class UserService {
       rethrow;
     }
   }
-
 }
