@@ -90,7 +90,7 @@ class AuthService {
       return user;
     } catch (e) {
       rethrow;
-    }
+    } 
   }
 
   Future<firebase_auth.User?> googleSignUp({
