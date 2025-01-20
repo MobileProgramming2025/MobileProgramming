@@ -17,14 +17,14 @@ class ViewCoursesScreen extends ConsumerStatefulWidget {
 
 class _ViewCoursesScreenState extends ConsumerState<ViewCoursesScreen> {
   final DepartmentService departmentService = DepartmentService();
-  late Stream<List<Map<String, dynamic>>> _departmentsStream;
+  // late Stream<List<Map<String, dynamic>>> _departmentsStream;
   late String userId;
 
   @override
   void initState() {
     super.initState();
     // Initializing the stream to get department data in real time
-    _departmentsStream = departmentService.getAllDepartments();
+    // _departmentsStream = departmentService.getAllDepartments();
   }
 
   @override
@@ -56,7 +56,7 @@ class _ViewCoursesScreenState extends ConsumerState<ViewCoursesScreen> {
                 final enrolledCourses = courses[index];
 
                 return InkWell(
-                  onTap: () {
+                  onTap: () { 
                     Navigator.push(
                         context,
                         MaterialPageRoute(

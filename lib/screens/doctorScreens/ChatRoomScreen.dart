@@ -33,11 +33,28 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       };
 
       try {
-        await _firestore
-            .collection('chats')
-            .doc(getChatId())
-            .collection('messages')
-            .add(newMessage);
+        final chatId = getChatId();
+
+        // Save message in messages collection
+        await _firestore.collection('chats').doc(chatId).collection('messages').add(newMessage);
+
+        // Update the conversation metadata for both users
+       final lastMessageData = {
+  'lastMessage': messageText,
+  'timestamp': FieldValue.serverTimestamp(),
+  'chatUserId': widget.chatUserId,
+  'chatUserName': widget.chatUserName,
+  'receiverName': widget.currentUserId, 
+};
+
+await _firestore.collection('users').doc(widget.currentUserId).collection('conversations').doc(widget.chatUserId).set(lastMessageData);
+await _firestore.collection('users').doc(widget.chatUserId).collection('conversations').doc(widget.currentUserId).set({
+  ...lastMessageData,
+  'chatUserId': widget.currentUserId,
+  'chatUserName': widget.chatUserName,
+  'receiverName': widget.chatUserName, 
+});
+
         _messageController.clear();
       } catch (error) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -63,20 +80,21 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         .orderBy('timestamp')
         .snapshots()
         .map((snapshot) =>
-            snapshot.docs.map((doc) => doc.data()).toList());
+            snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList());
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chat with ${widget.chatUserName}'),
-      ),
+  title: Text('Chat'),
+),
+
       body: Column(
         children: [
           // List of messages fetched from Firestore
           Expanded(
-            child: StreamBuilder<List<Map<String, dynamic>>>( 
+            child: StreamBuilder<List<Map<String, dynamic>>>(
               stream: _getMessages(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
@@ -99,7 +117,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                         decoration: BoxDecoration(
                           color: isMe
                               ? Colors.blue[200]
-                              : const Color.fromARGB(255, 134, 14, 14),
+                              : Colors.grey[300],
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Text(

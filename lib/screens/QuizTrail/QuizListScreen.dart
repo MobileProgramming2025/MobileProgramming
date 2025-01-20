@@ -25,7 +25,8 @@ class QuizListScreen extends StatelessWidget {
         title: const Text('Quizzes'),
       ),
       body: FutureBuilder<List<Quiz>>(
-        future: _quizService.getQuizzesByUser(user.uid), // Fetch quizzes for the logged-in user
+        // Use the courseId to fetch quizzes related to that course
+        future: _quizService.fetchQuizzesByCourseId(courseId), 
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());

@@ -51,9 +51,6 @@ class _AdvisingScreenState extends State<AdvisingScreen> {
       if(user != null){
       departmentId= user.departmentId ?? "";
       studentYear = user.year??"";
-
-      print(departmentId);
-      print(studentYear);
       final courses = await _courseService
           .getCoursesByDepartmentId(departmentId)
           .first; // Get the data once

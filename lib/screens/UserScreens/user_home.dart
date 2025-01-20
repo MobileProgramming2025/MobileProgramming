@@ -204,16 +204,11 @@ class _UserHomeState extends ConsumerState<UserHome> {
                                     size: 50,
                                   ),
                                   SizedBox(height: 8),
-                                  Text(
-                                    enrolledCourses['name'],
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium!
-                                        .copyWith(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary),
-                                  ),
+                                  Text(enrolledCourses['name'],
+                                      style: TextStyle(
+                                          color: Theme.of(context).primaryColor,
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.bold)),
                                   Text(
                                       'Course Code: ${enrolledCourses['code']}',
                                       style: Theme.of(context)
@@ -283,16 +278,11 @@ class _UserHomeState extends ConsumerState<UserHome> {
                               size: 50,
                             ),
                             SizedBox(height: 8),
-                            Text(
-                              course.name,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium!
-                                  .copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .primary),
-                            ),
+                            Text(course.name,
+                                style: TextStyle(
+                                    color: Theme.of(context).primaryColor,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold)),
                             Text('Course Code: ${course.code}',
                                 style: Theme.of(context).textTheme.bodyMedium),
                           ],
@@ -324,48 +314,3 @@ class _UserHomeState extends ConsumerState<UserHome> {
     );
   }
 }
-
-// class ProgressCard extends StatelessWidget {
-//   final String title;
-//   final double progress;
-//   final Color color;
-
-//   const ProgressCard({
-//     super.key,
-//     required this.title,
-//     required this.progress,
-//     required this.color,
-//   });
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Card(
-//       color: color,
-//       elevation: 6,
-//       shape: RoundedRectangleBorder(
-//         borderRadius: BorderRadius.circular(16),
-//       ),
-//       child: Column(
-//         mainAxisAlignment: MainAxisAlignment.center,
-//         children: [
-//           Text(
-//             title,
-//             textAlign: TextAlign.center,
-//             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-//           ),
-//           SizedBox(height: 10),
-//           LinearProgressIndicator(
-//             value: progress / 100,
-//             color: Colors.blueAccent,
-//             backgroundColor: Colors.grey[300],
-//           ),
-//           SizedBox(height: 10),
-//           Text(
-//             "${progress.toInt()}%",
-//             style: TextStyle(fontWeight: FontWeight.bold),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }

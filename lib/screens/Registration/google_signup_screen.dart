@@ -64,6 +64,7 @@ class _GoogleSignUpScreenState extends State<GoogleSignUpScreen> {
         email: '',
         password: '',
         role: _selectedRole!,
+        year: '1',
         departmentId: _selectedDepartment,
         takenCourses: [],
         enrolledCourses: [],
@@ -205,16 +206,7 @@ class _GoogleSignUpScreenState extends State<GoogleSignUpScreen> {
                 children: [
                   getRoleDropDown(),
                   SizedBox(height: 16),
-                  if (_selectedRole == "Doctor" ||
-                      _selectedRole == "Teaching Assistant") ...[
-                    getDepartmentDropdown(),
-                    SizedBox(height: 16),
-                  ],
-                  if (_selectedRole == "Student") ...[
-                    getDepartmentDropdown(),
-                    SizedBox(height: 16),
-                    getYearDropDown(),
-                  ],
+                  getDepartmentDropdown(),
                   SizedBox(height: 20),
                   Center(
                     child: ElevatedButton(
