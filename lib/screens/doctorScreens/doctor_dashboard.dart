@@ -152,7 +152,6 @@ class _DoctorDashboardState extends ConsumerState<DoctorDashboard> {
                     
                     Container(
                       child: instructorCourseStream.when(
-                        // Loading state
                         data: (courses) {
                           if (courses.isEmpty) {
                             return const Center(
@@ -164,7 +163,7 @@ class _DoctorDashboardState extends ConsumerState<DoctorDashboard> {
                           return GridView.builder(
                             gridDelegate:
                                 SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
+                              crossAxisCount: 3,
                               crossAxisSpacing: 16,
                               mainAxisSpacing: 16,
                             ),
