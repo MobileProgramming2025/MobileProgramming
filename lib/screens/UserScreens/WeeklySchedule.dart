@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart'; 
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
 Future<Map<String, List<Map<String, dynamic>>>> fetchSchedule(String userId) async {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
@@ -85,10 +87,8 @@ Future<Map<String, List<Map<String, dynamic>>>> fetchSchedule(String userId) asy
 
 class WeeklySchedule extends StatefulWidget {
   final String userId;
-  final User user;
 
-
-  WeeklySchedule({super.key, required this.userId, required this.user});
+  WeeklySchedule({required this.userId});
 
   @override
   _WeeklyScheduleState createState() => _WeeklyScheduleState();
@@ -112,7 +112,6 @@ class _WeeklyScheduleState extends State<WeeklySchedule> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Weekly Schedule')),
-      drawer: UserDrawerScreen(user: widget.user),
       body: FutureBuilder<Map<String, List<Map<String, dynamic>>>>(
         future: _schedule,
         builder: (context, snapshot) {
