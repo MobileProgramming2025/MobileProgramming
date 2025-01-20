@@ -154,7 +154,7 @@ class _AdvisingScreenState extends State<AdvisingScreen> {
           "Advising",
         ),
       ),
-      drawer: UserDrawer(user: widget.user),
+      drawer: UserDrawerScreen(user: widget.user),
       body: isLoading
           ? const Center(
               child: CircularProgressIndicator(),

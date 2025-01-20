@@ -40,7 +40,7 @@ class _UserHomeState extends State<UserHome> {
           onPressed: () => _scaffoldKey.currentState?.openDrawer(),
         ),
       ),
-      drawer: UserDrawer(user: widget.user),
+      drawer: UserDrawerScreen(user: widget.user),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: StreamBuilder<List<Map<String, dynamic>>>(

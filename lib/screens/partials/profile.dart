@@ -137,7 +137,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         drawer: widget.user.role == 'admin'
             ? AdminDrawer(user: widget.user)
-            : UserDrawer(user: widget.user),
+            : UserDrawerScreen(user: widget.user),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16.0),

@@ -60,7 +60,7 @@ class _AddEditAssignmentScreenState extends State<AddEditAssignmentScreen> {
       _dueTime!.hour,
       _dueTime!.minute,
     );
- if (dueDateTime.isBefore(DateTime.now())) {
+    if (dueDateTime.isBefore(DateTime.now())) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Due date and time cannot be in the past.')),
       );
@@ -71,7 +71,7 @@ class _AddEditAssignmentScreenState extends State<AddEditAssignmentScreen> {
       if (user == null) {
         throw Exception('User not logged in');
       }
-final duplicateCheck = await FirebaseFirestore.instance
+      final duplicateCheck = await FirebaseFirestore.instance
           .collection('assignments')
           .where('title', isEqualTo: _title)
           .where('courseId', isEqualTo: widget.courseId)
@@ -86,7 +86,7 @@ final duplicateCheck = await FirebaseFirestore.instance
 
       if (widget.assignmentId == null) {
         // Create a new assignment
-        await FirebaseFirestore.instance.collection('assignments').add({
+        final assignmentRef = await FirebaseFirestore.instance.collection('assignments').add({
           'courseId': widget.courseId,
           'title': _title,
           'description': _description,
@@ -94,6 +94,10 @@ final duplicateCheck = await FirebaseFirestore.instance
           'createdBy': user.uid,
           'createdAt': FieldValue.serverTimestamp(),
         });
+
+        // Create notification
+       await createNotificationsForCourse(widget.courseId, _title, 'A new assignment is added', user.uid);
+
         await widget.onAssignmentAdded(); // Trigger the callback
       } else {
         // Update an existing assignment
@@ -105,8 +109,13 @@ final duplicateCheck = await FirebaseFirestore.instance
           'description': _description,
           'dueDateTime': dueDateTime,
           'updatedBy': user.uid,
+          
           'updatedAt': FieldValue.serverTimestamp(),
         });
+
+        // Create notification for update
+       await createNotificationsForCourse(widget.courseId, _title, 'A new assignment is updated', user.uid);
+
         await widget.onAssignmentUpdated(); // Trigger the callback
       }
 
@@ -118,6 +127,50 @@ final duplicateCheck = await FirebaseFirestore.instance
       );
     }
   }
+
+Future<void> createNotificationsForCourse(String courseId, String assignmentTitle, String message, String createdBy) async {
+  final currentTime = Timestamp.now();
+  final expiryTime = Timestamp.fromDate(DateTime.now().add(Duration(days: 7)));
+
+  // Fetch the course document to get the course code
+  final courseDoc = await FirebaseFirestore.instance.collection('Courses').doc(courseId).get();
+  if (!courseDoc.exists) {
+    print('Course not found for courseId: $courseId');
+    return; // Exit if course doesn't exist
+  }
+  final courseCode = courseDoc.data()?['code']; // Get the course code from the document
+
+  if (courseCode == null) {
+    print('Course code is missing in the course document.');
+    return;
+  }
+
+  // Fetch all users enrolled in the course
+  final studentsSnapshot = await FirebaseFirestore.instance
+    .collection('users')
+    .where('role', isEqualTo: 'Student')
+    .get();
+
+final students = studentsSnapshot.docs.where((doc) {
+  final enrolledCourses = doc.data()['enrolled_courses'] as List<dynamic>;
+  return enrolledCourses.any((course) => course['code'] == courseCode);
+}).toList();
+
+print('Found ${students.length} students enrolled in course with code $courseCode.');
+
+for (var student in students) {
+  print('Creating notification for student ID: ${student.id}');
+  await FirebaseFirestore.instance.collection('notifications').add({
+    'userId': student.id,  // Student ID
+    'title': assignmentTitle,
+    'message': message,
+    'createdBy': createdBy,  // Doctor ID or name
+    'createdAt': currentTime,
+    'expiresAt': expiryTime,
+  });
+  print('Notification created for student ID: ${student.id}');
+}
+}
 
   Future<void> _pickDate() async {
     final pickedDate = await showDatePicker(
