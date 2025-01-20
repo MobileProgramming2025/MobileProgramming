@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AddLectureScreen extends StatefulWidget {
@@ -19,19 +20,36 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
   String? uploadedFileUrl;
 
   Future<void> pickFileAndUpload() async {
+    // Request storage permission
+    // final storageStatus = await Permission.storage.request();
+
+    // if (!storageStatus.isGranted) {
+    //   if (!mounted) return;
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     SnackBar(
+    //       content: Text('Storage permission is required to upload files.'),
+    //     ),
+    //   );
+    //   return;
+    // }
+
+    // If permission is granted, proceed with file picking
     final result = await FilePicker.platform.pickFiles();
     if (result != null) {
+      print(result.files);
       final file = result.files.first;
 
       try {
         if(file.bytes == null) {
+          print("File data is empty!");
           throw Exception('File data is empty');
         }
 
         // Write bytes to a temporary file
-        final tempDir = await getTemporaryDirectory();
-        final tempFile = File('${tempDir.path}/${file.name}');
-        await tempFile.writeAsBytes(file.bytes!);
+        // final tempDir = await getTemporaryDirectory();
+        // final tempFile = File('${tempDir.path}/${file.name}');
+        final tempFile = File(file.path!);
+        // await tempFile.writeAsBytes(file.bytes!);
 
         // Upload file to Supabase
         final path = await Supabase.instance.client.storage
@@ -60,7 +78,7 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'File upload failed'
+              'File upload failed: ${e.toString()}'
             ),
           )
         );
