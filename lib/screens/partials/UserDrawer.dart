@@ -13,6 +13,7 @@ import 'package:mobileprogramming/screens/partials/profile.dart';
 import 'package:mobileprogramming/screens/UserScreens/notifications_screen.dart'; // New screen for notifications
 import 'package:mobileprogramming/services/user_service.dart';
 import 'package:mobileprogramming/screens/UserScreens/WeeklySchedule.dart';
+
 class UserDrawerScreen extends StatefulWidget {
   final User user;
 
@@ -43,8 +44,10 @@ class _UserDrawerScreenState extends State<UserDrawerScreen> {
     final userId = widget.user.id;
     _notificationsSubscription = FirebaseFirestore.instance
         .collection('notifications')
-        .where('userId', isEqualTo: userId)  // Filter by user ID
-        .where('createdAt', isGreaterThan: Timestamp.fromMillisecondsSinceEpoch(0)) // To ensure we get all notifications initially
+        .where('userId', isEqualTo: userId) // Filter by user ID
+        .where('createdAt',
+            isGreaterThan: Timestamp.fromMillisecondsSinceEpoch(
+                0)) // To ensure we get all notifications initially
         .snapshots()
         .listen((snapshot) {
       if (snapshot.docs.isNotEmpty) {
@@ -59,7 +62,7 @@ class _UserDrawerScreenState extends State<UserDrawerScreen> {
     _userService.logout(context);
   }
 
- @override
+  @override
   Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
@@ -84,7 +87,7 @@ class _UserDrawerScreenState extends State<UserDrawerScreen> {
               );
             },
           ),
-                    ListTile(
+          ListTile(
             leading: Icon(Icons.assignment_outlined),
             title: Text('My Courses'),
             onTap: () {
@@ -127,12 +130,13 @@ class _UserDrawerScreenState extends State<UserDrawerScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => StudentAssignmentListScreen(user: widget.user),
+                  builder: (context) =>
+                      StudentAssignmentListScreen(user: widget.user),
                 ),
               );
             },
           ),
-                    ListTile(
+          ListTile(
             leading: Icon(Icons.list_alt_rounded),
             title: Text('To-Do List'),
             onTap: () {
@@ -143,31 +147,21 @@ class _UserDrawerScreenState extends State<UserDrawerScreen> {
                 ),
               );
             },
-          ),ListTile(
-  leading: Icon(Icons.calendar_today),
-  title: Text('Dynamic Schedule'),
-  onTap: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => DynamicScheduleScreen(userId: widget.user.id),
-      ),
-    );
-  },
-),
-           ListTile(
+          ),
+          ListTile(
             leading: Icon(Icons.calendar_today),
             title: Text('Weekly Schedule'),
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => WeeklySchedule(userId: widget.user.id),
+                  builder: (context) =>
+                      WeeklySchedule(userId: widget.user.id, user: widget.user),
                 ),
               );
             },
           ),
-      ListTile(
+          ListTile(
             leading: Stack(
               children: [
                 Icon(Icons.notifications),
@@ -181,13 +175,13 @@ class _UserDrawerScreenState extends State<UserDrawerScreen> {
                   ),
               ],
             ),
-          
             title: Text('Notifications'),
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => NotificationScreen(userId: widget.user.id),
+                  builder: (context) =>
+                      NotificationScreen(user:widget.user,userId: widget.user.id),
                 ),
               );
               setState(() {
@@ -195,7 +189,6 @@ class _UserDrawerScreenState extends State<UserDrawerScreen> {
               });
             },
           ),
-          
           ListTile(
             leading: Icon(Icons.logout),
             title: Text('Logout'),
@@ -203,10 +196,8 @@ class _UserDrawerScreenState extends State<UserDrawerScreen> {
               _logout(context);
             },
           ),
-          
         ],
       ),
     );
   }
 }
-

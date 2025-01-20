@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mobileprogramming/models/user.dart';
+import 'package:mobileprogramming/screens/partials/UserDrawer.dart';
 
 class NotificationScreen extends StatelessWidget {
   final String userId;
+  final User user;
+  
 
-  NotificationScreen({required this.userId});
+  NotificationScreen({super.key, required this.user,required this.userId});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Notifications')),
+      drawer: UserDrawerScreen(user: user),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('notifications')

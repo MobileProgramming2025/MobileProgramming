@@ -202,10 +202,16 @@ class _UserHomeState extends ConsumerState<UserHome> {
                                     size: 50,
                                   ),
                                   SizedBox(height: 8),
-                                  Text(enrolledCourses['name'],
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleSmall),
+                                  Text(
+                                    enrolledCourses['name'],
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium!
+                                        .copyWith(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary),
+                                  ),
                                   Text(enrolledCourses['code'],
                                       style: Theme.of(context)
                                           .textTheme
@@ -274,8 +280,16 @@ class _UserHomeState extends ConsumerState<UserHome> {
                               size: 50,
                             ),
                             SizedBox(height: 8),
-                            Text(course.name,
-                                style: Theme.of(context).textTheme.titleSmall),
+                            Text(
+                              course.name,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium!
+                                  .copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primary),
+                            ),
                             Text(course.code,
                                 style: Theme.of(context).textTheme.bodyMedium),
                           ],
