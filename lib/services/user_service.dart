@@ -8,7 +8,7 @@ import 'package:mobileprogramming/services/auth_service.dart';
 class UserService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final CourseService _courseService = CourseService();
- 
+
   // Save user to firestore
   Future<void> saveUser(User user) async {
     try {
@@ -150,8 +150,6 @@ class UserService {
       var enrolledCourses = user['enrolled_courses'] as List<dynamic>;
       takenCourses.addAll(enrolledCourses);
       if (user['role'] == 'Student') {
-        print("yessssssssss");
-
         await _firestore.collection('users').doc(user['id']).update({
           'enrolled_courses': [],
           'taken_courses': takenCourses,

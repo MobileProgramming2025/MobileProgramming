@@ -41,15 +41,14 @@ class _AdvisingScreenState extends State<AdvisingScreen> {
   @override
   void initState() {
     super.initState();
+    departmentId = widget.user.departmentId!;
+    studentYear = widget.user.year!;
     _checkEnrollmentStatus();
     _loadCourses();
   }
 
   Future<void> _loadCourses() async {
     try {
-      final user = await _userService.getUserByID(widget.user.id).first;
-      if(user != null){
-      departmentId= user.departmentId ?? "";
       final courses = await _courseService
           .getCoursesByDepartmentId(departmentId)
           .first; // Get the data once
@@ -67,12 +66,11 @@ class _AdvisingScreenState extends State<AdvisingScreen> {
           });
         }
       }
-      
+
       setState(() {
         coursesList = filteredCoursesList;
         isLoading = false;
       });
-      }
     } catch (e) {
       setState(() {
         isLoading = false;
@@ -89,9 +87,7 @@ class _AdvisingScreenState extends State<AdvisingScreen> {
     try {
       if (selectedCourses.length < 5) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text('You have to select 5 courses',
-                  style: Theme.of(context).textTheme.bodyLarge)),
+           SnackBar(content: Text('You have to select 5 courses',style: Theme.of(context).textTheme.bodyLarge)),
         );
       } else {
         for (var selectedCourseId in selectedCourses) {
@@ -175,6 +171,8 @@ class _AdvisingScreenState extends State<AdvisingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    departmentId = widget.user.departmentId!;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -182,7 +180,11 @@ class _AdvisingScreenState extends State<AdvisingScreen> {
         ),
       ),
       drawer: UserDrawerScreen(user: widget.user),
-      body: coursesList.isEmpty
+      body: isLoading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : coursesList.isEmpty
               ? Center(
                   child: Text("No courses available",
                       style: Theme.of(context).textTheme.bodyLarge),
