@@ -13,26 +13,38 @@ class ListUsersScreen extends StatefulWidget {
 
 class _ListUsersScreenState extends State<ListUsersScreen> {
   late Future<List<User>> _futureUsers;
+  late List<Map<String, dynamic>> users;
   final UserService _userService = UserService();
-
-  void _enroll() async {
-    try {
-      // _userService.enrollStudent();
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Students are enrolled Sucessfully!')),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to enroll students: $e')),
-      );
-    }
-  }
 
   @override
   void initState() {
     super.initState();
     _futureUsers = _userService.getAllUsers();
+  }
+
+  void _startAdvising() async {
+    try {
+// Await the future and map User objects to Map<String, dynamic>
+      final userList = await _futureUsers;
+      final userMaps = userList
+          .map((user) => {
+                'id': user.id,
+                'taken_courses': user.takenCourses,
+                'enrolled_courses': user.enrolledCourses,
+              })
+          .toList();
+
+      // Call startAdvising with the mapped user data
+      await _userService.startAdvising(userMaps);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Advising Started!')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to start advising: $e')),
+      );
+    }
   }
 
   @override
@@ -42,7 +54,6 @@ class _ListUsersScreenState extends State<ListUsersScreen> {
         title: const Text('User List'),
       ),
       drawer: AdminDrawer(user: widget.admin),
-
       body: FutureBuilder(
         future: _futureUsers,
         builder: (BuildContext context, AsyncSnapshot<List<User>> snapshot) {
@@ -89,13 +100,13 @@ class _ListUsersScreenState extends State<ListUsersScreen> {
           );
         },
       ),
-      // floatingActionButton: ElevatedButton(
-      //   onPressed: _enroll,
-      //   child: Text(
-      //     'Enroll Students To Courses',
-      //     style: TextStyle(fontSize: 20),
-      //   ),
-      // ),
+      floatingActionButton: ElevatedButton(
+        onPressed: _startAdvising,
+        child: Text(
+          'Start Advising...',
+          style: TextStyle(fontSize: 16),
+        ),
+      ),
     );
   }
 }

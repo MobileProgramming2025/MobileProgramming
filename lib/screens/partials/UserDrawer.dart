@@ -3,7 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mobileprogramming/models/user.dart';
+import 'package:mobileprogramming/screens/UserScreens/view_courses_screen.dart';
 import 'package:mobileprogramming/screens/AssignmentScreens/student_assignment_list.dart';
+import 'package:mobileprogramming/screens/UserScreens/ToDoPage.dart';
+import 'package:mobileprogramming/screens/UserScreens/advising_screen.dart';
 import 'package:mobileprogramming/screens/UserScreens/user_home.dart';
 import 'package:mobileprogramming/screens/partials/profile.dart';
 import 'package:mobileprogramming/screens/UserScreens/notifications_screen.dart'; // New screen for notifications
@@ -80,6 +83,30 @@ class _UserDrawerScreenState extends State<UserDrawerScreen> {
               );
             },
           ),
+                    ListTile(
+            leading: Icon(Icons.assignment_outlined),
+            title: Text('My Courses'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ViewCoursesScreen(user: widget.user),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.collections_bookmark_outlined),
+            title: Text('Advising'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AdvisingScreen(user: widget.user),
+                ),
+              );
+            },
+          ),
           ListTile(
             leading: Icon(Icons.person),
             title: Text('Profile'),
@@ -100,6 +127,18 @@ class _UserDrawerScreenState extends State<UserDrawerScreen> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => StudentAssignmentListScreen(user: widget.user),
+                ),
+              );
+            },
+          ),
+                    ListTile(
+            leading: Icon(Icons.timer_outlined),
+            title: Text('Time Management'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ToDoPage(user: widget.user),
                 ),
               );
             },
