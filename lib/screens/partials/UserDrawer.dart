@@ -132,8 +132,8 @@ class _UserDrawerScreenState extends State<UserDrawerScreen> {
             },
           ),
                     ListTile(
-            leading: Icon(Icons.timer_outlined),
-            title: Text('Time Management'),
+            leading: Icon(Icons.list_alt_rounded),
+            title: Text('To-Do List'),
             onTap: () {
               Navigator.push(
                 context,

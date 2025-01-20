@@ -88,7 +88,8 @@ class CourseService {
     }
   }
 
-  Stream<List<Map<String, dynamic>>> fetchEnrolledCoursesByUserId(String userId) {
+  Stream<List<Map<String, dynamic>>> fetchEnrolledCoursesByUserId(
+      String userId) {
     return FirebaseFirestore.instance
         .collection('users')
         .doc(userId)
@@ -150,9 +151,11 @@ class CourseService {
   }
 
   Future<bool> isEnrolledCoursesEmpty(String userId) async {
-    final Stream<List<Map<String, dynamic>>> enrolledCoursesStream = fetchEnrolledCoursesByUserId(userId);
+    final Stream<List<Map<String, dynamic>>> enrolledCoursesStream =
+        fetchEnrolledCoursesByUserId(userId);
     // Wait for the data from the Stream to be available
-    final List<Map<String, dynamic>> enrolledCourses = await enrolledCoursesStream.first;
+    final List<Map<String, dynamic>> enrolledCourses =
+        await enrolledCoursesStream.first;
     bool isEmpty = enrolledCourses.isEmpty; // Store the result in a variable
     return isEmpty; // Return the stored value
   }
@@ -171,4 +174,26 @@ class CourseService {
     }
   }
 
+  Future<void> removeCourseFromUser(String userId, String courseId) async {
+    try {
+      // Retrieve the user by ID
+      final userDocRef = _firestore
+          .collection('users')
+          .doc(userId); // Reference to the user's document
+      bool isEnrolledEmpty = await isEnrolledCoursesEmpty(userId);
+
+      if (!isEnrolledEmpty) {
+        final enrolledCourses = await fetchEnrolledCoursesByUserId(userId).first;
+        enrolledCourses.removeWhere((course) => course['id'] == courseId);
+
+        // // Update the user's document with the new enrolled_courses list
+        await userDocRef.update({'enrolled_courses': enrolledCourses});
+      } else {
+        throw Exception('This User doesn\' have any erolled courses');
+      }
+    } catch (e) {
+      // Error handling
+      throw Exception('Failed to remove course: $e');
+    }
+  }
 }
