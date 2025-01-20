@@ -29,20 +29,20 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
         });
       } catch (error) {
         print('Error uploading file: $error');
-        // Handle error appropriately, e.g., show a snackbar to the user
       }
     }
   }
 
   Future<String> uploadFileToSupabase(String fileName, File file) async {
     try {
-      final response = await Supabase.instance.client.storage
-          .from('lecture-files') // Replace 'lecture-files' with your bucket name
+      final filePath = await Supabase.instance.client.storage
+          .from('lecture-files') // Bucket name 'lecture-files'
           .upload(fileName, file);
 
-      // if (response.error != null) {
-      //   throw Exception(response.error!.message);
-      // }
+      // If the upload fails, `filePath` will be null or empty
+      if (filePath.isEmpty) {
+        throw Exception('File upload failed.');
+      }
 
       final imageUrl = Supabase.instance.client.storage
           .from('lecture-files')
@@ -71,6 +71,7 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
                 labelText: 'Title'
               ),
             ),
+            SizedBox(height: 10),
             TextFormField(
               controller: descriptionController,
               decoration: InputDecoration(
