@@ -66,7 +66,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Color.fromARGB(255, 248, 128, 18),
+              Color.fromARGB(255, 245, 241, 236),
               Color.fromARGB(255, 242, 191, 144)
             ],
             begin: Alignment.topLeft,
