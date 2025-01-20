@@ -131,6 +131,7 @@ class _UserDrawerScreenState extends State<UserDrawerScreen> {
               });
             },
           ),
+          
           ListTile(
             leading: Icon(Icons.logout),
             title: Text('Logout'),
@@ -138,6 +139,7 @@ class _UserDrawerScreenState extends State<UserDrawerScreen> {
               _logout(context);
             },
           ),
+          
         ],
       ),
     );
