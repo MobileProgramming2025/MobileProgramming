@@ -286,7 +286,7 @@ class _DoctorDashboardState extends ConsumerState<DoctorDashboard> {
                                   ),
                                   SizedBox(height: 8),
                                   Text(
-                                    course.name,
+                                    course.name, 
                                     style: Theme.of(context)
                                         .textTheme
                                         .titleMedium!
