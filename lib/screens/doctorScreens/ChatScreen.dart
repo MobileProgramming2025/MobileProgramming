@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/screens/doctorScreens/ChatRoomScreen.dart';
-import 'package:mobileprogramming/models/user.dart';
 import 'package:mobileprogramming/services/user_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ChatScreen extends StatefulWidget {
   final String userId;
@@ -15,7 +15,6 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _emailController = TextEditingController();
   bool _isSearching = false;
-  User? _chatUser;
   String? _errorMessage;
 
   final UserService _userService = UserService();  // Assuming you have a service to fetch users
@@ -31,9 +30,18 @@ class _ChatScreenState extends State<ChatScreen> {
       final user = await _userService.fetchUserByEmail(_emailController.text);
       if (user != null) {
         setState(() {
-          _chatUser = user;
           _isSearching = false;
         });
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ChatRoomScreen(
+              currentUserId: widget.userId,
+              chatUserId: user.id,
+              chatUserName: user.name,
+            ),
+          ),
+        );
       } else {
         setState(() {
           _isSearching = false;
@@ -46,6 +54,18 @@ class _ChatScreenState extends State<ChatScreen> {
         _errorMessage = "Error fetching user: $error";
       });
     }
+  }
+
+  // Method to fetch conversations for the current user
+  Stream<List<Map<String, dynamic>>> _getConversations() {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.userId)
+        .collection('conversations')
+        .orderBy('timestamp', descending: true)
+        .snapshots()
+        .map((snapshot) =>
+            snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList());
   }
 
   @override
@@ -74,28 +94,47 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
             ),
             const SizedBox(height: 20),
-            // Show user details if found
-            if (_chatUser != null) ...[
-              Text('User Found: ${_chatUser!.name}'),
-              const SizedBox(height: 10),
-              ElevatedButton(
-                onPressed: () {
-                  // Navigate to chat room
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ChatRoomScreen(
-                        currentUserId: widget.userId,
-                        chatUserId: _chatUser!.id,
-                        chatUserName: _chatUser!.name,
-                      ),
-                    ),
+            // Display list of conversations
+            Expanded(
+              child: StreamBuilder<List<Map<String, dynamic>>>(
+                stream: _getConversations(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  final conversations = snapshot.data!;
+                  return ListView.builder(
+                    itemCount: conversations.length,
+                    itemBuilder: (context, index) {
+                      final conversation = conversations[index];
+                      final lastMessage = conversation['lastMessage'];
+                      final chatUserName = conversation['chatUserName'];
+                      final chatUserId = conversation['chatUserId'];
+
+                      return ListTile(
+                        title: Text(chatUserName),
+                        subtitle: Text(lastMessage),
+                        onTap: () {
+                          // Navigate to chat room
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ChatRoomScreen(
+                                currentUserId: widget.userId,
+                                chatUserId: chatUserId,
+                                chatUserName: chatUserName,
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
                   );
                 },
-                child: const Text('Start Chat'),
               ),
-            ],
-            // Display error if no user is found
+            ),
+            // Display error if no conversations found
             if (_errorMessage != null) ...[
               const SizedBox(height: 10),
               Text(
