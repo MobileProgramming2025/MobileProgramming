@@ -1,8 +1,11 @@
+// import 'dart:io';
+
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
+// import 'package:path_provider/path_provider.dart';
+// import 'package:permission_handler/permission_handler.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AddLectureScreen extends StatefulWidget {
@@ -21,22 +24,19 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
   Future<void> pickFileAndUpload() async {
     final result = await FilePicker.platform.pickFiles();
     if (result != null) {
+      print(result.files);
       final file = result.files.first;
 
       try {
-        if(file.bytes == null) {
+        if (file.bytes == null) {
+          print("File data is empty!");
           throw Exception('File data is empty');
         }
 
-        // Write bytes to a temporary file
-        final tempDir = await getTemporaryDirectory();
-        final tempFile = File('${tempDir.path}/${file.name}');
-        await tempFile.writeAsBytes(file.bytes!);
-
-        // Upload file to Supabase
+        // Upload file to Supabase with bytes
         final path = await Supabase.instance.client.storage
             .from('lecture-files')
-            .upload(file.name, tempFile);
+            .upload(file.name, file.bytes! as File);
 
         // Get the file's public URL
         final publicUrl = Supabase.instance.client.storage
@@ -50,19 +50,15 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-              'File uploaded Successfully!'
-            ),
-          )
+            content: Text('File uploaded successfully!'),
+          ),
         );
       } catch (e) {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-              'File upload failed'
-            ),
-          )
+            content: Text('File upload failed: ${e.toString()}'),
+          ),
         );
       }
     }
