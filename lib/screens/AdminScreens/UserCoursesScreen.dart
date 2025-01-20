@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobileprogramming/models/user.dart';
 import 'package:mobileprogramming/providers/courses_provider.dart';
-import 'package:mobileprogramming/screens/partials/UserBottomNavigationBar.dart';
 import 'package:mobileprogramming/screens/partials/adminDrawer.dart';
-import 'package:mobileprogramming/services/DepartmentService.dart';
+import 'package:mobileprogramming/services/CourseService.dart';
 
 class UserCoursesScreen extends ConsumerStatefulWidget {
   final User user;
@@ -15,13 +14,26 @@ class UserCoursesScreen extends ConsumerStatefulWidget {
 }
 
 class _ViewCoursesScreenState extends ConsumerState<UserCoursesScreen> {
-  final DepartmentService departmentService = DepartmentService();
+  // final DepartmentService departmentService = DepartmentService();
   // late Stream<List<Map<String, dynamic>>> _departmentsStream;
+  final CourseService _courseService = CourseService();
+
   late String userId;
 
-
-  void _removeCourse(){
-
+  void _removeCourse(String enrolledCourseId)async {
+   try {
+    final userId = widget.user.id; // Retrieve the user ID from the widget
+    await _courseService.removeCourseFromUser(userId, enrolledCourseId); // Remove the course
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Course removed successfully!')),
+    );
+  } catch (e) {
+    // Handle errors
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Failed to remove course: $e')),
+    );
+  }
   }
 
   @override
@@ -89,7 +101,9 @@ class _ViewCoursesScreenState extends ConsumerState<UserCoursesScreen> {
                             Icons.delete,
                             color: Colors.red,
                           ),
-                          onPressed: _removeCourse,
+                          onPressed: () {
+                            _removeCourse(enrolledCourses['id']);
+                          },
                         ),
                       ],
                     ),

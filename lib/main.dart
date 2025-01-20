@@ -140,8 +140,9 @@ class MyApp extends StatelessWidget {
 
         //SnackBar
           snackBarTheme: SnackBarThemeData(
-            backgroundColor: Colors.grey,
+            backgroundColor: const Color.fromARGB(255, 46, 46, 46),
             actionTextColor: Colors.black,
+            
           ),
           //Text Style
           textTheme: TextTheme(

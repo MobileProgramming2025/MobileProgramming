@@ -253,12 +253,20 @@ class _ListUsersScreenState extends State<ListUsersScreen> {
                     final user = _filteredUsers[index];
                     return InkWell(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => UserCoursesScreen(user: user),
-                          ),
-                        );
+                        if (user.role == "Admin") {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content: Text('This action isn\'t suitable for this user')),
+                          );
+                        } else {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  UserCoursesScreen(user: user),
+                            ),
+                          );
+                        }
                       },
                       child: Card(
                         margin: const EdgeInsets.all(8.0),
