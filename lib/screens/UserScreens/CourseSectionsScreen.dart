@@ -71,7 +71,7 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
         title: Text(widget.courseName),
         centerTitle: true,
       ),
-      drawer:UserDrawer(user: widget.user),
+      drawer:UserDrawerScreen(user: widget.user),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: isLoading
