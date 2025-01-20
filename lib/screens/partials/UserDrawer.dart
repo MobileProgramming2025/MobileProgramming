@@ -11,7 +11,7 @@ import 'package:mobileprogramming/screens/UserScreens/user_home.dart';
 import 'package:mobileprogramming/screens/partials/profile.dart';
 import 'package:mobileprogramming/screens/UserScreens/notifications_screen.dart'; // New screen for notifications
 import 'package:mobileprogramming/services/user_service.dart';
-
+import 'package:mobileprogramming/screens/UserScreens/WeeklySchedule.dart';
 class UserDrawerScreen extends StatefulWidget {
   final User user;
 
@@ -139,6 +139,18 @@ class _UserDrawerScreenState extends State<UserDrawerScreen> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => ToDoPage(user: widget.user),
+                ),
+              );
+            },
+          ),
+           ListTile(
+            leading: Icon(Icons.schedule_send_rounded),
+            title: Text('Weekly Schedule'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => WeeklySchedule(userId: widget.user.id),
                 ),
               );
             },
