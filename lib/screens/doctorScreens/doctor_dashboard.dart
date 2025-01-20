@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/Course.dart';
 import 'package:mobileprogramming/screens/doctorScreens/ChatScreen.dart';
 import 'package:mobileprogramming/screens/partials/DoctorAppBar.dart';
-import 'package:mobileprogramming/screens/partials/DoctorBottomNavigationBar.dart';
 import 'package:mobileprogramming/services/CourseService.dart';
 import 'package:mobileprogramming/models/user.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -123,7 +122,7 @@ class _DoctorDashboardState extends State<DoctorDashboard> {
                             ),
                             defaultTextStyle: TextStyle(
                                 color:
-                                    Theme.of(context).colorScheme.onBackground),
+                                    Theme.of(context).colorScheme.onSurface),
                             weekendTextStyle: TextStyle(color: Colors.red),
                             todayTextStyle: TextStyle(
                               color: const Color.fromARGB(255, 56, 3, 3),
