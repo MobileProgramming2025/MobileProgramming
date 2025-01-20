@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
 import 'package:mobileprogramming/models/assignment_model.dart';
 
@@ -34,4 +35,21 @@ class ApiService {
       throw Exception('Failed to create assignment');
     }
   }
+
+//   Future<List<Map<String, dynamic>>> getAssignmentsByUser(String userId) async {
+//   try {
+//     QuerySnapshot snapshot = await FirebaseFirestore.instance
+//         .collection('assignments')
+//         .where('createdBy', isEqualTo: userId)
+//         .orderBy('dueDateTime') // Sort by deadline
+//         .get();
+
+//     return snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+//   } catch (error) {
+//     throw Exception('Error fetching assignments for user: $error');
+//   }
+// }
+
+
+
 }

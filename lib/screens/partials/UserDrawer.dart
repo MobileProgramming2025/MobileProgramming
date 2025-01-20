@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mobileprogramming/models/user.dart';
+import 'package:mobileprogramming/screens/UserScreens/DynamicScheduleScreen.dart';
 import 'package:mobileprogramming/screens/UserScreens/view_courses_screen.dart';
 import 'package:mobileprogramming/screens/AssignmentScreens/student_assignment_list.dart';
 import 'package:mobileprogramming/screens/UserScreens/ToDoPage.dart';
@@ -142,8 +143,19 @@ class _UserDrawerScreenState extends State<UserDrawerScreen> {
                 ),
               );
             },
-          ),
-          ListTile(
+          ),ListTile(
+  leading: Icon(Icons.calendar_today),
+  title: Text('Dynamic Schedule'),
+  onTap: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DynamicScheduleScreen(userId: widget.user.id),
+      ),
+    );
+  },
+),
+      ListTile(
             leading: Stack(
               children: [
                 Icon(Icons.notifications),
@@ -157,6 +169,7 @@ class _UserDrawerScreenState extends State<UserDrawerScreen> {
                   ),
               ],
             ),
+          
             title: Text('Notifications'),
             onTap: () {
               Navigator.push(
