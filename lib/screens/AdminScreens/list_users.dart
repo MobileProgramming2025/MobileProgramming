@@ -28,12 +28,11 @@ class _ListUsersScreenState extends State<ListUsersScreen> {
     _futureUsers = _userService.getAllUsers();
   }
 
-  void _filterUsers(List<User> users) {
-    // Filter users based on role
+  void _filterAndSortUsers(List<User> users) {
+    // Filter users
     _filteredUsers = users.where((user) {
       return _filterRole == 'All' || user.role == _filterRole;
     }).toList();
-  }
 
     // Sort users
     _filteredUsers.sort((a, b) {
@@ -46,13 +45,6 @@ class _ListUsersScreenState extends State<ListUsersScreen> {
       }
       return 0;
     });
-  }
-
-  void _filterAndSortUsers(List<User> users) {
-    // First filter the users
-    _filterUsers(users);
-    // Then sort the filtered users
-    _sortUsers();
   }
 
   void _deleteUser(int index) {
@@ -182,9 +174,7 @@ class _ListUsersScreenState extends State<ListUsersScreen> {
                   items: const [
                     DropdownMenuItem(
                       value: 'name',
-                      child: Text(
-                        'Sort by Name',
-                      ),
+                      child: Text('Sort by Name'),
                     ),
                     DropdownMenuItem(
                       value: 'email',
@@ -255,10 +245,8 @@ class _ListUsersScreenState extends State<ListUsersScreen> {
                   );
                 }
 
-                // Filter and sort users
                 _filterAndSortUsers(snapshot.data!);
 
-                // final users = snapshot.data!;
                 return ListView.builder(
                   itemCount: _filteredUsers.length,
                   itemBuilder: (context, index) {
