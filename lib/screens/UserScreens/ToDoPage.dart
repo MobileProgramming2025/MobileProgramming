@@ -2,8 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/user.dart';
-import 'package:mobileprogramming/screens/UserScreens/TrelloApi.dart';
-import 'package:mobileprogramming/screens/UserScreens/TrelloCard.dart';
+import 'package:mobileprogramming/services/TrelloApi.dart';
+import 'package:mobileprogramming/models/TrelloCard.dart';
+import 'package:mobileprogramming/screens/partials/UserBottomNavigationBar.dart';
 
 class ToDoPage extends StatefulWidget {
   final User user;
@@ -89,6 +90,8 @@ class _ToDoPageState extends State<ToDoPage> {
           ),
         ],
       ),
+      bottomNavigationBar: UserBottomNavigationBar(user: widget.user),
+
     );
   }
 }

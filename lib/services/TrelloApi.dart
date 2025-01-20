@@ -2,7 +2,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'package:mobileprogramming/screens/UserScreens/TrelloCard.dart';
+import 'package:mobileprogramming/models/TrelloCard.dart';
 
 
 class TrelloApi {

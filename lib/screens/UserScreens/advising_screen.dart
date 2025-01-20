@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/user.dart';
 import 'package:mobileprogramming/screens/UserScreens/view_courses_screen.dart';
+import 'package:mobileprogramming/screens/partials/UserBottomNavigationBar.dart';
 import 'package:mobileprogramming/screens/partials/UserDrawer.dart';
 import 'package:mobileprogramming/services/CourseService.dart';
 import 'package:mobileprogramming/services/user_service.dart';
@@ -90,7 +91,8 @@ class _AdvisingScreenState extends State<AdvisingScreen> {
         );
       } else {
         for (var selectedCourseId in selectedCourses) {
-          await _userService.enrollUserToCourses(widget.user.id, selectedCourseId);
+          await _userService.enrollUserToCourses(
+              widget.user.id, selectedCourseId);
         }
         Navigator.push(
           context,
@@ -199,12 +201,15 @@ class _AdvisingScreenState extends State<AdvisingScreen> {
                           padding: const EdgeInsets.all(16.0),
                           child: ElevatedButton(
                             onPressed: _enroll, // Save selections when clicked
-                            child: Text('Enroll to Courses',
-                                style: Theme.of(context).textTheme.bodyLarge),
+                            child: Text(
+                              'Enroll to Courses',
+                            ),
                           ),
                         ),
                       ],
                     ),
+      bottomNavigationBar: UserBottomNavigationBar(user: widget.user),
+
     );
   }
 }

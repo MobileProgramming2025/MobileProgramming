@@ -120,7 +120,7 @@ class MyApp extends StatelessWidget {
                   .textTheme
                   .bodyLarge!
                   .copyWith(fontWeight: FontWeight.bold),
-            ),
+            ), 
           ),
 
           //Drawer Theme
