@@ -1,9 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/screens/AssignmentScreens/assignment_list_screen.dart';
-// import 'package:mobileprogramming/screens/Assignment/ViewSubmissionsScreen.dart';
-// import 'package:mobileprogramming/screens/Assignment/assignment_list_screen.dart';
-// import 'package:mobileprogramming/screens/AssignmentScreens/doctor-view-submission-screen.dart';
 import 'package:mobileprogramming/screens/QuizTrail/QuizListScreen.dart';
 import 'package:mobileprogramming/screens/QuizTrail/quiz_creation_screen.dart';
 import 'package:mobileprogramming/screens/doctorScreens/add_lecture.dart';
@@ -18,99 +15,81 @@ class CourseDetailScreen extends StatelessWidget {
     final String courseName = arguments['name'];
     final String doctorId = FirebaseAuth.instance.currentUser?.uid ?? '';
 
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Course Details'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Enhanced "Manage Course" Header
-            _buildManageCourseHeader(context, courseName),
-            const SizedBox(height: 16),
+        padding: EdgeInsets.all(screenWidth * 0.04), // Responsive padding
+        child: SingleChildScrollView(  // Ensure scrolling on smaller screens
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Manage Course Header
+              _buildManageCourseHeader(context, courseName),
+              SizedBox(height: screenHeight * 0.02),  // Responsive spacing
 
-            // **Lectures Section**
-            _buildSectionHeader(context, 'Lectures'),
-            _buildButton(
-              context,
-              label: 'Add Lecture',
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AddLectureScreen(),
-                  ),
-                );
-              },
-            ),
-            
-            // **Quizzes Section**
-            _buildSectionHeader(context, 'Quizzes'),
-            _buildButton(
-              context,
-              label: 'Add Quiz',
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => QuizCreationScreen(courseId: courseId),
-                  ),
-                );
-              },
-            ),
-            _buildButton(
-              context,
-              label: 'View All Quizzes',
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => QuizListScreen(courseId: courseId),
-                  ),
-                );
-              },
-            ),
-            
-            // **Assignments Section**
-            _buildSectionHeader(context, 'Assignments'),
-            _buildButton(
-              context,
-              label: 'Add Assignment',
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AssignmentListScreen(courseId: courseId),
-                  ),
-                );
-              },
-            ),
-            //   _buildButton(
-            //   context,
-            //   label: 'View Assignments',
-            //   onPressed: () {
-            //     Navigator.push(
-            //       context,
-            //       MaterialPageRoute(
-            //         builder: (context) => AssignmentListScreen(courseId: courseId),
-            //       ),
-            //     );
-            //   },
-            // ),
-            //   context,
-            //   label: 'View Submissions',
-            //   onPressed: () {
-            //     Navigator.push(
-            //       context,
-            //       MaterialPageRoute(
-            //         builder: (context) => ViewSubmissionsScreen(assignmentId: assignmentId),
-            //       ),
-            //     );
-            //   },
-            // ),
-          ],
+              // Lectures Section
+              _buildSectionHeader(context, 'Lectures'),
+              _buildButton(
+                context,
+                label: 'Add Lecture',
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AddLectureScreen(),
+                    ),
+                  );
+                },
+              ),
+
+              // Quizzes Section
+              _buildSectionHeader(context, 'Quizzes'),
+              _buildButton(
+                context,
+                label: 'Add Quiz',
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => QuizCreationScreen(courseId: courseId),
+                    ),
+                  );
+                },
+              ),
+              _buildButton(
+                context,
+                label: 'View All Quizzes',
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => QuizListScreen(courseId: courseId),
+                    ),
+                  );
+                },
+              ),
+
+              // Assignments Section
+              _buildSectionHeader(context, 'Assignments'),
+              _buildButton(
+                context,
+                label: 'Add Assignment',
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AssignmentListScreen(courseId: courseId),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -129,7 +108,7 @@ class CourseDetailScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Icon(Icons.book, size: 28, color: Theme.of(context).colorScheme.primary), // Icon representation
-            const SizedBox(width: 16),
+            SizedBox(width: 16),
             Expanded(
               child: Text(
                 'Manage Course: $courseName',

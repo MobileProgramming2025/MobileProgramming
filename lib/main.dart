@@ -174,6 +174,10 @@ class MyApp extends StatelessWidget {
               color: colorScheme.onSurface,
               fontWeight: FontWeight.bold,
             ),
+            titleSmall: TextStyle(
+              color: colorScheme.onPrimaryContainer,
+              fontWeight: FontWeight.bold,
+            ),
           ),
 
           //Text Input Field

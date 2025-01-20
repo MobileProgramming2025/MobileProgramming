@@ -193,11 +193,9 @@ class _UserHomeState extends ConsumerState<UserHome> {
                               borderRadius: BorderRadius.circular(16),
                             ),
                             child: Padding(
-                              padding: const EdgeInsets.all(
-                                  8.0), // Add padding for better spacing
+                              padding: const EdgeInsets.all(8),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Icon(
                                     Icons.book,
@@ -205,12 +203,10 @@ class _UserHomeState extends ConsumerState<UserHome> {
                                   ),
                                   SizedBox(height: 8),
                                   Text(enrolledCourses['name'],
-                                      style: TextStyle(
-                                          color: Theme.of(context).primaryColor,
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.bold)),
-                                  Text(
-                                      'Course Code: ${enrolledCourses['code']}',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleSmall),
+                                  Text(enrolledCourses['code'],
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodyMedium),
@@ -279,11 +275,8 @@ class _UserHomeState extends ConsumerState<UserHome> {
                             ),
                             SizedBox(height: 8),
                             Text(course.name,
-                                style: TextStyle(
-                                    color: Theme.of(context).primaryColor,
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.bold)),
-                            Text('Course Code: ${course.code}',
+                                style: Theme.of(context).textTheme.titleSmall),
+                            Text(course.code,
                                 style: Theme.of(context).textTheme.bodyMedium),
                           ],
                         ),
