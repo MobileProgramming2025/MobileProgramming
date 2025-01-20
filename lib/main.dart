@@ -138,6 +138,11 @@ class MyApp extends StatelessWidget {
             elevation: 10,
           ),
 
+        //SnackBar
+          snackBarTheme: SnackBarThemeData(
+            backgroundColor: Colors.grey,
+            actionTextColor: Colors.black,
+          ),
           //Text Style
           textTheme: TextTheme(
             bodyLarge: TextStyle(

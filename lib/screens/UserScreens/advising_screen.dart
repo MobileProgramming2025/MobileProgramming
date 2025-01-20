@@ -87,7 +87,7 @@ class _AdvisingScreenState extends State<AdvisingScreen> {
     try {
       if (selectedCourses.length < 5) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('You have to select 5 courses')),
+           SnackBar(content: Text('You have to select 5 courses',style: Theme.of(context).textTheme.bodyLarge)),
         );
       } else {
         for (var selectedCourseId in selectedCourses) {
@@ -128,7 +128,7 @@ class _AdvisingScreenState extends State<AdvisingScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
                 content: Text('You can select up to 5 courses only.',
-                    style: Theme.of(context).textTheme.bodyMedium)),
+                    style: Theme.of(context).textTheme.bodyLarge)),
           );
         }
       } else {
