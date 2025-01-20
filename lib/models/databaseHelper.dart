@@ -59,4 +59,9 @@ class DatabaseHelper {
     }
     return null;
   }
+
+   Future<void> deleteProfileImagePath() async {
+    final db = await database;
+    await db.update('user', {'profile_image_path': null}, where: 'id = ?', whereArgs: [1]);
+  }
 }
