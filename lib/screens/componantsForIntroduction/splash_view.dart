@@ -48,6 +48,7 @@ class _SplashViewState extends State<SplashView> {
               padding: EdgeInsets.only(left: 64, right: 64),
               child: Text(
                 "Welcome to Your Learning Management System!",
+                
                 textAlign: TextAlign.center,
               ),
               
@@ -72,7 +73,7 @@ class _SplashViewState extends State<SplashView> {
                   ),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(38.0),
-                    color: Color(0xff132137),
+                    color:Colors.indigo,
                   ),
                   child: Text(
                     "Let's begin",
