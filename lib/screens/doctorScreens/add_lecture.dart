@@ -1,17 +1,13 @@
-// import 'dart:io';
-
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-// import 'package:path_provider/path_provider.dart';
-// import 'package:permission_handler/permission_handler.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AddLectureScreen extends StatefulWidget {
   const AddLectureScreen({super.key});
 
-  @override 
+  @override
   State<AddLectureScreen> createState() => _AddLectureScreenState();
 }
 
@@ -21,94 +17,42 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
   DateTime? selectedDate;
   String? uploadedFileUrl;
 
-  Future<void> pickFileAndUpload() async {
-    final result = await FilePicker.platform.pickFiles();
+  Future<void> uploadFile() async {
+    final result = await FilePicker.platform.pickFiles(allowMultiple: false);
     if (result != null) {
-      print(result.files);
-      final file = result.files.first;
-
+      final file = File(result.files.single.path!);
+      final fileName = result.files.single.name;
       try {
-        if (file.bytes == null) {
-          print("File data is empty!");
-          throw Exception('File data is empty');
-        }
-
-        // Upload file to Supabase with bytes
-        final path = await Supabase.instance.client.storage
-            .from('lecture-files')
-            .upload(file.name, file.bytes! as File);
-
-        // Get the file's public URL
-        final publicUrl = Supabase.instance.client.storage
-            .from('lecture-files')
-            .getPublicUrl(path);
-
+        final imageUrl = await uploadFileToSupabase(fileName, file);
         setState(() {
-          uploadedFileUrl = publicUrl;
+          uploadedFileUrl = imageUrl;
         });
-
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('File uploaded successfully!'),
-          ),
-        );
-      } catch (e) {
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('File upload failed: ${e.toString()}'),
-          ),
-        );
+      } catch (error) {
+        print('Error uploading file: $error');
+        // Handle error appropriately, e.g., show a snackbar to the user
       }
     }
   }
 
-  Future<void> saveLecture() async {
-    final title = titleController.text;
-    final description = descriptionController.text;
+  Future<String> uploadFileToSupabase(String fileName, File file) async {
+    try {
+      final response = await Supabase.instance.client.storage
+          .from('lecture-files') // Replace 'lecture-files' with your bucket name
+          .upload(fileName, file);
 
-    if (title.isEmpty || 
-        selectedDate == null || 
-        uploadedFileUrl == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Please complete all fields',
-          ),
-        )
-      );
-      return;
-    }
+      // if (response.error != null) {
+      //   throw Exception(response.error!.message);
+      // }
 
-    final response = await Supabase.instance.client.from('lectures').insert({
-      'title': title,
-      'description': description,
-      'date': selectedDate!.toIso8601String(),
-      'file_url': uploadedFileUrl,
-    });
-
-    if (response.error == null) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Lecture added successfully!'
-          ),
-        )
-      );
-    } else {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Error adding lecture'
-          ),
-        )
-      );
+      final imageUrl = Supabase.instance.client.storage
+          .from('lecture-files')
+          .getPublicUrl(fileName);
+      return imageUrl;
+    } catch (e) {
+      rethrow;
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -154,7 +98,7 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
             ),
             SizedBox(height: 10),
             ElevatedButton(
-              onPressed: pickFileAndUpload,
+              onPressed: uploadFile,
               child: Text(
                 'Upload File'
               ),
@@ -167,7 +111,10 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
                 ),
               ),
             ElevatedButton(
-              onPressed: saveLecture,
+              onPressed: () {
+                // Implement logic to save lecture data to your database (e.g., Firestore, Supabase)
+                // Include the uploadedFileUrl in the lecture data
+              },
               child: Text(
                 'Save Lecture'
               ),
