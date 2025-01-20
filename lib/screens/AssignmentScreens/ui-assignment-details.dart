@@ -239,13 +239,13 @@ Future<void> _submitAssignment() async {
               right: 0,
               child: Container(
                 decoration: BoxDecoration(
-                  color:  Color.fromARGB(255, 243, 164, 99),
+                  color:  Color.fromARGB(255, 245, 241, 236),
                   borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(32.0),
                       topRight: Radius.circular(32.0)),
                   boxShadow: <BoxShadow>[
                     BoxShadow(
-                        color: DesignCourseAppTheme.grey.withOpacity(0.2),
+                        color: Colors.indigo[800]!,
                         offset: const Offset(1.1, 1.1),
                         blurRadius: 10.0),
                   ],
@@ -273,7 +273,7 @@ Future<void> _submitAssignment() async {
                                 fontWeight: FontWeight.w600,
                                 fontSize: 22,
                                 letterSpacing: 0.27,
-                                color: DesignCourseAppTheme.darkerText,
+                                color: Colors.indigo[800],
                               ),
                             ),
                           ),
@@ -292,8 +292,7 @@ Future<void> _submitAssignment() async {
                                     fontWeight: FontWeight.w200,
                                     fontSize: 22,
                                     letterSpacing: 0.27,
-                                    color: DesignCourseAppTheme
-                                                .nearlyWhite,
+                                    color: Colors.indigo[800],
                                   ),
                                 ),
                                 Container(
@@ -373,7 +372,7 @@ Future<void> _submitAssignment() async {
                                     height: 48,
                                     child: Container(
                                       decoration: BoxDecoration(
-                                        color: Color(0xff132137),
+                                        color: Colors.indigo[800],
                                         borderRadius: const BorderRadius.all(
                                           Radius.circular(16.0),
                                         ),
@@ -396,14 +395,14 @@ Future<void> _submitAssignment() async {
                                     Container(
                                       height: 48,
                                       decoration: BoxDecoration(
-                                        color: Color(0xff132137),
+                                        color: Colors.indigo[800],
                                         borderRadius: const BorderRadius.all(
                                           Radius.circular(16.0),
                                         ),
                                         boxShadow: <BoxShadow>[
                                           BoxShadow(
-                                              color: Color(0xff132137)
-                                                  .withOpacity(0.5),
+                                              color: Colors.indigo[800]!.withOpacity(0.5),
+                                                 
                                               offset: const Offset(1.1, 1.1),
                                               blurRadius: 10.0),
                                         ],
@@ -422,7 +421,7 @@ Future<void> _submitAssignment() async {
                                         ),
                                       );
                                     } ,                                      
-                                     style: ElevatedButton.styleFrom( backgroundColor: Color(0xff132137)
+                                     style: ElevatedButton.styleFrom( backgroundColor: Colors.indigo[800]!
                                                   .withOpacity(0.5),),   
                                      child: Text(_hasSubmitted ? 'Edit Submission' : 'Submit Assignment',
                                           textAlign: TextAlign.left,
@@ -462,23 +461,23 @@ Future<void> _submitAssignment() async {
                 alignment: Alignment.center,
                 scale: CurvedAnimation(
                     parent: animationController!, curve: Curves.fastOutSlowIn),
-                child: Card(
-                  color: Color(0xff132137),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50.0)),
-                  elevation: 10.0,
-                  child: Container(
-                    width: 60,
-                    height: 60,
-                    child: Center(
-                      child: Icon(
-                        Icons.favorite,
-                        color: DesignCourseAppTheme.nearlyWhite,
-                        size: 30,
-                      ),
-                    ),
-                  ),
-                ),
+                // child: Card(
+                //   color:Colors.indigo[800],
+                //   shape: RoundedRectangleBorder(
+                //       borderRadius: BorderRadius.circular(50.0)),
+                //   elevation: 10.0,
+                //   child: Container(
+                //     width: 60,
+                //     height: 60,
+                //     child: Center(
+                //       child: Icon(
+                //         Icons.favorite,
+                //         color: DesignCourseAppTheme.nearlyWhite,
+                //         size: 30,
+                //       ),
+                //     ),
+                //   ),
+                // ),
               ),
             ),
             Padding(
@@ -516,7 +515,7 @@ Future<void> _submitAssignment() async {
       padding: const EdgeInsets.all(8.0),
       child: Container(
         decoration: BoxDecoration(
-          color: Color(0xff132137),
+          color: Colors.indigo[800],
           borderRadius: const BorderRadius.all(Radius.circular(16.0)),
           boxShadow: <BoxShadow>[
             BoxShadow(
