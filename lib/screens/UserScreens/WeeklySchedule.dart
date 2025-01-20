@@ -110,34 +110,55 @@ class _WeeklyScheduleState extends State<WeeklySchedule> {
   }
 
   /// Checks and triggers notifications for events happening tomorrow
- /// Checks and triggers notifications for events happening tomorrow
-void checkNotifications(Map<String, List<Map<String, dynamic>>> schedule) {
-  DateTime today = DateTime.now();
+  void checkNotifications(Map<String, List<Map<String, dynamic>>> schedule) {
+    DateTime today = DateTime.now();
 
-  WidgetsBinding.instance.addPostFrameCallback((_) {
-    schedule.forEach((day, events) {
-      for (var event in events) {
-        DateTime notificationDate = event['notificationDate'];
-        if (notificationDate.day == today.day &&
-            notificationDate.month == today.month &&
-            notificationDate.year == today.year) {
-          // Trigger a notification (or alert)
-          print("Reminder: Study for ${event['type']} - ${event['title']}!");
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text("Reminder: Study for ${event['type']} - ${event['title']}!"),
-              duration: Duration(seconds: 5),
-            ),
-          );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      schedule.forEach((day, events) {
+        for (var event in events) {
+          DateTime notificationDate = event['notificationDate'];
+          if (notificationDate.day == today.day &&
+              notificationDate.month == today.month &&
+              notificationDate.year == today.year) {
+            // Trigger a notification (or alert)
+            print("Reminder: Study for ${event['type']} - ${event['title']}!");
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text("Reminder: Study for ${event['type']} - ${event['title']}!"),
+                duration: Duration(seconds: 5),
+              ),
+            );
+          }
         }
-      }
+      });
     });
-  });
-}
+  }
 
   // Function to get the date of a specific day relative to today
   String getFormattedDate(DateTime date) {
     return DateFormat('d MMMM').format(date); // e.g., "20 January"
+  }
+
+  // Function to determine the color of the task based on overlapping events
+  Color getEventColor(List<Map<String, dynamic>> tasksAtTime) {
+    if (tasksAtTime.isEmpty) {
+      return const Color.fromARGB(170, 222, 206, 198); // Empty cells are white
+    }
+
+    // Sort tasksAtTime by date to get the earliest event
+    tasksAtTime.sort((a, b) => a['date'].compareTo(b['date']));
+
+    // Check if any event has a deadline within a day of today
+    DateTime today = DateTime.now();
+    for (var event in tasksAtTime) {
+      DateTime eventDate = event['date'];
+      if (eventDate.isBefore(today.add(Duration(days: 1))) && eventDate.isAfter(today.subtract(Duration(days: 1)))) {
+        return const Color.fromARGB(255, 217, 237, 255)!; // Light yellow for deadlines
+      }
+    }
+
+    // Default color for tasks
+    return Colors.orange[100]!;
   }
 
   @override
@@ -155,6 +176,7 @@ void checkNotifications(Map<String, List<Map<String, dynamic>>> schedule) {
             return Center(child: Text('No events found'));
           } else {
             final schedule = snapshot.data!;
+
             checkNotifications(schedule); // Check for notifications
 
             final daysOfWeek = [
@@ -242,12 +264,15 @@ void checkNotifications(Map<String, List<Map<String, dynamic>>> schedule) {
                                 return eventTimeSlot == time;
                               }).toList();
 
+                              // Sort by event time to get the earliest one
+                              tasksAtTime.sort((a, b) => a['date'].compareTo(b['date']));
+
                               return Container(
                                 width: 150,
                                 height: 100,
                                 decoration: BoxDecoration(
                                   border: Border.all(color: Colors.black12),
-                                  color: tasksAtTime.isEmpty ? Colors.blue[50] : Colors.orange[100],
+                                  color: getEventColor(tasksAtTime), // Get color based on events
                                 ),
                                 child: Column(
                                   children: tasksAtTime.map((event) {
