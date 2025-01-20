@@ -156,7 +156,7 @@ class _UserDrawerScreenState extends State<UserDrawerScreen> {
   },
 ),
            ListTile(
-            leading: Icon(Icons.schedule_send_rounded),
+            leading: Icon(Icons.calendar_today),
             title: Text('Weekly Schedule'),
             onTap: () {
               Navigator.push(
