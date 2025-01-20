@@ -53,7 +53,7 @@ class _UserHomeState extends ConsumerState<UserHome> {
         doctor: widget.user,
         appBarText: "Hello, ${widget.user.name}!",
       ),
-      drawer: UserDrawer(user: user),
+      drawer: UserDrawerScreen(user: user),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),

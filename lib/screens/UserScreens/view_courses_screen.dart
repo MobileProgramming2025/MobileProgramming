@@ -38,7 +38,7 @@ class _ViewCoursesScreenState extends ConsumerState<ViewCoursesScreen> {
       appBar: AppBar(
         title: Text("My Courses"),
       ),
-      drawer: UserDrawer(user: widget.user),
+      drawer: UserDrawerScreen(user: widget.user),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: courseStream.when(

@@ -86,7 +86,7 @@ class _StudentAssignmentListScreenState
       appBar: AppBar(
         title: Text('Assignments'),
       ),
-      drawer: UserDrawer(user: widget.user),
+      drawer: UserDrawerScreen(user: widget.user),
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
           : _enrolledCourseIds.isEmpty
