@@ -61,7 +61,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     final email = emailController.text.trim();
     final password = passwordController.text;
     final department = _selectedDepartment;
-
     final nameError = _validateName(name);
     final emailError = _validateEmail(email);
     final passwordError = _validatePassword(password);
@@ -79,7 +78,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 .join("\n"),
           ),
         ),
-      );
+      ); 
       return;
     }
 
@@ -99,7 +98,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         role: role,
         departmentId: department,
         addedDate: DateTime.now(),
-        enrolledCourses: [], // Initialize as per your requirements
+        enrolledCourses: [], 
       );
 
       if (!mounted) return;
