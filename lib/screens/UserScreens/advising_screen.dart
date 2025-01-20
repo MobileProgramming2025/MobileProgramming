@@ -194,22 +194,21 @@ class _AdvisingScreenState extends State<AdvisingScreen> {
                       child: Text(" You already have enrolled courses",
                           style: Theme.of(context).textTheme.bodyLarge),
                     )
-                  : Column(
-                      children: [
-                        getCoursesCheckBox(),
-                        Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: ElevatedButton(
-                            onPressed: _enroll, // Save selections when clicked
-                            child: Text(
-                              'Enroll to Courses',
-                            ),
-                          ),
-                        ),
-                      ],
+                  : SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          getCoursesCheckBox(),
+                        ],
+                      ),
                     ),
+      floatingActionButton: ElevatedButton(
+        onPressed: _enroll,
+        child: Text(
+          'Enroll Courses',
+          style: TextStyle(fontSize: 16),
+        ),
+      ),
       bottomNavigationBar: UserBottomNavigationBar(user: widget.user),
-
     );
   }
 }
