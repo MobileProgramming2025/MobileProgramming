@@ -16,10 +16,10 @@ class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _emailController = TextEditingController();
   bool _isSearching = false;
   String? _errorMessage;
+  List<String> _emailSuggestions = [];
 
-  final UserService _userService = UserService();  // Assuming you have a service to fetch users
+  final UserService _userService = UserService();
 
-  // Method to search for a user by email
   void _searchUserByEmail() async {
     setState(() {
       _isSearching = true;
@@ -56,7 +56,34 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-  // Method to fetch conversations for the current user
+  void _getEmailSuggestions() async {
+    final query = _emailController.text.toLowerCase();
+    if (query.isNotEmpty) {
+      final suggestions = await _userService.fetchEmailSuggestions(query);
+      setState(() {
+        _emailSuggestions = suggestions;
+      });
+    } else {
+      setState(() {
+        _emailSuggestions = [];
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _emailController.addListener(_getEmailSuggestions);
+  }
+
+  @override
+  void dispose() {
+    _emailController.removeListener(_getEmailSuggestions);
+    _emailController.dispose();
+    super.dispose();
+  }
+
   Stream<List<Map<String, dynamic>>> _getConversations() {
     return FirebaseFirestore.instance
         .collection('users')
@@ -72,7 +99,17 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Chat'),
+        title: const Text('Chats'),
+        backgroundColor: Colors.teal,
+        elevation: 5,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () {
+              
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -80,23 +117,54 @@ class _ChatScreenState extends State<ChatScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Search by Email
-            TextField(
-              controller: _emailController,
-              decoration: InputDecoration(
-                labelText: 'Enter Email to Chat',
-                border: OutlineInputBorder(),
-                suffixIcon: _isSearching
-                    ? const CircularProgressIndicator()
-                    : IconButton(
-                        icon: const Icon(Icons.search),
-                        onPressed: _searchUserByEmail,
-                      ),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: TextField(
+                controller: _emailController,
+                decoration: InputDecoration(
+                  hintText: 'Enter email to chat...',
+                  border: InputBorder.none,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                  suffixIcon: _isSearching
+                      ? const CircularProgressIndicator()
+                      : null,
+                ),
               ),
             ),
+            const SizedBox(height: 10),
+            // Show email suggestions
+            if (_emailSuggestions.isNotEmpty)
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: _emailSuggestions.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text(_emailSuggestions[index]),
+                      onTap: () async {
+                        // Set the email in the text field
+                        _emailController.text = _emailSuggestions[index];
+                        setState(() {
+                          _emailSuggestions = [];
+                        });
+
+                        _searchUserByEmail();
+                      },
+                    );
+                  },
+                ),
+              ),
             const SizedBox(height: 20),
-            // Display list of conversations
             Expanded(
-              child: StreamBuilder<List<Map<String, dynamic>>>(
+              child: StreamBuilder<List<Map<String, dynamic>>>( 
                 stream: _getConversations(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
@@ -112,22 +180,42 @@ class _ChatScreenState extends State<ChatScreen> {
                       final chatUserName = conversation['chatUserName'];
                       final chatUserId = conversation['chatUserId'];
 
-                      return ListTile(
-                        title: Text(chatUserName),
-                        subtitle: Text(lastMessage),
-                        onTap: () {
-                          // Navigate to chat room
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ChatRoomScreen(
-                                currentUserId: widget.userId,
-                                chatUserId: chatUserId,
-                                chatUserName: chatUserName,
-                              ),
+                      return Card(
+                        margin: const EdgeInsets.symmetric(vertical: 10),
+                        elevation: 5,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 15),
+                          leading: CircleAvatar(
+                            backgroundColor: Colors.blueAccent,
+                            child: Text(
+                              chatUserName[0],
+                              style: const TextStyle(color: Colors.white),
                             ),
-                          );
-                        },
+                          ),
+                          title: Text(
+                            chatUserName,
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold),
+                          ),
+                          subtitle: Text(lastMessage),
+                          onTap: () {
+                            // Navigate to chat room
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ChatRoomScreen(
+                                  currentUserId: widget.userId,
+                                  chatUserId: chatUserId,
+                                  chatUserName: chatUserName,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
                       );
                     },
                   );
