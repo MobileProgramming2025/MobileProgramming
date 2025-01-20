@@ -30,11 +30,11 @@ class HexColor extends Color {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  try {
-    await dotenv.load(fileName: ".env");
-  } catch (e) {
-    print("Error loading .env file: $e");
-  }
+  // try {
+  //   await dotenv.load(fileName: ".env");
+  // } catch (e) {
+  //   print("Error loading .env file: $e");
+  // }
   await Firebase.initializeApp();
 
   runApp(const ProviderScope(child: MyApp()));
