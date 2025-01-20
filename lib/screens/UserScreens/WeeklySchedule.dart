@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+/// Fetches the schedule of events for a user
 Future<Map<String, List<Map<String, dynamic>>>> fetchSchedule(String userId) async {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
@@ -19,7 +20,8 @@ Future<Map<String, List<Map<String, dynamic>>>> fetchSchedule(String userId) asy
   // Get course codes and match them with course documents
   List<String> courseCodes = enrolledCourses.map((course) => course['code'].toString()).toList();
 
-  QuerySnapshot coursesSnapshot = await firestore.collection('Courses')
+  QuerySnapshot coursesSnapshot = await firestore
+      .collection('Courses')
       .where('code', whereIn: courseCodes)
       .get();
 
@@ -31,11 +33,13 @@ Future<Map<String, List<Map<String, dynamic>>>> fetchSchedule(String userId) asy
   }
 
   // Fetch assignments and quizzes for the matching courses
-  QuerySnapshot assignmentsSnapshot = await firestore.collection('assignments')
+  QuerySnapshot assignmentsSnapshot = await firestore
+      .collection('assignments')
       .where('courseId', whereIn: courseIds)
       .get();
 
-  QuerySnapshot quizzesSnapshot = await firestore.collection('quizzes')
+  QuerySnapshot quizzesSnapshot = await firestore
+      .collection('quizzes')
       .where('courseId', whereIn: courseIds)
       .get();
 
@@ -51,6 +55,7 @@ Future<Map<String, List<Map<String, dynamic>>>> fetchSchedule(String userId) asy
       'type': 'Assignment',
       'title': assignment['title'],
       'date': deadline,
+      'notificationDate': deadline.subtract(Duration(days: 1)), // Notification date
       'courseId': assignment['courseId'],
     });
   }
@@ -64,6 +69,7 @@ Future<Map<String, List<Map<String, dynamic>>>> fetchSchedule(String userId) asy
       'type': 'Quiz',
       'title': quiz['title'],
       'date': startDate,
+      'notificationDate': startDate.subtract(Duration(days: 1)), // Notification date
       'courseId': quiz['courseId'],
     });
   }
@@ -103,6 +109,32 @@ class _WeeklyScheduleState extends State<WeeklySchedule> {
     _schedule = fetchSchedule(widget.userId);
   }
 
+  /// Checks and triggers notifications for events happening tomorrow
+ /// Checks and triggers notifications for events happening tomorrow
+void checkNotifications(Map<String, List<Map<String, dynamic>>> schedule) {
+  DateTime today = DateTime.now();
+
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    schedule.forEach((day, events) {
+      for (var event in events) {
+        DateTime notificationDate = event['notificationDate'];
+        if (notificationDate.day == today.day &&
+            notificationDate.month == today.month &&
+            notificationDate.year == today.year) {
+          // Trigger a notification (or alert)
+          print("Reminder: Study for ${event['type']} - ${event['title']}!");
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("Reminder: Study for ${event['type']} - ${event['title']}!"),
+              duration: Duration(seconds: 5),
+            ),
+          );
+        }
+      }
+    });
+  });
+}
+
   // Function to get the date of a specific day relative to today
   String getFormattedDate(DateTime date) {
     return DateFormat('d MMMM').format(date); // e.g., "20 January"
@@ -123,6 +155,8 @@ class _WeeklyScheduleState extends State<WeeklySchedule> {
             return Center(child: Text('No events found'));
           } else {
             final schedule = snapshot.data!;
+            checkNotifications(schedule); // Check for notifications
+
             final daysOfWeek = [
               'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'
             ];
@@ -139,7 +173,8 @@ class _WeeklyScheduleState extends State<WeeklySchedule> {
             for (var day in schedule.values) {
               for (var event in day) {
                 DateTime eventTime = event['date'];
-                String timeSlot = '${eventTime.hour.toString().padLeft(2, '0')}:${eventTime.minute >= 30 ? '30' : '00'}';
+                String timeSlot =
+                    '${eventTime.hour.toString().padLeft(2, '0')}:${eventTime.minute >= 30 ? '30' : '00'}';
                 timeSlotsSet.add(timeSlot);
               }
             }
@@ -201,7 +236,8 @@ class _WeeklyScheduleState extends State<WeeklySchedule> {
                                 // Round event times to the nearest half-hour slot
                                 DateTime eventTime = event['date'];
                                 int eventMinute = eventTime.minute;
-                                String eventTimeSlot = '${eventTime.hour.toString().padLeft(2, '0')}:${eventMinute >= 30 ? '30' : '00'}';
+                                String eventTimeSlot =
+                                    '${eventTime.hour.toString().padLeft(2, '0')}:${eventMinute >= 30 ? '30' : '00'}';
 
                                 return eventTimeSlot == time;
                               }).toList();
@@ -211,7 +247,7 @@ class _WeeklyScheduleState extends State<WeeklySchedule> {
                                 height: 100,
                                 decoration: BoxDecoration(
                                   border: Border.all(color: Colors.black12),
-                                  color: tasksAtTime.isEmpty ? Colors.blue[50] : Colors.orange[100], // Different color for empty cells
+                                  color: tasksAtTime.isEmpty ? Colors.blue[50] : Colors.orange[100],
                                 ),
                                 child: Column(
                                   children: tasksAtTime.map((event) {
