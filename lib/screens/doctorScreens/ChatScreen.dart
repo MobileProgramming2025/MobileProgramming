@@ -91,8 +91,9 @@ class _ChatScreenState extends State<ChatScreen> {
         .collection('conversations')
         .orderBy('timestamp', descending: true)
         .snapshots()
-        .map((snapshot) =>
-            snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList());
+        .map((snapshot) => snapshot.docs
+            .map((doc) => doc.data() as Map<String, dynamic>)
+            .toList());
   }
 
   @override
@@ -105,9 +106,7 @@ class _ChatScreenState extends State<ChatScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
-            onPressed: () {
-              
-            },
+            onPressed: () {},
           ),
         ],
       ),
@@ -128,9 +127,8 @@ class _ChatScreenState extends State<ChatScreen> {
                   hintText: 'Enter email to chat...',
                   border: InputBorder.none,
                   contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-                  suffixIcon: _isSearching
-                      ? const CircularProgressIndicator()
-                      : null,
+                  suffixIcon:
+                      _isSearching ? const CircularProgressIndicator() : null,
                 ),
               ),
             ),
@@ -164,7 +162,7 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
             const SizedBox(height: 20),
             Expanded(
-              child: StreamBuilder<List<Map<String, dynamic>>>( 
+              child: StreamBuilder<List<Map<String, dynamic>>>(
                 stream: _getConversations(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
@@ -188,7 +186,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         ),
                         child: ListTile(
                           contentPadding: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 15),
+                              vertical: 10, horizontal: 15),
                           leading: CircleAvatar(
                             backgroundColor: Colors.blueAccent,
                             child: Text(
@@ -198,8 +196,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           ),
                           title: Text(
                             chatUserName,
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                           subtitle: Text(lastMessage),
                           onTap: () {
