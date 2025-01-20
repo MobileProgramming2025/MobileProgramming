@@ -156,7 +156,7 @@ class _UserDrawerScreenState extends State<UserDrawerScreen> {
                 context,
                 MaterialPageRoute(
                   builder: (context) =>
-                      WeeklySchedule(userId: widget.user.id, user: widget.user),
+                      WeeklySchedule(userId: widget.user.id),
                 ),
               );
             },

@@ -66,14 +66,19 @@ class _DoctorAppBarState extends State<DoctorAppBar> {
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            widget.appBarText,
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
+          Flexible(
+            child: Text(
+              widget.appBarText,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+                overflow: TextOverflow.ellipsis,  // Optional: Truncate text if it's too long
+            
             ),
           ),
+
           GestureDetector(
             onTap: _pickImage, // Make the CircleAvatar tappable
             child: Stack(
