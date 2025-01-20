@@ -15,7 +15,7 @@ class EnrollInstructorScreen extends StatefulWidget {
   State<EnrollInstructorScreen> createState() {
     return _EnrollInstructorScreenState();
   }
-} 
+}
 
 class _EnrollInstructorScreenState extends State<EnrollInstructorScreen> {
   final CourseService _courseService = CourseService();
@@ -54,7 +54,7 @@ class _EnrollInstructorScreenState extends State<EnrollInstructorScreen> {
 
   void _enrollInstructor() async {
     try {
-      await _userService.enrollUserToCourses(selectedDoctorName, selectedCourse);
+      await _userService.enrollInstructor(selectedDoctorName, selectedCourse);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Instructor enrolled successfully!')),

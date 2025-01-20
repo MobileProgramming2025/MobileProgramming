@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobileprogramming/models/user.dart';
 import 'package:mobileprogramming/providers/courses_provider.dart';
 import 'package:mobileprogramming/screens/UserScreens/CourseSectionsScreen.dart';
-import 'package:mobileprogramming/screens/partials/UserBottomNavigationBar.dart';
 import 'package:mobileprogramming/screens/partials/UserDrawer.dart';
 import 'package:mobileprogramming/services/DepartmentService.dart';
 
@@ -102,8 +101,6 @@ class _ViewCoursesScreenState extends ConsumerState<ViewCoursesScreen> {
           error: (e, s) => Center(child: Text('Error: $e')),
         ),
       ),
-      bottomNavigationBar: UserBottomNavigationBar(user: widget.user),
-
     );
   }
 }
