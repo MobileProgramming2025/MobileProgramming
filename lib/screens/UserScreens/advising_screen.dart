@@ -50,6 +50,10 @@ class _AdvisingScreenState extends State<AdvisingScreen> {
       final user = await _userService.getUserByID(widget.user.id).first;
       if(user != null){
       departmentId= user.departmentId ?? "";
+      studentYear = user.year??"";
+
+      print(departmentId);
+      print(studentYear);
       final courses = await _courseService
           .getCoursesByDepartmentId(departmentId)
           .first; // Get the data once
@@ -57,7 +61,7 @@ class _AdvisingScreenState extends State<AdvisingScreen> {
 
       for (var course in courses) {
         bool isTaken =
-            await _courseService.isCourseTaken(course.id, widget.user.id);
+            await _courseService.isCourseTaken(course.id, user.id);
         if (studentYear == course.year && !isTaken) {
           filteredCoursesList.add({
             "name": course.name,
