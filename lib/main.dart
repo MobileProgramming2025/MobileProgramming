@@ -29,7 +29,8 @@ class HexColor extends Color {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  //await dotenv.load(fileName: ".env");
+   ///print('API Key: ${dotenv.env['API_KEY']}');
   // try {
   //   await dotenv.load(fileName: ".env");
   // } catch (e) {
