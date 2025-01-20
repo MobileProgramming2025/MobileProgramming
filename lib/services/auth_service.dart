@@ -60,7 +60,7 @@ class AuthService {
 
   Future<firebase_auth.User?> signUp2(String name, String email,
       String password, String role, String departmentId) async {
-    final firstAdded = DateTime.utc(2023, DateTime.november, 9);
+    final firstAdded = DateTime.utc(2024, DateTime.november, 9);
     final currentYear = DateTime.now();
     final educationYear = currentYear.year - firstAdded.year;
 

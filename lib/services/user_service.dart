@@ -144,38 +144,24 @@ class UserService {
     }
   }
 
-
-Future<void> startAdvising(List<Map<String, dynamic>> users) async {
-  final WriteBatch batch = FirebaseFirestore.instance.batch();
-
-  try {
+  Future<void> startAdvising(List<Map<String, dynamic>> users) async {
     for (var user in users) {
-      var takenCourses = user['taken_courses'] as List<dynamic>;
-      var enrolledCourses = user['enrolled_courses'] as List<dynamic>;
-      takenCourses.addAll(enrolledCourses);
-
-      DocumentReference userDoc = FirebaseFirestore.instance.collection('users').doc(user['id']);
-
-//batch multiple updates into one request
       if (user['role'] == 'Student') {
-        batch.update(userDoc, {
+        var takenCourses = user['taken_courses'] as List<dynamic>;
+        var enrolledCourses = user['enrolled_courses'] as List<dynamic>;
+        takenCourses.addAll(enrolledCourses);
+        await _firestore.collection('users').doc(user['id']).update({
           'enrolled_courses': [],
           'taken_courses': takenCourses,
         });
-      } else if (user['role'] == 'Doctor' || user['role'] == 'Teaching Assistant') {
-        batch.update(userDoc, {
+      } else if (user['role'] == 'Doctor' ||
+          user['role'] == 'Teaching Assistant') {
+        await _firestore.collection('users').doc(user['id']).update({
           'enrolled_courses': [],
         });
       }
     }
-
-    // Commit the batch to update all documents in one operation
-    await batch.commit();
-  } catch (e) {
-    print("Error during advising process: $e");
   }
-}
-
 
   void logout(context) async {
     final AuthService authService = AuthService();

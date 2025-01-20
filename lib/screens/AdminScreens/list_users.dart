@@ -24,6 +24,7 @@ class _ListUsersScreenState extends State<ListUsersScreen> {
 
   void _startAdvising() async {
     try {
+      print ("start");
 // Await the future and map User objects to Map<String, dynamic>
       final userList = await _futureUsers;
       final userMaps = userList
@@ -31,9 +32,9 @@ class _ListUsersScreenState extends State<ListUsersScreen> {
                 'id': user.id,
                 'taken_courses': user.takenCourses,
                 'enrolled_courses': user.enrolledCourses,
+                'role':user.role,
               })
           .toList();
-
       // Call startAdvising with the mapped user data
       await _userService.startAdvising(userMaps);
       if (!mounted) return;
