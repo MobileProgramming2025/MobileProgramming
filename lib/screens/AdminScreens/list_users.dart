@@ -28,11 +28,12 @@ class _ListUsersScreenState extends State<ListUsersScreen> {
     _futureUsers = _userService.getAllUsers();
   }
 
-  void _filterAndSortUsers(List<User> users) {
-    // Filter users
+  void _filterUsers(List<User> users) {
+    // Filter users based on role
     _filteredUsers = users.where((user) {
       return _filterRole == 'All' || user.role == _filterRole;
     }).toList();
+  }
 
     // Sort users
     _filteredUsers.sort((a, b) {
@@ -45,6 +46,13 @@ class _ListUsersScreenState extends State<ListUsersScreen> {
       }
       return 0;
     });
+  }
+
+  void _filterAndSortUsers(List<User> users) {
+    // First filter the users
+    _filterUsers(users);
+    // Then sort the filtered users
+    _sortUsers();
   }
 
   void _deleteUser(int index) {
