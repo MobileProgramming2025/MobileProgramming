@@ -133,6 +133,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
           role: _selectedRole ?? 'Unknown',
         );
       } else {
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Invalid role selected!')),
         );
