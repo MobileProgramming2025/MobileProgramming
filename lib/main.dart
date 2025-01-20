@@ -14,6 +14,7 @@ import 'package:mobileprogramming/screens/Registration/google_signup_screen.dart
 import 'package:mobileprogramming/screens/Registration/signin.dart';
 import 'package:mobileprogramming/screens/Registration/signup.dart';
 import 'package:mobileprogramming/screens/Assignment/assignment_screen.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class HexColor extends Color {
   HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
@@ -36,6 +37,11 @@ void main() async {
     print("Error loading .env file: $e");
   }
   await Firebase.initializeApp();
+
+  await Supabase.initialize(
+    url: 'https://cspuiyyiuyyoihscmodk.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzcHVpeXlpdXl5b2loc2Ntb2RrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzcyODU0MTYsImV4cCI6MjA1Mjg2MTQxNn0.4B8eKp1tFTGY7A6K6zhlImaaTjE2YjHgbn-6erEz4A0',
+  );
 
   runApp(const ProviderScope(child: MyApp()));
 }
