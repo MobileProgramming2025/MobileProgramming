@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobileprogramming/models/Course.dart';
 import 'package:mobileprogramming/models/user.dart';
+import 'package:mobileprogramming/providers/courses_provider.dart';
+import 'package:mobileprogramming/screens/UserScreens/CourseSectionsScreen.dart';
 import 'package:mobileprogramming/screens/doctorScreens/ChatScreen.dart';
 import 'package:mobileprogramming/screens/partials/DoctorAppBar.dart';
 import 'package:mobileprogramming/screens/partials/UserBottomNavigationBar.dart';
@@ -9,31 +12,42 @@ import 'package:mobileprogramming/screens/partials/UserDrawer.dart';
 import 'package:mobileprogramming/services/CourseService.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-class UserHome extends StatefulWidget {
+class UserHome extends ConsumerStatefulWidget {
   final User user;
   const UserHome({super.key, required this.user});
 
   @override
-  State<UserHome> createState() => _UserHomeState();
+  ConsumerState<UserHome> createState() => _UserHomeState();
 }
 
-class _UserHomeState extends State<UserHome> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  late User user;
+class _UserHomeState extends ConsumerState<UserHome> {
   final CourseService _courseService = CourseService();
-  late Stream<List<Map<String, dynamic>>> _enrolledCoursesStream;
+  bool isLoading = true;
+  List<String> courses = [];
   DateTime _selectedDate = DateTime.now();
   DateTime _focusedDate = DateTime.now();
+  late User user;
+  late String userId;
+
   @override
   void initState() {
     super.initState();
+    _fetchData();
     user = widget.user;
-    _enrolledCoursesStream =
-        _courseService.fetchEnrolledCoursesByUserId(user.id);
+  }
+
+  Future<void> _fetchData() async {
+    await Future.delayed(Duration(seconds: 2));
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    userId = widget.user.id;
+    final enrolledCourseStream = ref.watch(coursesProvider(userId));
+
     return Scaffold(
       appBar: DoctorAppBar(
         doctor: widget.user,
@@ -131,88 +145,97 @@ class _UserHomeState extends State<UserHome> {
               ),
               SizedBox(height: 20),
               Text(
-                "Your Courses",
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.indigo),
+                "My Courses",
+                style: Theme.of(context).textTheme.titleLarge,
               ),
               SizedBox(height: 10),
-              StreamBuilder<List<Map<String, dynamic>>>(
-                stream:
-                    _courseService.fetchEnrolledCoursesByUserId(widget.user.id),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  } else if (snapshot.hasError) {
-                    return Center(
-                      child: Text('Error: ${snapshot.error}'),
-                    );
-                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return Center(
-                      child: Text(
-                        'No Courses Found',
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      ),
-                    );
-                  }
-
-                  final instructorCourses = snapshot.data!;
-
-                  return GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16,
-                    ),
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: instructorCourses.length,
-                    itemBuilder: (context, index) {
-                      final instructorCourse = instructorCourses[index];
-
-                      return Card(
-                        elevation: 4,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(
-                              8.0), // Add padding for better spacing
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.book,
-                                size: 50,
-                              ),
-                              SizedBox(height: 8),
-                              Text(
-                                instructorCourse['name'],
-                                style: Theme.of(context).textTheme.titleMedium!.copyWith(color:Theme.of(context).colorScheme.primary),
-                              ),
-                              Text('Course Code: ${instructorCourse['code']}',
-                                  style:
-                                      Theme.of(context).textTheme.bodyMedium),
-                            ],
-                          ),
-                        ),
+              Container(
+                padding: const EdgeInsets.all(0),
+                child: enrolledCourseStream.when(
+                  // Loading state
+                  data: (courses) {
+                    if (courses.isEmpty) {
+                      return const Center(
+                        child: Text("You don't have any enrolled courses."),
                       );
-                    },
-                  );
-                },
+                    }
+
+                    return GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 16,
+                        mainAxisSpacing: 16,
+                      ),
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: courses.length,
+                      itemBuilder: (context, index) {
+                        final enrolledCourses = courses[index];
+
+                        return InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CourseDetailsScreen(
+                                  courseId: enrolledCourses['id'],
+                                  courseName: enrolledCourses['name'],
+                                  courseCode: enrolledCourses['code'],
+                                  userId: widget.user.id,
+                                  user: widget.user,
+                                ),
+                              ),
+                            );
+                          },
+                          child: Card(
+                            elevation: 4,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(
+                                  8.0), // Add padding for better spacing
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.book,
+                                    size: 50,
+                                  ),
+                                  SizedBox(height: 8),
+                                  Text(
+                                    enrolledCourses['name'],
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium!
+                                        .copyWith(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary),
+                                  ),
+                                  Text(
+                                      'Course Code: ${enrolledCourses['code']}',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  loading: () =>
+                      const Center(child: CircularProgressIndicator()),
+                  error: (e, s) => Center(child: Text('Error: $e')),
+                ),
               ),
               SizedBox(height: 20),
               Text(
                 "All Courses",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.indigo,
-                ),
+                style: Theme.of(context).textTheme.titleLarge,
               ),
               SizedBox(height: 10),
               StreamBuilder<List<Course>>(
@@ -262,7 +285,13 @@ class _UserHomeState extends State<UserHome> {
                             SizedBox(height: 8),
                             Text(
                               course.name,
-                                style: Theme.of(context).textTheme.titleMedium!.copyWith(color:Theme.of(context).colorScheme.primary),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium!
+                                  .copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primary),
                             ),
                             Text('Course Code: ${course.code}',
                                 style: Theme.of(context).textTheme.bodyMedium),
@@ -289,7 +318,6 @@ class _UserHomeState extends State<UserHome> {
           );
         },
         child: Icon(Icons.chat),
-        backgroundColor: Theme.of(context).colorScheme.primary,
         tooltip: "Chat",
       ),
       bottomNavigationBar: UserBottomNavigationBar(user: user),

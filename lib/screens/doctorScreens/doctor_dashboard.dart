@@ -150,7 +150,6 @@ class _DoctorDashboardState extends ConsumerState<DoctorDashboard> {
                     ),
                     SizedBox(height: 10),
                     Container(
-                      padding: const EdgeInsets.all(0),
                       child: instructorCourseStream.when(
                         // Loading state
                         data: (courses) {

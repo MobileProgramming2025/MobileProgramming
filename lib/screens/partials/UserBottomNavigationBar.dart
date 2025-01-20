@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/user.dart';
 import 'package:mobileprogramming/screens/UserScreens/user_home.dart';
 import 'package:mobileprogramming/screens/UserScreens/view_courses_screen.dart';
-import 'package:mobileprogramming/screens/doctorScreens/doctor_dashboard.dart';
 import 'package:mobileprogramming/screens/partials/profile.dart';
 import 'package:mobileprogramming/services/user_service.dart';
 

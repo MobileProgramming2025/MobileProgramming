@@ -73,9 +73,9 @@ class MyApp extends StatelessWidget {
       onPrimary: Colors.white,
       primaryContainer: Colors.indigo[100]!,
       onPrimaryContainer: Colors.indigo[800]!,
-      secondary: Colors.teal,
+      secondary: const Color.fromARGB(255, 162, 172, 231),
       onSecondary: Colors.white,
-      secondaryContainer: Colors.teal[100]!,
+      secondaryContainer: Colors.teal,
       onSecondaryContainer: Colors.orange,
       tertiary: Colors.orange,
       onTertiary: const Color.fromARGB(255, 46, 46, 46),
@@ -120,7 +120,17 @@ class MyApp extends StatelessWidget {
                   .textTheme
                   .bodyLarge!
                   .copyWith(fontWeight: FontWeight.bold),
-            ), 
+            ),
+          ),
+
+          //Floating action button Theme
+          floatingActionButtonTheme: FloatingActionButtonThemeData(
+            backgroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
+            foregroundColor: Theme.of(context).colorScheme.onSecondary,
+          ),
+
+          iconTheme: IconThemeData(
+            color: Theme.of(context).colorScheme.onPrimaryContainer,
           ),
 
           //Drawer Theme
