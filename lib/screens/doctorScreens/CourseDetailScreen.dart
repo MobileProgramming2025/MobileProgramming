@@ -3,19 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:mobileprogramming/screens/AssignmentScreens/assignment_list_screen.dart';
 // import 'package:mobileprogramming/screens/Assignment/ViewSubmissionsScreen.dart';
 // import 'package:mobileprogramming/screens/Assignment/assignment_list_screen.dart';
-import 'package:mobileprogramming/screens/AssignmentScreens/doctor-view-submission-screen.dart';
+// import 'package:mobileprogramming/screens/AssignmentScreens/doctor-view-submission-screen.dart';
 import 'package:mobileprogramming/screens/QuizTrail/QuizListScreen.dart';
 import 'package:mobileprogramming/screens/QuizTrail/quiz_creation_screen.dart';
+import 'package:mobileprogramming/screens/doctorScreens/add_lecture.dart';
 
 class CourseDetailScreen extends StatelessWidget {
+  const CourseDetailScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
-    final arguments =
-        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    final arguments = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     final String courseId = arguments['id'];
     final String courseName = arguments['name'];
- 
- final String doctorId = FirebaseAuth.instance.currentUser?.uid ?? '';
+    final String doctorId = FirebaseAuth.instance.currentUser?.uid ?? '';
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Course Details'),
@@ -28,6 +30,21 @@ class CourseDetailScreen extends StatelessWidget {
             // Enhanced "Manage Course" Header
             _buildManageCourseHeader(context, courseName),
             const SizedBox(height: 16),
+
+            // **Lectures Section**
+            _buildSectionHeader(context, 'Lectures'),
+            _buildButton(
+              context,
+              label: 'Add Lecture',
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AddLectureScreen(),
+                  ),
+                );
+              },
+            ),
             
             // **Quizzes Section**
             _buildSectionHeader(context, 'Quizzes'),
