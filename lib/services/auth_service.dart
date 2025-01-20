@@ -26,9 +26,7 @@ class AuthService {
 
   Future<firebase_auth.User?> signUp(
       String email, String password, String role, String departmentId) async {
-    final firstAdded = DateTime.utc(2023, DateTime.november, 9);
     final currentYear = DateTime.now();
-    final educationYear = currentYear.year - firstAdded.year;
 
     try {
       firebase_auth.UserCredential userCredential =
@@ -47,8 +45,8 @@ class AuthService {
           'password': password,
           'taken_courses': [],
           'enrolled_courses': [],
-          'added_date': firstAdded,
-          'year': (educationYear).toString(),
+          'added_date': currentYear,
+          'year': "1",
           'departmentId': departmentId,
         });
       }
@@ -60,9 +58,7 @@ class AuthService {
 
   Future<firebase_auth.User?> signUp2(String name, String email,
       String password, String role, String departmentId) async {
-    final firstAdded = DateTime.utc(2024, DateTime.november, 9);
     final currentYear = DateTime.now();
-    final educationYear = currentYear.year - firstAdded.year;
 
     try {
       firebase_auth.UserCredential userCredential =
@@ -83,8 +79,8 @@ class AuthService {
           'departmentId': departmentId,
           'taken_courses': [],
           'enrolled_courses': [],
-          'added_date': firstAdded,
-          'year': (educationYear).toString(),
+          'added_date': currentYear,
+          'year': "1",
         });
       }
       return user;
@@ -139,7 +135,7 @@ class AuthService {
               'added_date': FieldValue.serverTimestamp(),
               'role': role,
               'departmentId': department,
-              'year': year,
+              'year': "1",
               'enrolled_courses': [],
               'taken_courses': [],
             });
