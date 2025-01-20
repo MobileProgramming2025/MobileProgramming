@@ -155,7 +155,8 @@ class _UserDrawerScreenState extends State<UserDrawerScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => WeeklySchedule(userId: widget.user.id),
+                  builder: (context) =>
+                      WeeklySchedule(userId: widget.user.id, user: widget.user),
                 ),
               );
             },
@@ -180,7 +181,7 @@ class _UserDrawerScreenState extends State<UserDrawerScreen> {
                 context,
                 MaterialPageRoute(
                   builder: (context) =>
-                      NotificationScreen(userId: widget.user.id),
+                      NotificationScreen(user:widget.user,userId: widget.user.id),
                 ),
               );
               setState(() {
