@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mobileprogramming/models/user.dart';
+import 'package:mobileprogramming/screens/partials/UserDrawer.dart';
 
+/// Fetches the schedule of events for a user
 Future<Map<String, List<Map<String, dynamic>>>> fetchSchedule(String userId) async {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
@@ -19,7 +22,8 @@ Future<Map<String, List<Map<String, dynamic>>>> fetchSchedule(String userId) asy
   // Get course codes and match them with course documents
   List<String> courseCodes = enrolledCourses.map((course) => course['code'].toString()).toList();
 
-  QuerySnapshot coursesSnapshot = await firestore.collection('Courses')
+  QuerySnapshot coursesSnapshot = await firestore
+      .collection('Courses')
       .where('code', whereIn: courseCodes)
       .get();
 
@@ -31,11 +35,13 @@ Future<Map<String, List<Map<String, dynamic>>>> fetchSchedule(String userId) asy
   }
 
   // Fetch assignments and quizzes for the matching courses
-  QuerySnapshot assignmentsSnapshot = await firestore.collection('assignments')
+  QuerySnapshot assignmentsSnapshot = await firestore
+      .collection('assignments')
       .where('courseId', whereIn: courseIds)
       .get();
 
-  QuerySnapshot quizzesSnapshot = await firestore.collection('quizzes')
+  QuerySnapshot quizzesSnapshot = await firestore
+      .collection('quizzes')
       .where('courseId', whereIn: courseIds)
       .get();
 
@@ -51,6 +57,7 @@ Future<Map<String, List<Map<String, dynamic>>>> fetchSchedule(String userId) asy
       'type': 'Assignment',
       'title': assignment['title'],
       'date': deadline,
+      'notificationDate': deadline.subtract(Duration(days: 1)), // Notification date
       'courseId': assignment['courseId'],
     });
   }
@@ -64,6 +71,7 @@ Future<Map<String, List<Map<String, dynamic>>>> fetchSchedule(String userId) asy
       'type': 'Quiz',
       'title': quiz['title'],
       'date': startDate,
+      'notificationDate': startDate.subtract(Duration(days: 1)), // Notification date
       'courseId': quiz['courseId'],
     });
   }
@@ -87,8 +95,9 @@ Future<Map<String, List<Map<String, dynamic>>>> fetchSchedule(String userId) asy
 
 class WeeklySchedule extends StatefulWidget {
   final String userId;
+  final User user;
 
-  WeeklySchedule({required this.userId});
+  WeeklySchedule({super.key, required this.userId, required this.user});
 
   @override
   _WeeklyScheduleState createState() => _WeeklyScheduleState();
@@ -103,15 +112,63 @@ class _WeeklyScheduleState extends State<WeeklySchedule> {
     _schedule = fetchSchedule(widget.userId);
   }
 
+  /// Checks and triggers notifications for events happening tomorrow
+  void checkNotifications(Map<String, List<Map<String, dynamic>>> schedule) {
+    DateTime today = DateTime.now();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      schedule.forEach((day, events) {
+        for (var event in events) {
+          DateTime notificationDate = event['notificationDate'];
+          if (notificationDate.day == today.day &&
+              notificationDate.month == today.month &&
+              notificationDate.year == today.year) {
+            // Trigger a notification (or alert)
+            print("Reminder: Study for ${event['type']} - ${event['title']}!");
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text("Reminder: Study for ${event['type']} - ${event['title']}!"),
+                duration: Duration(seconds: 5),
+              ),
+            );
+          }
+        }
+      });
+    });
+  }
+
   // Function to get the date of a specific day relative to today
   String getFormattedDate(DateTime date) {
     return DateFormat('d MMMM').format(date); // e.g., "20 January"
+  }
+
+  // Function to determine the color of the task based on overlapping events
+  Color getEventColor(List<Map<String, dynamic>> tasksAtTime) {
+    if (tasksAtTime.isEmpty) {
+      return const Color.fromARGB(170, 222, 206, 198); // Empty cells are white
+    }
+
+    // Sort tasksAtTime by date to get the earliest event
+    tasksAtTime.sort((a, b) => a['date'].compareTo(b['date']));
+
+    // Check if any event has a deadline within a day of today
+    DateTime today = DateTime.now();
+    for (var event in tasksAtTime) {
+      DateTime eventDate = event['date'];
+      if (eventDate.isBefore(today.add(Duration(days: 1))) && eventDate.isAfter(today.subtract(Duration(days: 1)))) {
+        return const Color.fromARGB(255, 217, 237, 255)!; // Light yellow for deadlines
+      }
+    }
+
+    // Default color for tasks
+    return Colors.orange[100]!;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Weekly Schedule')),
+      drawer: UserDrawerScreen(user: widget.user),
       body: FutureBuilder<Map<String, List<Map<String, dynamic>>>>(
         future: _schedule,
         builder: (context, snapshot) {
@@ -123,6 +180,9 @@ class _WeeklyScheduleState extends State<WeeklySchedule> {
             return Center(child: Text('No events found'));
           } else {
             final schedule = snapshot.data!;
+
+            checkNotifications(schedule); // Check for notifications
+
             final daysOfWeek = [
               'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'
             ];
@@ -139,7 +199,8 @@ class _WeeklyScheduleState extends State<WeeklySchedule> {
             for (var day in schedule.values) {
               for (var event in day) {
                 DateTime eventTime = event['date'];
-                String timeSlot = '${eventTime.hour.toString().padLeft(2, '0')}:${eventTime.minute >= 30 ? '30' : '00'}';
+                String timeSlot =
+                    '${eventTime.hour.toString().padLeft(2, '0')}:${eventTime.minute >= 30 ? '30' : '00'}';
                 timeSlotsSet.add(timeSlot);
               }
             }
@@ -201,17 +262,21 @@ class _WeeklyScheduleState extends State<WeeklySchedule> {
                                 // Round event times to the nearest half-hour slot
                                 DateTime eventTime = event['date'];
                                 int eventMinute = eventTime.minute;
-                                String eventTimeSlot = '${eventTime.hour.toString().padLeft(2, '0')}:${eventMinute >= 30 ? '30' : '00'}';
+                                String eventTimeSlot =
+                                    '${eventTime.hour.toString().padLeft(2, '0')}:${eventMinute >= 30 ? '30' : '00'}';
 
                                 return eventTimeSlot == time;
                               }).toList();
+
+                              // Sort by event time to get the earliest one
+                              tasksAtTime.sort((a, b) => a['date'].compareTo(b['date']));
 
                               return Container(
                                 width: 150,
                                 height: 100,
                                 decoration: BoxDecoration(
                                   border: Border.all(color: Colors.black12),
-                                  color: tasksAtTime.isEmpty ? Colors.blue[50] : Colors.orange[100], // Different color for empty cells
+                                  color: getEventColor(tasksAtTime), // Get color based on events
                                 ),
                                 child: Column(
                                   children: tasksAtTime.map((event) {

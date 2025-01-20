@@ -87,7 +87,7 @@ class _DoctorAppBarState extends State<DoctorAppBar> {
                 _profileImagePath == null
                     ? CircleAvatar(
                         radius: 20,
-                        child: Icon(Icons.account_circle, size: 50),
+                        child: Icon(Icons.account_circle, size: 20),
                       )
                     : CircleAvatar(
                         radius: 20,

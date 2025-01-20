@@ -44,7 +44,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
       print('Error fetching user details: $error');
     }
   }
+Future<void> _removeImage() async {
+    try {
+      // Remove the image path from the database
+      await DatabaseHelper().deleteProfileImagePath();
 
+      // Update the UI
+      setState(() {
+        _profileImagePath = null;
+      });
+    } catch (error) {
+      print('Error removing image: $error');
+    }
+  }
 // Future<void> _saveProfileImagePath(String path) async {
 //   final dbHelper = DatabaseHelper();
 //   await dbHelper.updateProfileImagePath(user.id, path);
@@ -78,6 +90,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
     } catch (error) {
       print('Error picking image: $error');
     }
+  }
+  void _showImageOptionsDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title:  Text('Profile Image Options' ,  style: TextStyle( 
+                                    color: Colors.indigo[800],
+                                  ),),
+          content: const Text('What would you like to do with your profile image?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                _pickImage(); // Option to edit the image (pick a new one)
+              },
+              child: const Text('Edit Image'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                _removeImage(); // Option to remove the image
+              },
+              child: const Text('Remove Image'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Widget _buildProfileCard({required String title, required String value}) {
@@ -180,23 +221,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
 
-                GestureDetector(
-                  onTap: _pickImage, // Make the CircleAvatar tappable
-                  child: Stack(
-                    children: [
-                      // Profile Image
-                      _profileImagePath == null
-                          ? CircleAvatar(
-                              radius: 50,
-                              child: Icon(Icons.account_circle, size: 50),
-                            )
-                          : CircleAvatar(
-                              radius: 50,
-                              backgroundImage:
-                                  FileImage(File(_profileImagePath!)),
-                            ),
-                    ],
-                  ),
+                 GestureDetector(
+                          onTap: _showImageOptionsDialog, // Show options when tapped
+                          child: _profileImagePath == null
+                              ? CircleAvatar(
+                                  radius: 50,
+                                  child: Icon(Icons.account_circle, size: 50),
+                                )
+                              : CircleAvatar(
+                                  radius: 50,
+                                  backgroundImage: FileImage(File(_profileImagePath!)),
+                                ),
+                        
                 ),
                 SizedBox(height: 16),
                 const SizedBox(height: 24),
@@ -208,12 +244,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(height: 12),
                 // _buildProfileCard(title: 'Department', value: user.departmentId),
                 // const SizedBox(height: 12),
-                SizedBox(height: 8),
-              ],
-            ),
-          ),
-        ),
-        floatingActionButton: FloatingActionButton(
+                
+                //  ElevatedButton(
+                // onPressed: _removeImage,
+                // child: const Text('Remove Profile Image'),
+                // style: ElevatedButton.styleFrom(
+                // //   foregroundColor: Colors.white, 
+                // //   backgroundColor: Colors.red, // White text color
+                // minimumSize: Size(300, 30),
+                // ),
+                
+                //  ),
+                    ElevatedButton(
           onPressed: () {
             Navigator.push(
               context,
@@ -222,9 +264,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             );
           },
-          tooltip: 'Edit Profile',
-          child: const Icon(Icons.edit),
+           child: const Text('Edit Profile'),
+            style: ElevatedButton.styleFrom(
+    minimumSize: Size(300, 30), // Width: 200, Height: 50
+  ),
+          // tooltip: 'Edit Profile',
+          // child: const Icon(Icons.edit),
         ),
+              ],
+            ),
+          ),
+        ),
+     
 
       bottomNavigationBar: widget.user.role == 'Student'? UserBottomNavigationBar(user: widget.user): null,
 
