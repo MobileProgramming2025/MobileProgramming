@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_sizer/flutter_sizer.dart';
 
@@ -27,8 +28,16 @@ class HexColor extends Color {
 }
 
 void main() async {
-  runApp(const ProviderScope(child: MyApp()));
+  WidgetsFlutterBinding.ensureInitialized();
+
+  try {
+    await dotenv.load(fileName: ".env");
+  } catch (e) {
+    print("Error loading .env file: $e");
+  }
   await Firebase.initializeApp();
+
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -64,9 +73,9 @@ class MyApp extends StatelessWidget {
       onPrimary: Colors.white,
       primaryContainer: Colors.indigo[100]!,
       onPrimaryContainer: Colors.indigo[800]!,
-      secondary: Colors.teal,
+      secondary: const Color.fromARGB(255, 162, 172, 231),
       onSecondary: Colors.white,
-      secondaryContainer: Colors.teal[100]!,
+      secondaryContainer: Colors.teal,
       onSecondaryContainer: Colors.orange,
       tertiary: Colors.orange,
       onTertiary: const Color.fromARGB(255, 46, 46, 46),
@@ -107,8 +116,21 @@ class MyApp extends StatelessWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(40),
               ),
-              textStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold),
+              textStyle: Theme.of(context)
+                  .textTheme
+                  .bodyLarge!
+                  .copyWith(fontWeight: FontWeight.bold),
             ),
+          ),
+
+          //Floating action button Theme
+          floatingActionButtonTheme: FloatingActionButtonThemeData(
+            backgroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
+            foregroundColor: Theme.of(context).colorScheme.onSecondary,
+          ),
+
+          iconTheme: IconThemeData(
+            color: Theme.of(context).colorScheme.onPrimaryContainer,
           ),
 
           //Drawer Theme
@@ -141,7 +163,6 @@ class MyApp extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-
 
           //Text Input Field
           inputDecorationTheme: InputDecorationTheme(

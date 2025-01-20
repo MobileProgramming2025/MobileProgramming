@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/user.dart';
+import 'package:mobileprogramming/screens/partials/UserBottomNavigationBar.dart';
 import 'package:mobileprogramming/screens/partials/UserDrawer.dart';
 import 'package:mobileprogramming/screens/partials/adminDrawer.dart';
 import 'package:mobileprogramming/screens/partials/edit_profile.dart';
@@ -223,6 +224,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
           },
           tooltip: 'Edit Profile',
           child: const Icon(Icons.edit),
-        ));
+        ),
+
+      bottomNavigationBar: widget.user.role == 'Student'? UserBottomNavigationBar(user: widget.user): null,
+
+        );
   }
 }

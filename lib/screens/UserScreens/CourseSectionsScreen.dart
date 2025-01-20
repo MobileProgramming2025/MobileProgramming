@@ -3,6 +3,7 @@ import 'package:mobileprogramming/models/Quiz.dart';
 import 'package:mobileprogramming/screens/AssignmentScreens/student_assignment_list.dart';
 import 'package:mobileprogramming/screens/QuizTrail/quiz_attempt_screen.dart';
 import 'package:mobileprogramming/models/user.dart';
+import 'package:mobileprogramming/screens/partials/UserDrawer.dart';
 
 import 'package:mobileprogramming/services/quiz_service.dart'; // Assuming you have a service to fetch quizzes
 
@@ -70,6 +71,7 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
         title: Text(widget.courseName),
         centerTitle: true,
       ),
+      drawer:UserDrawer(user: widget.user),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: isLoading
