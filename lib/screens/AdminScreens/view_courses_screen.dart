@@ -35,10 +35,8 @@ class _ViewCoursesScreenState extends State<ViewCoursesScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: StreamBuilder<List<Map<String, dynamic>>>(
-          // Using Stream to get real-time updates
           stream: _coursesStream,
           builder: (context, snapshot) {
-            // Handling different connection states
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
                 child: CircularProgressIndicator(),
@@ -99,15 +97,6 @@ class _ViewCoursesScreenState extends State<ViewCoursesScreen> {
                           'Year: ${course['year']}',
                           style: Theme.of(context).textTheme.bodyLarge,
                         ),
-                        // IconButton(
-                        //   icon: const Icon(Icons.delete),
-                        //   onPressed: () {
-                        //     _deleteCourse(course.id);
-                        //     print(course.id);
-                        //   },
-                        //   color: Colors.red,
-                        //   iconSize: 28,
-                        // ),
                       ],
                     ),
                   ),
