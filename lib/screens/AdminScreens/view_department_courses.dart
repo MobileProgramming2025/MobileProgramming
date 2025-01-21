@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mobileprogramming/models/Course.dart';
 import 'package:mobileprogramming/providers/courses_provider.dart';
-import 'package:mobileprogramming/services/CourseService.dart';
 
 class ViewDepartmentCoursesScreen extends ConsumerStatefulWidget {
   const ViewDepartmentCoursesScreen({super.key});
@@ -14,7 +12,6 @@ class ViewDepartmentCoursesScreen extends ConsumerStatefulWidget {
 
 class _ViewDepartmentCoursesScreenState
     extends ConsumerState<ViewDepartmentCoursesScreen> {
-  final CourseService _courseService = CourseService();
   late String departmentId;
 
   void _enroll() {

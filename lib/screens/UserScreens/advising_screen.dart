@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobileprogramming/models/user.dart';
 import 'package:mobileprogramming/screens/UserScreens/view_courses_screen.dart';
 import 'package:mobileprogramming/screens/partials/UserBottomNavigationBar.dart';
@@ -9,17 +10,17 @@ import 'package:uuid/uuid.dart';
 
 final uuid = Uuid();
 
-class AdvisingScreen extends StatefulWidget {
+class AdvisingScreen extends ConsumerStatefulWidget {
   final User user;
   const AdvisingScreen({super.key, required this.user});
 
   @override
-  State<AdvisingScreen> createState() {
+  ConsumerState<AdvisingScreen> createState() {
     return _AdvisingScreenState();
   }
 }
 
-class _AdvisingScreenState extends State<AdvisingScreen> {
+class _AdvisingScreenState extends ConsumerState<AdvisingScreen> {
   final CourseService _courseService = CourseService();
   final UserService _userService = UserService();
   List<Map<dynamic, dynamic>> coursesList = [];
@@ -52,18 +53,18 @@ class _AdvisingScreenState extends State<AdvisingScreen> {
       departmentId= user.departmentId ?? "";
       studentYear = user.year??"";
       final courses = await _courseService
-          .getCoursesByDepartmentId(departmentId)
+          .gettCoursesByDepartmentId(departmentId)
           .first; // Get the data once
       List<Map<dynamic, dynamic>> filteredCoursesList = [];
 
       for (var course in courses) {
         bool isTaken =
-            await _courseService.isCourseTaken(course.id, user.id);
-        if (studentYear == course.year && !isTaken) {
+            await _courseService.isCourseTaken(course['id'], user.id);
+        if (studentYear == course['year'] && !isTaken) {
           filteredCoursesList.add({
-            "name": course.name,
-            "code": course.code,
-            "id": course.id,
+            "name": course['name'],
+            "code": course['code'],
+            "id": course['id'],
             "isChecked": false,
           });
         }
