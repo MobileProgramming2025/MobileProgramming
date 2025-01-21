@@ -7,7 +7,6 @@ import 'add_edit_assignment_screen.dart';
 
 class AssignmentListScreen extends StatefulWidget {
   final String courseId;
-  // final Doctor doctor;
 
   const AssignmentListScreen({
     super.key, required this.courseId ,
