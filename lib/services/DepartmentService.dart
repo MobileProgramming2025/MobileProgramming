@@ -53,7 +53,7 @@ class DepartmentService {
 
   Future<void> addDepartment({
     required String id,
-    required String name, 
+    required String name,
     required String capacity,
   }) async {
     try {
@@ -71,9 +71,40 @@ class DepartmentService {
         'capacity': capacity,
       });
       await docRef.update({'id': docRef.id});
-
     } catch (e) {
       throw Exception("Failed to add Department: $e");
+    }
+  }
+
+  Future<void> editDepartment({
+    required String id,
+    required String name,
+    required String capacity,
+  }) async {
+    try {
+      final docRef = _firestore.collection('Departments').doc(id);
+      final docSnapshot = await docRef.get();
+
+      if (!docSnapshot.exists) {
+        throw Exception("Department with ID '$id' does not exist.");
+      }
+
+      final querySnapshot = await _firestore
+          .collection('Departments')
+          .where('name', isEqualTo: name)
+          .get();
+
+      if (querySnapshot.docs.any((doc) => doc.id != id)) {
+        throw Exception(
+            "Another department with the name '$name' already exists.");
+      }
+
+      await docRef.update({
+        'name': name,
+        'capacity': capacity,
+      });
+    } catch (e) {
+      throw Exception("Failed to edit Department: $e");
     }
   }
 }
