@@ -7,8 +7,9 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/design_course_app_theme.dart';
 import 'package:mobileprogramming/screens/Assignment/SubmitAssignmentScreen.dart';
-import 'package:mobileprogramming/screens/AssignmentScreens/student-view-submission.dart';
+// import 'package:mobileprogramming/screens/AssignmentScreens/student-view-submission.dart';
 import 'package:mobileprogramming/screens/AssignmentScreens/ui-student-submission.dart';
+import 'package:mobileprogramming/screens/AssignmentScreens/ui-student-view-submission.dart';
 // import 'package:mobileprogramming/screens/AssignmentScreens/student_submission_form_screen.dart';
 
 class AssignmentDetailScreen extends StatefulWidget {
@@ -33,7 +34,11 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> with Ti
   double opacity2 = 0.0;
   double opacity3 = 0.0;
   bool _isOverdue = false;
+  bool _isSubmitting = false;
   bool _isSubmitted = false;
+    String? _submissionUrl;
+  String? _submissionGrade;
+  String? _gradeStatus = "Not graded yet";
 PlatformFile? pickedFile;
 UploadTask? uploadTask;
  bool _isLoading = true;
@@ -51,6 +56,33 @@ UploadTask? uploadTask;
     super.initState();
     _checkSubmission();
      _fetchAssignmentDetails();
+     _fetchSubmissionData();
+  }
+  Future<void> _fetchSubmissionData() async {
+    final userId = widget.assignmentData['userId']; // Replace with actual user ID (from auth)
+    final firestoreRef = FirebaseFirestore.instance
+      .collection('submissions')
+      .where('assignmentId', isEqualTo: widget.assignmentId)
+      .where('userId', isEqualTo: userId)
+      .limit(1);
+
+    final querySnapshot = await firestoreRef.get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+     final submissionDoc = querySnapshot.docs.first;
+    final data = submissionDoc.data();
+      setState(() {
+        _isSubmitted = true;
+        _submissionUrl = data['notes'];
+        _submissionGrade = data['grade'];
+        _gradeStatus = _submissionGrade ?? "Not graded yet";
+      });
+    } else {
+      setState(() {
+        _isSubmitted = false;
+        _gradeStatus = "Not graded yet";
+      });
+    }
   }
   Future<void> _fetchAssignmentDetails() async {
     try {
@@ -88,7 +120,6 @@ UploadTask? uploadTask;
           _submissionStatus = 'Overdue';
         }
       }
-
       setState(() {
         _isLoading = false;
       });
@@ -296,28 +327,7 @@ Future<void> _submitAssignment() async {
                                     color: Colors.indigo[800],
                                   ),
                                 ),
-                                Container(
-                                  child: Row(
-                                    // children: <Widget>[
-                                    //   Text(
-                                    //     //'${courseData['rating'] ?? '0.0'}',
-                                    //     _isOverdue ? 'Overdue' : 'On Time',
-                                    //     textAlign: TextAlign.left,
-                                    //     style: TextStyle(
-                                    //       fontWeight: FontWeight.w200,
-                                    //       fontSize: 22,
-                                    //       letterSpacing: 0.27,
-                                    //       color: DesignCourseAppTheme.grey,
-                                    //     ),
-                                    //   ),
-                                    //   Icon(
-                                    //     Icons.star,
-                                    //     color: DesignCourseAppTheme.nearlyBlue,
-                                    //     size: 24,
-                                    //   ),
-                                    // ],
-                                  ),
-                                )
+                             
                               ],
                             ),
                           ),
@@ -354,11 +364,91 @@ Future<void> _submitAssignment() async {
                                   maxLines: 3,
                                   overflow: TextOverflow.ellipsis,
                                 ),
+                                
                               ),
                             ),
                           ),
-                           
-                          AnimatedOpacity(
+                             Container(
+                                  child: Column(
+                                    children: <Widget>[
+                                         Text(
+                                        'Grade',
+                                       
+                                        textAlign: TextAlign.left,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w200,
+                                          fontSize: 22,
+                                          letterSpacing: 0.27,
+                                          color: DesignCourseAppTheme.grey,
+                                        ),
+                                      ),
+                                      Text(
+                                        
+                                         _gradeStatus ?? "Not graded yet",
+                                        textAlign: TextAlign.left,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w200,
+                                          fontSize: 22,
+                                          letterSpacing: 0.27,
+                                          color: DesignCourseAppTheme.grey,
+                                        ),
+                                      ),
+                                      // Icon(
+                                      //   Icons.grade,
+                                      //   color: Colors.indigo[800],
+                                      //   size: 24,
+                                      // ),
+                                    ],
+                                  ),
+                                )
+                        //    Expanded(
+                        //     child: AnimatedOpacity(
+                        //       duration: const Duration(milliseconds: 500),
+                        //       opacity: opacity2,
+                        //       child: Padding(
+                        //         padding: const EdgeInsets.only(
+                        //             left: 16, right: 16, top: 8, bottom: 1),
+                        //         child: Text(
+                        //     'Grade:',
+                        //           textAlign: TextAlign.justify,
+                        //           style: TextStyle(
+                        //             fontWeight: FontWeight.w700,
+                        //             fontSize: 18,
+                        //             letterSpacing: 0.27,
+                        //             color: Colors.indigo[800]!,
+                        //           ),
+                        //           maxLines: 3,
+                        //           overflow: TextOverflow.ellipsis,
+                        //         ),
+                                
+                        //       ),
+                        //     ),
+                        //   ),
+                        // Expanded(
+                        //     child: AnimatedOpacity(
+                        //       duration: const Duration(milliseconds: 500),
+                        //       opacity: opacity2,
+                        //       child: Padding(
+                        //         padding: const EdgeInsets.only(
+                        //             left: 16, right: 16, top: 1, bottom: 8),
+                        //         child: Text(
+                        //     _gradeStatus ?? "Not graded yet",
+                        //           textAlign: TextAlign.justify,
+                        //           style: TextStyle(
+                        //             fontWeight: FontWeight.w700,
+                        //             fontSize: 18,
+                        //             letterSpacing: 0.27,
+                        //             color: const Color.fromARGB(255, 57, 57, 58)!,
+                        //           ),
+                        //           maxLines: 3,
+                        //           overflow: TextOverflow.ellipsis,
+                        //         ),
+                                
+                        //       ),
+                        //     ),
+                        //   ),
+
+                          ,AnimatedOpacity(
                             duration: const Duration(milliseconds: 500),
                             opacity: opacity3,
                             child: Padding(
@@ -391,7 +481,9 @@ Future<void> _submitAssignment() async {
                                   ),
                                   const SizedBox(
                                     width: 16,
+                                    
                                   ),
+
                                   // Expanded(
                                     Container(
                                       height: 48,
@@ -417,7 +509,7 @@ Future<void> _submitAssignment() async {
                                         MaterialPageRoute(
                                           
                                          builder: (context) => _hasSubmitted
-                              ? ViewSubmissionScreen(assignmentId: widget.assignmentId)
+                              ? ViewSubmissionScreen(assignmentId: widget.assignmentId ,assignmentDescription: widget.assignmentData['description'])
                               : SubmissionFormScreen(assignmentId: widget.assignmentId,assignmentDescription: widget.assignmentData['description']),
                                         ),
                                       );
@@ -432,7 +524,9 @@ Future<void> _submitAssignment() async {
                                             letterSpacing: 0.0,
                                             color: DesignCourseAppTheme
                                                 .nearlyWhite,
-                                               )),),
+                                               )),
+                                               )
+                                               ,
                 
            
                                     )  ,
