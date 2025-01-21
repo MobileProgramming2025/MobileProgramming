@@ -4,6 +4,7 @@ import 'package:mobileprogramming/screens/AssignmentScreens/assignment_list_scre
 import 'package:mobileprogramming/screens/QuizTrail/QuizListScreen.dart';
 import 'package:mobileprogramming/screens/QuizTrail/quiz_creation_screen.dart';
 import 'package:mobileprogramming/screens/doctorScreens/add_lecture.dart';
+import 'package:mobileprogramming/screens/doctorScreens/list_lectures.dart';
 
 class CourseDetailScreen extends StatelessWidget {
   const CourseDetailScreen({super.key});
@@ -42,6 +43,18 @@ class CourseDetailScreen extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) => AddLectureScreen(courseId: courseId),
+                    ),
+                  );
+                },
+              ),
+              _buildButton(
+                context,
+                label: 'View All Lectures',
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => LectureListScreen(courseId: courseId),
                     ),
                   );
                 },
