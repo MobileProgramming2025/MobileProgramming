@@ -28,6 +28,8 @@ class _LectureListScreenState extends State<LectureListScreen> {
   // Function to download and display the file
   Future<void> downloadAndDisplayFile(String fileName) async {
     try {
+      // Log the file name to confirm
+      print("Downloading file: $fileName");
       // Fetch file from Supabase storage
       final response = await Supabase.instance.client.storage
           .from('lecture-files') // Your bucket name
@@ -148,6 +150,7 @@ class _LectureListScreenState extends State<LectureListScreen> {
                 trailing: IconButton(
                   icon: Icon(Icons.download),
                   onPressed: () {
+                    print('File name: ${lecture.fileName}');
                     downloadAndDisplayFile(lecture.fileName); // Trigger file download and display
                   },
                 ),
