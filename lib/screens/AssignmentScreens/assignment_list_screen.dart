@@ -85,10 +85,13 @@ void _confirmDelete(BuildContext context, String assignmentId) {
     final scaffoldMessenger = ScaffoldMessenger.of(context);
     scaffoldMessenger.showSnackBar(
       SnackBar(
-        content: Text('Assignment deleted'),
+         content: DefaultTextStyle(
+          style: TextStyle(color: Colors.white), // Change text color here
+          child: Text('Assignment deleted'),
+        ),
         duration: Duration(seconds: 7),
         action: SnackBarAction(
-          label: 'Undo',
+          label: 'Undo' , backgroundColor: Colors.indigo[800] ,
           onPressed: () {
             // Re-add the assignment back to the list
             setState(() {
