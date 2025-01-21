@@ -100,8 +100,11 @@ class _AddDepartmentScreenState extends State<AddDepartmentScreen> {
       ),
       controller: _capacityController,
       validator: (value) {
-        if (value == null || value.trim().isEmpty) {
-          return "please enter a valid Department Capacity";
+        if (value == null || value.isEmpty) {
+          return "Please enter the capacity";
+        }
+        if (int.tryParse(value) == null) {
+          return "Capacity must be a number";
         }
         return null;
       },
@@ -120,7 +123,6 @@ class _AddDepartmentScreenState extends State<AddDepartmentScreen> {
         ),
       ),
       drawer: AdminDrawer(user: widget.admin),
-
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),

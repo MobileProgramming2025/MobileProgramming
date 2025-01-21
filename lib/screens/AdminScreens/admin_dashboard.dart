@@ -20,10 +20,13 @@ class _AdminDashboardState extends State<AdminDashboard> {
   DateTime _focusedDate = DateTime.now();
   DateTime? _selectedDate;
 
+  List<String> _recentActivities = [];
+
   @override
   void initState() {
     super.initState();
     _fetchStatistics();
+    _fetchRecentActivities();
   }
 
   void _fetchStatistics() async {
@@ -42,6 +45,18 @@ class _AdminDashboardState extends State<AdminDashboard> {
     });
   }
 
+  void _fetchRecentActivities() async {
+    // Simulating fetching recent activities from Firestore
+    // Replace this with Firestore query if data exists in a collection
+    setState(() {
+      _recentActivities = [
+        "Admin John updated the schedule.",
+        "Student Sarah submitted an assignment.",
+        "Doctor Jane added a new course.",
+      ];
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,7 +70,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
         ),
       ),
       drawer: AdminDrawer(user: widget.admin),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -68,89 +83,10 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 _buildStatisticCard('Doctors', _numDoctors, Colors.indigo[800]!),
               ],
             ),
-            SizedBox(height: 16),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).canvasColor,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.2),
-                        blurRadius: 8,
-                        spreadRadius: 2,
-                      ),
-                    ],
-                  ),
-                  child: TableCalendar(
-                    firstDay: DateTime.utc(2000, 1, 1),
-                    lastDay: DateTime.utc(2100, 12, 31),
-                    focusedDay: _focusedDate,
-                    selectedDayPredicate: (day) => isSameDay(_selectedDate, day),
-                    onDaySelected: (selectedDay, focusedDay) {
-                      setState(() {
-                        _selectedDate = selectedDay;
-                        _focusedDate = focusedDay;
-                      });
-                    },
-                    headerStyle: HeaderStyle(
-                      formatButtonVisible: false,
-                      titleCentered: true,
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primary,
-                        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-                      ),
-                      titleTextStyle: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                      ),
-                      leftChevronIcon:
-                          Icon(Icons.chevron_left, color: Colors.white),
-                      rightChevronIcon:
-                          Icon(Icons.chevron_right, color: Colors.white),
-                    ),
-                    calendarStyle: CalendarStyle(
-                      todayDecoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 255, 255, 255),
-                        border: Border.all(
-                            color: Theme.of(context).colorScheme.primary,
-                            width: 2),
-                        shape: BoxShape.circle,
-                      ),
-                      selectedDecoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primary,
-                        shape: BoxShape.circle,
-                      ),
-                      defaultDecoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                      ),
-                      weekendDecoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.grey.withOpacity(0.1),
-                      ),
-                      outsideDecoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                      ),
-                      defaultTextStyle: TextStyle(
-                          color: Theme.of(context).colorScheme.onSurface),
-                      weekendTextStyle: TextStyle(color: Colors.red),
-                      todayTextStyle: TextStyle(
-                        color: const Color.fromARGB(255, 56, 3, 3),
-                        fontWeight: FontWeight.bold,
-                      ),
-                      selectedTextStyle: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      outsideDaysVisible: false,
-                    ),
-                  ),
-                ),
-              ),
-            ),
+            const SizedBox(height: 16),
+            _buildRecentActivitiesSection(),
+            const SizedBox(height: 16),
+            _buildCalendarSection(),
           ],
         ),
       ),
@@ -173,7 +109,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 color: color,
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               count.toString(),
               style: TextStyle(
@@ -183,6 +119,117 @@ class _AdminDashboardState extends State<AdminDashboard> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRecentActivitiesSection() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).canvasColor,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            blurRadius: 8,
+            spreadRadius: 2,
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Recent Activities",
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+            const SizedBox(height: 8),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: _recentActivities.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  leading: Icon(Icons.circle, size: 12, color: Colors.indigo),
+                  title: Text(
+                    _recentActivities[index],
+                    style: const TextStyle(fontSize: 14),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCalendarSection() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).canvasColor,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            blurRadius: 8,
+            spreadRadius: 2,
+          ),
+        ],
+      ),
+      child: TableCalendar(
+        firstDay: DateTime.utc(2000, 1, 1),
+        lastDay: DateTime.utc(2100, 12, 31),
+        focusedDay: _focusedDate,
+        selectedDayPredicate: (day) => isSameDay(_selectedDate, day),
+        onDaySelected: (selectedDay, focusedDay) {
+          setState(() {
+            _selectedDate = selectedDay;
+            _focusedDate = focusedDay;
+          });
+        },
+        headerStyle: HeaderStyle(
+          formatButtonVisible: false,
+          titleCentered: true,
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.primary,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+          ),
+          titleTextStyle: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+          ),
+          leftChevronIcon: const Icon(Icons.chevron_left, color: Colors.white),
+          rightChevronIcon: const Icon(Icons.chevron_right, color: Colors.white),
+        ),
+        calendarStyle: CalendarStyle(
+          todayDecoration: BoxDecoration(
+            color: Colors.white,
+            border: Border.all(
+              color: Theme.of(context).colorScheme.primary,
+              width: 2,
+            ),
+            shape: BoxShape.circle,
+          ),
+          selectedDecoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.primary,
+            shape: BoxShape.circle,
+          ),
+          weekendDecoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.grey.withOpacity(0.1),
+          ),
+          defaultTextStyle: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface),
+          weekendTextStyle: const TextStyle(color: Colors.red),
         ),
       ),
     );

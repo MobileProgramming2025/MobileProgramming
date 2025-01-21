@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/user.dart';
 import 'package:mobileprogramming/screens/AdminScreens/Add_department_screen.dart';
+import 'package:mobileprogramming/screens/AdminScreens/edit_department_screen.dart';
 import 'package:mobileprogramming/screens/partials/adminDrawer.dart';
 import 'package:mobileprogramming/services/DepartmentService.dart';
 
@@ -91,6 +92,32 @@ class _ViewDepartmentsScreenState extends State<ViewDepartmentsScreen> {
                           Text(
                             'Department Capacity: ${department['capacity']}',
                             style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              IconButton(
+                                icon: const Icon(Icons.edit),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          EditDepartmentScreen(departmentId: widget.admin.departmentId!),
+                                    ),
+                                  );
+                                },
+                                iconSize: 28,
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.delete),
+                                onPressed: () {
+                                  //_deleteCourse(course.id);
+                                },
+                                color: Colors.red,
+                                iconSize: 28,
+                              ),
+                            ],
                           ),
                         ],
                       ),
