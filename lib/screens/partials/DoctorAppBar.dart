@@ -84,15 +84,16 @@ class _DoctorAppBarState extends State<DoctorAppBar> {
             child: Stack(
               children: [
                 // Profile Image
-                _profileImagePath == null
-                    ? CircleAvatar(
-                        radius: 20,
-                        child: Icon(Icons.account_circle, size: 20),
-                      )
-                    : CircleAvatar(
-                        radius: 20,
-                        backgroundImage: FileImage(File(_profileImagePath!)),
-                      ),
+                // _profileImagePath == null
+                    // ?
+                    //  CircleAvatar(
+                    //     radius: 20,
+                    //     child: Icon(Icons.account_circle, size: 20),
+                    //   )
+                    // : CircleAvatar(
+                    //     radius: 20,
+                    //     backgroundImage: FileImage(File(_profileImagePath!)),
+                    //   ),
               ],
             ),
           ),

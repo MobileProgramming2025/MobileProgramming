@@ -47,38 +47,69 @@ class _ListUsersScreenState extends State<ListUsersScreen> {
     });
   }
 
-  void _deleteUser(int index) {
-    setState(() {
-      _recentlyDeletedUser = _filteredUsers.removeAt(index);
-      _recentlyDeletedIndex = index;
-    });
+void _deleteUser(int index) async {
+  setState(() {
+    _recentlyDeletedUser = _filteredUsers[index];
+    _recentlyDeletedIndex = index;
+  });
 
-    // Show snackbar with undo option
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Deleted ${_recentlyDeletedUser!.name}'),
-        action: SnackBarAction(
-          label: "Undo",
-          onPressed: () {
-            _undoDelete();
-          },
-        ),
+  setState(() {
+    _filteredUsers.removeAt(index);
+  });
+
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text('Deleted ${_recentlyDeletedUser!.name}'),
+      action: SnackBarAction(
+        label: "Undo",
+        onPressed: () {
+          _undoDelete();
+        },
       ),
-    );
-  }
+    ),
+  );
 
-  void _undoDelete() {
-    if (_recentlyDeletedUser != null && _recentlyDeletedIndex != null) {
+  await Future.delayed(const Duration(seconds: 7)); 
+
+  if (_recentlyDeletedUser != null && _recentlyDeletedIndex != null) {
+    try {
+      await _userService.deleteUser(_recentlyDeletedUser!.id);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('User deleted successfully!')),
+      );
+
+      setState(() {
+        _futureUsers = _userService.getAllUsers();
+      });
+    } catch (e) {
       setState(() {
         _filteredUsers.insert(_recentlyDeletedIndex!, _recentlyDeletedUser!);
       });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to delete user: $e')),
+      );
     }
   }
+}
+
+
+void _undoDelete() {
+  if (_recentlyDeletedUser != null && _recentlyDeletedIndex != null) {
+    setState(() {
+      _filteredUsers.insert(_recentlyDeletedIndex!, _recentlyDeletedUser!);
+    });
+
+    setState(() {
+      _recentlyDeletedUser = null;
+      _recentlyDeletedIndex = null;
+    });
+  }
+}
+
 
   void _startAdvising() async {
     try {
       print("start");
-      // Await the future and map User objects to Map<String, dynamic>
       final userList = await _futureUsers;
       final userMaps = userList
           .map((user) => {
@@ -88,7 +119,7 @@ class _ListUsersScreenState extends State<ListUsersScreen> {
                 'role': user.role,
               })
           .toList();
-      // Call startAdvising with the mapped user data
+
       await _userService.startAdvising(userMaps);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -256,7 +287,8 @@ class _ListUsersScreenState extends State<ListUsersScreen> {
                         if (user.role == "Admin") {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                                content: Text('This action isn\'t suitable for this user')),
+                                content: Text(
+                                    'This action isn\'t suitable for this user')),
                           );
                         } else {
                           Navigator.push(

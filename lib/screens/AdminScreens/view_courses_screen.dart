@@ -25,9 +25,24 @@ class _ViewCoursesScreenState extends State<ViewCoursesScreen> {
     _coursesStream = _courseService.getAllCourses();
   }
 
+  Future<void> _deleteCourse(String courseId) async {
+    try {
+      await _courseService.deleteCourse(courseId);
+      // Show success message or refresh list
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Course deleted successfully')),
+      );
+    } catch (e) {
+      // Handle error
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error deleting course: $e')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold( 
+    return Scaffold(
       appBar: AppBar(
         title: const Text("All Courses"),
       ),
@@ -35,10 +50,8 @@ class _ViewCoursesScreenState extends State<ViewCoursesScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: StreamBuilder<List<Map<String, dynamic>>>(
-          // Using Stream to get real-time updates
           stream: _coursesStream,
           builder: (context, snapshot) {
-            // Handling different connection states
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
                 child: CircularProgressIndicator(),
@@ -75,9 +88,15 @@ class _ViewCoursesScreenState extends State<ViewCoursesScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          course['name'],
-                          style: Theme.of(context).textTheme.headlineMedium,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              course['name'],
+                              style: Theme.of(context).textTheme.headlineMedium,
+                            ),
+                          
+                          ],
                         ),
                         const SizedBox(height: 8),
                         Text(
@@ -86,14 +105,15 @@ class _ViewCoursesScreenState extends State<ViewCoursesScreen> {
                         ),
                         const SizedBox(height: 8),
                         StreamBuilder<Department?>(
-                            stream: departmentStream,
-                            builder: (context, snapshot) {
-                              final Department? dep = snapshot.data;
-                              return Text(
-                                'Department: ${dep?.name}',
-                                style: Theme.of(context).textTheme.bodyLarge,
-                              );
-                            }),
+                          stream: departmentStream,
+                          builder: (context, snapshot) {
+                            final Department? dep = snapshot.data;
+                            return Text(
+                              'Department: ${dep?.name}',
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            );
+                          },
+                        ),
                         const SizedBox(height: 8),
                         Text(
                           'Year: ${course['year']}',
@@ -126,7 +146,7 @@ class _ViewCoursesScreenState extends State<ViewCoursesScreen> {
             ),
           );
         },
-        tooltip: "add_courses",
+        tooltip: "Add Courses",
         child: const Icon(Icons.add),
       ),
     );

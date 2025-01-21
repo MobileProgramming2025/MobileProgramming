@@ -1,33 +1,24 @@
-// import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-// class CoursesNotifier extends StateNotifier<List<Course>> {
-//   final UserService _userService = UserService();
-//   CoursesNotifier() : super(const []);
-
-//   void viewUserCourses(String userId) {
-//     _userService.fetchEnrolledCoursesByUserId(userId);
-//   }
-// }
-
-// final coursesProvider = StateNotifierProvider((ref){
-//   return CoursesNotifier();
-// });
-
-
-// final coursesProvider = StateNotifierProvider<CoursesNotifier, AsyncValue<List<Map<String, dynamic>>>>(
-//   (ref) => CoursesNotifier(ref),
-// );
-
-
-
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mobileprogramming/models/Course.dart';
+import 'package:mobileprogramming/providers/course_state_notifier.dart';
 import 'package:mobileprogramming/services/CourseService.dart';
 
 final courseServiceProvider = Provider((ref) => CourseService());
 
-// Courses provider with doctorId as a parameter
-final coursesProvider = StreamProvider.family<List<Map<String, dynamic>>, String>((ref, doctorId) {
+// StreamProvider for fetching all courses
+final allCoursesProvider = StreamProvider<List<Map<String, dynamic>>>((ref) {
+  // Accessing the CourseService instance
   final courseService = ref.read(courseServiceProvider);
-  return courseService.fetchEnrolledCoursesByUserId(doctorId);
+  return courseService.getAllCourses();
 });
+
+final departmentCoursesProvider = StreamProvider.family<List<Course>, String>((ref, departmentId) {
+  final courseService = ref.read(courseServiceProvider);
+  return courseService.getCoursesByDepartmentId(departmentId);
+});
+
+
+// StateNotifierProvider for managing the course state
+final userCourseStateProvider =  StateNotifierProvider<CourseStateNotifier, List<Course>>(
+  (ref) => CourseStateNotifier(ref.read(courseServiceProvider)),
+);

@@ -72,21 +72,21 @@ class _DoctorProfileScreenState extends State<DoctorProfile> {
           child: Column(
             children: [
               GestureDetector(
-                onTap: _pickImage,
+                // onTap: _pickImage,
                 child: CircleAvatar(
                   radius: 50,
                   backgroundColor: colorScheme.secondaryContainer,
-                  child: _profileImagePath == null
-                      ? Icon(Icons.account_circle,
+                  child:
+                       Icon(Icons.account_circle,
                           size: 50, color: colorScheme.onSurface)
-                      : ClipOval(
-                          child: Image.file(
-                            File(_profileImagePath!),
-                            width: 100,
-                            height: 100,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
+                      // : ClipOval(
+                      //     child: Image.file(
+                      //       File(_profileImagePath!),
+                      //       width: 100,
+                      //       height: 100,
+                      //       fit: BoxFit.cover,
+                      //     ),
+                      //   ),
                 ),
               ),
               const SizedBox(height: 16),

@@ -88,9 +88,8 @@ class CourseService {
     }
   }
 
-  Stream<List<Map<String, dynamic>>> fetchEnrolledCoursesByUserId(
-      String userId) {
-    return FirebaseFirestore.instance
+  Stream<List<Map<String, dynamic>>> fetchEnrolledCoursesByUserId(String userId) {
+    return _firestore
         .collection('users')
         .doc(userId)
         .snapshots()
@@ -196,4 +195,50 @@ class CourseService {
       throw Exception('Failed to remove course: $e');
     }
   }
+  Future<void> deleteCourse(String courseId) async {
+  WriteBatch batch = _firestore.batch();
+
+  try {
+    // Delete the course document
+    DocumentReference courseDocRef = _firestore.collection('Courses').doc(courseId);
+    batch.delete(courseDocRef);
+
+    // Remove the course from all users' enrolled_courses
+    QuerySnapshot userQuerySnapshot = await _firestore.collection('users').get();
+    for (DocumentSnapshot userDoc in userQuerySnapshot.docs) {
+      Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
+      List<dynamic>? enrolledCourses = userData['enrolled_courses'];
+
+      if (enrolledCourses != null) {
+        enrolledCourses.removeWhere((course) => course['id'] == courseId);
+        batch.update(userDoc.reference, {'enrolled_courses': enrolledCourses});
+      }
+    }
+
+    // Delete assignments related to the course
+    QuerySnapshot assignmentQuerySnapshot = await _firestore
+        .collection('assignments')
+        .where('courseId', isEqualTo: courseId)
+        .get();
+    for (DocumentSnapshot assignmentDoc in assignmentQuerySnapshot.docs) {
+      batch.delete(assignmentDoc.reference);
+    }
+
+    // Delete quizzes related to the course
+    QuerySnapshot quizQuerySnapshot = await _firestore
+        .collection('quizzes')
+        .where('courseId', isEqualTo: courseId)
+        .get();
+    for (DocumentSnapshot quizDoc in quizQuerySnapshot.docs) {
+      batch.delete(quizDoc.reference);
+    }
+
+    // Commit the batch
+    await batch.commit();
+    print('Course deleted successfully with all related data.');
+  } catch (e) {
+    throw Exception('Failed to delete course: $e');
+  }
+}
+
 }

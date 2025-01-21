@@ -8,24 +8,20 @@ import 'package:flutter/material.dart';
 import 'package:mobileprogramming/design_course_app_theme.dart';
 import 'package:mobileprogramming/screens/Assignment/SubmitAssignmentScreen.dart';
 import 'package:mobileprogramming/screens/AssignmentScreens/student-view-submission.dart';
-import 'package:mobileprogramming/screens/AssignmentScreens/ui-student-submission.dart';
-// import 'package:mobileprogramming/screens/AssignmentScreens/student_submission_form_screen.dart';
+import 'package:mobileprogramming/screens/AssignmentScreens/student_submission_form_screen.dart';
 
-class AssignmentDetailScreen extends StatefulWidget {
-  final String assignmentId;
-  final Map<String, dynamic> assignmentData;
+class SubmissionFormScreen extends StatefulWidget {
+    final String assignmentId;
+  final String assignmentDescription;
 
-  
-  const AssignmentDetailScreen({
-    super.key,
-    required this.assignmentId,
-    required this.assignmentData,
-  });
+
+  const SubmissionFormScreen({Key? key, required this.assignmentId,  required this.assignmentDescription,}) : super(key: key);
+ 
   @override
-  _AssignmentDetailScreenState createState() => _AssignmentDetailScreenState();
+  _SubmissionFormScreenState createState() => _SubmissionFormScreenState();
 }
 
-class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> with TickerProviderStateMixin {
+class _SubmissionFormScreenState extends State<SubmissionFormScreen> with TickerProviderStateMixin {
   final double infoHeight = 364.0;
   AnimationController? animationController;
   Animation<double>? animation;
@@ -33,13 +29,12 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> with Ti
   double opacity2 = 0.0;
   double opacity3 = 0.0;
   bool _isOverdue = false;
-  bool _isSubmitted = false;
+
 PlatformFile? pickedFile;
 UploadTask? uploadTask;
- bool _isLoading = true;
-  bool _hasSubmitted = false;
-    String _submissionStatus = 'Not Submitted';
-  DateTime? _dueDate;
+ final TextEditingController _notesController = TextEditingController();
+  bool _isUploading = false;
+ 
   @override
   void initState() {
     animationController = AnimationController(
@@ -49,153 +44,58 @@ UploadTask? uploadTask;
         curve: Interval(0, 1.0, curve: Curves.fastOutSlowIn)));
     setData();
     super.initState();
-    _checkSubmission();
-     _fetchAssignmentDetails();
+    // _checkSubmission();
+    //  _fetchAssignmentDetails();
   }
-  Future<void> _fetchAssignmentDetails() async {
+  Future<void> _submitForm() async {
+    if (_notesController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter some answers before submitting.')),
+      );
+      return;
+    }
+
+    setState(() {
+      _isUploading = true;
+    });
+
     try {
+      // Get current user ID
       final userId = FirebaseAuth.instance.currentUser?.uid;
       if (userId == null) {
         throw Exception('User not logged in');
       }
 
-      // Fetch the assignment details
-      final assignmentSnapshot = await FirebaseFirestore.instance
-          .collection('assignments')
-          .doc(widget.assignmentId)
-          .get();
+      // Prepare the submission data
+      final submissionData = {
+        'assignmentId': widget.assignmentId,
+        'userId': userId,
+        'notes': _notesController.text.trim(),
+        'submittedAt': Timestamp.now(),
+      };
 
-      if (assignmentSnapshot.exists) {
-        final assignmentData = assignmentSnapshot.data();
-        _dueDate  = (assignmentData?['dueDateTime'] as Timestamp?)?.toDate();
-
-        // Check if the assignment is overdue
-        if (_dueDate != null && _dueDate!.isBefore(DateTime.now())) {
-          _isOverdue = true;
-        }
-
-        // Check if the user has submitted the assignment
-        final submissionSnapshot = await FirebaseFirestore.instance
-            .collection('submissions')
-            .where('assignmentId', isEqualTo: widget.assignmentId)
-            .where('userId', isEqualTo: userId)
-            .get();
-
-        if (submissionSnapshot.docs.isNotEmpty) {
-          _hasSubmitted = true;
-          _submissionStatus = 'Submitted';
-        } else if (_isOverdue) {
-          _submissionStatus = 'Overdue';
-        }
-      }
+      // Save to Firestore (submissions collection)
+      await FirebaseFirestore.instance.collection('submissions').add(submissionData);
 
       setState(() {
-        _isLoading = false;
+        _isUploading = false;
       });
+
+      // Navigate back or show a confirmation message
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Assignment submitted successfully!')),
+      );
     } catch (e) {
       setState(() {
-        _isLoading = false;
+        _isUploading = false;
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to fetch assignment details: ${e.toString()}')),
+        SnackBar(content: Text('Failed to submit assignment: ${e.toString()}')),
       );
     }
   }
-  Future<void> _checkSubmission() async {
-    try {
-      final userId = FirebaseAuth.instance.currentUser?.uid;
-      if (userId == null) {
-        throw Exception('User not logged in');
-      }
-
-      final query = await FirebaseFirestore.instance
-          .collection('submissions')
-          .where('assignmentId', isEqualTo: widget.assignmentId)
-          .where('userId', isEqualTo: userId)
-          .get();
-
-      setState(() {
-        _hasSubmitted = query.docs.isNotEmpty;
-        _isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to check submission: ${e.toString()}')),
-      );
-    }
-  }
-
-Future<void> _submitAssignment() async {
-  // try {
-  //   final user = FirebaseAuth.instance.currentUser;
-  //   if (user == null) {
-  //     print('Error: User is not authenticated');
-  //     return;
-  //   }
-
-  //   final userId = user.uid;
-  //   final assignmentId = widget.assignmentId; // From the widget data
-  //   final result = await FilePicker.platform.pickFiles();
-
-  //   if (result == null || result.files.single.path == null) {
-  //     debugPrint('No file selected');
-  //     return;
-  //   }
-
-  //   final filePath = result.files.single.path!;
-  //   final fileName = result.files.single.name;
-  //   final file = File(filePath);
-
-  //   debugPrint('Selected file path: $filePath');
-  //   debugPrint('File name: $fileName');
-
-  //   // Sanitize file name if necessary
-  //   final sanitizedFileName = Uri.encodeComponent(fileName);
-
-  //   // Firebase Storage Reference
-  //   final storageRef = FirebaseStorage.instance
-  //       .ref()
-  //       .child('submissions/$userId/$assignmentId/$sanitizedFileName');
-  //   debugPrint('Storage Ref Path: submissions/$userId/$assignmentId/$sanitizedFileName');
-
-  //   // Upload the file to Firebase Storage
-  //   final uploadTask = storageRef.putFile(file);
-  //   final snapshot = await uploadTask;
-
-  //   // Retrieve the download URL
-  //   final fileUrl = await snapshot.ref.getDownloadURL();
-
-  //   debugPrint('File uploaded successfully: $fileUrl');
-
-  //   // Save submission data to Firestore
-  //   final firestoreRef = FirebaseFirestore.instance
-  //       .collection('submissions')
-  //       .doc(); // Auto-generate a document ID for each submission
-
-  //   await firestoreRef.set({
-  //     'userId': userId,
-  //     'assignmentId': assignmentId,
-  //     'fileName': fileName,
-  //     'fileUrl': fileUrl,  // Store the file URL in Firestore
-  //     'submittedAt': FieldValue.serverTimestamp(),
-  //   });
-
-  //   debugPrint('Submission saved to Firestore successfully.');
-  //   ScaffoldMessenger.of(context).showSnackBar(
-  //     const SnackBar(content: Text('Assignment submitted successfully!')),
-  //   );
-  // } catch (e) {
-  //   debugPrint('Error during submission: $e');
-  //   ScaffoldMessenger.of(context).showSnackBar(
-  //     SnackBar(content: Text('Failed to submit assignment: $e')),
-  //   );
-  // }
-}
-
-
+  
   Future<void> setData() async {
     animationController?.forward();
     await Future<dynamic>.delayed(const Duration(milliseconds: 200));
@@ -214,7 +114,7 @@ Future<void> _submitAssignment() async {
 
   @override
   Widget build(BuildContext context) {
-    final dueDate = widget.assignmentData['dueDateTime'].toDate();
+    //final dueDate = widget.assignmentData['dueDateTime'].toDate();
     final double tempHeight = MediaQuery.of(context).size.height -
         (MediaQuery.of(context).size.width / 1.2) +
         24.0;
@@ -268,7 +168,7 @@ Future<void> _submitAssignment() async {
                             padding: const EdgeInsets.only(
                                 top: 32.0, left: 18, right: 16),
                             child: Text(
-                              widget.assignmentData['title'],
+                              widget.assignmentDescription,
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                 fontWeight: FontWeight.w600,
@@ -285,79 +185,142 @@ Future<void> _submitAssignment() async {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
-                                Text(
-                                  dueDate.toString(),
-                                 // '\$${courseData['price'] ?? '0.00'}',
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w200,
-                                    fontSize: 22,
-                                    letterSpacing: 0.27,
-                                    color: Colors.indigo[800],
-                                  ),
-                                ),
+                              //   Text(
+                              //  //   dueDate.toString(),
+                              //    // '\$${courseData['price'] ?? '0.00'}',
+                              //     textAlign: TextAlign.left,
+                              //     style: TextStyle(
+                              //       fontWeight: FontWeight.w200,
+                              //       fontSize: 22,
+                              //       letterSpacing: 0.27,
+                              //       color: Colors.indigo[800],
+                              //     ),
+                              //   ),
                                 Container(
                                   child: Row(
-                                    // children: <Widget>[
-                                    //   Text(
-                                    //     //'${courseData['rating'] ?? '0.0'}',
-                                    //     _isOverdue ? 'Overdue' : 'On Time',
-                                    //     textAlign: TextAlign.left,
-                                    //     style: TextStyle(
-                                    //       fontWeight: FontWeight.w200,
-                                    //       fontSize: 22,
-                                    //       letterSpacing: 0.27,
-                                    //       color: DesignCourseAppTheme.grey,
-                                    //     ),
-                                    //   ),
-                                    //   Icon(
-                                    //     Icons.star,
-                                    //     color: DesignCourseAppTheme.nearlyBlue,
-                                    //     size: 24,
-                                    //   ),
-                                    // ],
+                                    
                                   ),
                                 )
                               ],
                             ),
                           ),
-                               AnimatedOpacity(
-                    duration: const Duration(milliseconds: 500),
-                    opacity: opacity1,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Row(
-                        children: <Widget>[
-                          getTimeBoxUI(_isOverdue ? 'Overdue' : 'On Time', 'Deadline Status'),
-                          getTimeBoxUI(_hasSubmitted ? 'Submitted' : 'Not Submitted', 'Submission Status'),
-                        ],
-                      ),
-                    ),
-                  ),
+                  //              AnimatedOpacity(
+                  //   duration: const Duration(milliseconds: 500),
+                  //   opacity: opacity1,
+                  //   child: Padding(
+                  //     padding: const EdgeInsets.all(8),
+                  //     child: Row(
+                  //       children: <Widget>[
+                  //         // getTimeBoxUI(_isOverdue ? 'Overdue' : 'On Time', 'Deadline Status'),
+                  //         // getTimeBoxUI(_hasSubmitted ? 'Submitted' : 'Not Submitted', 'Submission Status'),
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
                           Expanded(
                             child: AnimatedOpacity(
                               duration: const Duration(milliseconds: 500),
                               opacity: opacity2,
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 16, right: 16, top: 8, bottom: 8),
-                                child: Text(
-                                widget.assignmentData['description'] ??
-                                      'No description available.',
-                                  textAlign: TextAlign.justify,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w200,
-                                    fontSize: 14,
-                                    letterSpacing: 0.27,
-                                    color: DesignCourseAppTheme.grey,
+                              child:  Padding(
+                            padding: const EdgeInsets.only(
+                                top: 32.0, left: 18, right: 16),
+                            child: Column(
+                              children: [
+                                TextField(
+                                  controller: _notesController,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Answer',
                                   ),
-                                  maxLines: 3,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
+                                  maxLines: 8,
+                              )],
+                            ),
+                          ),
+                            ),
+                          ),
+                            AnimatedOpacity(
+                            duration: const Duration(milliseconds: 500),
+                            opacity: opacity3,
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 16, bottom: 16, right: 16),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  // Container(
+                                  //   width: 48,
+                                  //   height: 48,
+                                  //   child: Container(
+                                  //     decoration: BoxDecoration(
+                                  //       color: Colors.indigo[800],
+                                  //       borderRadius: const BorderRadius.all(
+                                  //         Radius.circular(16.0),
+                                  //       ),
+                                  //       border: Border.all(
+                                  //           color: DesignCourseAppTheme.grey
+                                  //               .withOpacity(0.2)),
+                                  //     ),
+                                  //     child: Icon(
+                                  //       Icons.book,
+                                  //       color: DesignCourseAppTheme
+                                  //               .nearlyWhite,
+                                  //       size: 28,
+                                  //     ),
+                                  //   ),
+                                  // ),
+                                  const SizedBox(
+                                    width: 16,
+                                  ),
+                                  // Expanded(
+                                    Container(
+                                      height: 48,
+                                      decoration: BoxDecoration(
+                                        color: Colors.indigo[800],
+                                        borderRadius: const BorderRadius.all(
+                                          Radius.circular(16.0),
+                                        ),
+                                        boxShadow: <BoxShadow>[
+                                          BoxShadow(
+                                              color: Colors.indigo[800]!.withOpacity(0.5),
+                                                 
+                                              offset: const Offset(1.1, 1.1),
+                                              blurRadius: 10.0),
+                                        ],
+                                      ),
+                              //          child: ElevatedButton(
+                                       
+                              // //         Navigator.push(
+                              // //           context,
+                                          
+                              // // //           MaterialPageRoute(
+                                          
+                              // // //            builder: (context) => 
+                              // // //            _hasSubmitted
+                              // // // ? ViewSubmissionScreen(assignmentId: widget.assignmentId)
+                              // // // : SubmissionFormScreen(assignmentId: widget.assignmentId),
+                              // // //           ),
+                              // //         );
+                              //  onPressed: _isUploading ? null : _submitForm,
+                                                                       
+                              //        style: ElevatedButton.styleFrom( backgroundColor: Colors.indigo[800]!
+                              //                     .withOpacity(0.5),),   
+                              //        child: Text('Submit',
+                              //             textAlign: TextAlign.left,
+                              //             style: TextStyle(
+                              //               fontWeight: FontWeight.w600,
+                              //               fontSize: 18,
+                              //               letterSpacing: 0.0,
+                              //               color: DesignCourseAppTheme
+                              //                   .nearlyWhite,
+                              //                  )),),
+                
+           
+                                    )  ,
+                                  
+                                ],
                               ),
                             ),
                           ),
-                           
                           AnimatedOpacity(
                             duration: const Duration(milliseconds: 500),
                             opacity: opacity3,
@@ -382,7 +345,7 @@ Future<void> _submitAssignment() async {
                                                 .withOpacity(0.2)),
                                       ),
                                       child: Icon(
-                                        Icons.book,
+                                        Icons.assignment,
                                         color: DesignCourseAppTheme
                                                 .nearlyWhite,
                                         size: 28,
@@ -410,21 +373,22 @@ Future<void> _submitAssignment() async {
                                       ),
                                        child: ElevatedButton(
                                        
-                                              onPressed: () {
-                                      Navigator.push(
-                                        context,
+                              //         Navigator.push(
+                              //           context,
                                           
-                                        MaterialPageRoute(
+                              // //           MaterialPageRoute(
                                           
-                                         builder: (context) => _hasSubmitted
-                              ? ViewSubmissionScreen(assignmentId: widget.assignmentId)
-                              : SubmissionFormScreen(assignmentId: widget.assignmentId,assignmentDescription: widget.assignmentData['description']),
-                                        ),
-                                      );
-                                    } ,                                      
+                              // //            builder: (context) => 
+                              // //            _hasSubmitted
+                              // // ? ViewSubmissionScreen(assignmentId: widget.assignmentId)
+                              // // : SubmissionFormScreen(assignmentId: widget.assignmentId),
+                              // //           ),
+                              //         );
+                               onPressed: _isUploading ? null : _submitForm,
+                                                                       
                                      style: ElevatedButton.styleFrom( backgroundColor: Colors.indigo[800]!
-                                                  .withOpacity(0.5),),   
-                                     child: Text(_hasSubmitted ? 'Edit Submission' : 'Submit Assignment',
+                                                  .withOpacity(0.5),  minimumSize: Size(240, 50)),   
+                                     child: Text('Submit',
                                           textAlign: TextAlign.left,
                                           style: TextStyle(
                                             fontWeight: FontWeight.w600,
@@ -432,13 +396,12 @@ Future<void> _submitAssignment() async {
                                             letterSpacing: 0.0,
                                             color: DesignCourseAppTheme
                                                 .nearlyWhite,
-                                               )),),
+                                                
+                                               )),)
+                                               ,
                 
            
                                     )  ,
-                                    
-                                         
-                                
                                   
                                 ],
                               ),
@@ -462,23 +425,6 @@ Future<void> _submitAssignment() async {
                 alignment: Alignment.center,
                 scale: CurvedAnimation(
                     parent: animationController!, curve: Curves.fastOutSlowIn),
-                // child: Card(
-                //   color:Colors.indigo[800],
-                //   shape: RoundedRectangleBorder(
-                //       borderRadius: BorderRadius.circular(50.0)),
-                //   elevation: 10.0,
-                //   child: Container(
-                //     width: 60,
-                //     height: 60,
-                //     child: Center(
-                //       child: Icon(
-                //         Icons.favorite,
-                //         color: DesignCourseAppTheme.nearlyWhite,
-                //         size: 30,
-                //       ),
-                //     ),
-                //   ),
-                // ),
               ),
             ),
             Padding(
