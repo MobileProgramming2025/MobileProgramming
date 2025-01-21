@@ -183,7 +183,7 @@ class _ViewSubmissionsScreenState extends State<ViewSubmissionsScreen> {
                       title: Text('Submission by: $studentName'),
                       subtitle: Text(
                         'Email: $studentEmail\n'
-                        'Notes: ${submission['notes'] ?? 'No notes provided'}\n'
+                        'Answer: ${submission['notes'] ?? 'No notes provided'}\n'
                         'Submitted at: ${submittedAt != null ? _formatDate(submittedAt) : 'Unknown time'}',
                      ) ),
                   );
