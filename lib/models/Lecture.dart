@@ -3,14 +3,14 @@ class Lecture {
   final String description;
   final DateTime dateAdded;
   final String courseId;
-  final String fileUrl;
+  final String fileName;
 
   Lecture({
     required this.title,
     required this.description,
     required this.dateAdded,
     required this.courseId,
-    required this.fileUrl,
+    required this.fileName,
   });
 
   // Convert a Lecture object to a Map (for Firebase)
@@ -20,7 +20,7 @@ class Lecture {
       'description': description,
       'date_added': dateAdded.toIso8601String(),
       'course_id': courseId,
-      'file_url': fileUrl,
+      'file_name': fileName,
     };
   }
 
@@ -42,7 +42,7 @@ class Lecture {
           ? DateTime.parse(map['date_added'] as String)
           : DateTime.now(), // Default to current date if null
       courseId: map['course_id'] as String? ?? '',
-      fileUrl: map['file_url'] as String? ?? '', 
+      fileName: map['file_name'] as String? ?? '', 
     );
   }
 

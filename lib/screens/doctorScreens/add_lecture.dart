@@ -19,7 +19,7 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   DateTime? selectedDate;
-  String? uploadedFileUrl;
+  String? uploadedFileName;
 
   Future<String?> pickAndUploadFile() async {
     final result = await FilePicker.platform.pickFiles(allowMultiple: false);
@@ -27,8 +27,14 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
       final file = File(result.files.single.path!);
       final fileName = result.files.single.name;
       try {
-        final fileUrl = await uploadFileToSupabase(fileName, file);
-        return fileUrl;
+        // Upload the file to Supabase and get the file name
+        await uploadFileToSupabase(fileName, file);
+        
+        // Store the file name in the variable
+        setState(() {
+          uploadedFileName = fileName;  // Store the file name instead of the URL
+        });
+        return fileName;  // Return the file name
       } catch (error) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -39,6 +45,7 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
     }
     return null; // Return null if the user cancels or upload fails
   }
+
 
   Future<String> uploadFileToSupabase(String fileName, File file) async {
     try {
@@ -65,7 +72,7 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
     final title = titleController.text.trim();
     final description = descriptionController.text.trim();
 
-    if (title.isEmpty || description.isEmpty || selectedDate == null || uploadedFileUrl == null) {
+    if (title.isEmpty || description.isEmpty || selectedDate == null || uploadedFileName == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Please fill all fields and upload a file")),
       );
@@ -77,7 +84,7 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
       description: description,
       dateAdded: selectedDate!,
       courseId: widget.courseId,
-      fileUrl: uploadedFileUrl!,
+      fileName: uploadedFileName!,
     );
 
     try {
@@ -93,7 +100,7 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
       descriptionController.clear();
       setState(() {
         selectedDate = null;
-        uploadedFileUrl = null;
+        uploadedFileName = null;
       });
     } catch (e) {
       if (!mounted) return;
@@ -155,15 +162,15 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
                 final fileUrl = await pickAndUploadFile();
                 if (fileUrl != null) {
                   setState(() {
-                    uploadedFileUrl = fileUrl;
+                    uploadedFileName = fileUrl;
                   });
                 }
               },
               child: Text('Upload File'),
             ),
-            if (uploadedFileUrl != null)
+            if (uploadedFileName != null)
               Text(
-                'Uploaded File URL: $uploadedFileUrl',
+                'Uploaded File name: $uploadedFileName',
                 style: TextStyle(fontSize: 12),
               ),
             SizedBox(height: 10),
