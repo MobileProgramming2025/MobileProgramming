@@ -129,7 +129,7 @@ class _WeeklyScheduleState extends State<WeeklySchedule> {
 
   Color getEventColor(List<Map<String, dynamic>> tasksAtTime) {
     if (tasksAtTime.isEmpty) {
-      return const Color.fromARGB(170, 222, 206, 198); 
+      return const Color.fromARGB(223, 255, 255, 255); 
     }
 
     tasksAtTime.sort((a, b) => a['date'].compareTo(b['date']));
@@ -138,11 +138,11 @@ class _WeeklyScheduleState extends State<WeeklySchedule> {
     for (var event in tasksAtTime) {
       DateTime eventDate = event['date'];
       if (eventDate.isBefore(today.add(Duration(days: 1))) && eventDate.isAfter(today.subtract(Duration(days: 1)))) {
-        return const Color.fromARGB(255, 217, 237, 255)!; 
+        return const Color.fromRGBO(162, 200, 232, 1)!; 
       }
     }
 
-    return Colors.orange[100]!;
+    return const Color.fromARGB(255, 255, 255, 255)!;
   }
 
   @override
@@ -185,61 +185,65 @@ class _WeeklyScheduleState extends State<WeeklySchedule> {
 
             final timeSlots = timeSlotsSet.toList()..sort(); 
 
-            return SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                child: Column(
-                  children: [
-                    Row(
+        
+            return Center(
+              child: Container(
+                margin: EdgeInsets.all(16.0),  
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: Column(
                       children: [
-                        Container(width: 50, height: 50), 
-                        ...List.generate(7, (index) {
-                          String day = daysOfWeek[index];
-                          String formattedDate = getFormattedDate(daysOfWeekDates[index]);
-                          return Container(
-                            width: 150,
-                            height: 50,
-                            color: Colors.grey[300],
-                            alignment: Alignment.center,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  day,
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  formattedDate,
-                                  style: TextStyle(fontSize: 12),
-                                ),
-                              ],
-                            ),
-                          );
-                        }),
-                      ],
-                    ),
-                    Column(
-                      children: timeSlots.map((time) {
-                        return Row(
+                        Row(
                           children: [
-                            Container(
-                              width: 50,
-                              height: 100,
-                              color: Colors.grey[200],
-                              alignment: Alignment.center,
-                              child: Text(time),
-                            ),
-                            ...daysOfWeek.map((day) {
-                              final dayEvents = schedule[day] ?? [];
-                              final tasksAtTime = dayEvents.where((event) {
-                                DateTime eventTime = event['date'];
-                                int eventMinute = eventTime.minute;
-                                String eventTimeSlot =
-                                    '${eventTime.hour.toString().padLeft(2, '0')}:${eventMinute >= 30 ? '30' : '00'}';
+                            Container(width: 50, height: 50), 
+                            ...List.generate(7, (index) {
+                              String day = daysOfWeek[index];
+                              String formattedDate = getFormattedDate(daysOfWeekDates[index]);
+                              return Container(
+                                width: 150,
+                                height: 50,
+                                color: const Color.fromARGB(255, 253, 253, 253),
+                                alignment: Alignment.center,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      day,
+                                      style: TextStyle(fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(
+                                      formattedDate,
+                                      style: TextStyle(fontSize: 12),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }),
+                          ],
+                        ),
+                        Column(
+                          children: timeSlots.map((time) {
+                            return Row(
+                              children: [
+                                Container(
+                                  width: 50,
+                                  height: 100,
+                                  color: const Color.fromARGB(255, 255, 255, 255),
+                                  alignment: Alignment.center,
+                                  child: Text(time),
+                                ),
+                                ...daysOfWeek.map((day) {
+                                  final dayEvents = schedule[day] ?? [];
+                                  final tasksAtTime = dayEvents.where((event) {
+                                    DateTime eventTime = event['date'];
+                                    int eventMinute = eventTime.minute;
+                                    String eventTimeSlot =
+                                        '${eventTime.hour.toString().padLeft(2, '0')}:${eventMinute >= 30 ? '30' : '00'}';
 
-                                return eventTimeSlot == time;
-                              }).toList();
+                                    return eventTimeSlot == time;
+                                  }).toList();
 
                               tasksAtTime.sort((a, b) => a['date'].compareTo(b['date']));
 
@@ -272,8 +276,10 @@ class _WeeklyScheduleState extends State<WeeklySchedule> {
                           ],
                         );
                       }).toList(),
+                     ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
             );
