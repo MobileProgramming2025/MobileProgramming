@@ -76,14 +76,7 @@ class _ViewCoursesScreenState extends ConsumerState<ViewCoursesScreen> {
                                 course.name,
                                 style: Theme.of(context).textTheme.headlineMedium,
                               ),
-                              IconButton(
-                                icon: const Icon(Icons.delete),
-                                onPressed: () {
-                                  _deleteCourse(course.id); 
-                                },
-                                color: Colors.red,
-                                iconSize: 28,
-                              ),
+                           
                             ],
                           ),
                           const SizedBox(height: 8),
@@ -107,6 +100,14 @@ class _ViewCoursesScreenState extends ConsumerState<ViewCoursesScreen> {
                             'Year: ${course.year}',
                             style: Theme.of(context).textTheme.bodyLarge,
                           ),
+                             IconButton(
+                                icon: const Icon(Icons.delete),
+                                onPressed: () {
+                                  _deleteCourse(course.id); 
+                                },
+                                color: Colors.red,
+                                iconSize: 28,
+                              ),
                         ],
                       ),
                     ),
