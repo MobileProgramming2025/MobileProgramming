@@ -1,83 +1,149 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mobileprogramming/models/lecture.dart';
 import 'package:mobileprogramming/services/lecture_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_pdfview/flutter_pdfview.dart';  // For PDF files
 
-class LecturesListScreen extends StatefulWidget {
+class LectureListScreen extends StatefulWidget {
   final String courseId;
 
-  const LecturesListScreen({super.key, required this.courseId});
+  const LectureListScreen({super.key, required this.courseId});
 
   @override
-  State<LecturesListScreen> createState() => _LecturesListScreenState();
+  State<LectureListScreen> createState() => _LectureListScreenState();
 }
 
-class _LecturesListScreenState extends State<LecturesListScreen> {
-  late Future<List<Lecture>> _lecturesFuture;
+class _LectureListScreenState extends State<LectureListScreen> {
+  late Future<List<Lecture>> lectureList;
 
   @override
   void initState() {
     super.initState();
-    _lecturesFuture = LectureService().getLecturesByCourse(widget.courseId);
+    // Fetch the lectures for the specific course
+    lectureList = LectureService().getLecturesByCourse(widget.courseId);
   }
 
-  Future<void> _downloadFile(String fileName) async {
-    // Construct the URL using Supabase's storage service and the file name
-    final fileUrl = Supabase.instance.client.storage
-        .from('lecture-files') // The bucket name
-        .getPublicUrl(fileName);
+  // Function to download and display the file
+  Future<void> downloadAndDisplayFile(String fileName) async {
+    try {
+      // Fetch file from Supabase storage
+      final response = await Supabase.instance.client.storage
+          .from('lecture-files') // Your bucket name
+          .download(fileName); // Download the file
 
-    // Launch the URL directly (no need to check if it can be launched)
-    await launchUrl(Uri.parse(fileUrl), mode: LaunchMode.externalApplication);
+      // Check if the response has an error
+      // if (response.error != null) {
+      //   throw Exception('Error downloading file: ${response.error!.message}');
+      // }
+      // Ensure that the response has the file data as a Uint8List
+      final fileBytes = response; 
+      // if (fileBytes == null) {
+      //   throw Exception('File data is null');
+      // }
+
+      // Ensure that the response has the file data as a Uint8List
+      // final fileBytes = response.data!;
+      // final fileBytes = await response.readAsByte();
+      // if (fileBytes == null) {
+      //   throw Exception('File data is null');
+      // }
+
+      // Create a temporary file
+      final file = File('${(await Directory.systemTemp.createTemp()).path}/$fileName');
+      await file.writeAsBytes(fileBytes); // Write the file content to local storage
+
+      // Check the file extension to decide how to display it
+      final fileExtension = fileName.split('.').last.toLowerCase();
+
+      if (fileExtension == 'pdf') {
+        // Display PDF
+        showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            title: Text("Lecture PDF"),
+            content: Container(
+              height: 400,
+              width: 300,
+              child: PDFView(
+                filePath: file.path,
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text("Close"),
+              ),
+            ],
+          ),
+        );
+      } else if (fileExtension == 'jpg' || fileExtension == 'png' || fileExtension == 'jpeg') {
+        // Display image
+        showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            title: Text("Lecture Image"),
+            content: Image.file(file),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text("Close"),
+              ),
+            ],
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Unsupported file type")),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error fetching file: $e")),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Lectures'),
+        title: Text('Lectures'),
       ),
       body: FutureBuilder<List<Lecture>>(
-        future: _lecturesFuture,
+        future: lectureList,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(
-              child: Text('Error: ${snapshot.error}'),
-            );
+            return Center(child: Text("Error: ${snapshot.error}"));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(
-              child: Text('No lectures found for this course.'),
-            );
+            return Center(child: Text("No lectures found"));
           }
 
           final lectures = snapshot.data!;
+
           return ListView.builder(
             itemCount: lectures.length,
             itemBuilder: (context, index) {
               final lecture = lectures[index];
-              return Card(
-                margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                child: ListTile(
-                  title: Text(lecture.title),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(lecture.description),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Added on: ${lecture.dateAdded.toLocal().toString().split(' ')[0]}',
-                        style: const TextStyle(fontSize: 12, color: Colors.grey),
-                      ),
-                    ],
-                  ),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.download),
-                    onPressed: () => _downloadFile(lecture.fileName),
-                  ),
+              return ListTile(
+                title: Text(lecture.title),
+                subtitle: Text(lecture.description),
+                trailing: IconButton(
+                  icon: Icon(Icons.download),
+                  onPressed: () {
+                    downloadAndDisplayFile(lecture.fileName); // Trigger file download and display
+                  },
                 ),
+                onTap: () {
+                  // You can navigate to a detail screen or perform other actions
+                },
               );
             },
           );
