@@ -22,6 +22,8 @@ class UserHome extends ConsumerStatefulWidget {
 
 class _UserHomeState extends ConsumerState<UserHome> {
   final CourseService _courseService = CourseService();
+    bool isLoading = true;
+
   List<String> courses = [];
   DateTime _selectedDate = DateTime.now();
   DateTime _focusedDate = DateTime.now();
@@ -31,11 +33,18 @@ class _UserHomeState extends ConsumerState<UserHome> {
   void initState() {
     super.initState();
     user = widget.user;
+    _fetchData();
     // Fetch courses for the user
     ref.read(userCourseStateProvider.notifier).fetchUserCourses(user.id);
 
   }
 
+  Future<void> _fetchData() async {
+    await Future.delayed(Duration(seconds: 1));
+    setState(() {
+      isLoading = false;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     final courses = ref.watch(userCourseStateProvider);
@@ -46,9 +55,8 @@ class _UserHomeState extends ConsumerState<UserHome> {
         appBarText: "Hello, ${user.name}!",
       ),
       drawer: UserDrawerScreen(user: user),
-      body: courses.isEmpty
-          ? const Center(
-              child: CircularProgressIndicator()) // Show loading state
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),

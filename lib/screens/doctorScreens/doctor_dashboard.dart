@@ -33,6 +33,7 @@ class _DoctorDashboardState extends ConsumerState<DoctorDashboard> {
     super.initState();
     _fetchData();
     doctor = widget.doctor;
+    // Fetch courses for the user
     ref.read(userCourseStateProvider.notifier).fetchUserCourses(doctor.id);
   }
 

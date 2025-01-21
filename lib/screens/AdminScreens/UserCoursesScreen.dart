@@ -57,55 +57,53 @@ class _ViewCoursesScreenState extends ConsumerState<UserCoursesScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: courses.isEmpty
-            ? const Center(
-                child: CircularProgressIndicator()) // Show loading state
-            : SingleChildScrollView(
-              child: ListView.builder(
-                  itemCount: courses.length,
-                  itemBuilder: (context, index) {
-                    final enrolledCourse = courses[index];
-              
-                    return Card(
-                      elevation: 4,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  enrolledCourse.name,
-                                  style:
-                                      Theme.of(context).textTheme.headlineMedium,
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  'Course Code: ${enrolledCourse.code}',
-                                  style: Theme.of(context).textTheme.bodyLarge,
-                                ),
-                              ],
-                            ),
-                            IconButton(
-                              icon: const Icon(
-                                Icons.delete,
-                                color: Colors.red,
+            ? const Center(child: Text("You don't have any enrolled courses."))
+            : ListView.builder(
+                itemCount: courses.length,
+                itemBuilder: (context, index) {
+                  final enrolledCourse = courses[index];
+
+                  return Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                enrolledCourse.name,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineMedium,
                               ),
-                              onPressed: () {
-                                _removeCourse(enrolledCourse.id);
-                              },
+                              const SizedBox(height: 8),
+                              Text(
+                                'Course Code: ${enrolledCourse.code}',
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                            ],
+                          ),
+                          IconButton(
+                            icon: const Icon(
+                              Icons.delete,
+                              color: Colors.red,
                             ),
-                          ],
-                        ),
+                            onPressed: () {
+                              _removeCourse(enrolledCourse.id);
+                            },
+                          ),
+                        ],
                       ),
-                    );
-                  },
-                ),
-            ),
+                    ),
+                  );
+                },
+              ),
       ),
     );
   }
