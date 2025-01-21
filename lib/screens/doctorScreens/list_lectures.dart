@@ -18,7 +18,7 @@ class _LecturesListScreenState extends State<LecturesListScreen> {
   @override
   void initState() {
     super.initState();
-    _lecturesFuture = LectureService().getLecturesByCourse(widget.courseId) as Future<List<Lecture>>;
+    _lecturesFuture = LectureService().getLecturesByCourse(widget.courseId);
   }
 
   Future<void> _downloadFile(String fileUrl) async {
