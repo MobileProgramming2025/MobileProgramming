@@ -38,10 +38,10 @@ void main() async {
   }
   await Firebase.initializeApp();
 
-  // await Supabase.initialize(
-  //   url: 'https://cspuiyyiuyyoihscmodk.supabase.co',
-  //   anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzcHVpeXlpdXl5b2loc2Ntb2RrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzcyODU0MTYsImV4cCI6MjA1Mjg2MTQxNn0.4B8eKp1tFTGY7A6K6zhlImaaTjE2YjHgbn-6erEz4A0',
-  // );
+  await Supabase.initialize(
+    url: 'https://cspuiyyiuyyoihscmodk.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzcHVpeXlpdXl5b2loc2Ntb2RrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzcyODU0MTYsImV4cCI6MjA1Mjg2MTQxNn0.4B8eKp1tFTGY7A6K6zhlImaaTjE2YjHgbn-6erEz4A0',
+  );
 
   runApp(const ProviderScope(child: MyApp()));
 }
