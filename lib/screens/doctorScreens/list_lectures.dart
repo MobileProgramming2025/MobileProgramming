@@ -75,7 +75,7 @@ class _LecturesListScreenState extends State<LecturesListScreen> {
                   ),
                   trailing: IconButton(
                     icon: const Icon(Icons.download),
-                    onPressed: () => _downloadFile(lecture.fileUrl),  // Use the file name (not the URL)
+                    onPressed: () => _downloadFile(lecture.fileName),
                   ),
                 ),
               );
