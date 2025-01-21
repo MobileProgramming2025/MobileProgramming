@@ -119,12 +119,15 @@ class _ViewCoursesScreenState extends State<ViewCoursesScreen> {
                           'Year: ${course['year']}',
                           style: Theme.of(context).textTheme.bodyLarge,
                         ),
-                          IconButton(
-                              icon: const Icon(Icons.delete),
-                              onPressed: () => _deleteCourse(course['id']),
-                              color: Colors.red,
-                              iconSize: 28,
-                            ),
+                        // IconButton(
+                        //   icon: const Icon(Icons.delete),
+                        //   onPressed: () {
+                        //     _deleteCourse(course.id);
+                        //     print(course.id);
+                        //   },
+                        //   color: Colors.red,
+                        //   iconSize: 28,
+                        // ),
                       ],
                     ),
                   ),
