@@ -88,9 +88,8 @@ class CourseService {
     }
   }
 
-  Stream<List<Map<String, dynamic>>> fetchEnrolledCoursesByUserId(
-      String userId) {
-    return FirebaseFirestore.instance
+  Stream<List<Map<String, dynamic>>> fetchEnrolledCoursesByUserId(String userId) {
+    return _firestore
         .collection('users')
         .doc(userId)
         .snapshots()

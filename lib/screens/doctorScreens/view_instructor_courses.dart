@@ -7,9 +7,9 @@ import 'package:mobileprogramming/screens/partials/DoctorBottomNavigationBar.dar
 
 class ViewInstructorCoursesScreen extends ConsumerStatefulWidget {
   final User doctor;
-  const ViewInstructorCoursesScreen({super.key,  required this.doctor});
+  const ViewInstructorCoursesScreen({super.key, required this.doctor});
 
-  @override 
+  @override
   ConsumerState<ViewInstructorCoursesScreen> createState() {
     return _ViewInstructorCoursesScreenState();
   }
@@ -18,81 +18,78 @@ class ViewInstructorCoursesScreen extends ConsumerStatefulWidget {
 class _ViewInstructorCoursesScreenState
     extends ConsumerState<ViewInstructorCoursesScreen> {
   late String doctorId; // ID of the doctor (instructor)
+  @override
+  void initState() {
+    super.initState();
+    doctorId = widget.doctor.id;
+    // Fetch courses for the doctor
+    ref.read(userCourseStateProvider.notifier).fetchUserCourses(doctorId);
+  }
 
   @override
   Widget build(BuildContext context) {
-    doctorId = widget.doctor.id;
-
-    // Fetch the stream of courses using Riverpod
-    final courseStream = ref.watch(coursesProvider(doctorId));
+    // Access the state using Riverpod's Consumer widget
+    final courses = ref.watch(userCourseStateProvider);
 
     return Scaffold(
-      appBar: DoctorAppBar(doctor: widget.doctor, appBarText: "My Courses",),
+      appBar: DoctorAppBar(
+        doctor: widget.doctor,
+        appBarText: "My Courses",
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: courseStream.when(
-          // Loading state
-          data: (courses) {
-            if (courses.isEmpty) {
-              return const Center( 
-                child: Text("You don't have any enrolled courses."),
-              );
-            }
-           
-            return ListView.builder(
-              itemCount: courses.length,
-              itemBuilder: (context, index) {
-                final enrolledCourses = courses[index];
+        child: courses.isEmpty
+            ? const Center(
+                child: Text("You don't have any enrolled courses"))
+            : ListView.builder(
+                itemCount: courses.length,
+                itemBuilder: (context, index) {
+                  final enrolledCourses = courses[index];
 
-                return InkWell(
-                  onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      '/view_courses_details',
-                      arguments: {
-                        'id': enrolledCourses['id'], 
-                        'name': enrolledCourses['name'], 
-                      },
-                    );
-                  },
-                  child: Card(
-                    elevation: 4,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            enrolledCourses['name'],
-                            style: Theme.of(context).textTheme.headlineMedium,
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Course Code: ${enrolledCourses['code']}',
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Year: ${enrolledCourses['year']}',
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                        ],
+                  return InkWell(
+                    onTap: () {
+                      Navigator.pushNamed(
+                        context,
+                        '/view_courses_details',
+                        arguments: {
+                          'id': enrolledCourses.id,
+                          'name': enrolledCourses.name,
+                        },
+                      );
+                    },
+                    child: Card(
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              enrolledCourses.name,
+                              style: Theme.of(context).textTheme.headlineMedium,
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Course Code: ${enrolledCourses.code}',
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Year: ${enrolledCourses.year}',
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ), 
-                );
-              },
-            );
-          },
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (e, s) => Center(child: Text('Error: $e')),
-        ),
+                  );
+                },
+              ),
       ),
-      bottomNavigationBar:DoctorBottomNavigationBar(doctor: widget.doctor),
-
+      bottomNavigationBar: DoctorBottomNavigationBar(doctor: widget.doctor),
     );
   }
 }

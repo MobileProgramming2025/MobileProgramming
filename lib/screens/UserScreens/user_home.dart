@@ -22,40 +22,42 @@ class UserHome extends ConsumerStatefulWidget {
 
 class _UserHomeState extends ConsumerState<UserHome> {
   final CourseService _courseService = CourseService();
-  bool isLoading = true;
+    bool isLoading = true;
+
   List<String> courses = [];
   DateTime _selectedDate = DateTime.now();
   DateTime _focusedDate = DateTime.now();
   late User user;
-  late String userId;
 
   @override
   void initState() {
     super.initState();
-    _fetchData();
     user = widget.user;
+    _fetchData();
+    // Fetch courses for the user
+    ref.read(userCourseStateProvider.notifier).fetchUserCourses(user.id);
+
   }
 
   Future<void> _fetchData() async {
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(Duration(seconds: 1));
     setState(() {
       isLoading = false;
     });
   }
-
   @override
   Widget build(BuildContext context) {
-    userId = widget.user.id;
-    final enrolledCourseStream = ref.watch(coursesProvider(userId));
+    final courses = ref.watch(userCourseStateProvider);
 
     return Scaffold(
-      
       appBar: DoctorAppBar(
         doctor: widget.user,
-        appBarText: "Hello, ${widget.user.name}!",
+        appBarText: "Hello, ${user.name}!",
       ),
       drawer: UserDrawerScreen(user: user),
-      body: SingleChildScrollView(
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -151,17 +153,12 @@ class _UserHomeState extends ConsumerState<UserHome> {
               ),
               SizedBox(height: 10),
               Container(
-                padding: const EdgeInsets.all(0),
-                child: enrolledCourseStream.when(
-                  // Loading state
-                  data: (courses) {
-                    if (courses.isEmpty) {
-                      return const Center(
-                        child: Text("You don't have any enrolled courses."),
-                      );
-                    }
-
-                    return GridView.builder(
+                child: courses.isEmpty
+                          ? const Center(
+                              child:
+                                  Text("You don't have any enrolled courses"),
+                            )
+                          :GridView.builder(
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         crossAxisSpacing: 16,
@@ -179,9 +176,9 @@ class _UserHomeState extends ConsumerState<UserHome> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => CourseDetailsScreen(
-                                  courseId: enrolledCourses['id'],
-                                  courseName: enrolledCourses['name'],
-                                  courseCode: enrolledCourses['code'],
+                                  courseId: enrolledCourses.id,
+                                  courseName: enrolledCourses.name,
+                                  courseCode: enrolledCourses.code,
                                   userId: widget.user.id,
                                   user: widget.user,
                                 ),
@@ -204,7 +201,7 @@ class _UserHomeState extends ConsumerState<UserHome> {
                                   ),
                                   SizedBox(height: 8),
                                   Text(
-                                    enrolledCourses['name'],
+                                    enrolledCourses.name,
                                     style: Theme.of(context)
                                         .textTheme
                                         .titleMedium!
@@ -213,23 +210,18 @@ class _UserHomeState extends ConsumerState<UserHome> {
                                                 .colorScheme
                                                 .primary),
                                   ),
-                                  Text(enrolledCourses['code'],
+                                  Text(enrolledCourses.code,
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodyMedium),
-                                ],
-                              ),
+                                 ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                  loading: () =>
-                      const Center(child: CircularProgressIndicator()),
-                  error: (e, s) => Center(child: Text('Error: $e')),
-                ),
-              ),
+                    ),
               SizedBox(height: 20),
               Text(
                 "All Courses",

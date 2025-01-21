@@ -71,10 +71,7 @@ class _ToDoPageState extends State<ToDoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Trello To-Do List'),
-        backgroundColor: Colors.indigoAccent,
-        elevation: 2,
-       
+        title: const Text('To-Do List'),       
       ),
       drawer: UserDrawerScreen(user: widget.user),
       body: Column(
