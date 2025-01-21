@@ -8,7 +8,7 @@ import 'package:mobileprogramming/screens/AdminScreens/dashboard/recentfiles.dar
 import 'package:mobileprogramming/screens/AdminScreens/dashboard/storage_detail.dart';
 
 
-class DashboardScreen extends StatelessWidget {
+class DashboardScreenss extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
