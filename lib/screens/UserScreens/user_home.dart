@@ -46,7 +46,7 @@ class _UserHomeState extends ConsumerState<UserHome> {
   @override
   Widget build(BuildContext context) {
     userId = widget.user.id;
-    final enrolledCourseStream = ref.watch(coursesProvider(userId));
+    final enrolledCourseStream = ref.watch(userCoursesProvider(userId));
 
     return Scaffold(
       

@@ -45,7 +45,7 @@ class _DoctorDashboardState extends ConsumerState<DoctorDashboard> {
   @override
   Widget build(BuildContext context) {
     doctorId = widget.doctor.id;
-    final instructorCourseStream = ref.watch(coursesProvider(doctorId));
+    final instructorCourseStream = ref.watch(userCoursesProvider(doctorId));
 
     return Scaffold(
       appBar: DoctorAppBar(

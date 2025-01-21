@@ -24,7 +24,7 @@ class _ViewInstructorCoursesScreenState
     doctorId = widget.doctor.id;
 
     // Fetch the stream of courses using Riverpod
-    final courseStream = ref.watch(coursesProvider(doctorId));
+    final courseStream = ref.watch(userCoursesProvider(doctorId));
 
     return Scaffold(
       appBar: DoctorAppBar(doctor: widget.doctor, appBarText: "My Courses",),
@@ -82,7 +82,7 @@ class _ViewInstructorCoursesScreenState
                         ],
                       ),
                     ),
-                  ), 
+                  ),
                 );
               },
             );

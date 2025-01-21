@@ -32,7 +32,7 @@ class _ViewCoursesScreenState extends ConsumerState<ViewCoursesScreen> {
     userId = widget.user.id;
 
     // Fetch the stream of courses using Riverpod
-    final courseStream = ref.watch(coursesProvider(userId));
+    final courseStream = ref.watch(userCoursesProvider(userId));
 
     return Scaffold(
       appBar: AppBar(
