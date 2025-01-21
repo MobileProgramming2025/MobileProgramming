@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/lecture.dart';
 import 'package:mobileprogramming/services/lecture_service.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class LecturesListScreen extends StatefulWidget {
@@ -21,14 +22,14 @@ class _LecturesListScreenState extends State<LecturesListScreen> {
     _lecturesFuture = LectureService().getLecturesByCourse(widget.courseId);
   }
 
-  Future<void> _downloadFile(String fileUrl) async {
-    if (await canLaunchUrl(Uri.parse(fileUrl))) {
-      await launchUrl(Uri.parse(fileUrl), mode: LaunchMode.externalApplication);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Could not open the file.')),
-      );
-    }
+  Future<void> _downloadFile(String fileName) async {
+    // Construct the URL using Supabase's storage service and the file name
+    final fileUrl = Supabase.instance.client.storage
+        .from('lecture-files') // The bucket name
+        .getPublicUrl(fileName);
+
+    // Launch the URL directly (no need to check if it can be launched)
+    await launchUrl(Uri.parse(fileUrl), mode: LaunchMode.externalApplication);
   }
 
   @override
@@ -74,7 +75,7 @@ class _LecturesListScreenState extends State<LecturesListScreen> {
                   ),
                   trailing: IconButton(
                     icon: const Icon(Icons.download),
-                    onPressed: () => _downloadFile(lecture.fileUrl),
+                    onPressed: () => _downloadFile(lecture.fileUrl),  // Use the file name (not the URL)
                   ),
                 ),
               );
