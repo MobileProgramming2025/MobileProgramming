@@ -72,25 +72,58 @@ void _confirmDelete(BuildContext context, String assignmentId) {
       },
     );
   }
-  void _deleteAssignment(String assignmentId) async {
-    try {
-      await FirebaseFirestore.instance
-          .collection('assignments')
-          .doc(assignmentId)
-          .delete();
-      setState(() {
-        _assignments.removeWhere((assignment) => assignment['id'] == assignmentId);
-      });
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Assignment deleted successfully!')),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to delete assignment: $e')),
+ void _deleteAssignment(String assignmentId) async {
+  // Find the assignment details before deleting
+  final assignmentToDelete = _assignments.firstWhere((assignment) => assignment['id'] == assignmentId);
+
+  try {
+    // Temporarily remove the assignment from the list
+    setState(() {
+      _assignments.removeWhere((assignment) => assignment['id'] == assignmentId);
+    });
+
+    // Show SnackBar with Undo option
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    scaffoldMessenger.showSnackBar(
+      SnackBar(
+        content: Text('Assignment deleted'),
+        duration: Duration(seconds: 7),
+        action: SnackBarAction(
+          label: 'Undo',
+          onPressed: () {
+            // Re-add the assignment back to the list
+            setState(() {
+              _assignments.add(assignmentToDelete);
+            });
+            scaffoldMessenger.hideCurrentSnackBar(); // Hide the SnackBar immediately if Undo is pressed
+          },
+        ),
+      ),
+    );
+
+    // Wait for the SnackBar duration before permanently deleting the assignment
+    await Future.delayed(Duration(seconds: 7));
+
+    // Check if the assignment was re-added (Undo pressed)
+    if (!_assignments.any((assignment) => assignment['id'] == assignmentId)) {
+      await FirebaseFirestore.instance.collection('assignments').doc(assignmentId).delete();
+      scaffoldMessenger.showSnackBar(
+        SnackBar(content: Text('Assignment permanently deleted')),
       );
     }
+  } catch (e) {
+    // If an error occurs or the undo was pressed after deletion started, re-add the assignment
+    setState(() {
+      if (!_assignments.any((assignment) => assignment['id'] == assignmentId)) {
+        _assignments.add(assignmentToDelete);
+      }
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Failed to delete assignment: $e')),
+    );
   }
+}
+
 
  void _navigateToAddEditAssignment({String? assignmentId}) {
   Navigator.of(context)
