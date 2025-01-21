@@ -5,12 +5,6 @@ import 'package:mobileprogramming/services/CourseService.dart';
 
 final courseServiceProvider = Provider((ref) => CourseService());
 
-// StreamProvider for fetching all courses
-final allCoursesProvider = StreamProvider<List<Map<String, dynamic>>>((ref) {
-  // Accessing the CourseService instance
-  final courseService = ref.read(courseServiceProvider);
-  return courseService.getAllCourses();
-});
 
 final departmentCoursesProvider = StreamProvider.family<List<Course>, String>((ref, departmentId) {
   final courseService = ref.read(courseServiceProvider);
@@ -20,5 +14,9 @@ final departmentCoursesProvider = StreamProvider.family<List<Course>, String>((r
 
 // StateNotifierProvider for managing the course state
 final userCourseStateProvider =  StateNotifierProvider<CourseStateNotifier, List<Course>>(
+  (ref) => CourseStateNotifier(ref.read(courseServiceProvider)),
+);
+ 
+ final allCourseStateProvider =  StateNotifierProvider<CourseStateNotifier, List<Course>>(
   (ref) => CourseStateNotifier(ref.read(courseServiceProvider)),
 );
