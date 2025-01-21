@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:mobileprogramming/models/lecture.dart';
+import 'package:mobileprogramming/services/lecture_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AddLectureScreen extends StatefulWidget {
@@ -68,19 +70,16 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
       return;
     }
 
-    try {
-      // Insert data into the 'lectures' table
-      final response = await Supabase.instance.client.from('lectures').insert({
-        'title': title,
-        'description': description,
-        'date_added': selectedDate!.toIso8601String(),
-        'course_id': widget.courseId, // Use the passed courseId
-        'file_url': uploadedFileUrl, // Store the file's public URL
-      }).select();
+    final lecture = Lecture(
+      title: title,
+      description: description,
+      dateAdded: selectedDate!,
+      courseId: widget.courseId,
+      fileUrl: uploadedFileUrl!,
+    );
 
-      if (response.isEmpty) {
-        throw Exception("Failed to save lecture. No data returned.");
-      }
+    try {
+      await LectureService().addLecture(lecture);
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
