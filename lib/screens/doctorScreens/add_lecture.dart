@@ -30,9 +30,11 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
         final fileUrl = await uploadFileToSupabase(fileName, file);
         return fileUrl;
       } catch (error) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error uploading file: $error')),
-        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error uploading file: $error')),
+          );
+        }
       }
     }
     return null; // Return null if the user cancels or upload fails
