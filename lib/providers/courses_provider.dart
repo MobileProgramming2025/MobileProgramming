@@ -1,16 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobileprogramming/models/Course.dart';
+import 'package:mobileprogramming/providers/course_state_notifier.dart';
 import 'package:mobileprogramming/services/CourseService.dart';
 
 final courseServiceProvider = Provider((ref) => CourseService());
-
-// Courses provider 
-// This allows us to instantiate and reuse the same instance of CourseService wherever needed
-// .family -> pass an argument 
-final userCoursesProvider = StreamProvider.family<List<Map<String, dynamic>>, String>((ref, userId) {
-  final courseService = ref.read(courseServiceProvider);
-  return courseService.fetchEnrolledCoursesByUserId(userId);
-});
 
 // StreamProvider for fetching all courses
 final allCoursesProvider = StreamProvider<List<Map<String, dynamic>>>((ref) {
@@ -23,3 +16,9 @@ final departmentCoursesProvider = StreamProvider.family<List<Course>, String>((r
   final courseService = ref.read(courseServiceProvider);
   return courseService.getCoursesByDepartmentId(departmentId);
 });
+
+
+// StateNotifierProvider for managing the course state
+final userCourseStateProvider =  StateNotifierProvider<CourseStateNotifier, List<Course>>(
+  (ref) => CourseStateNotifier(ref.read(courseServiceProvider)),
+);

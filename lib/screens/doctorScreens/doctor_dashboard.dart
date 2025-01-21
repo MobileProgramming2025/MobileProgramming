@@ -33,6 +33,7 @@ class _DoctorDashboardState extends ConsumerState<DoctorDashboard> {
     super.initState();
     _fetchData();
     doctor = widget.doctor;
+    ref.read(userCourseStateProvider.notifier).fetchUserCourses(doctor.id);
   }
 
   Future<void> _fetchData() async {
@@ -45,7 +46,7 @@ class _DoctorDashboardState extends ConsumerState<DoctorDashboard> {
   @override
   Widget build(BuildContext context) {
     doctorId = widget.doctor.id;
-    final instructorCourseStream = ref.watch(userCoursesProvider(doctorId));
+    final courses = ref.watch(userCourseStateProvider);
 
     return Scaffold(
       appBar: DoctorAppBar(
@@ -149,87 +150,75 @@ class _DoctorDashboardState extends ConsumerState<DoctorDashboard> {
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                     SizedBox(height: 10),
-                    
                     Container(
-                      child: instructorCourseStream.when(
-                        // Loading state
-                        data: (courses) {
-                          if (courses.isEmpty) {
-                            return const Center(
+                      child: courses.isEmpty
+                          ? const Center(
                               child:
-                                  Text("You don't have any enrolled courses."),
-                            );
-                          }
+                                  Text("You don't have any enrolled courses"),
+                            )
+                          : GridView.builder(
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 16,
+                                mainAxisSpacing: 16,
+                              ),
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemCount: courses.length,
+                              itemBuilder: (context, index) {
+                                final instructorCourses = courses[index];
 
-                          return GridView.builder(
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 16,
-                              mainAxisSpacing: 16,
-                            ),
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
-                            itemCount: courses.length,
-                            itemBuilder: (context, index) {
-                              final instructorCourses = courses[index];
-
-                              return InkWell(
-                                onTap: () {
-                                  Navigator.pushNamed(
-                                    context,
-                                    '/view_courses_details',
-                                    arguments: {
-                                      'id': instructorCourses['id'],
-                                      'name': instructorCourses['name'],
-                                    },
-                                  );
-                                },
-                                child: Card(
-                                  elevation: 4,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                          Icons.book,
-                                          size: 50,
-                                        ),
-                                        SizedBox(height: 8),
-                                        Text(
-                                          instructorCourses['name'],
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .titleMedium!
-                                              .copyWith(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .primary),
-                                        ),
-                                        Text(
-                                            'Course Code: ${instructorCourses['code']}',
+                                return InkWell(
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      '/view_courses_details',
+                                      arguments: {
+                                        'id': instructorCourses.id,
+                                        'name': instructorCourses.name,
+                                      },
+                                    );
+                                  },
+                                  child: Card(
+                                    elevation: 4,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.book,
+                                            size: 50,
+                                          ),
+                                          SizedBox(height: 8),
+                                          Text(
+                                            instructorCourses.name,
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .bodyMedium),
-                                      ],
+                                                .titleMedium!
+                                                .copyWith(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .primary),
+                                          ),
+                                          Text(instructorCourses.code,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                              );
-                            },
-                          );
-                        },
-                        loading: () =>
-                            const Center(child: CircularProgressIndicator()),
-                        error: (e, s) => Center(child: Text('Error: $e')),
-                      ),
+                                );
+                              },
+                            ),
                     ),
                     SizedBox(height: 20),
                     Text(
@@ -286,7 +275,7 @@ class _DoctorDashboardState extends ConsumerState<DoctorDashboard> {
                                   ),
                                   SizedBox(height: 8),
                                   Text(
-                                    course.name, 
+                                    course.name,
                                     style: Theme.of(context)
                                         .textTheme
                                         .titleMedium!
