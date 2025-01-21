@@ -41,7 +41,7 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
     if (_remainingTime.isNegative) {
       _remainingTime = Duration(seconds: 0);
       _isTimeUp = true;
-      _saveQuizAttempt(); // Automatically save when time is already up
+      _saveQuizAttempt();
     }
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -51,7 +51,7 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
         } else {
           _isTimeUp = true;
           _timer.cancel();
-          _saveQuizAttempt(); // Save quiz attempt when the time is up
+          _saveQuizAttempt();
         }
       });
     });
@@ -88,7 +88,8 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
           _quizAlreadyAttempted = true;
           _isTimeUp = false;
           // Retrieve the saved user answers when they return to the quiz
-          _userAnswers.addAll(Map<String, dynamic>.from(attempt['userAnswers']));
+          _userAnswers
+              .addAll(Map<String, dynamic>.from(attempt['userAnswers']));
         });
       }
     } else {
@@ -120,14 +121,17 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
       userId: widget.userId,
       quizId: widget.quiz.id,
       courseId: widget.courseId,
-      userAnswers: _userAnswers.map((key, value) => MapEntry(key, value as String)),
+      userAnswers:
+          _userAnswers.map((key, value) => MapEntry(key, value as String)),
       score: score,
       percentage: percentage,
       timestamp: DateTime.now(),
     );
 
     // Add quiz attempt to Firestore
-    FirebaseFirestore.instance.collection('quizAttempts').add(quizAttempt.toJson());
+    FirebaseFirestore.instance
+        .collection('quizAttempts')
+        .add(quizAttempt.toJson());
 
     // Show quiz result dialog only once
     if (!_isTimeUp && !_quizAlreadyAttempted) {
@@ -154,7 +158,7 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
 
   void _submitQuiz() {
     if (_isTimeUp || _quizAlreadyAttempted) {
-      return; 
+      return;
     }
     _saveQuizAttempt();
   }
@@ -246,7 +250,8 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
                 DropdownButton<String>(
                   value: _userAnswers[question.id]?[index] ?? '',
                   items: question.options!
-                      .map((e) => DropdownMenuItem<String>(value: e, child: Text(e)))
+                      .map((e) =>
+                          DropdownMenuItem<String>(value: e, child: Text(e)))
                       .toList(),
                   onChanged: (value) {
                     setState(() {
@@ -285,13 +290,12 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: 16),
-            // Display the remaining time if the quiz is not yet attempted and time is not up
             !_quizAlreadyAttempted && !_isTimeUp
                 ? Text(
-                    'Time remaining: ${_remainingTime.inMinutes}:${(_remainingTime.inSeconds % 60).toString().padLeft(2, '0')}',
+                    'Time remaining: ${_remainingTime.inHours}:${(_remainingTime.inMinutes % 60).toString().padLeft(2, '0')}:${(_remainingTime.inSeconds % 60).toString().padLeft(2, '0')}',
                     style: Theme.of(context).textTheme.headlineMedium,
                   )
-                : const SizedBox.shrink(), // Empty widget when quiz is attempted or time is up
+                : const SizedBox.shrink(),
             const SizedBox(height: 16),
             _quizAlreadyAttempted || _isTimeUp
                 ? const Text('The quiz is up! You can\'t attempt again.')
@@ -323,7 +327,8 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
                   ),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: _isTimeUp || _quizAlreadyAttempted ? null : _submitQuiz,
+              onPressed:
+                  _isTimeUp || _quizAlreadyAttempted ? null : _submitQuiz,
               child: const Text('Submit Quiz'),
             ),
           ],
