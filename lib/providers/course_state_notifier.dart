@@ -22,4 +22,21 @@ class CourseStateNotifier extends StateNotifier<List<Course>> {
       state = [];
     }
   }
-}
+
+
+  // Fetch courses and update the state
+  Future<void> fetchAllCourses() async {
+    try {
+      // Wait for the asynchronous operation to complete
+      final courses = await courseService.getAllCourses().first;
+      
+      // Once the data is fetched, set the state to the new list of courses
+      state = courses.map((courseData) {
+        // Map the data to Course objects
+        return Course.fromMap(courseData);  
+      }).toList();
+    } catch (e) {
+      state = [];
+    }
+  }
+} 
