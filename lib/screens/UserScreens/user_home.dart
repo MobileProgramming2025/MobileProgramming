@@ -35,8 +35,8 @@ class _UserHomeState extends ConsumerState<UserHome> {
     user = widget.user;
     _fetchData();
     // Fetch courses for the user
-    ref.read(userCourseStateProvider.notifier).fetchUserCourses(user.id);
-    ref.read(departmentCoursesProvider.notifier).fetchDepartmentCourses(user.departmentId!);
+    ref.read(courseStateProvider.notifier).fetchUserCourses(user.id);
+    ref.read(departmentCoursesStateProvider.notifier).fetchDepartmentCourses(user.departmentId!);
   }
 
   Future<void> _fetchData() async {
@@ -48,8 +48,8 @@ class _UserHomeState extends ConsumerState<UserHome> {
 
   @override
   Widget build(BuildContext context) {
-    final courses = ref.watch(userCourseStateProvider);
-    final depCourses = ref.watch(departmentCoursesProvider);
+    final courses = ref.watch(courseStateProvider);
+    final depCourses = ref.watch(departmentCoursesStateProvider);
 
     return Scaffold(
       appBar: DoctorAppBar(

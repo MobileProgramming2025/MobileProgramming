@@ -23,13 +23,13 @@ class _ViewInstructorCoursesScreenState
     super.initState();
     doctorId = widget.doctor.id;
     // Fetch courses for the doctor
-    ref.read(userCourseStateProvider.notifier).fetchUserCourses(doctorId);
+    ref.read(courseStateProvider.notifier).fetchUserCourses(doctorId);
   }
 
   @override
   Widget build(BuildContext context) {
     // Access the state using Riverpod's Consumer widget
-    final courses = ref.watch(userCourseStateProvider);
+    final courses = ref.watch(courseStateProvider);
 
     return Scaffold(
       appBar: DoctorAppBar(

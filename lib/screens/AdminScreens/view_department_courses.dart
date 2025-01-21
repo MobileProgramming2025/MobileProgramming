@@ -41,13 +41,13 @@ class _ViewDepartmentCoursesScreenState
 
     // Fetch the courses for the specific department once the departmentId is available
     ref
-        .read(userCourseStateProvider.notifier)
+        .read(departmentCoursesStateProvider.notifier)
         .fetchDepartmentCourses(departmentId);
   }
 
   @override
   Widget build(BuildContext context) {
-    final courses = ref.watch(userCourseStateProvider);
+    final courses = ref.watch(departmentCoursesStateProvider);
 
     return Scaffold(
       appBar: AppBar(

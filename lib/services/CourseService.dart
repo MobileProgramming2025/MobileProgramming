@@ -172,7 +172,7 @@ class CourseService {
   }
 
   Future<void> removeCourseFromUser(String userId, String courseId) async {
-    try {
+    try { 
       // Retrieve the user by ID
       final userDocRef = _firestore
           .collection('users')

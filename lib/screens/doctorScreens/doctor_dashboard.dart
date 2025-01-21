@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mobileprogramming/models/Course.dart';
 import 'package:mobileprogramming/providers/courses_provider.dart';
 import 'package:mobileprogramming/screens/doctorScreens/ChatScreen.dart';
 import 'package:mobileprogramming/screens/partials/DoctorAppBar.dart';
@@ -34,8 +33,8 @@ class _DoctorDashboardState extends ConsumerState<DoctorDashboard> {
     _fetchData();
     doctor = widget.doctor;
 
-    ref.read(userCourseStateProvider.notifier).fetchUserCourses(doctor.id);
-    ref.read(departmentCoursesProvider.notifier).fetchDepartmentCourses(doctor.departmentId!);
+    ref.read(courseStateProvider.notifier).fetchUserCourses(doctor.id);
+    ref.read(departmentCoursesStateProvider.notifier).fetchDepartmentCourses(doctor.departmentId!);
   }
 
   Future<void> _fetchData() async {
@@ -48,8 +47,8 @@ class _DoctorDashboardState extends ConsumerState<DoctorDashboard> {
   @override
   Widget build(BuildContext context) {
     doctorId = widget.doctor.id;
-    final courses = ref.watch(userCourseStateProvider);
-    final depCourses = ref.watch(departmentCoursesProvider);
+    final courses = ref.watch(courseStateProvider);
+    final depCourses = ref.watch(departmentCoursesStateProvider);
 
     return Scaffold(
       appBar: DoctorAppBar(
