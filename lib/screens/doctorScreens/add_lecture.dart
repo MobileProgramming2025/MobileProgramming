@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AddLectureScreen extends StatefulWidget {
-  const AddLectureScreen({super.key});
+  final String courseId;
+
+  const AddLectureScreen({super.key, required this.courseId});
 
   @override
   State<AddLectureScreen> createState() => _AddLectureScreenState();
@@ -17,39 +19,90 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
   DateTime? selectedDate;
   String? uploadedFileUrl;
 
-  Future<void> uploadFile() async {
+  Future<String?> pickAndUploadFile() async {
     final result = await FilePicker.platform.pickFiles(allowMultiple: false);
     if (result != null) {
       final file = File(result.files.single.path!);
       final fileName = result.files.single.name;
       try {
-        final imageUrl = await uploadFileToSupabase(fileName, file);
-        setState(() {
-          uploadedFileUrl = imageUrl;
-        });
+        final fileUrl = await uploadFileToSupabase(fileName, file);
+        return fileUrl;
       } catch (error) {
-        print('Error uploading file: $error');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error uploading file: $error')),
+        );
       }
     }
+    return null; // Return null if the user cancels or upload fails
   }
 
   Future<String> uploadFileToSupabase(String fileName, File file) async {
     try {
       final filePath = await Supabase.instance.client.storage
-          .from('lecture-files') // Bucket name 'lecture-files'
+          .from('lecture-files') // Bucket name
           .upload(fileName, file);
 
-      // If the upload fails, `filePath` will be null or empty
       if (filePath.isEmpty) {
         throw Exception('File upload failed.');
       }
 
-      final imageUrl = Supabase.instance.client.storage
+      // Get the public URL for the uploaded file
+      final fileUrl = Supabase.instance.client.storage
           .from('lecture-files')
-          .getPublicUrl(fileName);
-      return imageUrl;
+          .getPublicUrl(filePath);
+
+      return fileUrl;
     } catch (e) {
       rethrow;
+    }
+  }
+
+  Future<void> saveLecture() async {
+    final title = titleController.text.trim();
+    final description = descriptionController.text.trim();
+
+    if (title.isEmpty || description.isEmpty || selectedDate == null || uploadedFileUrl == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Please fill all fields and upload a file")),
+      );
+      return;
+    }
+
+    try {
+      // Insert data into the 'lectures' table
+      final response = await Supabase.instance.client.from('lectures').insert({
+        'title': title,
+        'description': description,
+        'date_added': selectedDate!.toIso8601String(),
+        'course_id': widget.courseId, // Use the passed courseId
+        'file_url': uploadedFileUrl, // Store the file's public URL
+      }).select();
+
+      if (response.isEmpty) {
+        throw Exception("Failed to save lecture. No data returned.");
+      }
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Lecture saved successfully!")),
+      );
+
+      // Clear fields after saving
+      titleController.clear();
+      descriptionController.clear();
+      setState(() {
+        selectedDate = null;
+        uploadedFileUrl = null;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            "Error saving lecture: $e"
+          )
+        ),
+      );
     }
   }
 
@@ -57,9 +110,7 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Add Lecture'
-        ),
+        title: Text('Add Lecture'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -94,31 +145,30 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
               child: Text(
                 selectedDate == null
                     ? 'Select Date'
-                    : 'Selected Date: ${selectedDate!.toIso8601String()}'
+                    : 'Selected Date: ${selectedDate!.toIso8601String()}',
               ),
             ),
             SizedBox(height: 10),
             ElevatedButton(
-              onPressed: uploadFile,
-              child: Text(
-                'Upload File'
-              ),
+              onPressed: () async {
+                final fileUrl = await pickAndUploadFile();
+                if (fileUrl != null) {
+                  setState(() {
+                    uploadedFileUrl = fileUrl;
+                  });
+                }
+              },
+              child: Text('Upload File'),
             ),
             if (uploadedFileUrl != null)
               Text(
                 'Uploaded File URL: $uploadedFileUrl',
-                style: TextStyle(
-                  fontSize: 12
-                ),
+                style: TextStyle(fontSize: 12),
               ),
+            SizedBox(height: 10),
             ElevatedButton(
-              onPressed: () {
-                // Implement logic to save lecture data to your database (e.g., Firestore, Supabase)
-                // Include the uploadedFileUrl in the lecture data
-              },
-              child: Text(
-                'Save Lecture'
-              ),
+              onPressed: saveLecture,
+              child: Text('Save Lecture'),
             ),
           ],
         ),
