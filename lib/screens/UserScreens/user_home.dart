@@ -22,7 +22,7 @@ class UserHome extends ConsumerStatefulWidget {
 
 class _UserHomeState extends ConsumerState<UserHome> {
   final CourseService _courseService = CourseService();
-    bool isLoading = true;
+  bool isLoading = true;
 
   List<String> courses = [];
   DateTime _selectedDate = DateTime.now();
@@ -35,8 +35,8 @@ class _UserHomeState extends ConsumerState<UserHome> {
     user = widget.user;
     _fetchData();
     // Fetch courses for the user
-    ref.read(userCourseStateProvider.notifier).fetchUserCourses(user.id);
-
+    ref.read(courseStateProvider.notifier).fetchUserCourses(user.id);
+    ref.read(departmentCoursesStateProvider.notifier).fetchDepartmentCourses(user.departmentId!);
   }
 
   Future<void> _fetchData() async {
@@ -45,9 +45,11 @@ class _UserHomeState extends ConsumerState<UserHome> {
       isLoading = false;
     });
   }
+
   @override
   Widget build(BuildContext context) {
-    final courses = ref.watch(userCourseStateProvider);
+    final courses = ref.watch(courseStateProvider);
+    final depCourses = ref.watch(departmentCoursesStateProvider);
 
     return Scaffold(
       appBar: DoctorAppBar(
@@ -58,163 +60,167 @@ class _UserHomeState extends ConsumerState<UserHome> {
       body: isLoading
           ? Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).canvasColor,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.2),
-                        blurRadius: 8,
-                        spreadRadius: 2,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: 8.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).canvasColor,
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.2),
+                              blurRadius: 8,
+                              spreadRadius: 2,
+                            ),
+                          ],
+                        ),
+                        child: TableCalendar(
+                          firstDay: DateTime.utc(2000, 1, 1),
+                          lastDay: DateTime.utc(2100, 12, 31),
+                          focusedDay: _focusedDate,
+                          selectedDayPredicate: (day) =>
+                              isSameDay(_selectedDate, day),
+                          onDaySelected: (selectedDay, focusedDay) {
+                            setState(() {
+                              _selectedDate = selectedDay;
+                              _focusedDate = focusedDay;
+                            });
+                          },
+                          headerStyle: HeaderStyle(
+                            formatButtonVisible: false,
+                            titleCentered: true,
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.primary,
+                              borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(16)),
+                            ),
+                            titleTextStyle: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
+                            leftChevronIcon:
+                                Icon(Icons.chevron_left, color: Colors.white),
+                            rightChevronIcon:
+                                Icon(Icons.chevron_right, color: Colors.white),
+                          ),
+                          calendarStyle: CalendarStyle(
+                            todayDecoration: BoxDecoration(
+                              color: const Color.fromARGB(255, 255, 255, 255),
+                              border: Border.all(
+                                  color: Theme.of(context).colorScheme.primary,
+                                  width: 2),
+                              shape: BoxShape.circle,
+                            ),
+                            selectedDecoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.primary,
+                              shape: BoxShape.circle,
+                            ),
+                            defaultDecoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                            ),
+                            weekendDecoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.grey.withOpacity(0.1),
+                            ),
+                            outsideDecoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                            ),
+                            defaultTextStyle: TextStyle(
+                                color:
+                                    Theme.of(context).colorScheme.onBackground),
+                            weekendTextStyle: TextStyle(color: Colors.red),
+                            todayTextStyle: TextStyle(
+                              color: const Color.fromARGB(255, 56, 3, 3),
+                              fontWeight: FontWeight.bold,
+                            ),
+                            selectedTextStyle: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            outsideDaysVisible: false,
+                          ),
+                        ),
                       ),
-                    ],
-                  ),
-                  child: TableCalendar(
-                    firstDay: DateTime.utc(2000, 1, 1),
-                    lastDay: DateTime.utc(2100, 12, 31),
-                    focusedDay: _focusedDate,
-                    selectedDayPredicate: (day) =>
-                        isSameDay(_selectedDate, day),
-                    onDaySelected: (selectedDay, focusedDay) {
-                      setState(() {
-                        _selectedDate = selectedDay;
-                        _focusedDate = focusedDay;
-                      });
-                    },
-                    headerStyle: HeaderStyle(
-                      formatButtonVisible: false,
-                      titleCentered: true,
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primary,
-                        borderRadius:
-                            BorderRadius.vertical(top: Radius.circular(16)),
-                      ),
-                      titleTextStyle: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                      ),
-                      leftChevronIcon:
-                          Icon(Icons.chevron_left, color: Colors.white),
-                      rightChevronIcon:
-                          Icon(Icons.chevron_right, color: Colors.white),
                     ),
-                    calendarStyle: CalendarStyle(
-                      todayDecoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 255, 255, 255),
-                        border: Border.all(
-                            color: Theme.of(context).colorScheme.primary,
-                            width: 2),
-                        shape: BoxShape.circle,
-                      ),
-                      selectedDecoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primary,
-                        shape: BoxShape.circle,
-                      ),
-                      defaultDecoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                      ),
-                      weekendDecoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.grey.withOpacity(0.1),
-                      ),
-                      outsideDecoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                      ),
-                      defaultTextStyle: TextStyle(
-                          color: Theme.of(context).colorScheme.onBackground),
-                      weekendTextStyle: TextStyle(color: Colors.red),
-                      todayTextStyle: TextStyle(
-                        color: const Color.fromARGB(255, 56, 3, 3),
-                        fontWeight: FontWeight.bold,
-                      ),
-                      selectedTextStyle: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      outsideDaysVisible: false,
+                    SizedBox(height: 20),
+                    Text(
+                      "My Courses",
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 20),
-              Text(
-                "My Courses",
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              SizedBox(height: 10),
-              Container(
-                child: courses.isEmpty
+                    SizedBox(height: 10),
+                    Container(
+                      child: courses.isEmpty
                           ? const Center(
                               child:
                                   Text("You don't have any enrolled courses"),
                             )
-                          :GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 16,
-                        mainAxisSpacing: 16,
-                      ),
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: courses.length,
-                      itemBuilder: (context, index) {
-                        final enrolledCourses = courses[index];
-
-                        return InkWell(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => CourseDetailsScreen(
-                                  courseId: enrolledCourses.id,
-                                  courseName: enrolledCourses.name,
-                                  courseCode: enrolledCourses.code,
-                                  userId: widget.user.id,
-                                  user: widget.user,
-                                ),
+                          : GridView.builder(
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 16,
+                                mainAxisSpacing: 16,
                               ),
-                            );
-                          },
-                          child: Card(
-                            elevation: 4,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.book,
-                                    size: 50,
-                                  ),
-                                  SizedBox(height: 8),
-                                  Text(
-                                    enrolledCourses.name,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium!
-                                        .copyWith(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary),
-                                  ),
-                                  Text(enrolledCourses.code,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium),
-                                 ],
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemCount: courses.length,
+                              itemBuilder: (context, index) {
+                                final enrolledCourses = courses[index];
+
+                                return InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            CourseDetailsScreen(
+                                          courseId: enrolledCourses.id,
+                                          courseName: enrolledCourses.name,
+                                          courseCode: enrolledCourses.code,
+                                          userId: widget.user.id,
+                                          user: widget.user,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: Card(
+                                    elevation: 4,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.book,
+                                            size: 50,
+                                          ),
+                                          SizedBox(height: 8),
+                                          Text(
+                                            enrolledCourses.name,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleMedium!
+                                                .copyWith(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .primary),
+                                          ),
+                                          Text(enrolledCourses.code,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium),
+                                        ],
                                       ),
                                     ),
                                   ),
@@ -222,80 +228,67 @@ class _UserHomeState extends ConsumerState<UserHome> {
                               },
                             ),
                     ),
-              SizedBox(height: 20),
-              Text(
-                "All Courses",
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              SizedBox(height: 10),
-              StreamBuilder<List<Course>>(
-                stream: _courseService
-                    .getCoursesByDepartmentId(widget.user.departmentId!),
-                builder: (context, snapshot) {
-                  // Handling different connection states
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  } else if (snapshot.hasError) {
-                    return Center(
-                      child: Text('Error: ${snapshot.error}'),
-                    );
-                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return Center(
-                      child: Text(
-                        'No Courses Found in this Department',
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      ),
-                    );
-                  }
-                  final courses = snapshot.data!;
-
-                  return GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16,
+                    SizedBox(height: 20),
+                    Text(
+                      "All Courses",
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: courses.length,
-                    itemBuilder: (context, index) {
-                      final course = courses[index];
+                    SizedBox(height: 10),
+                    Container(
+                      child: depCourses.isEmpty
+                          ? const Center(
+                              child:
+                                  Text("No Courses Found in this Department"),
+                            )
+                          : GridView.builder(
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 16,
+                                mainAxisSpacing: 16,
+                              ),
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemCount: depCourses.length,
+                              itemBuilder: (context, index) {
+                                final course = depCourses[index];
 
-                      return Card(
-                        elevation: 4,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.book,
-                              size: 50,
+                                return Card(
+                                  elevation: 4,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.book,
+                                        size: 50,
+                                      ),
+                                      SizedBox(height: 8),
+                                      Text(
+                                        course.name,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium!
+                                            .copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .primary),
+                                      ),
+                                      Text(
+                                        'Course Code: ${course.code}',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium,
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
                             ),
-                            SizedBox(height: 8),
-                            Text(
-                              course.name,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium!
-                                  .copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .primary),
-                            ),
-                            Text(course.code,
-                                style: Theme.of(context).textTheme.bodyMedium),
-                          ],
-                        ),
-                      );
-                    },
-                  );
-                },
+                    ),
+                  ],
+                ),
               ),
-            ],
-          ),
-        ),
-      ),
+            ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // Navigate to the ChatScreen

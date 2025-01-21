@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobileprogramming/models/user.dart';
+import 'package:mobileprogramming/providers/courses_provider.dart';
 import 'package:mobileprogramming/screens/partials/adminDrawer.dart';
 import 'package:mobileprogramming/services/CourseService.dart';
 import 'package:mobileprogramming/services/DepartmentService.dart';
@@ -7,17 +9,17 @@ import 'package:uuid/uuid.dart';
 
 final uuid = Uuid();
 
-class AddCoursesScreen extends StatefulWidget {
+class AddCoursesScreen extends ConsumerStatefulWidget {
   final User admin;
   const AddCoursesScreen({super.key, required this.admin});
 
   @override
-  State<AddCoursesScreen> createState() {
+  ConsumerState<AddCoursesScreen> createState() {
     return _AddCoursesScreenState();
   }
 }
 
-class _AddCoursesScreenState extends State<AddCoursesScreen> {
+class _AddCoursesScreenState extends ConsumerState<AddCoursesScreen> {
   final CourseService _courseService = CourseService();
   final DepartmentService _departmentService = DepartmentService();
   //Doesn't allow to re-build form widget, keeps its internal state (show validation state or not)
@@ -71,6 +73,9 @@ class _AddCoursesScreenState extends State<AddCoursesScreen> {
         departmentId: _selectedDepartment,
         year: _selectedYear,
       );
+
+      ref.read(courseStateProvider.notifier).fetchAllCourses(); // Reload courses
+
       // Check if the widget is still in the tree before using context
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -191,6 +196,8 @@ class _AddCoursesScreenState extends State<AddCoursesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Fetch the stream of courses using Riverpod
+    final courses = ref.watch(courseStateProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text(

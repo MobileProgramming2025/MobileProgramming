@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:mobileprogramming/models/Course.dart';
-import 'package:mobileprogramming/services/CourseService.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mobileprogramming/providers/courses_provider.dart';
 
-class ViewDepartmentCoursesScreen extends StatefulWidget {
+class ViewDepartmentCoursesScreen extends ConsumerStatefulWidget {
   const ViewDepartmentCoursesScreen({super.key});
 
   @override
-  State<ViewDepartmentCoursesScreen> createState() => _ViewDepartmentCoursesScreenState();
+  ConsumerState<ViewDepartmentCoursesScreen> createState() =>
+      _ViewDepartmentCoursesScreenState();
 }
 
-class _ViewDepartmentCoursesScreenState extends State<ViewDepartmentCoursesScreen> {
-  final CourseService _courseService = CourseService();
+class _ViewDepartmentCoursesScreenState
+    extends ConsumerState<ViewDepartmentCoursesScreen> {
   late String departmentId;
 
   void _enroll() {
@@ -18,81 +19,79 @@ class _ViewDepartmentCoursesScreenState extends State<ViewDepartmentCoursesScree
       context,
       '/enroll_instructor',
       arguments: departmentId,
-    ); // Pass the same departmentId);
+    ); // Pass the same departmentId
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Fetch the departmentId safely using ModalRoute
+    final args = ModalRoute.of(context)?.settings.arguments;
+    
+    if (args == null) {
+      // Handle error when the departmentId is not passed
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: Department ID not passed')),
+      );
+      return; // Prevent further actions if the ID is not available
+    }
+
+    // Typecast departmentId safely
+    departmentId = args as String;
+
+    // Fetch the courses for the specific department once the departmentId is available
+    ref
+        .read(departmentCoursesStateProvider.notifier)
+        .fetchDepartmentCourses(departmentId);
   }
 
   @override
   Widget build(BuildContext context) {
-    // Retrieve arguments passed via Navigator
-    departmentId = ModalRoute.of(context)!.settings.arguments as String;
+    final courses = ref.watch(departmentCoursesStateProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Courses"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: StreamBuilder<List<Course>>(
-          // Using Stream to get real-time updates
-          stream: _courseService.getCoursesByDepartmentId(departmentId),
-          builder: (context, snapshot) {
-            // Handling different connection states
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            } else if (snapshot.hasError) {
-              return Center(
-                child: Text('Error: ${snapshot.error}'),
-              );
-            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return Center(
-                child: Text(
-                  'No Courses Found in this Department',
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
-              );
-            }
+        child: courses.isEmpty
+            ? const Center(child: Text("No Courses Found in that Department"))
+            : ListView.builder(
+                itemCount: courses.length,
+                itemBuilder: (context, index) {
+                  final course = courses[index];
 
-            final courses = snapshot.data!;
-            
-
-            return ListView.builder(
-              itemCount: courses.length,
-              itemBuilder: (context, index) {
-                final course = courses[index];
-
-                return Card(
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          course.name,
-                          style: Theme.of(context).textTheme.headlineMedium,
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Course Code: ${course.code}',
-                          style: Theme.of(context).textTheme.bodyLarge,
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Year: ${course.year}',
-                          style: Theme.of(context).textTheme.bodyLarge,
-                        ),
-                      ],
+                  return Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                  ),
-                );
-              },
-            );
-          },
-        ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            course.name,
+                            style: Theme.of(context).textTheme.headlineMedium,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Course Code: ${course.code}',
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Year: ${course.year}',
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
       ),
       floatingActionButton: ElevatedButton(
         onPressed: _enroll,

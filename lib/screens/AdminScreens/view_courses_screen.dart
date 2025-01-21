@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mobileprogramming/models/Department.dart';
 import 'package:mobileprogramming/models/user.dart';
 import 'package:mobileprogramming/providers/courses_provider.dart';
 import 'package:mobileprogramming/screens/AdminScreens/add_courses_screen.dart';
@@ -23,27 +22,31 @@ class _ViewCoursesScreenState extends ConsumerState<ViewCoursesScreen> {
   @override
   void initState() {
     super.initState();
-    ref.read(userCourseStateProvider.notifier).fetchAllCourses();
+    ref.read(courseStateProvider.notifier).fetchAllCourses();
   }
 
   Future<void> _deleteCourse(String courseId) async {
     try {
-      await _courseService.deleteCourse(courseId); //changed: Deleting the course
-      // Show success message or refresh list
+      // Use the provider to handle course removal
+      await ref
+          .read(courseStateProvider.notifier)
+          .deleteCourse(courseId);
+
+      // Show success message
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Course deleted successfully')),
+        const SnackBar(content: Text('Course removed successfully!')),
       );
     } catch (e) {
-      // Handle error
+      // Show error message
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error deleting course: $e')),
+        SnackBar(content: Text('Failed to remove course: $e')),
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final courses = ref.watch(userCourseStateProvider);
+    final courses = ref.watch(courseStateProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -53,11 +56,11 @@ class _ViewCoursesScreenState extends ConsumerState<ViewCoursesScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: courses.isEmpty
-            ? const Center(child: Text("No Courses Found")) 
+            ? const Center(child: Text("No Courses Found"))
             : ListView.builder(
-                itemCount: courses.length, 
+                itemCount: courses.length,
                 itemBuilder: (context, index) {
-                  final course = courses[index]; 
+                  final course = courses[index];
 
                   return Card(
                     elevation: 4,
@@ -72,11 +75,14 @@ class _ViewCoursesScreenState extends ConsumerState<ViewCoursesScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                course.name,
-                                style: Theme.of(context).textTheme.headlineMedium,
+                              Flexible(
+                                child: Text(
+                                  course.name,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headlineMedium,
+                                ),
                               ),
-                           
                             ],
                           ),
                           const SizedBox(height: 8),
@@ -85,29 +91,23 @@ class _ViewCoursesScreenState extends ConsumerState<ViewCoursesScreen> {
                             style: Theme.of(context).textTheme.bodyLarge,
                           ),
                           const SizedBox(height: 8),
-                          // StreamBuilder<Department?>(
-                          //   stream: departmentStream,
-                          //   builder: (context, snapshot) {
-                          //     final Department? dep = snapshot.data;
-                          //     return Text(
-                          //       'Department: ${dep?.name}',
-                          //       style: Theme.of(context).textTheme.bodyLarge,
-                          //     );
-                          //   },
-                          // ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Year: ${course.year}',
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                             IconButton(
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Year: ${course.year}',
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                              IconButton(
                                 icon: const Icon(Icons.delete),
                                 onPressed: () {
-                                  _deleteCourse(course.id); 
+                                  _deleteCourse(course.id);
                                 },
                                 color: Colors.red,
                                 iconSize: 28,
                               ),
+                            ],
+                          ),
                         ],
                       ),
                     ),
@@ -120,7 +120,7 @@ class _ViewCoursesScreenState extends ConsumerState<ViewCoursesScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => AddCoursesScreen(admin: widget.admin), 
+              builder: (context) => AddCoursesScreen(admin: widget.admin),
             ),
           );
         },

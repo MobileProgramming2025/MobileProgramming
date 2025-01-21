@@ -20,15 +20,17 @@ class _ViewCoursesScreenState extends ConsumerState<UserCoursesScreen> {
 
   void _removeCourse(String enrolledCourseId) async {
     try {
-      final userId = widget.user.id; // Retrieve the user ID from the widget
-      await _courseService.removeCourseFromUser(
-          userId, enrolledCourseId); // Remove the course
+      // Use the provider to handle course removal
+      await ref
+          .read(courseStateProvider.notifier)
+          .removeUserCourse(userId, enrolledCourseId);
 
+      // Show success message
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Course removed successfully!')),
+        const SnackBar(content: Text('Course removed successfully!')),
       );
     } catch (e) {
-      // Handle errors
+      // Show error message
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to remove course: $e')),
       );
@@ -41,13 +43,13 @@ class _ViewCoursesScreenState extends ConsumerState<UserCoursesScreen> {
     userId = widget.user.id;
 
     // Fetch courses for the user
-    ref.read(userCourseStateProvider.notifier).fetchUserCourses(userId);
+    ref.read(courseStateProvider.notifier).fetchUserCourses(userId);
   }
 
   @override
   Widget build(BuildContext context) {
     // Fetch the stream of courses using Riverpod
-    final courses = ref.watch(userCourseStateProvider);
+    final courses = ref.watch(courseStateProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -78,9 +80,8 @@ class _ViewCoursesScreenState extends ConsumerState<UserCoursesScreen> {
                             children: [
                               Text(
                                 enrolledCourse.name,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineMedium,
+                                style:
+                                    Theme.of(context).textTheme.headlineMedium,
                               ),
                               const SizedBox(height: 8),
                               Text(

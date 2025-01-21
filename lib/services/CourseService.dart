@@ -20,27 +20,24 @@ class CourseService {
     });
   }
 
-  Stream<List<Course>> getCoursesByDepartmentId(String departmentId) {
+  Stream<List<Map<String, dynamic>>> gettCoursesByDepartmentId(
+      String departmentId) {
     try {
       return _firestore
           .collection('Courses')
           .where('departmentId', isEqualTo: departmentId)
           .snapshots() // Get real-time stream of query results
-          .map((querySnapshot) {
-        // Transform each QuerySnapshot into a List of Course objects
-        return querySnapshot.docs.map((doc) {
-          final data = doc.data(); // Extract Firestore document data
-          return Course(
-            id: data['id'],
-            name: data['name'],
-            departmentId: data['departmentId'],
-            code: data['code'],
-            year: data['year'],
-          );
-        }).toList(); // Convert the Iterable to a List
+          .map((snapshot) {
+        return snapshot.docs.map((doc) {
+          // Extract the document's ID and fields, and create a usable map
+          return {
+            'id': doc.id,
+            ...doc.data(),
+          };
+        }).toList();
       });
     } catch (e) {
-      throw Exception('Failed to retrieve Course');
+      throw Exception('Failed to retrieve Course: $e');
     }
   }
 
@@ -88,7 +85,8 @@ class CourseService {
     }
   }
 
-  Stream<List<Map<String, dynamic>>> fetchEnrolledCoursesByUserId(String userId) {
+  Stream<List<Map<String, dynamic>>> fetchEnrolledCoursesByUserId(
+      String userId) {
     return _firestore
         .collection('users')
         .doc(userId)
@@ -174,7 +172,7 @@ class CourseService {
   }
 
   Future<void> removeCourseFromUser(String userId, String courseId) async {
-    try {
+    try { 
       // Retrieve the user by ID
       final userDocRef = _firestore
           .collection('users')
@@ -182,7 +180,8 @@ class CourseService {
       bool isEnrolledEmpty = await isEnrolledCoursesEmpty(userId);
 
       if (!isEnrolledEmpty) {
-        final enrolledCourses = await fetchEnrolledCoursesByUserId(userId).first;
+        final enrolledCourses =
+            await fetchEnrolledCoursesByUserId(userId).first;
         enrolledCourses.removeWhere((course) => course['id'] == courseId);
 
         // // Update the user's document with the new enrolled_courses list
@@ -195,50 +194,53 @@ class CourseService {
       throw Exception('Failed to remove course: $e');
     }
   }
+
   Future<void> deleteCourse(String courseId) async {
-  WriteBatch batch = _firestore.batch();
+    WriteBatch batch = _firestore.batch();
 
-  try {
-    // Delete the course document
-    DocumentReference courseDocRef = _firestore.collection('Courses').doc(courseId);
-    batch.delete(courseDocRef);
+    try {
+      // Delete the course document
+      DocumentReference courseDocRef =
+          _firestore.collection('Courses').doc(courseId);
+      batch.delete(courseDocRef);
 
-    // Remove the course from all users' enrolled_courses
-    QuerySnapshot userQuerySnapshot = await _firestore.collection('users').get();
-    for (DocumentSnapshot userDoc in userQuerySnapshot.docs) {
-      Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
-      List<dynamic>? enrolledCourses = userData['enrolled_courses'];
+      // Remove the course from all users' enrolled_courses
+      QuerySnapshot userQuerySnapshot =
+          await _firestore.collection('users').get();
+      for (DocumentSnapshot userDoc in userQuerySnapshot.docs) {
+        Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
+        List<dynamic>? enrolledCourses = userData['enrolled_courses'];
 
-      if (enrolledCourses != null) {
-        enrolledCourses.removeWhere((course) => course['id'] == courseId);
-        batch.update(userDoc.reference, {'enrolled_courses': enrolledCourses});
+        if (enrolledCourses != null) {
+          enrolledCourses.removeWhere((course) => course['id'] == courseId);
+          batch
+              .update(userDoc.reference, {'enrolled_courses': enrolledCourses});
+        }
       }
-    }
 
-    // Delete assignments related to the course
-    QuerySnapshot assignmentQuerySnapshot = await _firestore
-        .collection('assignments')
-        .where('courseId', isEqualTo: courseId)
-        .get();
-    for (DocumentSnapshot assignmentDoc in assignmentQuerySnapshot.docs) {
-      batch.delete(assignmentDoc.reference);
-    }
+      // Delete assignments related to the course
+      QuerySnapshot assignmentQuerySnapshot = await _firestore
+          .collection('assignments')
+          .where('courseId', isEqualTo: courseId)
+          .get();
+      for (DocumentSnapshot assignmentDoc in assignmentQuerySnapshot.docs) {
+        batch.delete(assignmentDoc.reference);
+      }
 
-    // Delete quizzes related to the course
-    QuerySnapshot quizQuerySnapshot = await _firestore
-        .collection('quizzes')
-        .where('courseId', isEqualTo: courseId)
-        .get();
-    for (DocumentSnapshot quizDoc in quizQuerySnapshot.docs) {
-      batch.delete(quizDoc.reference);
-    }
+      // Delete quizzes related to the course
+      QuerySnapshot quizQuerySnapshot = await _firestore
+          .collection('quizzes')
+          .where('courseId', isEqualTo: courseId)
+          .get();
+      for (DocumentSnapshot quizDoc in quizQuerySnapshot.docs) {
+        batch.delete(quizDoc.reference);
+      }
 
-    // Commit the batch
-    await batch.commit();
-    print('Course deleted successfully with all related data.');
-  } catch (e) {
-    throw Exception('Failed to delete course: $e');
+      // Commit the batch
+      await batch.commit();
+      print('Course deleted successfully with all related data.');
+    } catch (e) {
+      throw Exception('Failed to delete course: $e');
+    }
   }
-}
-
 }

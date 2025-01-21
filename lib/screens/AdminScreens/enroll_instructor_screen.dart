@@ -143,8 +143,8 @@ class _EnrollInstructorScreenState extends State<EnrollInstructorScreen> {
   }
 
   Widget getCourseNameDropDown() {
-    return StreamBuilder<List<Course>>(
-      stream: _courseService.getCoursesByDepartmentId(departmentId),
+    return StreamBuilder<List<Map<String, dynamic>>>(
+      stream: _courseService.gettCoursesByDepartmentId(departmentId),
       builder: (context, snapshot) {
         List<DropdownMenuItem> courseItems = [];
         if (!snapshot.hasData) {
@@ -154,9 +154,9 @@ class _EnrollInstructorScreenState extends State<EnrollInstructorScreen> {
           for (var item in items!) {
             courseItems.add(
               DropdownMenuItem(
-                value: item.id,
+                value: item['id'],
                 child: Text(
-                  item.name,
+                  item['name'],
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
               ),

@@ -187,7 +187,7 @@ Future<void> _onAssignmentUpdated() async {
               margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
               padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Color.fromARGB(255, 253, 241, 225),
+                color: Color.fromARGB(255, 255, 255, 255),
                 borderRadius: BorderRadius.circular(15),
                 boxShadow: const [
                   BoxShadow(
