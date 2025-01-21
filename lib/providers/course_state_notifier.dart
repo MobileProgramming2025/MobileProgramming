@@ -56,11 +56,47 @@ class CourseStateNotifier extends StateNotifier<List<Course>> {
     }
   }
 
+  Future<void> addCourse(Course newCourse) async {
+    try {
+      // Add the course to the backend
+      await courseService.addCourse(
+        id: newCourse.id,
+        name: newCourse.name,
+        code: newCourse.code,
+        departmentId: newCourse.departmentId,
+        year: newCourse.year,
+      );
+
+      // Update the state to reflect the newly added course
+      state = [...state, newCourse];
+    } catch (e) {
+      print('Error adding course: $e');
+      throw Exception('Failed to add course: $e');
+    }
+  }
+
   Future<void> removeUserCourse(String userId, String courseId) async {
     try {
-      // Wait for the asynchronous operation to complete
-      return courseService.removeCourseFromUser(userId, courseId);
+      // Remove the course from the backend
+      await courseService.removeCourseFromUser(userId, courseId);
+
+      // Update the state to reflect the course removal
+      state = state.where((course) => course.id != courseId).toList();
     } catch (e) {
+      print('Error removing user course: $e');
+      throw Exception('Failed to remove course: $e');
+    }
+  }
+
+  Future<void> deleteCourse(String courseId) async {
+    try {
+      // Remove the course from the backend
+      await courseService.deleteCourse(courseId);
+
+      // Update the state to reflect the course removal
+      state = state.where((course) => course.id != courseId).toList();
+    } catch (e) {
+      print('Error removing user course: $e');
       throw Exception('Failed to remove course: $e');
     }
   }
