@@ -74,6 +74,12 @@ class _LectureListScreenState extends State<LectureListScreen> {
               width: 300,
               child: PDFView(
                 filePath: file.path,
+                onError: (error) { 
+                  print('PDFView error: $error'); 
+                }, 
+                onPageError: (page, error) {
+                 print('PDFView page error on page $page: $error'); 
+                },
               ),
             ),
             actions: [
