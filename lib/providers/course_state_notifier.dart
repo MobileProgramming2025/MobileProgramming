@@ -39,4 +39,20 @@ class CourseStateNotifier extends StateNotifier<List<Course>> {
       state = [];
     }
   }
+
+Future<void> fetchDepartmentCourses(String departmentId) async {
+  try {
+    // Wait for the asynchronous operation to complete
+    final courses = await courseService.gettCoursesByDepartmentId(departmentId).first;
+    
+    // Once the data is fetched, set the state to the new list of courses
+    state = courses.map((courseData) {
+      // Ensure that courseData is a Map<String, dynamic> from Firestore
+      return Course.fromMap(courseData);
+    }).toList();
+  } catch (e) {
+    state = [];
+  }
+}
+
 } 

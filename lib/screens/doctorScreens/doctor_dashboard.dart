@@ -33,8 +33,9 @@ class _DoctorDashboardState extends ConsumerState<DoctorDashboard> {
     super.initState();
     _fetchData();
     doctor = widget.doctor;
-    // Fetch courses for the user
+
     ref.read(userCourseStateProvider.notifier).fetchUserCourses(doctor.id);
+    ref.read(departmentCoursesProvider.notifier).fetchDepartmentCourses(doctor.departmentId!);
   }
 
   Future<void> _fetchData() async {
@@ -48,6 +49,7 @@ class _DoctorDashboardState extends ConsumerState<DoctorDashboard> {
   Widget build(BuildContext context) {
     doctorId = widget.doctor.id;
     final courses = ref.watch(userCourseStateProvider);
+    final depCourses = ref.watch(departmentCoursesProvider);
 
     return Scaffold(
       appBar: DoctorAppBar(
@@ -168,54 +170,35 @@ class _DoctorDashboardState extends ConsumerState<DoctorDashboard> {
                               physics: NeverScrollableScrollPhysics(),
                               itemCount: courses.length,
                               itemBuilder: (context, index) {
-                                final instructorCourses = courses[index];
+                                final course = courses[index];
 
-                                return InkWell(
-                                  onTap: () {
-                                    Navigator.pushNamed(
-                                      context,
-                                      '/view_courses_details',
-                                      arguments: {
-                                        'id': instructorCourses.id,
-                                        'name': instructorCourses.name,
-                                      },
-                                    );
-                                  },
-                                  child: Card(
-                                    elevation: 4,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(16),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Icon(
-                                            Icons.book,
-                                            size: 50,
-                                          ),
-                                          SizedBox(height: 8),
-                                          Text(
-                                            instructorCourses.name,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .titleMedium!
-                                                .copyWith(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .primary),
-                                          ),
-                                          Text(instructorCourses.code,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyMedium),
-                                        ],
+                                return Card(
+                                  elevation: 4,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.book,
+                                        size: 50,
                                       ),
-                                    ),
+                                      SizedBox(height: 8),
+                                      Text(
+                                        course.name,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium!
+                                            .copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .primary),
+                                      ),
+                                      Text(
+                                        'Course Code: ${course.code}',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium,
+                                      ),
+                                    ],
                                   ),
                                 );
                               },
@@ -227,74 +210,56 @@ class _DoctorDashboardState extends ConsumerState<DoctorDashboard> {
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                     SizedBox(height: 10),
-                    StreamBuilder<List<Course>>(
-                      stream: _courseService.getCoursesByDepartmentId(
-                          widget.doctor.departmentId!),
-                      builder: (context, snapshot) {
-                        // Handling different connection states
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        } else if (snapshot.hasError) {
-                          return Center(
-                            child: Text('Error: ${snapshot.error}'),
-                          );
-                        } else if (!snapshot.hasData ||
-                            snapshot.data!.isEmpty) {
-                          return Center(
-                            child: Text(
-                              'No Courses Found in this Department',
-                              style: Theme.of(context).textTheme.bodyLarge,
-                            ),
-                          );
-                        }
-                        final courses = snapshot.data!;
-
-                        return GridView.builder(
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 16,
-                            mainAxisSpacing: 16,
-                          ),
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: courses.length,
-                          itemBuilder: (context, index) {
-                            final course = courses[index];
-
-                            return Card(
-                              elevation: 4,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.book,
-                                    size: 50,
-                                  ),
-                                  SizedBox(height: 8),
-                                  Text(
-                                    course.name,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium!
-                                        .copyWith(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary),
-                                  ),
-                                  Text('Course Code: ${course.code}',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium),
-                                ],
+                    Container(
+                      child: depCourses.isEmpty
+                          ? const Center(
+                              child:
+                                  Text("No Courses Found in this Department"),
+                            )
+                          : GridView.builder(
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 16,
+                                mainAxisSpacing: 16,
                               ),
-                            );
-                          },
-                        );
-                      },
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemCount: depCourses.length,
+                              itemBuilder: (context, index) {
+                                final course = depCourses[index];
+
+                                return Card(
+                                  elevation: 4,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.book,
+                                        size: 50,
+                                      ),
+                                      SizedBox(height: 8),
+                                      Text(
+                                        course.name,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium!
+                                            .copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .primary),
+                                      ),
+                                      Text(
+                                        'Course Code: ${course.code}',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium,
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
                     ),
                   ],
                 ),
@@ -302,13 +267,11 @@ class _DoctorDashboardState extends ConsumerState<DoctorDashboard> {
             ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Navigate to the ChatScreen
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => ChatScreen(
-                      userId: doctor.id,
-                    )),
+              builder: (context) => ChatScreen(userId: doctor.id),
+            ),
           );
         },
         child: Icon(Icons.chat),
@@ -316,51 +279,6 @@ class _DoctorDashboardState extends ConsumerState<DoctorDashboard> {
         tooltip: "Chat",
       ),
       bottomNavigationBar: DoctorBottomNavigationBar(doctor: doctor),
-    );
-  }
-}
-
-class ProgressCard extends StatelessWidget {
-  final String title;
-  final double progress;
-  final Color color;
-
-  const ProgressCard({
-    super.key,
-    required this.title,
-    required this.progress,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      color: color,
-      elevation: 6,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 10),
-          LinearProgressIndicator(
-            value: progress / 100,
-            color: Colors.blueAccent,
-            backgroundColor: Colors.grey[300],
-          ),
-          SizedBox(height: 10),
-          Text(
-            "${progress.toInt()}%",
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ],
-      ),
     );
   }
 }

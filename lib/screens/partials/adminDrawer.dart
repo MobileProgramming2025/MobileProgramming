@@ -131,18 +131,6 @@ class AdminDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: Icon(Icons.groups_2_outlined),
-            title: Text('Doctors Dashboard'),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => DashboardScreen(admin: user),
-                ),
-              );
-            },
-          ),
-          ListTile(
             leading: Icon(Icons.exit_to_app),
             title: Text('Logout'),
             onTap: () {

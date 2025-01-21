@@ -85,17 +85,6 @@ class _ViewCoursesScreenState extends ConsumerState<ViewCoursesScreen> {
                             style: Theme.of(context).textTheme.bodyLarge,
                           ),
                           const SizedBox(height: 8),
-                          // StreamBuilder<Department?>(
-                          //   stream: departmentStream,
-                          //   builder: (context, snapshot) {
-                          //     final Department? dep = snapshot.data;
-                          //     return Text(
-                          //       'Department: ${dep?.name}',
-                          //       style: Theme.of(context).textTheme.bodyLarge,
-                          //     );
-                          //   },
-                          // ),
-                          const SizedBox(height: 8),
                           Text(
                             'Year: ${course.year}',
                             style: Theme.of(context).textTheme.bodyLarge,
