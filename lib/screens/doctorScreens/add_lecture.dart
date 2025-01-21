@@ -27,8 +27,14 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
       final file = File(result.files.single.path!);
       final fileName = result.files.single.name;
       try {
-        final fileUrl = await uploadFileToSupabase(fileName, file);
-        return fileUrl;
+        // Upload the file to Supabase and get the file URL (but we won't store the URL)
+        await uploadFileToSupabase(fileName, file);
+        
+        // Store the file name in the variable
+        setState(() {
+          uploadedFileUrl = fileName;  // Store the file name instead of the URL
+        });
+        return fileName;  // Return the file name
       } catch (error) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -39,6 +45,7 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
     }
     return null; // Return null if the user cancels or upload fails
   }
+
 
   Future<String> uploadFileToSupabase(String fileName, File file) async {
     try {
@@ -163,7 +170,7 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
             ),
             if (uploadedFileUrl != null)
               Text(
-                'Uploaded File URL: $uploadedFileUrl',
+                'Uploaded File name: $uploadedFileUrl',
                 style: TextStyle(fontSize: 12),
               ),
             SizedBox(height: 10),

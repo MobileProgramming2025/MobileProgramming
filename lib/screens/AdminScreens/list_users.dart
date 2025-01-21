@@ -137,60 +137,6 @@ void _undoDelete() {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Users List'),
-        // actions: [
-        //   DropdownButton<String>(
-        //     value: _sortCriteria,
-        //     items: const [
-        //       DropdownMenuItem(
-        //         value: 'name',
-        //         child: Text('Sort by Name'),
-        //       ),
-        //       DropdownMenuItem(
-        //         value: 'email',
-        //         child: Text('Sort by E-mail'),
-        //       ),
-        //       DropdownMenuItem(
-        //         value: 'role',
-        //         child: Text('Sort by Role'),
-        //       ),
-        //     ],
-        //     onChanged: (value) {
-        //       setState(() {
-        //         _sortCriteria = value!;
-        //       });
-        //     },
-        //   ),
-        //   DropdownButton<String>(
-        //     value: _filterRole,
-        //     items: const [
-        //       DropdownMenuItem(
-        //         value: 'All',
-        //         child: Text('All roles'),
-        //       ),
-        //       DropdownMenuItem(
-        //         value: 'Doctor',
-        //         child: Text('Doctor'),
-        //       ),
-        //       DropdownMenuItem(
-        //         value: 'Teaching Assistant',
-        //         child: Text('Teaching Assistant'),
-        //       ),
-        //       DropdownMenuItem(
-        //         value: 'Student',
-        //         child: Text('Student'),
-        //       ),
-        //       DropdownMenuItem(
-        //         value: 'Admin',
-        //         child: Text('Admin'),
-        //       ),
-        //     ],
-        //     onChanged: (value) {
-        //       setState(() {
-        //         _filterRole = value!;
-        //       });
-        //     },
-        //   ),
-        // ],
       ),
       drawer: AdminDrawer(user: widget.admin),
       body: Column(
