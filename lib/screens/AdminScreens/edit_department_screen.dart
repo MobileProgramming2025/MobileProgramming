@@ -17,6 +17,7 @@ class _EditDepartmentScreenState extends State<EditDepartmentScreen> {
   final TextEditingController _capacityController = TextEditingController();
 
   bool _isLoading = false;
+  bool _isDataLoading = true;
 
   Future<void> _loadDepartmentData() async {
     try {
@@ -24,16 +25,23 @@ class _EditDepartmentScreenState extends State<EditDepartmentScreen> {
           .collection('Departments')
           .doc(widget.departmentId)
           .get();
+
       if (doc.exists) {
         setState(() {
           _nameController.text = doc['name'] ?? '';
-          _capacityController.text = doc['capacity'] ?? '';
+          _capacityController.text = (doc['capacity'] ?? '').toString();
+          _isDataLoading = false;
         });
+      } else {
+        throw Exception("Department not found");
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Error loading department data: $e")),
       );
+      setState(() {
+        _isDataLoading = false;
+      });
     }
   }
 
@@ -50,7 +58,7 @@ class _EditDepartmentScreenState extends State<EditDepartmentScreen> {
           .doc(widget.departmentId)
           .update({
         'name': _nameController.text.trim(),
-        'capacity': _capacityController.text.trim(),
+        'capacity': int.parse(_capacityController.text.trim()),
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -80,75 +88,76 @@ class _EditDepartmentScreenState extends State<EditDepartmentScreen> {
       appBar: AppBar(
         title: const Text("Edit Department"),
       ),
-       body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                 Center(
-                   child: Text(
-                    "Edit Department Details",
-                    style: Theme.of(context).textTheme.titleLarge,
-                                   ),
-                 ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'Course Name',
-                    border: OutlineInputBorder(),
+      body: _isDataLoading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Form(
+                key: _formKey,
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Center(
+                        child: Text(
+                          "Edit Department Details",
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          labelText: 'Department Name',
+                          border: OutlineInputBorder(),
+                        ),
+                        controller: _nameController,
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return "Please enter the department name";
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          labelText: 'Capacity',
+                          border: OutlineInputBorder(),
+                        ),
+                        controller: _capacityController,
+                        keyboardType: TextInputType.number,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Please enter the capacity";
+                          }
+                          if (int.tryParse(value) == null) {
+                            return "Capacity must be a number";
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 32),
+                      Center(
+                        child: ElevatedButton(
+                          onPressed: _isLoading ? null : _updateDepartment,
+                          child: _isLoading
+                              ? const CircularProgressIndicator(
+                                  valueColor:
+                                      AlwaysStoppedAnimation<Color>(Colors.white),
+                                )
+                              : const Text(
+                                  "Update Department",
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                        ),
+                      ),
+                    ],
                   ),
-                  controller: _nameController,
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return "Please enter the department name";
-                    }
-                    return null;
-                  },
                 ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'Capacity',
-                    border: OutlineInputBorder(),
-                  ),
-                  controller: _capacityController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Please enter the capacity";
-                    }
-                    if (int.tryParse(value) == null) {
-                      return "Capacity must be a number";
-                    }
-                    return null;
-                  },
-                ),
-                
-                const SizedBox(height: 32),
-
-                
-                Center(
-                  child: ElevatedButton(
-                    onPressed: _isLoading ? null : _updateDepartment,
-                    
-                    child: _isLoading
-                        ? const CircularProgressIndicator(
-                          )
-                        : const Text(
-                            "Update Department",
-                            style: TextStyle(fontSize: 24),
-                          ),
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
-        ),
-      ),
-       ),
     );
   }
 }
