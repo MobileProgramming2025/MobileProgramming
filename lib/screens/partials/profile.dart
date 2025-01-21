@@ -231,9 +231,7 @@ Future<void> _removeImage() async {
                               : CircleAvatar(
                                   radius: 50,
                                   backgroundImage: FileImage(File(_profileImagePath!)),
-                                ),
-                        
-                ),
+                                ),),
                 SizedBox(height: 16),
                 const SizedBox(height: 24),
                 _buildProfileCard(title: 'Name', value: user.name),

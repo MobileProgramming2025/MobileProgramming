@@ -49,6 +49,7 @@ class _UserHomeState extends ConsumerState<UserHome> {
     final enrolledCourseStream = ref.watch(coursesProvider(userId));
 
     return Scaffold(
+      
       appBar: DoctorAppBar(
         doctor: widget.user,
         appBarText: "Hello, ${widget.user.name}!",
