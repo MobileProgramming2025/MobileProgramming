@@ -29,14 +29,41 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
   bool _quizAlreadyAttempted = false;
 
   @override
+  @override
   void initState() {
     super.initState();
-    _checkIfQuizAlreadyAttempted();
-
+    final now = DateTime.now();
     final quizStartDate = widget.quiz.startDate;
     final quizEndDate = widget.quiz.endDate;
 
-    _remainingTime = quizEndDate.difference(quizStartDate);
+    // Validate start date
+    if (now.isBefore(quizStartDate)) {
+      _isTimeUp = true; // Prevent starting the quiz
+      Future.microtask(() {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Quiz Not Started'),
+            content: Text(
+                'This quiz will start on ${quizStartDate.toLocal().toString().split(' ')[0]} at ${quizStartDate.toLocal().toString().split(' ')[1]}. Please try again later.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.pop(context); // Go back to the previous screen
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+      });
+      return;
+    }
+
+    _checkIfQuizAlreadyAttempted();
+
+    _remainingTime = quizEndDate.difference(now);
 
     if (_remainingTime.isNegative) {
       _remainingTime = Duration(seconds: 0);
