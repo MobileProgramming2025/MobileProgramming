@@ -36,9 +36,8 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
     final quizStartDate = widget.quiz.startDate;
     final quizEndDate = widget.quiz.endDate;
 
-    // Validate start date
     if (now.isBefore(quizStartDate)) {
-      _isTimeUp = true; // Prevent starting the quiz
+      _isTimeUp = true;
       Future.microtask(() {
         showDialog(
           context: context,
@@ -50,7 +49,7 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  Navigator.pop(context); // Go back to the previous screen
+                  Navigator.pop(context); 
                 },
                 child: const Text('OK'),
               ),
@@ -90,7 +89,6 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
     super.dispose();
   }
 
-  // Check if the user has already attempted the quiz
   Future<void> _checkIfQuizAlreadyAttempted() async {
     final quizAttemptsQuery = FirebaseFirestore.instance
         .collection('quizAttempts')
@@ -103,7 +101,6 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
       final attempt = querySnapshot.docs.first; // Get the first attempt
       final attemptTimestamp = attempt['timestamp'].toDate();
 
-      // Check if time is up
       final quizEndDate = widget.quiz.endDate;
       if (quizEndDate.isBefore(DateTime.now())) {
         setState(() {
@@ -114,7 +111,7 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
         setState(() {
           _quizAlreadyAttempted = true;
           _isTimeUp = false;
-          // Retrieve the saved user answers when they return to the quiz
+          
           _userAnswers
               .addAll(Map<String, dynamic>.from(attempt['userAnswers']));
         });
@@ -127,61 +124,42 @@ class _AttemptQuizScreenState extends State<AttemptQuizScreen> {
     }
   }
 
-  void _saveQuizAttempt() {
-    if (_quizAlreadyAttempted || _isTimeUp) {
-      return; // Prevent saving multiple attempts
-    }
+void _saveQuizAttempt() {
+  if (_quizAlreadyAttempted || _isTimeUp) {
+    return;
+  }
 
-    int score = 0;
+  int score = 0;
 
-    for (var question in widget.quiz.questions) {
-      final userAnswer = _userAnswers[question.id];
-      if (userAnswer != null && userAnswer == question.correctAnswer) {
-        score++;
-      }
-    }
-
-    final totalQuestions = widget.quiz.questions.length;
-    final percentage = (score / totalQuestions) * 100;
-
-    final quizAttempt = QuizAttempt(
-      userId: widget.userId,
-      quizId: widget.quiz.id,
-      courseId: widget.courseId,
-      userAnswers:
-          _userAnswers.map((key, value) => MapEntry(key, value as String)),
-      score: score,
-      percentage: percentage,
-      timestamp: DateTime.now(),
-    );
-
-    // Add quiz attempt to Firestore
-    FirebaseFirestore.instance
-        .collection('quizAttempts')
-        .add(quizAttempt.toJson());
-
-    // Show quiz result dialog only once
-    if (!_isTimeUp && !_quizAlreadyAttempted) {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Quiz Result'),
-          content: Text(
-            'You scored $score out of $totalQuestions (${percentage.toStringAsFixed(2)}%).',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                Navigator.pop(context); // Go back to the previous screen
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        ),
-      );
+  for (var question in widget.quiz.questions) {
+    final userAnswer = _userAnswers[question.id];
+    if (userAnswer != null && userAnswer == question.correctAnswer) {
+      score++;
     }
   }
+
+  final totalQuestions = widget.quiz.questions.length;
+  final percentage = (score / totalQuestions) * 100;
+
+  final quizAttempt = QuizAttempt(
+    userId: widget.userId,
+    quizId: widget.quiz.id,
+    courseId: widget.courseId,
+    userAnswers:
+        _userAnswers.map((key, value) => MapEntry(key, value as String)),
+    score: score,
+    percentage: percentage,
+    timestamp: DateTime.now(),
+  );
+
+  FirebaseFirestore.instance
+      .collection('quizAttempts')
+      .add(quizAttempt.toJson());
+
+  if (!_isTimeUp && !_quizAlreadyAttempted) {
+    Navigator.pop(context);
+  }
+}
 
   void _submitQuiz() {
     if (_isTimeUp || _quizAlreadyAttempted) {

@@ -47,10 +47,16 @@ class _ListUsersScreenState extends State<ListUsersScreen> {
     });
   }
 
-  void _deleteUser(int index) {
+  void _deleteUser(int index) async {
+    // Temporarily store the user and index for undo functionality
     setState(() {
-      _recentlyDeletedUser = _filteredUsers.removeAt(index);
+      _recentlyDeletedUser = _filteredUsers[index];
       _recentlyDeletedIndex = index;
+    });
+
+    // Remove the user from the displayed list
+    setState(() {
+      _filteredUsers.removeAt(index);
     });
 
     // Show snackbar with undo option
@@ -65,6 +71,25 @@ class _ListUsersScreenState extends State<ListUsersScreen> {
         ),
       ),
     );
+
+    try {
+      // Call the UserService to delete the user permanently from the backend
+      await _userService.deleteUser(_recentlyDeletedUser!.id);
+
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('User deleted successfully!')),
+      );
+    } catch (e) {
+      // In case of error, add the user back to the list and show error message
+      setState(() {
+        _filteredUsers.insert(_recentlyDeletedIndex!, _recentlyDeletedUser!);
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to delete user: $e')),
+      );
+    }
   }
 
   void _undoDelete() {
@@ -256,7 +281,8 @@ class _ListUsersScreenState extends State<ListUsersScreen> {
                         if (user.role == "Admin") {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                                content: Text('This action isn\'t suitable for this user')),
+                                content: Text(
+                                    'This action isn\'t suitable for this user')),
                           );
                         } else {
                           Navigator.push(
