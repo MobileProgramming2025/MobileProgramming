@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/Lecture.dart';
 import 'package:mobileprogramming/services/lecture_service.dart';
 
-class LectureListScreen extends StatefulWidget {
+class LecturesListScreen extends StatefulWidget {
   final String courseId;
 
-  const LectureListScreen({super.key, required this.courseId});
+  const LecturesListScreen({super.key, required this.courseId});
 
   @override
-  State<LectureListScreen> createState() => _LectureListScreenState();
+  State<LecturesListScreen> createState() => _LecturesListScreenState();
 }
 
-class _LectureListScreenState extends State<LectureListScreen> {
+class _LecturesListScreenState extends State<LecturesListScreen> {
   late Future<List<Lecture>> _lecturesFuture;
 
   @override
