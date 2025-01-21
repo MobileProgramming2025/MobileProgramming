@@ -62,7 +62,12 @@ class _LectureListScreenState extends State<LectureListScreen> {
         showDialog(
           context: context,
           builder: (_) => AlertDialog(
-            title: Text("Lecture PDF"),
+            title: Text(
+              "Lecture PDF",
+              style: TextStyle(
+                color: Colors.black
+              ),
+            ),
             content: Container(
               height: 400,
               width: 300,
@@ -85,7 +90,12 @@ class _LectureListScreenState extends State<LectureListScreen> {
         showDialog(
           context: context,
           builder: (_) => AlertDialog(
-            title: Text("Lecture Image"),
+            title: Text(
+              "Lecture Image",
+              style: TextStyle(
+                color: Colors.black
+              ),
+            ),
             content: Image.file(file),
             actions: [
               TextButton(
