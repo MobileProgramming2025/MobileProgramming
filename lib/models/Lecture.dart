@@ -25,13 +25,25 @@ class Lecture {
   }
 
   // Create a Lecture object from a Firebase document snapshot
+  // factory Lecture.fromMap(Map<String, dynamic> map) {
+  //   return Lecture(
+  //     title: map['title'] as String,
+  //     description: map['description'] as String,
+  //     dateAdded: DateTime.parse(map['date_added'] as String),
+  //     courseId: map['course_id'] as String,
+  //     fileUrl: map['file_url'] as String,
+  //   );
+  // }
   factory Lecture.fromMap(Map<String, dynamic> map) {
     return Lecture(
-      title: map['title'] as String,
-      description: map['description'] as String,
-      dateAdded: DateTime.parse(map['date_added'] as String),
-      courseId: map['course_id'] as String,
-      fileUrl: map['file_url'] as String,
+      title: map['title'] as String? ?? '',
+      description: map['description'] as String? ?? '', 
+      dateAdded: map['date_added'] != null
+          ? DateTime.parse(map['date_added'] as String)
+          : DateTime.now(), // Default to current date if null
+      courseId: map['course_id'] as String? ?? '',
+      fileUrl: map['file_url'] as String? ?? '', 
     );
   }
+
 }
