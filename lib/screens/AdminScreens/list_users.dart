@@ -48,18 +48,15 @@ class _ListUsersScreenState extends State<ListUsersScreen> {
   }
 
 void _deleteUser(int index) async {
-  // Temporarily store the user and index for undo functionality
   setState(() {
     _recentlyDeletedUser = _filteredUsers[index];
     _recentlyDeletedIndex = index;
   });
 
-  // Remove the user from the displayed list
   setState(() {
     _filteredUsers.removeAt(index);
   });
 
-  // Show snackbar with undo option
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       content: Text('Deleted ${_recentlyDeletedUser!.name}'),
@@ -80,6 +77,10 @@ void _deleteUser(int index) async {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('User deleted successfully!')),
       );
+
+      setState(() {
+        _futureUsers = _userService.getAllUsers();
+      });
     } catch (e) {
       setState(() {
         _filteredUsers.insert(_recentlyDeletedIndex!, _recentlyDeletedUser!);
@@ -90,6 +91,7 @@ void _deleteUser(int index) async {
     }
   }
 }
+
 
 void _undoDelete() {
   if (_recentlyDeletedUser != null && _recentlyDeletedIndex != null) {
