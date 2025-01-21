@@ -6,15 +6,11 @@ import 'package:mobileprogramming/services/CourseService.dart';
 final courseServiceProvider = Provider((ref) => CourseService());
 
 
-// StateNotifierProvider for managing the course state
-final userCourseStateProvider =  StateNotifierProvider<CourseStateNotifier, List<Course>>(
+final courseStateProvider =  StateNotifierProvider<CourseStateNotifier, List<Course>>(
   (ref) => CourseStateNotifier(ref.read(courseServiceProvider)),
 );
  
- final allCourseStateProvider =  StateNotifierProvider<CourseStateNotifier, List<Course>>(
-  (ref) => CourseStateNotifier(ref.read(courseServiceProvider)),
-);
 
-final departmentCoursesProvider =  StateNotifierProvider<CourseStateNotifier, List<Course>>(
+final departmentCoursesStateProvider =  StateNotifierProvider<CourseStateNotifier, List<Course>>(
   (ref) => CourseStateNotifier(ref.read(courseServiceProvider)),
 );

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mobileprogramming/models/Course.dart';
 import 'package:mobileprogramming/providers/courses_provider.dart';
 import 'package:mobileprogramming/screens/doctorScreens/ChatScreen.dart';
 import 'package:mobileprogramming/screens/partials/DoctorAppBar.dart';
@@ -34,10 +33,8 @@ class _DoctorDashboardState extends ConsumerState<DoctorDashboard> {
     _fetchData();
     doctor = widget.doctor;
 
-    ref.read(userCourseStateProvider.notifier).fetchUserCourses(doctor.id);
-    ref
-        .read(userCourseStateProvider.notifier)
-        .fetchDepartmentCourses(doctor.departmentId!);
+    ref.read(courseStateProvider.notifier).fetchUserCourses(doctor.id);
+    ref.read(departmentCoursesStateProvider.notifier).fetchDepartmentCourses(doctor.departmentId!);
   }
 
   Future<void> _fetchData() async {
@@ -50,7 +47,8 @@ class _DoctorDashboardState extends ConsumerState<DoctorDashboard> {
   @override
   Widget build(BuildContext context) {
     doctorId = widget.doctor.id;
-    final courses = ref.watch(userCourseStateProvider);
+    final courses = ref.watch(courseStateProvider);
+    final depCourses = ref.watch(departmentCoursesStateProvider);
 
     return Scaffold(
       appBar: DoctorAppBar(
@@ -212,7 +210,7 @@ class _DoctorDashboardState extends ConsumerState<DoctorDashboard> {
                     ),
                     SizedBox(height: 10),
                     Container(
-                      child: courses.isEmpty
+                      child: depCourses.isEmpty
                           ? const Center(
                               child:
                                   Text("No Courses Found in this Department"),
@@ -226,9 +224,9 @@ class _DoctorDashboardState extends ConsumerState<DoctorDashboard> {
                               ),
                               shrinkWrap: true,
                               physics: NeverScrollableScrollPhysics(),
-                              itemCount: courses.length,
+                              itemCount: depCourses.length,
                               itemBuilder: (context, index) {
-                                final course = courses[index];
+                                final course = depCourses[index];
 
                                 return Card(
                                   elevation: 4,

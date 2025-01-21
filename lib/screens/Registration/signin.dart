@@ -89,7 +89,7 @@ class LoginScreen extends StatelessWidget {
     } catch (e) {
       // Check if the widget is still in the tree before using context
       if (!context.mounted) return;
-      _showError(context, "An unexpected error occurred: $e");
+      _showError(context, "An unexpected error occurred: incorrect password or email");
     }
   }
 

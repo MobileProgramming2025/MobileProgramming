@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mobileprogramming/models/Department.dart';
 import 'package:mobileprogramming/models/user.dart';
 import 'package:mobileprogramming/providers/courses_provider.dart';
 import 'package:mobileprogramming/screens/AdminScreens/add_courses_screen.dart';
@@ -23,7 +22,7 @@ class _ViewCoursesScreenState extends ConsumerState<ViewCoursesScreen> {
   @override
   void initState() {
     super.initState();
-    ref.read(userCourseStateProvider.notifier).fetchAllCourses();
+    ref.read(courseStateProvider.notifier).fetchAllCourses();
   }
 
   Future<void> _deleteCourse(String courseId) async {
@@ -43,7 +42,7 @@ class _ViewCoursesScreenState extends ConsumerState<ViewCoursesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final courses = ref.watch(userCourseStateProvider);
+    final courses = ref.watch(courseStateProvider);
 
     return Scaffold(
       appBar: AppBar(

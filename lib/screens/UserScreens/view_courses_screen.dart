@@ -24,13 +24,13 @@ class _ViewCoursesScreenState extends ConsumerState<ViewCoursesScreen> {
     super.initState();
     userId = widget.user.id;
     // Fetch courses for the doctor
-    ref.read(userCourseStateProvider.notifier).fetchUserCourses(userId);
+    ref.read(courseStateProvider.notifier).fetchUserCourses(userId);
   }
 
   @override
   Widget build(BuildContext context) {
     // Access the state using Riverpod's Consumer widget
-    final courses = ref.watch(userCourseStateProvider);
+    final courses = ref.watch(courseStateProvider);
 
     return Scaffold(
       appBar: AppBar(

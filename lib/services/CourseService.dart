@@ -20,25 +20,6 @@ class CourseService {
     });
   }
 
-  Stream<List<Course>> getCoursesByDepartmentId(String departmentId) {
-    try {
-      return _firestore
-          .collection('Courses')
-          .where('departmentId', isEqualTo: departmentId)
-          .snapshots() // Get real-time stream of query results
-          .map((querySnapshot) {
-        // Transform each QuerySnapshot into a List of Course objects
-        return querySnapshot.docs.map((doc) {
-          final data = doc
-              .data(); // Extract Firestore document data as Map<String, dynamic>
-          return Course.fromMap(data); // Pass the map directly to fromMap
-        }).toList(); // Convert the Iterable to a List
-      });
-    } catch (e) {
-      throw Exception('Failed to retrieve Course: $e');
-    }
-  }
-
   Stream<List<Map<String, dynamic>>> gettCoursesByDepartmentId(
       String departmentId) {
     try {
@@ -191,7 +172,7 @@ class CourseService {
   }
 
   Future<void> removeCourseFromUser(String userId, String courseId) async {
-    try {
+    try { 
       // Retrieve the user by ID
       final userDocRef = _firestore
           .collection('users')

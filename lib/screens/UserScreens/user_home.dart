@@ -35,7 +35,8 @@ class _UserHomeState extends ConsumerState<UserHome> {
     user = widget.user;
     _fetchData();
     // Fetch courses for the user
-    ref.read(userCourseStateProvider.notifier).fetchUserCourses(user.id);
+    ref.read(courseStateProvider.notifier).fetchUserCourses(user.id);
+    ref.read(departmentCoursesStateProvider.notifier).fetchDepartmentCourses(user.departmentId!);
   }
 
   Future<void> _fetchData() async {
@@ -47,7 +48,8 @@ class _UserHomeState extends ConsumerState<UserHome> {
 
   @override
   Widget build(BuildContext context) {
-    final courses = ref.watch(userCourseStateProvider);
+    final courses = ref.watch(courseStateProvider);
+    final depCourses = ref.watch(departmentCoursesStateProvider);
 
     return Scaffold(
       appBar: DoctorAppBar(
@@ -233,7 +235,7 @@ class _UserHomeState extends ConsumerState<UserHome> {
                     ),
                     SizedBox(height: 10),
                     Container(
-                      child: courses.isEmpty
+                      child: depCourses.isEmpty
                           ? const Center(
                               child:
                                   Text("No Courses Found in this Department"),
@@ -247,9 +249,9 @@ class _UserHomeState extends ConsumerState<UserHome> {
                               ),
                               shrinkWrap: true,
                               physics: NeverScrollableScrollPhysics(),
-                              itemCount: courses.length,
+                              itemCount: depCourses.length,
                               itemBuilder: (context, index) {
-                                final course = courses[index];
+                                final course = depCourses[index];
 
                                 return Card(
                                   elevation: 4,
