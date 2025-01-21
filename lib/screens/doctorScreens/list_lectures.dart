@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:mobileprogramming/models/lecture.dart';
 import 'package:mobileprogramming/services/lecture_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
