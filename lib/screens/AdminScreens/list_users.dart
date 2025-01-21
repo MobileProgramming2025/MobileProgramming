@@ -46,58 +46,59 @@ class _ListUsersScreenState extends State<ListUsersScreen> {
       return 0;
     });
   }
-void _deleteUser(int index) async {
-  // Temporarily store the user and index for undo functionality
-  setState(() {
-    _recentlyDeletedUser = _filteredUsers[index];
-    _recentlyDeletedIndex = index;
-  });
 
-  // Remove the user from the displayed list
-  setState(() {
-    _filteredUsers.removeAt(index);
-  });
+  void _deleteUser(int index) async {
+    // Temporarily store the user and index for undo functionality
+    setState(() {
+      _recentlyDeletedUser = _filteredUsers[index];
+      _recentlyDeletedIndex = index;
+    });
 
-  // Show snackbar with undo option
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      content: Text('Deleted ${_recentlyDeletedUser!.name}'),
-      action: SnackBarAction(
-        label: "Undo",
-        onPressed: () {
-          _undoDelete();
-        },
+    // Remove the user from the displayed list
+    setState(() {
+      _filteredUsers.removeAt(index);
+    });
+
+    // Show snackbar with undo option
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Deleted ${_recentlyDeletedUser!.name}'),
+        action: SnackBarAction(
+          label: "Undo",
+          onPressed: () {
+            _undoDelete();
+          },
+        ),
       ),
-    ),
-  );
-
-  try {
-    // Call the UserService to delete the user permanently from the backend
-    await _userService.deleteUser(_recentlyDeletedUser!.id);
-
-    // Show success message
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('User deleted successfully!')),
     );
-  } catch (e) {
-    // In case of error, add the user back to the list and show error message
-    setState(() {
-      _filteredUsers.insert(_recentlyDeletedIndex!, _recentlyDeletedUser!);
-    });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Failed to delete user: $e')),
-    );
-  }
-}
+    try {
+      // Call the UserService to delete the user permanently from the backend
+      await _userService.deleteUser(_recentlyDeletedUser!.id);
 
-void _undoDelete() {
-  if (_recentlyDeletedUser != null && _recentlyDeletedIndex != null) {
-    setState(() {
-      _filteredUsers.insert(_recentlyDeletedIndex!, _recentlyDeletedUser!);
-    });
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('User deleted successfully!')),
+      );
+    } catch (e) {
+      // In case of error, add the user back to the list and show error message
+      setState(() {
+        _filteredUsers.insert(_recentlyDeletedIndex!, _recentlyDeletedUser!);
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to delete user: $e')),
+      );
+    }
   }
-}
+
+  void _undoDelete() {
+    if (_recentlyDeletedUser != null && _recentlyDeletedIndex != null) {
+      setState(() {
+        _filteredUsers.insert(_recentlyDeletedIndex!, _recentlyDeletedUser!);
+      });
+    }
+  }
 
   void _startAdvising() async {
     try {
@@ -280,7 +281,8 @@ void _undoDelete() {
                         if (user.role == "Admin") {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                                content: Text('This action isn\'t suitable for this user')),
+                                content: Text(
+                                    'This action isn\'t suitable for this user')),
                           );
                         } else {
                           Navigator.push(
