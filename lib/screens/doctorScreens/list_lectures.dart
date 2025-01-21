@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mobileprogramming/models/Lecture.dart';
+import 'package:mobileprogramming/models/lecture.dart';
 import 'package:mobileprogramming/services/lecture_service.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LecturesListScreen extends StatefulWidget {
   final String courseId;
@@ -18,6 +19,16 @@ class _LecturesListScreenState extends State<LecturesListScreen> {
   void initState() {
     super.initState();
     _lecturesFuture = LectureService().getLecturesByCourse(widget.courseId) as Future<List<Lecture>>;
+  }
+
+  Future<void> _downloadFile(String fileUrl) async {
+    if (await canLaunchUrl(Uri.parse(fileUrl))) {
+      await launchUrl(Uri.parse(fileUrl), mode: LaunchMode.externalApplication);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not open the file.')),
+      );
+    }
   }
 
   @override
@@ -46,15 +57,26 @@ class _LecturesListScreenState extends State<LecturesListScreen> {
             itemCount: lectures.length,
             itemBuilder: (context, index) {
               final lecture = lectures[index];
-              return ListTile(
-                title: Text(lecture.title),
-                subtitle: Text(lecture.description),
-                trailing: Text(
-                  lecture.dateAdded.toLocal().toString().split(' ')[0], // Display date in YYYY-MM-DD format
+              return Card(
+                margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                child: ListTile(
+                  title: Text(lecture.title),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(lecture.description),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Added on: ${lecture.dateAdded.toLocal().toString().split(' ')[0]}',
+                        style: const TextStyle(fontSize: 12, color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.download),
+                    onPressed: () => _downloadFile(lecture.fileUrl),
+                  ),
                 ),
-                onTap: () {
-                   // Handle lecture item tap (e.g., navigate to a lecture details screen)
-                },
               );
             },
           );
