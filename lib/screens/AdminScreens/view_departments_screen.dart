@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobileprogramming/models/user.dart';
 import 'package:mobileprogramming/screens/AdminScreens/Add_department_screen.dart';
-import 'package:mobileprogramming/screens/AdminScreens/edit_department_screen.dart';
 import 'package:mobileprogramming/screens/partials/adminDrawer.dart';
 import 'package:mobileprogramming/services/DepartmentService.dart';
 
@@ -20,6 +19,7 @@ class _ViewDepartmentsScreenState extends State<ViewDepartmentsScreen> {
   @override
   void initState() {
     super.initState();
+    // Initializing the stream to get department data in real time
     _departmentsStream = departmentService.getAllDepartments();
   }
 
@@ -33,8 +33,10 @@ class _ViewDepartmentsScreenState extends State<ViewDepartmentsScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: StreamBuilder<List<Map<String, dynamic>>>(
+          // Using Stream to get real-time updates
           stream: _departmentsStream,
           builder: (context, snapshot) {
+            // Handling different connection states
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
                 child: CircularProgressIndicator(),
@@ -52,62 +54,46 @@ class _ViewDepartmentsScreenState extends State<ViewDepartmentsScreen> {
               );
             }
 
-            final departments = snapshot.data!;
+            final departments = snapshot.data!; // Extract department data
 
             return ListView.builder(
+              // Display list of departments
               itemCount: departments.length,
               itemBuilder: (context, index) {
-                final department = departments[index];
-                final departmentId = department['id'];
+                final department = departments[index]; // Current department
+                final departmentId = department['id']; // Extracting the ID
 
-                return Card(
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          department['name'],
-                          style: Theme.of(context).textTheme.headlineMedium,
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Department Capacity: ${department['capacity']}',
-                          style: Theme.of(context).textTheme.bodyLarge,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.edit),
-                              onPressed: () {
-                                // Navigate to EditDepartmentScreen with the departmentId
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => EditDepartmentScreen(
-                                      departmentId: departmentId,
-                                    ),
-                                  ),
-                                );
-                              },
-                              iconSize: 28,
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.delete),
-                              onPressed: () {
-                                // Delete functionality (to be implemented)
-                              },
-                              color: Colors.red,
-                              iconSize: 28,
-                            ),
-                          ],
-                        ),
-                      ],
+                return InkWell(
+                  // Makes the card clickable
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      '/view_department_courses',
+                      arguments: departmentId, // Pass department data
+                    );
+                  },
+
+                  child: Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            department['name'],
+                            style: Theme.of(context).textTheme.headlineMedium,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Department Capacity: ${department['capacity']}',
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 );
