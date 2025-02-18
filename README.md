@@ -1,6 +1,5 @@
 # Study Scheduler
 
-A mobile application designed to help students efficiently manage their academic workload.
-
-## Integrating with Moodle
-The app creates a personalized schedule based on assignments, courses, and quizzes, ensuring students stay organized and meet deadlines without stress.
+Developed Moodle mobile app, includes a built-in scheduling system to help students manage their academic tasks efficiently.  
+## scheduling feature
+organizes assignments, courses, and quizzes within the platform, ensuring students stay on track with their studies.
